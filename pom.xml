@@ -30,11 +30,39 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- 工程模块 -->
+            <dependency>
+                <groupId>app.xlog.ggbond</groupId>
+                <artifactId>big-market-domain</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>app.xlog.ggbond</groupId>
+                <artifactId>big-market-infrastructure</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>app.xlog.ggbond</groupId>
+                <artifactId>big-market-trigger</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>app.xlog.ggbond</groupId>
+                <artifactId>big-market-types</artifactId>
+                <version>1.0</version>
+            </dependency>
+
+            <!-- 第三方依赖模块 -->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>3.8.1</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>3.5.6</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

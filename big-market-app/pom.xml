@@ -18,6 +18,17 @@
     </properties>
 
     <dependencies>
+        <!-- 工程模块 -->
+        <dependency>
+            <groupId>app.xlog.ggbond</groupId>
+            <artifactId>big-market-infrastructure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>app.xlog.ggbond</groupId>
+            <artifactId>big-market-trigger</artifactId>
+        </dependency>
+
+        <!-- 第三方依赖包 -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
