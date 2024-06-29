@@ -3,6 +3,10 @@ package app.xlog.ggbond;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RKeys;
+import org.redisson.api.RMap;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -11,6 +15,42 @@ import java.util.stream.Stream;
 
 @SpringBootTest
 public class AppTest {
+    @Autowired
+    private RedissonClient redissonClient;
+
+    // 测试redisson
+    @Test
+    public void testRedisson() {
+        RKeys keys = redissonClient.getKeys();
+        //获取所有key值
+        keys.getKeys().forEach(System.out::println);
+        System.out.println("====================================");
+
+        //模糊获取key值
+        keys.getKeysByPattern("*sys*").forEach(System.out::println);
+
+        // 删除key
+        keys.delete("sys1111", "2222_sys2222");
+
+        // 判断key是否存在
+        System.out.println(keys.countExists("awards"));
+
+        // 获取key的数量
+        System.out.println(keys.count());
+    }
+
+    // 测试redisson，奖品
+    @Test
+    public void testRedissonAwards() {
+        RMap<String, String> rMap = redissonClient.getMap("awards");
+        rMap.put("101", "随机积分");
+        rMap.put("102", "淘宝优惠券");
+        rMap.put("103", "京东优惠券");
+
+        // 通过key获取value
+        System.out.println(redissonClient.getMap("awards").get("103"));
+    }
+
     // 测试权重算法
     @Test
     public void testRandomWeight() {
