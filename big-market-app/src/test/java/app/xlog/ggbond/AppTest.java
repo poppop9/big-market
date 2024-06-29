@@ -1,11 +1,10 @@
 package app.xlog.ggbond;
 
+import app.xlog.ggbond.strategy.model.AwardBO;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
 import org.junit.jupiter.api.Test;
-import org.redisson.api.RKeys;
-import org.redisson.api.RMap;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -17,6 +16,21 @@ import java.util.stream.Stream;
 public class AppTest {
     @Autowired
     private RedissonClient redissonClient;
+
+    // 测试redisson存储集合
+    @Test
+    public void testRedissonStorageList() {
+        List<AwardBO> AwardBOs = Stream.of(
+                new AwardBO(1, 1, 1, 0.1f),
+                new AwardBO(1, 2, 1, 0.2f),
+                new AwardBO(1, 3, 1, 0.3f)
+        ).toList();
+
+        RList<Object> rList = redissonClient.getList("testList");
+        rList.addAll(AwardBOs);
+
+        rList.forEach(System.out::println);
+    }
 
     // 测试redisson
     @Test
