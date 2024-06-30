@@ -5,6 +5,7 @@ import app.xlog.ggbond.persistent.po.Award;
 import app.xlog.ggbond.strategy.model.AwardBO;
 import app.xlog.ggbond.strategy.repository.IStrategyRepository;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.WeightRandom;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.redisson.api.RList;
 import org.redisson.api.RedissonClient;
@@ -46,5 +47,18 @@ public class StrategyRepository implements IStrategyRepository {
         rList.addAll(awardBOS);
 
         return awardBOS;
+    }
+
+    // 将权重对象插入到Redis中
+    @Override
+    public void insertWeightRandom(int strategyId, WeightRandom<Integer> wr) {
+        String cacheKey = "strategy_awards_WeightRandom_" + strategyId;
+        redissonClient.getBucket(cacheKey).set(wr);
+    }
+
+    @Override
+    public WeightRandom<Integer> queryWeightRandom(int strategyId) {
+        String cacheKey = "strategy_awards_WeightRandom_" + strategyId;
+        return (WeightRandom<Integer>) redissonClient.getBucket(cacheKey).get();
     }
 }

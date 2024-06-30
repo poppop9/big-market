@@ -1,6 +1,7 @@
 package app.xlog.ggbond;
 
 import app.xlog.ggbond.strategy.model.AwardBO;
+import app.xlog.ggbond.strategy.repository.IStrategyRepository;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,33 @@ import java.util.stream.Stream;
 public class AppTest {
     @Autowired
     private RedissonClient redissonClient;
+    @Autowired
+    private IStrategyRepository strategyRepository;
+
+    // 测试redisson能不能将java对象存储进redis，而且能够取出之后还能使用，答案是可以
+    @Test
+    public void testRedissonStorageObject() {
+        List<AwardBO> awardBOs = strategyRepository.queryAwards(10001);
+        List<Integer> awardIds = awardBOs.stream()
+                .map(AwardBO::getAwardId)
+                .toList();
+
+        List<WeightRandom.WeightObj<Integer>> weightList = Stream.of(
+                new WeightRandom.WeightObj<Integer>(awardIds.get(0), 20),
+                new WeightRandom.WeightObj<Integer>(awardIds.get(1), 30),
+                new WeightRandom.WeightObj<Integer>(awardIds.get(2), 40),
+                new WeightRandom.WeightObj<Integer>(awardIds.get(3), 10)
+        ).toList();
+
+        // 拿到权重对象了，我要把它存到redis中
+        WeightRandom<Integer> wr = RandomUtil.weightRandom(weightList);
+
+        RBucket<Object> bucket = redissonClient.getBucket("test_stroage_object");
+        bucket.set(wr);
+
+        WeightRandom wr2 = (WeightRandom) bucket.get();
+        System.out.println(wr2.next());
+    }
 
     // 测试redisson存储集合
     @Test
