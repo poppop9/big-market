@@ -27,7 +27,7 @@ public class StrategyRepository implements IStrategyRepository {
 
     @Override
     public List<AwardBO> queryAwards(int strategyId) {
-        String cacheKey = "strategy_awards_" + strategyId;
+        String cacheKey = "strategy_" + strategyId + "_awards";
 
         // Redis缓存中存在则直接返回
         RList<AwardBO> rList = redissonClient.getList(cacheKey);
@@ -52,13 +52,14 @@ public class StrategyRepository implements IStrategyRepository {
     // 将权重对象插入到Redis中
     @Override
     public void insertWeightRandom(int strategyId, WeightRandom<Integer> wr) {
-        String cacheKey = "strategy_awards_WeightRandom_" + strategyId;
+        String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom";
         redissonClient.getBucket(cacheKey).set(wr);
     }
 
+    // 根据策略ID，从redis中查询权重对象
     @Override
     public WeightRandom<Integer> queryWeightRandom(int strategyId) {
-        String cacheKey = "strategy_awards_WeightRandom_" + strategyId;
+        String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom";
         return (WeightRandom<Integer>) redissonClient.getBucket(cacheKey).get();
     }
 }

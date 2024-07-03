@@ -13,6 +13,7 @@ public class AwardMapperTest {
     @Autowired
     private AwardMapper awardMapper;
 
+    // 查询所有奖品
     @Test
     public void testSelectAll() {
         List<Award> awards = awardMapper.selectList(null);

@@ -1,6 +1,7 @@
 package app.xlog.ggbond.domain;
 
 import app.xlog.ggbond.strategy.service.armory.IStrategyArmory;
+import app.xlog.ggbond.strategy.service.armory.IStrategyDispatch;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class StrategyArmoryTest {
+public class StrategyArmoryDispatchTest {
     @Autowired
     private IStrategyArmory strategyArmory;
+    @Autowired
+    private IStrategyDispatch strategyDispatch;
 
-    Logger logger = LoggerFactory.getLogger(StrategyArmoryTest.class);
+    Logger logger = LoggerFactory.getLogger(StrategyArmoryDispatchTest.class);
 
     // 测试装配对应策略的奖品，和装配奖品的权重对象
     @Test
@@ -26,7 +29,7 @@ public class StrategyArmoryTest {
         Integer randomAwardId;
 
         for (int i = 0; i < 50; i++) {
-            randomAwardId = strategyArmory.getRandomAwardId(10001);
+            randomAwardId = strategyDispatch.getRandomAwardId(10001);
             logger.atInfo().log("中奖的奖品id : {}", randomAwardId);
         }
     }
