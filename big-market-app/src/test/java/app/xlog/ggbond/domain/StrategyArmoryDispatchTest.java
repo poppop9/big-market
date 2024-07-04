@@ -25,6 +25,9 @@ public class StrategyArmoryDispatchTest {
 
         strategyArmory.assembleLotteryStrategyRuleLock(10001);
         System.out.println("装配策略10001的除锁定奖品完成");
+
+        strategyArmory.assembleLotteryStrategyRuleLockLong(10001);
+        System.out.println("装配策略10001的除最后一个奖品完成");
     }
 
     // 测试获取所有奖品中的随机奖品ID
@@ -45,6 +48,17 @@ public class StrategyArmoryDispatchTest {
 
         for (int i = 0; i < 50; i++) {
             randomAwardId = strategyDispatch.getRuleLockAwardIdByRandom(10001);
+            logger.atInfo().log("中奖的奖品id : {}", randomAwardId);
+        }
+    }
+
+    // 测试获取除最后一个奖品中的随机奖品ID
+    @Test
+    public void testGetRandomRuleLockLongAwardId() {
+        Integer randomAwardId;
+
+        for (int i = 0; i < 50; i++) {
+            randomAwardId = strategyDispatch.getRuleLockLongAwardIdByRandom(10001);
             logger.atInfo().log("中奖的奖品id : {}", randomAwardId);
         }
     }

@@ -71,6 +71,24 @@ public class StrategyRepository implements IStrategyRepository {
         return awardRuleLockBOS;
     }
 
+    @Override
+    public List<AwardBO> queryRuleLockLongAwards(int strategyId, String rule) {
+        String cacheKey = "strategy_" + strategyId + "_awards_" + rule;
+        RList<AwardBO> rList = redissonClient.getList(cacheKey);
+        if (!rList.isEmpty() && rList != null) {
+            return rList;
+        }
+
+        List<AwardBO> awardBOs = queryAwards(strategyId, "Common");
+        List<AwardBO> awardRuleLockBOS = awardBOs.stream()
+                .limit(awardBOs.size() - 1)
+                .toList();
+
+        rList.addAll(awardRuleLockBOS);
+
+        return awardRuleLockBOS;
+    }
+
     // 将权重对象插入到Redis中
     @Override
     public void insertWeightRandom(int strategyId, WeightRandom<Integer> wr, String awardRule) {
@@ -89,6 +107,12 @@ public class StrategyRepository implements IStrategyRepository {
     @Override
     public WeightRandom<Integer> queryRuleLockWeightRandom(int strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_Lock";
+        return (WeightRandom<Integer>) redissonClient.getBucket(cacheKey).get();
+    }
+
+    @Override
+    public WeightRandom<Integer> queryRuleLockLongWeightRandom(Integer strategyId) {
+        String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_LockLong";
         return (WeightRandom<Integer>) redissonClient.getBucket(cacheKey).get();
     }
 }

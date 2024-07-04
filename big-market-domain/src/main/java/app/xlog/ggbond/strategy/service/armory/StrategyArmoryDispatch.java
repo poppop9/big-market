@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 
 @Service
@@ -18,8 +19,8 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
     /*
         我要装配三个抽奖策略：
         - rule_common：所有奖品都可以抽
-        - rule_lock：锁出后四个奖品
-        - rule_lock_long：锁出最后一个奖品
+        - rule_lock：锁出后四个奖品，5个奖品可以抽
+        - rule_lock_long：锁出最后一个奖品，8个奖品可以抽
      */
 
     @Override
@@ -46,8 +47,6 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         // 拿到除去锁定的所有的奖品
         List<AwardBO> awardRuleLockBOS = strategyRepository.queryRuleLockAwards(strategyId, "Lock");
 
-        awardRuleLockBOS.forEach(System.out::println);
-
         // 生成WeightRandom对象，存入redis中
         List<WeightRandom.WeightObj<Integer>> weightObjs = awardRuleLockBOS.stream()
                 // 操作每一个AwardBO，将AwardId，和AwardRate封装成WeightObj对象
@@ -64,7 +63,17 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
 
     @Override
     public void assembleLotteryStrategyRuleLockLong(Integer strategyId) {
+        List<AwardBO> awardRuleLockLongBOS = strategyRepository.queryRuleLockLongAwards(strategyId, "LockLong");
 
+        List<WeightRandom.WeightObj<Integer>> weightObjs = awardRuleLockLongBOS.stream()
+                .map(AwardBO -> {
+                    return new WeightRandom.WeightObj<>(AwardBO.getAwardId(),
+                            AwardBO.getAwardRate());
+                }).toList();
+
+        WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
+
+        strategyRepository.insertWeightRandom(strategyId, wr, "LockLong");
     }
 
     // 根据策略ID，获取对应所有奖品中的随机奖品
@@ -79,6 +88,12 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
     @Override
     public Integer getRuleLockAwardIdByRandom(Integer strategyId) {
         WeightRandom<Integer> wr = strategyRepository.queryRuleLockWeightRandom(strategyId);
+        return wr.next();
+    }
+
+    @Override
+    public Integer getRuleLockLongAwardIdByRandom(Integer strategyId) {
+        WeightRandom<Integer> wr = strategyRepository.queryRuleLockLongWeightRandom(strategyId);
         return wr.next();
     }
 }

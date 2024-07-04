@@ -10,4 +10,7 @@ public interface IStrategyDispatch {
 
     // 传入一个策略ID，获取一个除去锁定奖品的随机奖品ID
     Integer getRuleLockAwardIdByRandom(Integer strategyId);
+
+    // 传入一个策略ID，获取一个除去最后胡一个奖品的随机奖品ID
+    Integer getRuleLockLongAwardIdByRandom(Integer strategyId);
 }
