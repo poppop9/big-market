@@ -14,4 +14,7 @@ public interface IStrategyArmory {
     // 传入一个策略ID，装配除去最后一个奖品的其余奖品
     void assembleLotteryStrategyRuleLockLong(Integer strategyId);
 
+    // 传入一个策略ID，装配大奖的抽奖池
+    void assembleLotteryStrategyRuleGrand(Integer strategyId);
+
 }

@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 @TableName("strategy")
 public class Strategy {
     @TableId(value = "id", type = IdType.AUTO)
-    private int id;
+    private Integer id;
     @TableField("strategy_id")
-    private int strategyId;
+    private Integer strategyId;
     @TableField("strategy_desc")
     private String strategyDesc;
     @TableField("rules")

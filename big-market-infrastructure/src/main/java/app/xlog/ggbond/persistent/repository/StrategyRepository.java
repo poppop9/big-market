@@ -7,12 +7,15 @@ import app.xlog.ggbond.strategy.repository.IStrategyRepository;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.redisson.api.RBucket;
 import org.redisson.api.RList;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /*
 策略仓库实现类
@@ -25,6 +28,9 @@ public class StrategyRepository implements IStrategyRepository {
     @Autowired
     private AwardMapper awardMapper;
 
+    /**
+     * 将数据库中的数据查询出来装配到 redis
+     **/
     @Override
     public List<AwardBO> queryAwards(int strategyId, String rule) {
         String cacheKey = "strategy_" + strategyId + "_awards_" + rule;
@@ -89,6 +95,45 @@ public class StrategyRepository implements IStrategyRepository {
         return awardRuleLockBOS;
     }
 
+    @Override
+    public AwardBO queryWorstAwardId(Integer strategyId) {
+        String cacheKey = "strategy_" + strategyId + "_awards_Blacklist";
+        // 由于黑名单奖品只有一个，所以不用rList
+        RBucket<Object> bucket = redissonClient.getBucket(cacheKey);
+        if (bucket.isExists()) {
+            return (AwardBO) bucket.get();
+        }
+
+        List<AwardBO> awardBOs = queryAwards(strategyId, "Common");
+        AwardBO awardBO = awardBOs.stream()
+                .findFirst()
+                .get();
+
+        // 存入redis
+        bucket.set(awardBO);
+
+        return awardBO;
+    }
+
+    @Override
+    public List<AwardBO> queryRuleGrandAwards(Integer strategyId, String rule) {
+        String cacheKey = "strategy_" + strategyId + "_awards_" + rule;
+        RList<AwardBO> rlist = redissonClient.getList(cacheKey);
+        if (!rlist.isEmpty() && rlist != null) {
+            return rlist;
+        }
+
+        List<AwardBO> awardBOs = queryAwards(strategyId, "Common");
+        List<AwardBO> awardRuleGrandBOS = awardBOs.stream()
+                .skip(5)
+                .limit(awardBOs.size() - 5 - 1)
+                .toList();
+
+        rlist.addAll(awardRuleGrandBOS);
+
+        return awardRuleGrandBOS;
+    }
+
     // 将权重对象插入到Redis中
     @Override
     public void insertWeightRandom(int strategyId, WeightRandom<Integer> wr, String awardRule) {
@@ -113,6 +158,12 @@ public class StrategyRepository implements IStrategyRepository {
     @Override
     public WeightRandom<Integer> queryRuleLockLongWeightRandom(Integer strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_LockLong";
+        return (WeightRandom<Integer>) redissonClient.getBucket(cacheKey).get();
+    }
+
+    @Override
+    public WeightRandom<Integer> queryRuleGrandAwardIdByRandom(Integer strategyId) {
+        String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_Grand";
         return (WeightRandom<Integer>) redissonClient.getBucket(cacheKey).get();
     }
 }

@@ -28,6 +28,9 @@ public class StrategyArmoryDispatchTest {
 
         strategyArmory.assembleLotteryStrategyRuleLockLong(10001);
         System.out.println("装配策略10001的除最后一个奖品完成");
+
+        strategyArmory.assembleLotteryStrategyRuleGrand(10001);
+        System.out.println("装配策略10001的大奖池完成");
     }
 
     // 测试获取所有奖品中的随机奖品ID
@@ -60,6 +63,21 @@ public class StrategyArmoryDispatchTest {
         for (int i = 0; i < 50; i++) {
             randomAwardId = strategyDispatch.getRuleLockLongAwardIdByRandom(10001);
             logger.atInfo().log("中奖的奖品id : {}", randomAwardId);
+        }
+    }
+
+    // 测试获取针对于黑名单用户的，最差的奖品
+    @Test
+    public void testGetWorstAwardId() {
+        Integer worstAwardId = strategyDispatch.getWorstAwardId(10001);
+        logger.atInfo().log("黑名单用户的奖品id : {}", worstAwardId);
+    }
+
+    @Test
+    public void testGetGrandAwardIdByRandom() {
+        for (int i = 0; i < 100; i++) {
+            Integer grandAwardId = strategyDispatch.getRuleGrandAwardIdByRandom(10001);
+            logger.atInfo().log("大奖池中的奖品id : {}", grandAwardId);
         }
     }
 }

@@ -19,6 +19,11 @@ public interface IStrategyRepository {
 
     List<AwardBO> queryRuleLockLongAwards(int strategyId, String rule);
 
+    AwardBO queryWorstAwardId(Integer strategyId);
+
+    List<AwardBO> queryRuleGrandAwards(Integer strategyId, String rule);
+
+
     // 将权重对象插入到Redis中，awardRule是奖品规则
     void insertWeightRandom(int strategyId, WeightRandom<Integer> wr, String awardRule);
 
@@ -29,4 +34,7 @@ public interface IStrategyRepository {
     WeightRandom<Integer> queryRuleLockWeightRandom(int strategyId);
 
     WeightRandom<Integer> queryRuleLockLongWeightRandom(Integer strategyId);
+
+    WeightRandom<Integer> queryRuleGrandAwardIdByRandom(Integer strategyId);
+
 }
