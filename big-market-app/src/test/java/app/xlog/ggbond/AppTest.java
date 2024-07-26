@@ -23,7 +23,7 @@ public class AppTest {
     // 测试redisson能不能将java对象存储进redis，而且能够取出之后还能使用，答案是可以
     @Test
     public void testRedissonStorageObject() {
-        List<AwardBO> awardBOs = strategyRepository.queryAwards(10001,"Common");
+        List<AwardBO> awardBOs = strategyRepository.queryAwards(10001);
         List<Integer> awardIds = awardBOs.stream()
                 .map(AwardBO::getAwardId)
                 .toList();

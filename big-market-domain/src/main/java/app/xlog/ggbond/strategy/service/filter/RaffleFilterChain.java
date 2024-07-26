@@ -1,6 +1,8 @@
 package app.xlog.ggbond.strategy.service.filter;
 
 import app.xlog.ggbond.strategy.model.vo.FilterParam;
+import app.xlog.ggbond.strategy.service.filter.router.IFilterRouter;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,26 +11,61 @@ import java.util.List;
 @Service
 // 抽奖过滤器链，用于定义抽奖过滤器的数量和执行顺序
 public class RaffleFilterChain {
-    private final List<RaffleFilter> filters = new ArrayList<>();
+
+    @Resource
+    private IFilterRouter filterRouter;
+
+    // 前置过滤器链
+    private final List<RaffleFilter> preFilters = new ArrayList<>();
+    // 后置过滤器链
+    private final List<RaffleFilter> afterFilters = new ArrayList<>();
 
     /**
      * 添加过滤器
      **/
-    public void addFilter(RaffleFilter raffleFilter) {
-        filters.add(raffleFilter);
+    public RaffleFilterChain addPreFilter(RaffleFilter raffleFilter) {
+        preFilters.add(raffleFilter);
+
+        return this;  // 返回链式调用
+    }
+
+    public RaffleFilterChain addAfterFilter(RaffleFilter raffleFilter) {
+        afterFilters.add(raffleFilter);
+
+        return this;  // 返回链式调用
     }
 
     /**
      * 执行一整条过滤器链
      **/
     public FilterParam doFilter(FilterParam filterParam) {
-
-        for (RaffleFilter raffleFilter : filters) {
+        /**
+         * 执行前置过滤器链
+         **/
+        for (RaffleFilter raffleFilter : preFilters) {
             // 如果上一个过滤器拦截了，那么就不再继续执行
             if (filterParam.getMiddleFilterParam() == FilterParam.MiddleFilterParam.INTERCEPT) {
                 break;
             }
 
+            // 如果上一个过滤器放行了，那么就继续执行
+            filterParam = raffleFilter.filter(filterParam);
+        }
+
+        // 执行路由，根据过滤参数，调度到指定的规则
+        filterParam = filterRouter.filterRouter(filterParam);
+
+        // todo
+        /**
+         * 执行后置过滤器链
+         **/
+        for (RaffleFilter raffleFilter : afterFilters) {
+            // 如果上一个过滤器拦截了，那么就不再继续执行
+            if (filterParam.getMiddleFilterParam() == FilterParam.MiddleFilterParam.INTERCEPT) {
+                break;
+            }
+
+            // 如果上一个过滤器放行了，那么就继续执行
             filterParam = raffleFilter.filter(filterParam);
         }
 

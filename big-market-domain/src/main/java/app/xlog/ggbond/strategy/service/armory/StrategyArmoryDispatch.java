@@ -27,7 +27,7 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
     @Override
     public void assembleLotteryStrategyRuleCommon(Integer strategyId) {
         // 1.查询对应策略的所有奖品，并缓存到redis
-        List<AwardBO> awardBOs = strategyRepository.queryAwards(strategyId, "Common");
+        List<AwardBO> awardBOs = strategyRepository.queryAwards(strategyId);
 
         // 2. 将awards的awardId和awardRate封装成一个WeightRandom对象
         List<WeightRandom.WeightObj<Integer>> weightObjs = awardBOs.stream()

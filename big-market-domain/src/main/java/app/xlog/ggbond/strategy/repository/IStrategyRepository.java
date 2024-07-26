@@ -11,8 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 public interface IStrategyRepository {
+    /**
+     * 装配，查询奖品-----------------------------------------------------------
+     **/
+
     // 查询对应策略的所有奖品，并缓存到redis
-    List<AwardBO> queryAwards(int strategyId,String rule);
+    List<AwardBO> queryAwards(int strategyId);
 
     // 根据策略ID，查询锁定奖品
     List<AwardBO> queryRuleLockAwards(int strategyId,String rule);
@@ -23,6 +27,10 @@ public interface IStrategyRepository {
 
     List<AwardBO> queryRuleGrandAwards(Integer strategyId, String rule);
 
+
+    /**
+     * 装配权重对象--------------------------------------------------------------
+     **/
 
     // 将权重对象插入到Redis中，awardRule是奖品规则
     void insertWeightRandom(int strategyId, WeightRandom<Integer> wr, String awardRule);

@@ -32,8 +32,8 @@ public class StrategyRepository implements IStrategyRepository {
      * 将数据库中的数据查询出来装配到 redis
      **/
     @Override
-    public List<AwardBO> queryAwards(int strategyId, String rule) {
-        String cacheKey = "strategy_" + strategyId + "_awards_" + rule;
+    public List<AwardBO> queryAwards(int strategyId) {
+        String cacheKey = "strategy_" + strategyId + "_awards_Common";
 
         // Redis缓存中存在则直接返回
         RList<AwardBO> rList = redissonClient.getList(cacheKey);
@@ -65,7 +65,7 @@ public class StrategyRepository implements IStrategyRepository {
         }
 
         // 缓存中没有则查询数据库
-        List<AwardBO> awardBOs = queryAwards(strategyId, "Common");
+        List<AwardBO> awardBOs = queryAwards(strategyId);
         // 过滤
         List<AwardBO> awardRuleLockBOS = awardBOs.stream()
                 .limit(awardBOs.size() - 4)
@@ -85,7 +85,7 @@ public class StrategyRepository implements IStrategyRepository {
             return rList;
         }
 
-        List<AwardBO> awardBOs = queryAwards(strategyId, "Common");
+        List<AwardBO> awardBOs = queryAwards(strategyId);
         List<AwardBO> awardRuleLockBOS = awardBOs.stream()
                 .limit(awardBOs.size() - 1)
                 .toList();
@@ -104,7 +104,7 @@ public class StrategyRepository implements IStrategyRepository {
             return (AwardBO) bucket.get();
         }
 
-        List<AwardBO> awardBOs = queryAwards(strategyId, "Common");
+        List<AwardBO> awardBOs = queryAwards(strategyId);
         AwardBO awardBO = awardBOs.stream()
                 .findFirst()
                 .get();
@@ -123,7 +123,7 @@ public class StrategyRepository implements IStrategyRepository {
             return rlist;
         }
 
-        List<AwardBO> awardBOs = queryAwards(strategyId, "Common");
+        List<AwardBO> awardBOs = queryAwards(strategyId);
         List<AwardBO> awardRuleGrandBOS = awardBOs.stream()
                 .skip(5)
                 .limit(awardBOs.size() - 5 - 1)
