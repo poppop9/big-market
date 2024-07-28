@@ -18,4 +18,5 @@ public class AwardBO {
     private Integer awardId;
     private Integer awardCount;
     private float awardRate;
+    private String rules;
 }

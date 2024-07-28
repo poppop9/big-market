@@ -16,16 +16,16 @@ public interface IStrategyRepository {
      **/
 
     // 查询对应策略的所有奖品，并缓存到redis
-    List<AwardBO> queryAwards(int strategyId);
+    List<AwardBO> queryCommonAwards(int strategyId);
 
     // 根据策略ID，查询锁定奖品
-    List<AwardBO> queryRuleLockAwards(int strategyId,String rule);
+    List<AwardBO> queryRuleLockAwards(int strategyId);
 
-    List<AwardBO> queryRuleLockLongAwards(int strategyId, String rule);
+    List<AwardBO> queryRuleLockLongAwards(int strategyId);
 
     AwardBO queryWorstAwardId(Integer strategyId);
 
-    List<AwardBO> queryRuleGrandAwards(Integer strategyId, String rule);
+    List<AwardBO> queryRuleGrandAwards(Integer strategyId);
 
 
     /**

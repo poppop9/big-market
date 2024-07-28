@@ -20,10 +20,10 @@ public class AppTest {
     @Autowired
     private IStrategyRepository strategyRepository;
 
-    // 测试redisson能不能将java对象存储进redis，而且能够取出之后还能使用，答案是可以
+    // 测试redisson能不能将java对象存储进redis，而且能够取出之后还能使用
     @Test
     public void testRedissonStorageObject() {
-        List<AwardBO> awardBOs = strategyRepository.queryAwards(10001);
+        List<AwardBO> awardBOs = strategyRepository.queryCommonAwards(10001);
         List<Integer> awardIds = awardBOs.stream()
                 .map(AwardBO::getAwardId)
                 .toList();
@@ -49,9 +49,9 @@ public class AppTest {
     @Test
     public void testRedissonStorageList() {
         List<AwardBO> AwardBOs = Stream.of(
-                new AwardBO(1, 1, 1, 0.1f),
-                new AwardBO(1, 2, 1, 0.2f),
-                new AwardBO(1, 3, 1, 0.3f)
+                new AwardBO(1, 1, 1, 0.1f, "10"),
+                new AwardBO(1, 2, 1, 0.2f, "10"),
+                new AwardBO(1, 3, 1, 0.3f, "20")
         ).toList();
 
         RList<Object> rList = redissonClient.getList("testList");

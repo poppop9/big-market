@@ -27,15 +27,15 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
     @Override
     public void assembleLotteryStrategyRuleCommon(Integer strategyId) {
         // 1.查询对应策略的所有奖品，并缓存到redis
-        List<AwardBO> awardBOs = strategyRepository.queryAwards(strategyId);
+        List<AwardBO> awardBOs = strategyRepository.queryCommonAwards(strategyId);
 
         // 2. 将awards的awardId和awardRate封装成一个WeightRandom对象
         List<WeightRandom.WeightObj<Integer>> weightObjs = awardBOs.stream()
                 // 操作每一个AwardBO，将AwardId，和AwardRate封装成WeightObj对象
-                .map(AwardBO -> {
-                    return new WeightRandom.WeightObj<>(AwardBO.getAwardId(),
-                            AwardBO.getAwardRate());
-                }).toList();
+                .map(AwardBO -> new WeightRandom.WeightObj<>(
+                        AwardBO.getAwardId(),
+                        AwardBO.getAwardRate())
+                ).toList();
 
         WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
 
@@ -47,7 +47,7 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
     @Override
     public void assembleLotteryStrategyRuleLock(Integer strategyId) {
         // 拿到除去锁定的所有的奖品
-        List<AwardBO> awardRuleLockBOS = strategyRepository.queryRuleLockAwards(strategyId, "Lock");
+        List<AwardBO> awardRuleLockBOS = strategyRepository.queryRuleLockAwards(strategyId);
 
         // 生成WeightRandom对象，存入redis中
         List<WeightRandom.WeightObj<Integer>> weightObjs = awardRuleLockBOS.stream()
@@ -66,7 +66,7 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
 
     @Override
     public void assembleLotteryStrategyRuleLockLong(Integer strategyId) {
-        List<AwardBO> awardRuleLockLongBOS = strategyRepository.queryRuleLockLongAwards(strategyId, "LockLong");
+        List<AwardBO> awardRuleLockLongBOS = strategyRepository.queryRuleLockLongAwards(strategyId);
 
         List<WeightRandom.WeightObj<Integer>> weightObjs = awardRuleLockLongBOS.stream()
                 .map(AwardBO -> {
@@ -82,7 +82,7 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
 
     @Override
     public void assembleLotteryStrategyRuleGrand(Integer strategyId) {
-        List<AwardBO> awardRuleGrandBOS = strategyRepository.queryRuleGrandAwards(strategyId, "Grand");
+        List<AwardBO> awardRuleGrandBOS = strategyRepository.queryRuleGrandAwards(strategyId);
 
         List<WeightRandom.WeightObj<Integer>> weightObjs = awardRuleGrandBOS.stream()
                 .map(AwardBO -> {

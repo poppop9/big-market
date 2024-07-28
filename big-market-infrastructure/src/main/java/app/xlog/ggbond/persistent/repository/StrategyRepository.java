@@ -32,7 +32,7 @@ public class StrategyRepository implements IStrategyRepository {
      * 将数据库中的数据查询出来装配到 redis
      **/
     @Override
-    public List<AwardBO> queryAwards(int strategyId) {
+    public List<AwardBO> queryCommonAwards(int strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_Common";
 
         // Redis缓存中存在则直接返回
@@ -56,19 +56,21 @@ public class StrategyRepository implements IStrategyRepository {
     }
 
     @Override
-    public List<AwardBO> queryRuleLockAwards(int strategyId, String rule) {
+    public List<AwardBO> queryRuleLockAwards(int strategyId) {
         // 先从缓存中取
-        String cacheKey = "strategy_" + strategyId + "_awards_" + rule;
+        String cacheKey = "strategy_" + strategyId + "_awards_Lock";
         RList<AwardBO> rList = redissonClient.getList(cacheKey);
         if (!rList.isEmpty() && rList != null) {
             return rList;
         }
 
         // 缓存中没有则查询数据库
-        List<AwardBO> awardBOs = queryAwards(strategyId);
+        List<AwardBO> awardBOs = queryCommonAwards(strategyId);
         // 过滤
         List<AwardBO> awardRuleLockBOS = awardBOs.stream()
-                .limit(awardBOs.size() - 4)
+                .filter(
+                        AwardBO -> !AwardBO.getRules().contains("rule_lock")
+                )
                 .toList();
 
         // 存入redis
@@ -78,16 +80,18 @@ public class StrategyRepository implements IStrategyRepository {
     }
 
     @Override
-    public List<AwardBO> queryRuleLockLongAwards(int strategyId, String rule) {
-        String cacheKey = "strategy_" + strategyId + "_awards_" + rule;
+    public List<AwardBO> queryRuleLockLongAwards(int strategyId) {
+        String cacheKey = "strategy_" + strategyId + "_awards_LockLong";
         RList<AwardBO> rList = redissonClient.getList(cacheKey);
         if (!rList.isEmpty() && rList != null) {
             return rList;
         }
 
-        List<AwardBO> awardBOs = queryAwards(strategyId);
+        List<AwardBO> awardBOs = queryCommonAwards(strategyId);
         List<AwardBO> awardRuleLockBOS = awardBOs.stream()
-                .limit(awardBOs.size() - 1)
+                .filter(
+                        AwardBO -> !AwardBO.getRules().contains("rule_lock_long")
+                )
                 .toList();
 
         rList.addAll(awardRuleLockBOS);
@@ -104,8 +108,11 @@ public class StrategyRepository implements IStrategyRepository {
             return (AwardBO) bucket.get();
         }
 
-        List<AwardBO> awardBOs = queryAwards(strategyId);
+        List<AwardBO> awardBOs = queryCommonAwards(strategyId);
         AwardBO awardBO = awardBOs.stream()
+                .filter(
+                        AwardBO -> AwardBO.getRules().contains("rule_common_blacklist")
+                )
                 .findFirst()
                 .get();
 
@@ -116,17 +123,18 @@ public class StrategyRepository implements IStrategyRepository {
     }
 
     @Override
-    public List<AwardBO> queryRuleGrandAwards(Integer strategyId, String rule) {
-        String cacheKey = "strategy_" + strategyId + "_awards_" + rule;
+    public List<AwardBO> queryRuleGrandAwards(Integer strategyId) {
+        String cacheKey = "strategy_" + strategyId + "_awards_Grand";
         RList<AwardBO> rlist = redissonClient.getList(cacheKey);
         if (!rlist.isEmpty() && rlist != null) {
             return rlist;
         }
 
-        List<AwardBO> awardBOs = queryAwards(strategyId);
+        List<AwardBO> awardBOs = queryCommonAwards(strategyId);
         List<AwardBO> awardRuleGrandBOS = awardBOs.stream()
-                .skip(5)
-                .limit(awardBOs.size() - 5 - 1)
+                .filter(
+                        AwardBO -> AwardBO.getRules().contains("rule_lock")
+                )
                 .toList();
 
         rlist.addAll(awardRuleGrandBOS);

@@ -87,23 +87,23 @@ public class MessTest {
     // 测试数据库中的json数据类型，怎么映射到java的map集合上
     @Test
     public void testJsonToMap() throws JsonProcessingException {
-        // 查出所有的strategie
+        // 查出所有的strategy
         List<Strategy> strategies = strategyMapper.selectList(null);
-        // 只需要strategie属性中的rule
+        // 只需要strategie属性中的rule，rules是所有规则字符串的集合
         List<String> rules = strategies.stream()
-                .map(
-                        Strategy -> {
-                            return Strategy.getRules();
-                        }
-                ).toList();
+                .map(Strategy::getRules)
+                .toList();
         rules.forEach(System.out::println);
 
         System.out.println("======================================");
 
         // 一条规则是一条json数据
         for (String rule : rules) {
-            Map<String, String> rulesMap = objectMapper.readValue(rule, new TypeReference<Map<String, String>>() {
-            });
+            Map<String, String> rulesMap = objectMapper.readValue(
+                    rule,
+                    new TypeReference<Map<String, String>>() {
+                    }
+            );
 
             System.out.println(rulesMap.get("rule_weight"));
             System.out.println(rulesMap.get("rule_blacklist"));

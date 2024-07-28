@@ -19,7 +19,7 @@ public class InventoryFilter implements RaffleFilter {
 
     @Override
     public FilterParam filter(FilterParam filterParam) {
-        List<AwardBO> awardBOS = strategyRepository.queryAwards(filterParam.getStrategyId());
+        List<AwardBO> awardBOS = strategyRepository.queryCommonAwards(filterParam.getStrategyId());
         Integer awardCount = awardBOS.stream()
                 .filter(AwardBO -> AwardBO.getAwardId().equals(filterParam.getAwardId()))
                 .map(AwardBO::getAwardCount)

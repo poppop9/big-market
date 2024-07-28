@@ -55,7 +55,6 @@ public class RaffleFilterChain {
         // 执行路由，根据过滤参数，调度到指定的规则
         filterParam = filterRouter.filterRouter(filterParam);
 
-        // todo
         /**
          * 执行后置过滤器链
          **/
