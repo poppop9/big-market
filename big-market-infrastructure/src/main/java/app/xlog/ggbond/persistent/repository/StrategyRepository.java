@@ -1,12 +1,16 @@
 package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.persistent.mapper.AwardMapper;
+import app.xlog.ggbond.persistent.mapper.StrategyMapper;
 import app.xlog.ggbond.persistent.po.Award;
+import app.xlog.ggbond.persistent.po.Strategy;
 import app.xlog.ggbond.strategy.model.AwardBO;
+import app.xlog.ggbond.strategy.model.StrategyBO;
 import app.xlog.ggbond.strategy.repository.IStrategyRepository;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import jakarta.annotation.Resource;
 import org.redisson.api.RBucket;
 import org.redisson.api.RList;
 import org.redisson.api.RedissonClient;
@@ -14,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 /*
 策略仓库实现类
@@ -24,9 +26,29 @@ import java.util.stream.Stream;
 public class StrategyRepository implements IStrategyRepository {
     @Autowired
     private RedissonClient redissonClient;
-
+    @Resource
+    private StrategyMapper strategyMapper;
     @Autowired
     private AwardMapper awardMapper;
+
+    /**
+     * 装配策略
+     **/
+    @Override
+    public StrategyBO queryStrategys(Integer strategyId) {
+        String cacheKey = "strategy_" + strategyId;
+
+        RBucket<Object> bucket = redissonClient.getBucket(cacheKey);
+        if (bucket.isExists()) {
+            return (StrategyBO) bucket.get();
+        }
+
+        Strategy strategy = strategyMapper.selectById(strategyId);
+        StrategyBO strategyBO = BeanUtil.copyProperties(strategy, StrategyBO.class);
+        bucket.set(strategyBO);
+
+        return strategyBO;
+    }
 
     /**
      * 将数据库中的数据查询出来装配到 redis
@@ -142,6 +164,9 @@ public class StrategyRepository implements IStrategyRepository {
         return awardRuleGrandBOS;
     }
 
+    /**
+     * 装配权重对象
+     **/
     // 将权重对象插入到Redis中
     @Override
     public void insertWeightRandom(int strategyId, WeightRandom<Integer> wr, String awardRule) {

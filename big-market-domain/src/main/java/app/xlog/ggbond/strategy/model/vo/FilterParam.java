@@ -43,11 +43,11 @@ public class FilterParam {
     @Getter
     public enum DispatchParam {
         // 前置过滤器的拦截值
-        CommonAwards("01", "101-109 的所有奖品"),
-        LockAwards("02", "除去锁定奖品，101-105 的所有奖品"),
-        LockLongAwards("03", "除去最后一个奖品，101-108 的所有奖品"),
-        BlacklistAward("04", "黑名单用户的最次奖品"),
-        GrandAward("05", "大奖池，106-108奖品");
+        CommonAwards("rule_common", "101-109 的所有奖品"),
+        LockAwards("rule_lock", "除去锁定奖品，101-105 的所有奖品"),
+        LockLongAwards("rule_lock_long", "除去最后一个奖品，101-108 的所有奖品"),
+        BlacklistAward("rule_blacklist", "黑名单用户的最次奖品"),
+        GrandAward("rule_grand", "大奖池，106-108奖品");
         // 后置过滤器的拦截值
 
         private final String code;

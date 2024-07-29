@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -108,5 +109,20 @@ public class MessTest {
             System.out.println(rulesMap.get("rule_weight"));
             System.out.println(rulesMap.get("rule_blacklist"));
         }
+    }
+
+    // 测试toList
+    @Test
+    public void test_toList() {
+        List<String> list = new ArrayList<>();
+        list.add("a");
+        list.add("b");
+        list.add("c");
+
+        List<String> list1 = list.stream()
+                .toList();
+
+        List<String> collect = list1.stream()
+                .collect(Collectors.toList());
     }
 }

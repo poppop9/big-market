@@ -5,12 +5,20 @@ package app.xlog.ggbond.strategy.repository;
  */
 
 import app.xlog.ggbond.strategy.model.AwardBO;
+import app.xlog.ggbond.strategy.model.StrategyBO;
 import cn.hutool.core.lang.WeightRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public interface IStrategyRepository {
+    /**
+     * 装配策略
+     **/
+    // 根据策略Id，装配对应的策略
+    StrategyBO queryStrategys(Integer strategyId);
+
+
     /**
      * 装配，查询奖品-----------------------------------------------------------
      **/
