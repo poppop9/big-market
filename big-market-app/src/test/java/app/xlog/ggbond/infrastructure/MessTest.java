@@ -9,7 +9,12 @@ import cn.hutool.core.bean.BeanUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RBloomFilter;
+import org.redisson.api.RedissonClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -17,17 +22,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SpringBootTest
 public class MessTest {
+    private static final Logger log = LoggerFactory.getLogger(MessTest.class);
     @Autowired
     private AwardMapper awardMapper;
     @Autowired
     private StrategyMapper strategyMapper;
+    @Resource
+    private RedissonClient redissonClient;
 
     // Jackson对象
     @Autowired
@@ -124,5 +130,21 @@ public class MessTest {
 
         List<String> collect = list1.stream()
                 .collect(Collectors.toList());
+    }
+
+    // 测试布隆过滤器
+    @Test
+    public void test_BloomFilter() {
+        RBloomFilter<Object> rBloomFilter = redissonClient.getBloomFilter("testBloomFilter");
+
+        rBloomFilter.tryInit(1000, 0.01);
+        rBloomFilter.add("100");
+        rBloomFilter.add("200");
+        rBloomFilter.add("300");
+
+        log.atInfo().log("是否包含100: {}", rBloomFilter.contains("100"));
+        log.atInfo().log("是否包含200: {}", rBloomFilter.contains("200"));
+        log.atInfo().log("是否包含300: {}", rBloomFilter.contains("300"));
+        log.atInfo().log("是否包含400: {}", rBloomFilter.contains("400"));
     }
 }
