@@ -14,8 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 // 这一定是最后一个前置过滤器，所以不用拦截
 public class RaffleTimesRaffleFilter implements RaffleFilter {
@@ -42,23 +45,34 @@ public class RaffleTimesRaffleFilter implements RaffleFilter {
          **/
         StrategyBO strategyBO = strategyRepository.queryStrategys(filterParam.getStrategyId());
         try {
-            Map<String, Integer> strategyRuleMap = objectMapper.readValue(
-                    strategyBO.getRules(),
-                    new TypeReference<Map<String, Integer>>() {
-                    }
-            );
 
-            // todo 不用map，改成jsonNode
-            // 过滤掉无效的-1值
-            strategyRuleMap
-                    .keySet()
-                    .forEach(
-                            key -> {
-                                if (strategyRuleMap.get(key) == -1) {
-                                    strategyRuleMap.remove(key);
-                                }
+            Map<String, Integer> strategyRuleMap = objectMapper.readValue(
+                            strategyBO.getRules(),
+                            new TypeReference<Map<String, Integer>>() {
                             }
-                    );
+                    )    // 将jsonNode对象，转Map
+                    .entrySet()  // 转entrySet，为过滤做准备
+                    .stream()
+                    // 过滤掉无效的-1值
+                    .filter(entry -> entry.getValue() != -1)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+//            Map<String, Integer> strategyRuleMap = objectMapper.readValue(
+//                    strategyBO.getRules(),
+//                    new TypeReference<Map<String, Integer>>() {
+//                    }
+//            );
+//            strategyRuleMap
+//                    // 过滤掉无效的-1值
+//                    .keySet()
+//                    .forEach(
+//                            key -> {
+//                                if (strategyRuleMap.get(key) == -1) {
+//                                    strategyRuleMap.remove(key);
+//                                }
+//                            }
+//                    );
+
             // todo 规则的先后怎么设置？
             // 根据数据库，动态设定dispatchParam
             for (FilterParam.DispatchParam dispatchParam : FilterParam.DispatchParam.values()) {
