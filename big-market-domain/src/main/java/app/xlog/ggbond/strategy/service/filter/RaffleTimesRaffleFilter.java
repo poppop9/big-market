@@ -45,19 +45,7 @@ public class RaffleTimesRaffleFilter implements RaffleFilter {
          **/
         StrategyBO strategyBO = strategyRepository.queryStrategys(filterParam.getStrategyId());
         try {
-
-            Map<String, Integer> strategyRuleMap = objectMapper.readValue(
-                            strategyBO.getRules(),
-                            new TypeReference<Map<String, Integer>>() {
-                            }
-                    )    // 将jsonNode对象，转Map
-                    .entrySet()  // 转entrySet，为过滤做准备
-                    .stream()
-                    // 过滤掉无效的-1值
-                    .filter(entry -> entry.getValue() != -1)
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-//            Map<String, Integer> strategyRuleMap = objectMapper.readValue(
+            //            Map<String, Integer> strategyRuleMap = objectMapper.readValue(
 //                    strategyBO.getRules(),
 //                    new TypeReference<Map<String, Integer>>() {
 //                    }
@@ -73,7 +61,18 @@ public class RaffleTimesRaffleFilter implements RaffleFilter {
 //                            }
 //                    );
 
-            // todo 规则的先后怎么设置？
+            Map<String, Integer> strategyRuleMap = objectMapper.readValue(
+                            strategyBO.getRules(),
+                            new TypeReference<Map<String, Integer>>() {
+                            }
+                    )    // 将jsonNode对象，转Map
+                    .entrySet()  // 转entrySet，为过滤做准备
+                    .stream()
+                    // 过滤掉无效的-1值
+                    .filter(entry -> entry.getValue() != -1)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+            // todo 规则的先后怎么设置？ -> 目前能想到的就是：在数据库加优先级
             // 根据数据库，动态设定dispatchParam
             for (FilterParam.DispatchParam dispatchParam : FilterParam.DispatchParam.values()) {
                 if (strategyRuleMap.containsKey(dispatchParam.name())) {
