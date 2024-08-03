@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
@@ -146,5 +147,23 @@ public class MessTest {
         log.atInfo().log("是否包含200: {}", rBloomFilter.contains("200"));
         log.atInfo().log("是否包含300: {}", rBloomFilter.contains("300"));
         log.atInfo().log("是否包含400: {}", rBloomFilter.contains("400"));
+    }
+
+    // 测试AtomicLong
+    @Test
+    public void test_getAtomicLong() {
+        RAtomicLong rAtomicLong = redissonClient.getAtomicLong("testAtomicLong");
+
+        rAtomicLong.set(100);
+        log.atInfo().log("当前值: {}", rAtomicLong.get());
+
+        rAtomicLong.incrementAndGet();
+        log.atInfo().log("自增后的值: {}", rAtomicLong.get());
+
+        rAtomicLong.decrementAndGet();
+        log.atInfo().log("自减后的值: {}", rAtomicLong.get());
+
+        long l = rAtomicLong.addAndGet(-100);
+        log.atInfo().log("加-100后的值: {}", l);
     }
 }

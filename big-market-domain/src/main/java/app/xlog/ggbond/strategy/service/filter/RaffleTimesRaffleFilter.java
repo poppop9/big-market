@@ -45,22 +45,6 @@ public class RaffleTimesRaffleFilter implements RaffleFilter {
          **/
         StrategyBO strategyBO = strategyRepository.queryStrategys(filterParam.getStrategyId());
         try {
-            //            Map<String, Integer> strategyRuleMap = objectMapper.readValue(
-//                    strategyBO.getRules(),
-//                    new TypeReference<Map<String, Integer>>() {
-//                    }
-//            );
-//            strategyRuleMap
-//                    // 过滤掉无效的-1值
-//                    .keySet()
-//                    .forEach(
-//                            key -> {
-//                                if (strategyRuleMap.get(key) == -1) {
-//                                    strategyRuleMap.remove(key);
-//                                }
-//                            }
-//                    );
-
             Map<String, Integer> strategyRuleMap = objectMapper.readValue(
                             strategyBO.getRules(),
                             new TypeReference<Map<String, Integer>>() {
