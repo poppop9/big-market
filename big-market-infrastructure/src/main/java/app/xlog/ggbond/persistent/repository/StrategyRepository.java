@@ -43,7 +43,10 @@ public class StrategyRepository implements IStrategyRepository {
             return (StrategyBO) bucket.get();
         }
 
-        Strategy strategy = strategyMapper.selectById(strategyId);
+        QueryWrapper<Strategy> queryWrapper = new QueryWrapper<Strategy>()
+                .eq("strategy_id", strategyId);
+        Strategy strategy = strategyMapper.selectOne(queryWrapper);
+
         StrategyBO strategyBO = BeanUtil.copyProperties(strategy, StrategyBO.class);
         bucket.set(strategyBO);
 

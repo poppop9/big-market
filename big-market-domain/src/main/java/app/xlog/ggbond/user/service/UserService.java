@@ -8,7 +8,7 @@ public class UserService implements IUserService {
     @Override
     public Boolean isBlacklistUser(Integer userId) {
         // todo
-        return true;
+        return userId == 404;
     }
 
     @Override

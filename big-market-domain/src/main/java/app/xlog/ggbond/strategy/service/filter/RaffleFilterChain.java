@@ -1,8 +1,10 @@
 package app.xlog.ggbond.strategy.service.filter;
 
 import app.xlog.ggbond.strategy.model.vo.FilterParam;
+import app.xlog.ggbond.strategy.service.filter.router.FilterRouter;
 import app.xlog.ggbond.strategy.service.filter.router.IFilterRouter;
 import jakarta.annotation.Resource;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,9 +41,9 @@ public class RaffleFilterChain {
      * 执行一整条过滤器链
      **/
     public FilterParam doFilter(FilterParam filterParam) {
-        /**
-         * 执行前置过滤器链
-         **/
+        /*
+          执行前置过滤器链
+         */
         for (RaffleFilter raffleFilter : preFilters) {
             // 如果上一个过滤器拦截了，那么就不再继续执行
             if (filterParam.getMiddleFilterParam() == FilterParam.MiddleFilterParam.INTERCEPT) {
@@ -55,9 +57,9 @@ public class RaffleFilterChain {
         // 执行路由，根据过滤参数，调度到指定的规则
         filterParam = filterRouter.filterRouter(filterParam);
 
-        /**
-         * 执行后置过滤器链
-         **/
+        /*
+          执行后置过滤器链
+         */
         for (RaffleFilter raffleFilter : afterFilters) {
             // 如果上一个过滤器拦截了，那么就不再继续执行
             if (filterParam.getMiddleFilterParam() == FilterParam.MiddleFilterParam.INTERCEPT) {

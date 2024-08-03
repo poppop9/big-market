@@ -4,7 +4,9 @@ import app.xlog.ggbond.strategy.model.AwardBO;
 import app.xlog.ggbond.strategy.model.vo.FilterParam;
 import app.xlog.ggbond.strategy.repository.IStrategyRepository;
 import app.xlog.ggbond.strategy.service.filter.router.IFilterRouter;
+import app.xlog.ggbond.strategy.utils.SpringContextUtil;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.List;
 
@@ -12,10 +14,13 @@ import java.util.List;
 // 这个过滤器不需要设置DispatchParam，因为要去重新调度规则，所以不能覆盖原有的
 public class InventoryFilter implements RaffleFilter {
 
-    @Resource
     private IStrategyRepository strategyRepository;
-    @Resource
     private IFilterRouter filterRouter;
+
+    public InventoryFilter() {
+        strategyRepository = SpringContextUtil.getBean(IStrategyRepository.class);
+        filterRouter = SpringContextUtil.getBean(IFilterRouter.class);
+    }
 
     @Override
     public FilterParam filter(FilterParam filterParam) {

@@ -38,10 +38,8 @@ public class StrategyArmoryDispatchTest {
     public void testGetRandomRuleCommonAwardId() {
         Integer randomAwardId;
 
-        for (int i = 0; i < 50; i++) {
-            randomAwardId = strategyDispatch.getRuleCommonAwardIdByRandom(10001);
-            logger.atInfo().log("中奖的奖品id : {}", randomAwardId);
-        }
+        randomAwardId = strategyDispatch.getRuleCommonAwardIdByRandom(10001);
+        logger.atInfo().log("中奖的奖品id : {}", randomAwardId);
     }
 
     // 测试获取除锁定奖品中的随机奖品ID

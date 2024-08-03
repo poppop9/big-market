@@ -4,7 +4,9 @@ import app.xlog.ggbond.strategy.model.AwardBO;
 import app.xlog.ggbond.strategy.model.StrategyBO;
 import app.xlog.ggbond.strategy.model.vo.FilterParam;
 import app.xlog.ggbond.strategy.repository.IStrategyRepository;
+import app.xlog.ggbond.strategy.utils.SpringContextUtil;
 import app.xlog.ggbond.user.service.IUserService;
+import app.xlog.ggbond.user.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,26 +14,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 // 这一定是最后一个前置过滤器，所以不用拦截
 public class RaffleTimesRaffleFilter implements RaffleFilter {
 
     private static final Logger log = LoggerFactory.getLogger(RaffleTimesRaffleFilter.class);
-    @Resource
+
     private IUserService userService;
-
-    @Resource
     private IStrategyRepository strategyRepository;
-
-    @Resource
     private ObjectMapper objectMapper;
+
+    public RaffleTimesRaffleFilter() {
+        userService = SpringContextUtil.getBean(UserService.class);
+        strategyRepository = SpringContextUtil.getBean(IStrategyRepository.class);
+        objectMapper = SpringContextUtil.getBean(ObjectMapper.class);
+    }
 
     /**
      * 根据用户的抽奖次数，过滤出对应的抽奖池大小
@@ -59,7 +64,7 @@ public class RaffleTimesRaffleFilter implements RaffleFilter {
             // todo 规则的先后怎么设置？ -> 目前能想到的就是：在数据库加优先级
             // 根据数据库，动态设定dispatchParam
             for (FilterParam.DispatchParam dispatchParam : FilterParam.DispatchParam.values()) {
-                if (strategyRuleMap.containsKey(dispatchParam.name())) {
+                if (strategyRuleMap.containsKey(dispatchParam.getCode())) {
                     filterParam.setDispatchParam(dispatchParam);
                     return filterParam;
                 }
