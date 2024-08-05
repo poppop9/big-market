@@ -18,10 +18,11 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
     private IStrategyRepository strategyRepository;
 
     /*
-        我要装配三个抽奖策略的权重对象到redis：
-        - rule_common：所有奖品都可以抽
-        - rule_lock：锁出后四个奖品，5个奖品可以抽
-        - rule_lock_long：锁出最后一个奖品，8个奖品可以抽
+        - 查询对应策略的对应奖品，并缓存到redis。
+        - 装配三个抽奖策略的权重对象到redis：
+            - rule_common：所有奖品都可以抽
+            - rule_lock：锁出后四个奖品，5个奖品可以抽
+            - rule_lock_long：锁出最后一个奖品，8个奖品可以抽
      */
 
     @Override
@@ -95,6 +96,12 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         log.atInfo().log("装配策略{}的rule_grand奖品完成", strategyId);
     }
 
+    @Override
+    public void assembleLotteryStrategyAwardCount(Integer strategyId) {
+        // 为什么不命名为query，因为目的不在query，目的在assemble
+        strategyRepository.assembleAwardsCount(strategyId);
+    }
+
     /**
      * 以下是调度
      **/
@@ -129,5 +136,10 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
     public Integer getRuleGrandAwardIdByRandom(Integer strategyId) {
         WeightRandom<Integer> wr = strategyRepository.queryRuleGrandAwardIdByRandom(strategyId);
         return wr.next();
+    }
+
+    @Override
+    public Boolean decreaseAwardCount(Integer strategyId, Integer awardId) {
+        return strategyRepository.decreaseAwardCount(strategyId, awardId);
     }
 }

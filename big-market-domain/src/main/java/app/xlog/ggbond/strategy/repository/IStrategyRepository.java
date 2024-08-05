@@ -35,6 +35,8 @@ public interface IStrategyRepository {
 
     List<AwardBO> queryRuleGrandAwards(Integer strategyId);
 
+    void assembleAwardsCount(Integer strategyId);
+
 
     /**
      * 装配权重对象--------------------------------------------------------------
@@ -53,4 +55,8 @@ public interface IStrategyRepository {
 
     WeightRandom<Integer> queryRuleGrandAwardIdByRandom(Integer strategyId);
 
+    /*
+    更新奖品库存  --------------------------------------------------------------
+     */
+    Boolean decreaseAwardCount(Integer strategyId, Integer awardId);
 }

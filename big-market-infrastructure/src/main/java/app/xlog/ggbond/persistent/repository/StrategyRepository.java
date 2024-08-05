@@ -11,9 +11,12 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
+import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBucket;
 import org.redisson.api.RList;
 import org.redisson.api.RedissonClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -24,6 +27,7 @@ import java.util.List;
  */
 @Repository
 public class StrategyRepository implements IStrategyRepository {
+    private static final Logger log = LoggerFactory.getLogger(StrategyRepository.class);
     @Autowired
     private RedissonClient redissonClient;
     @Resource
@@ -167,6 +171,19 @@ public class StrategyRepository implements IStrategyRepository {
         return awardRuleGrandBOS;
     }
 
+    @Override
+    public void assembleAwardsCount(Integer strategyId) {
+        List<AwardBO> awardBOS = queryCommonAwards(strategyId);
+        for (AwardBO awardBO : awardBOS) {
+            String cacheKey = "strategy_" + strategyId + "_awards_" + awardBO.getAwardId() + "_count";
+            RAtomicLong rAtomicLong = redissonClient.getAtomicLong(cacheKey);
+
+            if (!rAtomicLong.isExists()) {
+                rAtomicLong.set(awardBO.getAwardCount());
+            }
+        }
+    }
+
     /**
      * 装配权重对象
      **/
@@ -201,5 +218,27 @@ public class StrategyRepository implements IStrategyRepository {
     public WeightRandom<Integer> queryRuleGrandAwardIdByRandom(Integer strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_Grand";
         return (WeightRandom<Integer>) redissonClient.getBucket(cacheKey).get();
+    }
+
+    @Override
+    public Boolean decreaseAwardCount(Integer strategyId, Integer awardId) {
+        String cacheKey = "strategy_" + strategyId + "_awards_" + awardId + "_count";
+        RAtomicLong rAtomicLong = redissonClient.getAtomicLong(cacheKey);
+
+        // todo
+        if (rAtomicLong.isExists()) {
+            // 返回扣减完成之后的值
+            long surplus = rAtomicLong.decrementAndGet();
+            if (surplus >= 0) {
+                log.atInfo().log("奖品 {} 库存扣减成功，剩余库存：{}", awardId, surplus);
+                return true;
+            } else {
+                log.atInfo().log("奖品 {} 库存扣减失败", awardId);
+                return false;
+            }
+        } else {
+            log.atInfo().log("奖品 {} 库存扣减失败", awardId);
+            return false;
+        }
     }
 }

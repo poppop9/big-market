@@ -19,4 +19,7 @@ public interface IStrategyDispatch {
 
     // 传入一个策略ID，获取大奖池里的一个奖品
     Integer getRuleGrandAwardIdByRandom(Integer strategyId);
+
+    // 传入一个策略ID，奖品ID，扣减对应奖品的库存
+    Boolean decreaseAwardCount(Integer strategyId, Integer awardId);
 }
