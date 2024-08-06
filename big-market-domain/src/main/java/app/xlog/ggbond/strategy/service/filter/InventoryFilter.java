@@ -24,18 +24,22 @@ public class InventoryFilter implements RaffleFilter {
 
     @Override
     public FilterParam filter(FilterParam filterParam) {
-        List<AwardBO> awardBOS = strategyRepository.queryCommonAwards(filterParam.getStrategyId());
-        Integer awardCount = awardBOS.stream()
-                .filter(AwardBO -> AwardBO.getAwardId().equals(filterParam.getAwardId()))
-                .map(AwardBO::getAwardCount)
-                .findFirst()
-                .get();
+        // todo 需要重新实现
+//        List<AwardBO> awardBOS = strategyRepository.queryCommonAwards(filterParam.getStrategyId());
+//        Integer awardCount = awardBOS.stream()
+//                .filter(AwardBO -> AwardBO.getAwardId().equals(filterParam.getAwardId()))
+//                .map(AwardBO::getAwardCount)
+//                .findFirst()
+//                .get();
 
-        // 如果库存为0，那就拦截，一直重复调度，直到抽到有库存的奖品
-        while (awardCount == 0) {
-            filterParam.setMiddleFilterParam(FilterParam.MiddleFilterParam.INTERCEPT);
-            filterRouter.filterRouter(filterParam);
-        }
+// 如果库存为0，那就拦截，一直重复调度，直到抽到有库存的奖品
+//        while (awardCount == 0) {
+//            filterParam.setMiddleFilterParam(FilterParam.MiddleFilterParam.INTERCEPT);
+//            filterRouter.filterRouter(filterParam);
+//        }
+
+        // 其实应该不是库存为0，而是调度扣减方法，如果返回false，说明扣减操作失败了，需要重新调度，以此来抽取其他奖品
+
 
         filterParam.setMiddleFilterParam(FilterParam.MiddleFilterParam.PASS);
         return filterParam;

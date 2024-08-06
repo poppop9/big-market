@@ -48,6 +48,7 @@ public class FilterParam {
         LockLongAwards("rule_lock_long", "除去最后一个奖品，101-108 的所有奖品"),
         BlacklistAward("rule_blacklist", "黑名单用户的最次奖品"),
         GrandAward("rule_grand", "大奖池，106-108奖品");
+
         // 后置过滤器的拦截值
 
         private final String code;

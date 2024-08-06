@@ -236,9 +236,9 @@ public class StrategyRepository implements IStrategyRepository {
                 log.atInfo().log("奖品 {} 库存扣减失败", awardId);
                 return false;
             }
-        } else {
-            log.atInfo().log("奖品 {} 库存扣减失败", awardId);
-            return false;
         }
+
+        log.atInfo().log("奖品 {} 库存扣减失败", awardId);
+        return false;
     }
 }
