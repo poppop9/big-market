@@ -142,4 +142,9 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
     public Boolean decreaseAwardCount(Integer strategyId, Integer awardId) {
         return strategyRepository.decreaseAwardCount(strategyId, awardId);
     }
+
+    @Override
+    public void removeAwardFromPools(Integer strategyId, Integer awardId) {
+        strategyRepository.removeAwardFromPools(strategyId, awardId);
+    }
 }

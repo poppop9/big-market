@@ -21,7 +21,6 @@ public class FilterRouter implements IFilterRouter {
             case LockLongAwards -> strategyDispatch.getRuleLockLongAwardIdByRandom(filterParam.getStrategyId());
             case BlacklistAward -> strategyDispatch.getWorstAwardId(filterParam.getStrategyId());
             case GrandAward -> strategyDispatch.getRuleGrandAwardIdByRandom(filterParam.getStrategyId());
-            default -> 0;
         };
 
         filterParam.setAwardId(awardId);

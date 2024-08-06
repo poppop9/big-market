@@ -22,4 +22,7 @@ public interface IStrategyDispatch {
 
     // 传入一个策略ID，奖品ID，扣减对应奖品的库存
     Boolean decreaseAwardCount(Integer strategyId, Integer awardId);
+
+    // 传入一个策略ID，奖品ID，将该奖品从所有抽奖池里移除
+    void removeAwardFromPools(Integer strategyId, Integer awardId);
 }

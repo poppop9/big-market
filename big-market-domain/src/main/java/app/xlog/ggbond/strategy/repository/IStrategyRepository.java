@@ -59,4 +59,12 @@ public interface IStrategyRepository {
     更新奖品库存  --------------------------------------------------------------
      */
     Boolean decreaseAwardCount(Integer strategyId, Integer awardId);
+
+    void removeAwardFromPools(Integer strategyId, Integer awardId);
+
+
+    /*
+    将扣减信息写入队列，缓慢更新数据库的库存数---------------------------------------
+     */
+    void addDecrAwardCountToQueue(Integer strategyId, Integer awardId);
 }

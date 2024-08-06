@@ -225,7 +225,6 @@ public class StrategyRepository implements IStrategyRepository {
         String cacheKey = "strategy_" + strategyId + "_awards_" + awardId + "_count";
         RAtomicLong rAtomicLong = redissonClient.getAtomicLong(cacheKey);
 
-        // todo
         if (rAtomicLong.isExists()) {
             // 返回扣减完成之后的值
             long surplus = rAtomicLong.decrementAndGet();
@@ -238,7 +237,19 @@ public class StrategyRepository implements IStrategyRepository {
             }
         }
 
+        // 一般来说装配好了奖品库存，不会走到这里
         log.atInfo().log("奖品 {} 库存扣减失败", awardId);
         return false;
+    }
+
+    @Override
+    public void removeAwardFromPools(Integer strategyId, Integer awardId) {
+        // todo 移除四个抽奖池子里的该奖品，包括重新更新权重对象
+
+    }
+
+    @Override
+    public void addDecrAwardCountToQueue(Integer strategyId, Integer awardId) {
+
     }
 }

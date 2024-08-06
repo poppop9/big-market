@@ -5,7 +5,6 @@ import app.xlog.ggbond.strategy.service.filter.BlacklistRaffleFilter;
 import app.xlog.ggbond.strategy.service.filter.InventoryFilter;
 import app.xlog.ggbond.strategy.service.filter.RaffleFilterChain;
 import app.xlog.ggbond.strategy.service.filter.RaffleTimesRaffleFilter;
-import app.xlog.ggbond.strategy.service.filter.factory.FilterFactory;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -28,6 +27,7 @@ public class FilterTest {
                     .addPreFilter(new RaffleTimesRaffleFilter())
                     .addAfterFilter(new InventoryFilter());
 
+            // 执行过滤器链
             FilterParam filterParam = raffleFilterChain.doFilter(
                     FilterParam.builder()
                             .StrategyId(10001)
