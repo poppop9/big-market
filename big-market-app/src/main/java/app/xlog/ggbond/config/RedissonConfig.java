@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RedissonConfig {
-    @Value("${SecretKey.redis.password}")
-    private String redisPassword;
+//    @Value("${SecretKey.redis.password}")
+//    private String redisPassword;
 
     @Bean
     public RedissonClient redissonClient() {

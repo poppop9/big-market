@@ -245,6 +245,18 @@ public class StrategyRepository implements IStrategyRepository {
     @Override
     public void removeAwardFromPools(Integer strategyId, Integer awardId) {
         // todo 移除四个抽奖池子里的该奖品，包括重新更新权重对象
+        String cacheKeyOne = "strategy_" + strategyId + "_awards_Common";
+        String cacheKeyTwo = "strategy_" + strategyId + "_awards_Lock";
+        String cacheKeyThree = "strategy_" + strategyId + "_awards_LockLong";
+        String cacheKeyFour = "strategy_" + strategyId + "_awards_Blacklist";
+        String cacheKeyFive = "strategy_" + strategyId + "_awards_Grand";
+
+
+        redissonClient.getList(cacheKeyOne).stream()
+                .map(Object -> (AwardBO) Object)
+                .filter(AwardBO -> !AwardBO.getAwardId().equals(awardId))
+                .toList();
+
 
     }
 
