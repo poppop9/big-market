@@ -5,6 +5,8 @@ import app.xlog.ggbond.persistent.mapper.StrategyMapper;
 import app.xlog.ggbond.persistent.po.Award;
 import app.xlog.ggbond.persistent.po.Strategy;
 import app.xlog.ggbond.strategy.model.AwardBO;
+import app.xlog.ggbond.strategy.model.vo.DecrQueueVO;
+import app.xlog.ggbond.strategy.repository.IStrategyRepository;
 import cn.hutool.core.bean.BeanUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -13,6 +15,7 @@ import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBloomFilter;
+import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +38,8 @@ public class MessTest {
     private StrategyMapper strategyMapper;
     @Resource
     private RedissonClient redissonClient;
+    @Resource
+    private IStrategyRepository strategyRepository;
 
     // Jackson对象
     @Autowired
@@ -165,5 +170,15 @@ public class MessTest {
 
         long l = rAtomicLong.addAndGet(-100);
         log.atInfo().log("加-100后的值: {}", l);
+    }
+
+    // 测试从队列中获取数据
+    @Test
+    public void test_getQueue() {
+        DecrQueueVO decrQueueVO = strategyRepository.queryDecrAwardCountFromQueue();
+        System.out.println(decrQueueVO);
+        System.out.println(decrQueueVO.getStrategyId());
+        System.out.println(decrQueueVO.getAwardId());
+
     }
 }

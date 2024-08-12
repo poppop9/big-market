@@ -41,7 +41,7 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
 
         // 3. 将WeightRandom对象存入redis
-        strategyRepository.insertWeightRandom(strategyId, wr, "Common");
+        strategyRepository.insertWeightRandom(strategyId, "Common", wr);
         log.atInfo().log("装配策略{}的rule_common奖品完成", strategyId);
     }
 
@@ -61,7 +61,7 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
 
         // 将新的WeightRandom对象存入redis，方便后续抽奖调用
-        strategyRepository.insertWeightRandom(strategyId, wr, "Lock");
+        strategyRepository.insertWeightRandom(strategyId, "Lock", wr);
         log.atInfo().log("装配策略{}的rule_lock奖品完成", strategyId);
     }
 
@@ -77,7 +77,7 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
 
         WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
 
-        strategyRepository.insertWeightRandom(strategyId, wr, "LockLong");
+        strategyRepository.insertWeightRandom(strategyId, "LockLong", wr);
         log.atInfo().log("装配策略{}的rule_lock_long奖品完成", strategyId);
     }
 
@@ -92,7 +92,7 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
                 }).toList();
 
         WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
-        strategyRepository.insertWeightRandom(strategyId, wr, "Grand");
+        strategyRepository.insertWeightRandom(strategyId, "Grand", wr);
         log.atInfo().log("装配策略{}的rule_grand奖品完成", strategyId);
     }
 

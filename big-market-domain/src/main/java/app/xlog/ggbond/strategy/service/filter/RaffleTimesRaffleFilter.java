@@ -104,7 +104,7 @@ public class RaffleTimesRaffleFilter implements RaffleFilter {
             }
         }
 
-        // 其他奖品规则都不符合，都没拦截到，那就抽奖池就是所有奖品
+        // 其他奖品规则都不符合，都没拦截到，那抽奖池就是所有奖品
         filterParam.setDispatchParam(FilterParam.DispatchParam.CommonAwards);
         return filterParam;
     }

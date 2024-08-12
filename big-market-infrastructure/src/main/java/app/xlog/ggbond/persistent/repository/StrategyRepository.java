@@ -6,21 +6,24 @@ import app.xlog.ggbond.persistent.po.Award;
 import app.xlog.ggbond.persistent.po.Strategy;
 import app.xlog.ggbond.strategy.model.AwardBO;
 import app.xlog.ggbond.strategy.model.StrategyBO;
+import app.xlog.ggbond.strategy.model.vo.DecrQueueVO;
 import app.xlog.ggbond.strategy.repository.IStrategyRepository;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import jakarta.annotation.Resource;
-import org.redisson.api.RAtomicLong;
-import org.redisson.api.RBucket;
-import org.redisson.api.RList;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /*
 策略仓库实现类
@@ -189,9 +192,19 @@ public class StrategyRepository implements IStrategyRepository {
      **/
     // 将权重对象插入到Redis中
     @Override
-    public void insertWeightRandom(int strategyId, WeightRandom<Integer> wr, String awardRule) {
+    public void insertWeightRandom(int strategyId, String awardRule, WeightRandom<Integer> wr) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_" + awardRule;
         redissonClient.getBucket(cacheKey).set(wr);
+    }
+
+    // 更新权重对象
+    @Override
+    public void updateWeightRandom(int strategyId, String awardRule, WeightRandom<Integer> wr) {
+        String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_" + awardRule;
+        RBucket<Object> bucket = redissonClient.getBucket(cacheKey);
+        if (bucket.isExists()) {
+            bucket.set(wr);
+        }
     }
 
     // 根据策略ID，从redis中查询权重对象
@@ -244,24 +257,108 @@ public class StrategyRepository implements IStrategyRepository {
 
     @Override
     public void removeAwardFromPools(Integer strategyId, Integer awardId) {
-        // todo 移除四个抽奖池子里的该奖品，包括重新更新权重对象
-        String cacheKeyOne = "strategy_" + strategyId + "_awards_Common";
-        String cacheKeyTwo = "strategy_" + strategyId + "_awards_Lock";
-        String cacheKeyThree = "strategy_" + strategyId + "_awards_LockLong";
-        String cacheKeyFour = "strategy_" + strategyId + "_awards_Blacklist";
-        String cacheKeyFive = "strategy_" + strategyId + "_awards_Grand";
+        // todo 未测试
+        // 由于黑名单抽奖池在redis中只有一个对象，所以不用去除，黑名单用户就让他一直抽随机积分就好了，而且随机积分的库存绝对够
+        String[] cacheKeyLists = {
+                "strategy_" + strategyId + "_awards_Common",
+                "strategy_" + strategyId + "_awards_Lock",
+                "strategy_" + strategyId + "_awards_LockLong",
+                "strategy_" + strategyId + "_awards_Grand"
+        };
+        // 获取redis中的奖品列表，过滤掉要移除的奖品
+        for (String cacheKey : cacheKeyLists) {
+            RList<AwardBO> rList = redissonClient.getList(cacheKey);
+            rList.remove(
+                    rList.stream()
+                            .filter(AwardBO -> Objects.equals(AwardBO.getAwardId(), awardId))
+                            .findFirst()
+                            .get()
+            );
+        }
 
+        // 使用map集合和switch，动态判断要执行的方法
+        Set<Map.Entry<Integer, String>> cacheKeyWeightRandoms = Map.of(
+                1, "strategy_" + strategyId + "_awards_WeightRandom_Common",
+                2, "strategy_" + strategyId + "_awards_WeightRandom_Lock",
+                3, "strategy_" + strategyId + "_awards_WeightRandom_LockLong",
+                4, "strategy_" + strategyId + "_awards_WeightRandom_Grand"
+        ).entrySet();
 
-        redissonClient.getList(cacheKeyOne).stream()
-                .map(Object -> (AwardBO) Object)
-                .filter(AwardBO -> !AwardBO.getAwardId().equals(awardId))
-                .toList();
-
-
+        for (Map.Entry<Integer, String> cacheKey : cacheKeyWeightRandoms) {
+            switch (cacheKey.getKey()) {
+                case 1 -> {
+                    List<WeightRandom.WeightObj<Integer>> weightObjs = queryCommonAwards(strategyId).stream()
+                            .filter(AwardBO -> !Objects.equals(AwardBO.getAwardId(), awardId))
+                            .map(
+                                    AwardBO -> new WeightRandom.WeightObj<>(
+                                            AwardBO.getAwardId(),
+                                            AwardBO.getAwardRate()
+                                    )
+                            ).toList();
+                    WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
+                    redissonClient.getBucket(cacheKey.getValue()).set(wr);
+                }
+                case 2 -> {
+                    List<WeightRandom.WeightObj<Integer>> weightObjs = queryRuleLockAwards(strategyId).stream()
+                            .filter(AwardBO -> Objects.equals(AwardBO.getAwardId(), awardId))
+                            .map(
+                                    AwardBO -> new WeightRandom.WeightObj<>(
+                                            AwardBO.getAwardId(),
+                                            AwardBO.getAwardRate()
+                                    )
+                            ).toList();
+                    WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
+                    redissonClient.getBucket(cacheKey.getValue()).set(wr);
+                }
+                case 3 -> {
+                    List<WeightRandom.WeightObj<Integer>> weightObjs = queryRuleLockLongAwards(strategyId).stream()
+                            .filter(AwardBO -> Objects.equals(AwardBO.getAwardId(), awardId))
+                            .map(
+                                    AwardBO -> new WeightRandom.WeightObj<>(
+                                            AwardBO.getAwardId(),
+                                            AwardBO.getAwardRate()
+                                    )
+                            ).toList();
+                    WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
+                    redissonClient.getBucket(cacheKey.getValue()).set(wr);
+                }
+                case 4 -> {
+                    List<WeightRandom.WeightObj<Integer>> weightObjs = queryRuleGrandAwards(strategyId).stream()
+                            .filter(awardBO -> Objects.equals(awardBO.getAwardId(), awardId))
+                            .map(
+                                    AwardBO -> new WeightRandom.WeightObj<>(
+                                            AwardBO.getAwardId(),
+                                            AwardBO.getAwardRate()
+                                    )
+                            ).toList();
+                    WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
+                    redissonClient.getBucket(cacheKey.getValue()).set(wr);
+                }
+            }
+        }
     }
 
     @Override
-    public void addDecrAwardCountToQueue(Integer strategyId, Integer awardId) {
+    public void addDecrAwardCountToQueue(DecrQueueVO decrQueueVO) {
+        // 建立队列
+        RQueue<Object> rQueue = redissonClient.getQueue("awards_DecrQueue");
+        // 写入队列
+        rQueue.add(decrQueueVO);
+    }
 
+    @Override
+    public DecrQueueVO queryDecrAwardCountFromQueue() {
+        RQueue<Object> rQueue = redissonClient.getQueue("awards_DecrQueue");
+        return (DecrQueueVO) rQueue.poll();
+    }
+
+    @Override
+    public void updateAwardCount(DecrQueueVO decrQueueVO) {
+        UpdateWrapper<Award> updateWrapper = new UpdateWrapper<Award>()
+                .setSql("award_count = award_count - 1")
+                .eq("strategy_id", decrQueueVO.getStrategyId())
+                .eq("award_id", decrQueueVO.getAwardId());
+
+        awardMapper.update(null, updateWrapper);
     }
 }

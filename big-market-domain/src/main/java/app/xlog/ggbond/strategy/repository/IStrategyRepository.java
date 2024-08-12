@@ -6,8 +6,8 @@ package app.xlog.ggbond.strategy.repository;
 
 import app.xlog.ggbond.strategy.model.AwardBO;
 import app.xlog.ggbond.strategy.model.StrategyBO;
+import app.xlog.ggbond.strategy.model.vo.DecrQueueVO;
 import cn.hutool.core.lang.WeightRandom;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -43,7 +43,9 @@ public interface IStrategyRepository {
      **/
 
     // 将权重对象插入到Redis中，awardRule是奖品规则
-    void insertWeightRandom(int strategyId, WeightRandom<Integer> wr, String awardRule);
+    void insertWeightRandom(int strategyId, String awardRule, WeightRandom<Integer> wr);
+
+    void updateWeightRandom(int strategyId, String awardRule, WeightRandom<Integer> wr);
 
     // 从redis中取出所有奖品的权重对象
     WeightRandom<Integer> queryRuleCommonWeightRandom(int strategyId);
@@ -66,5 +68,12 @@ public interface IStrategyRepository {
     /*
     将扣减信息写入队列，缓慢更新数据库的库存数---------------------------------------
      */
-    void addDecrAwardCountToQueue(Integer strategyId, Integer awardId);
+    // 将扣减信息写入队列
+    void addDecrAwardCountToQueue(DecrQueueVO decrQueueVO);
+
+    // 查询出队列中的一个扣减信息
+    DecrQueueVO queryDecrAwardCountFromQueue();
+
+    // 根据策略id，奖品id，更新数据库中对应奖品的库存
+    void updateAwardCount(DecrQueueVO decrQueueVO);
 }

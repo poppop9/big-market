@@ -17,7 +17,7 @@ public class StrategyArmoryDispatchTest {
 
     Logger logger = LoggerFactory.getLogger(StrategyArmoryDispatchTest.class);
 
-    // 测试装配对应策略的奖品，和装配奖品的权重对象
+    // 装配对应策略的奖品，装配奖品的权重对象，装配所有对应策略的奖品库存
     @Test
     public void testAssembleLotteryStrategy() {
         strategyArmory.assembleLotteryStrategyRuleCommon(10001);
@@ -31,6 +31,9 @@ public class StrategyArmoryDispatchTest {
 
         strategyArmory.assembleLotteryStrategyRuleGrand(10001);
         System.out.println("装配策略10001的大奖池完成");
+
+        strategyArmory.assembleLotteryStrategyAwardCount(10001);
+        System.out.println("装配策略10001的奖品库存完成");
     }
 
     // 测试获取所有奖品中的随机奖品ID

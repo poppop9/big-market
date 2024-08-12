@@ -24,6 +24,8 @@ public class FilterRouter implements IFilterRouter {
         };
 
         filterParam.setAwardId(awardId);
+        // 让其一定能进入到后置过滤器
+        filterParam.setMiddleFilterParam(FilterParam.MiddleFilterParam.PASS);
         return filterParam;
     }
 }
