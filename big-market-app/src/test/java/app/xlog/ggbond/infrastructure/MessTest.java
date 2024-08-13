@@ -172,13 +172,29 @@ public class MessTest {
         log.atInfo().log("加-100后的值: {}", l);
     }
 
+    // 测试添加信息到队列中
+    @Test
+    public void test_addQueue() {
+        for (int i = 0; i < 5; i++) {
+            strategyRepository.addDecrAwardCountToQueue(
+                    DecrQueueVO.builder()
+                            .strategyId(10001)
+                            .awardId(101)
+                            .build()
+            );
+        }
+    }
+
     // 测试从队列中获取数据
     @Test
-    public void test_getQueue() {
-        DecrQueueVO decrQueueVO = strategyRepository.queryDecrAwardCountFromQueue();
-        System.out.println(decrQueueVO);
-        System.out.println(decrQueueVO.getStrategyId());
-        System.out.println(decrQueueVO.getAwardId());
+    public void test_getQueue() throws InterruptedException {
+        for (int i = 0; i < 4; i++) {
+            DecrQueueVO decrQueueVO = strategyRepository.queryDecrAwardCountFromQueue();
+            System.out.println(decrQueueVO);
+            System.out.println(decrQueueVO.getStrategyId());
+            System.out.println(decrQueueVO.getAwardId());
 
+            Thread.sleep(1000);
+        }
     }
 }
