@@ -23,13 +23,12 @@ public class FilterTest {
 
     @Test
     public void test_FilterChain() throws InterruptedException {
-        for (int i = 0; i < 10; i++) {
-            // 构造过滤器链
-            raffleFilterChain.addPreFilter(new BlacklistRaffleFilter())
-                    .addPreFilter(new RaffleTimesRaffleFilter())
-                    .addAfterFilter(new InventoryFilter());
+        // 构造过滤器链
+        raffleFilterChain.addPreFilter(new BlacklistRaffleFilter())
+                .addPreFilter(new RaffleTimesRaffleFilter())
+                .addAfterFilter(new InventoryFilter());
 
-            // todo 后置过滤器 - 库存过滤器，添加到队列中的数据过多了，有问题
+        for (int i = 0; i < 10; i++) {
             // 执行过滤器链
             FilterParam filterParam = raffleFilterChain.doFilter(
                     FilterParam.builder()
