@@ -19,5 +19,4 @@ public interface IStrategyArmory {
 
     // 传入一个策略ID，装配所有奖品的库存
     void assembleLotteryStrategyAwardCount(Integer strategyId);
-
 }

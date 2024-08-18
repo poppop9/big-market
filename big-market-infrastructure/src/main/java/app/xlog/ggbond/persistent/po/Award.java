@@ -1,9 +1,14 @@
 package app.xlog.ggbond.persistent.po;
 
+import app.xlog.ggbond.strategy.utils.SpringContextUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.annotation.Resource;
 import lombok.Builder;
 import lombok.Data;
 
@@ -41,4 +46,14 @@ public class Award {
     private LocalDateTime createTime;
     @TableField("update_time")
     private LocalDateTime updateTime;
+
+    /*
+    为了将rules字段转为ObjectNode对象
+     */
+    public ObjectNode stringToObjectNode(String s) throws JsonProcessingException {
+        // 手动获取Bean
+        ObjectMapper objectMapper = SpringContextUtil.getBean(ObjectMapper.class);
+        s = s.replace("\\", "");
+        return objectMapper.readValue(s, ObjectNode.class);
+    }
 }

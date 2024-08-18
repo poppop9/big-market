@@ -10,12 +10,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 // 抽奖过滤器链，用于定义抽奖过滤器的数量和执行顺序
 public class RaffleFilterChain {
 
-    @Resource
-    private IFilterRouter filterRouter;
+    private final IFilterRouter filterRouter = new FilterRouter();
 
     // 前置过滤器链
     private final List<RaffleFilter> preFilters = new ArrayList<>();

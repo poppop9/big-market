@@ -69,7 +69,7 @@ public class StrategyRepository implements IStrategyRepository {
 
         // Redis缓存中存在则直接返回
         RList<AwardBO> rList = redissonClient.getList(cacheKey);
-        if (!rList.isEmpty() && rList != null) {
+        if (!rList.isEmpty()) {
             return rList;
         }
 

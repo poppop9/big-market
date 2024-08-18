@@ -24,7 +24,6 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
             - rule_lock：锁出后四个奖品，5个奖品可以抽
             - rule_lock_long：锁出最后一个奖品，8个奖品可以抽
      */
-
     @Override
     public void assembleLotteryStrategyRuleCommon(Integer strategyId) {
         // 1.查询对应策略的所有奖品，并缓存到redis

@@ -18,11 +18,9 @@ public interface IStrategyRepository {
     // 根据策略Id，装配对应的策略
     StrategyBO queryStrategys(Integer strategyId);
 
-
     /**
      * 装配，查询奖品-----------------------------------------------------------
      **/
-
     // 查询对应策略的所有奖品，并缓存到redis
     List<AwardBO> queryCommonAwards(int strategyId);
 

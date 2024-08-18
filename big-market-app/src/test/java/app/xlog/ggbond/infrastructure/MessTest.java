@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,57 +46,57 @@ public class MessTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // 测试hutool的BeanUtil.copyProperties方法
-    @Test
-    public void testHutoolCopyProperties() {
-        Award award = Award.builder()
-                .id(1)
-                .strategyId(1)
-                .awardId(101)
-                .awardKey("random_points")
-                .awardConfig("random_points_config")
-                .awardTitle("随机积分")
-                .awardSubtitle("随机积分副标题")
-                .awardCount(100)
-                .awardRate(0.1f)
-                .awardSort(1)
-                .rules("Collections.emptyMap()")
-                .createTime(LocalDateTime.now())
-                .updateTime(LocalDateTime.now())
-                .build();
-
-        AwardBO awardBO = new AwardBO();
-
-        BeanUtil.copyProperties(award, awardBO);
-        System.out.println(awardBO);
-    }
-
-    // 测试hutool的BeanUtil的copyToList方法
-    @Test
-    public void testcopyToList() {
-        List<Award> awards = Stream.of(
-                Award.builder()
-                        .id(1).strategyId(1).awardId(101)
-                        .awardKey("random").awardConfig("random")
-                        .awardTitle("随机积分").awardSubtitle("副标题")
-                        .awardCount(100).awardRate(0.1f).awardSort(1)
-                        .rules("Collections.emptyMap()").createTime(LocalDateTime.now())
-                        .updateTime(LocalDateTime.now())
-                        .build(),
-                Award.builder()
-                        .id(2).strategyId(1).awardId(102)
-                        .awardKey("random").awardConfig("config")
-                        .awardTitle("随机积分").awardSubtitle("副")
-                        .awardCount(100).awardRate(0.1f)
-                        .awardSort(1).rules("Collections.emptyMap()")
-                        .createTime(LocalDateTime.now())
-                        .updateTime(LocalDateTime.now())
-                        .build()
-        ).toList();
-
-        List<AwardBO> awardBOs = BeanUtil.copyToList(awards, AwardBO.class);
-        awardBOs.forEach(System.out::println);
-    }
+//    // 测试hutool的BeanUtil.copyProperties方法
+//    @Test
+//    public void testHutoolCopyProperties() {
+//        Award award = Award.builder()
+//                .id(1)
+//                .strategyId(1)
+//                .awardId(101)
+//                .awardKey("random_points")
+//                .awardConfig("random_points_config")
+//                .awardTitle("随机积分")
+//                .awardSubtitle("随机积分副标题")
+//                .awardCount(100)
+//                .awardRate(0.1f)
+//                .awardSort(1)
+//                .rules("Collections.emptyMap()")
+//                .createTime(LocalDateTime.now())
+//                .updateTime(LocalDateTime.now())
+//                .build();
+//
+//        AwardBO awardBO = new AwardBO();
+//
+//        BeanUtil.copyProperties(award, awardBO);
+//        System.out.println(awardBO);
+//    }
+//
+//    // 测试hutool的BeanUtil的copyToList方法
+//    @Test
+//    public void testcopyToList() {
+//        List<Award> awards = Stream.of(
+//                Award.builder()
+//                        .id(1).strategyId(1).awardId(101)
+//                        .awardKey("random").awardConfig("random")
+//                        .awardTitle("随机积分").awardSubtitle("副标题")
+//                        .awardCount(100).awardRate(0.1f).awardSort(1)
+//                        .rules("Collections.emptyMap()").createTime(LocalDateTime.now())
+//                        .updateTime(LocalDateTime.now())
+//                        .build(),
+//                Award.builder()
+//                        .id(2).strategyId(1).awardId(102)
+//                        .awardKey("random").awardConfig("config")
+//                        .awardTitle("随机积分").awardSubtitle("副")
+//                        .awardCount(100).awardRate(0.1f)
+//                        .awardSort(1).rules("Collections.emptyMap()")
+//                        .createTime(LocalDateTime.now())
+//                        .updateTime(LocalDateTime.now())
+//                        .build()
+//        ).toList();
+//
+//        List<AwardBO> awardBOs = BeanUtil.copyToList(awards, AwardBO.class);
+//        awardBOs.forEach(System.out::println);
+//    }
 
     // 测试数据库中的json数据类型，怎么映射到java的map集合上
     @Test

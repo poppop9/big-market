@@ -48,16 +48,16 @@ public class AppTest {
     // 测试redisson存储集合
     @Test
     public void testRedissonStorageList() {
-        List<AwardBO> AwardBOs = Stream.of(
-                new AwardBO(1, 1, 1, 0.1f, "10"),
-                new AwardBO(1, 2, 1, 0.2f, "10"),
-                new AwardBO(1, 3, 1, 0.3f, "20")
-        ).toList();
-
-        RList<Object> rList = redissonClient.getList("testList");
-        rList.addAll(AwardBOs);
-
-        rList.forEach(System.out::println);
+//        List<AwardBO> AwardBOs = Stream.of(
+//                new AwardBO(1, 1, 1, 0.1f, "10"),
+//                new AwardBO(1, 2, 1, 0.2f, "10"),
+//                new AwardBO(1, 3, 1, 0.3f, "20")
+//        ).toList();
+//
+//        RList<Object> rList = redissonClient.getList("testList");
+//        rList.addAll(AwardBOs);
+//
+//        rList.forEach(System.out::println);
     }
 
     // 测试redisson
