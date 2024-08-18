@@ -4,3 +4,34 @@ spring:
     url: jdbc:mysql://localhost:3306/big_market
     username: root
     password: 13433026660
+    #    url: jdbc:mysql://gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000/big_market
+    #    username: 2Ag4dgzKWnnqzxW.root
+    #    password: 1U0AxmrZ8o4SVbey
+
+app:
+  config:
+    CrossOrigin: '*'
+
+# Redis
+redis:
+  sdk:
+    config:
+      # 线上
+      #      host: redis-10676.c294.ap-northeast-1-2.ec2.redns.redis-cloud.com
+      #      port: 10676
+      # 本地
+      host: localhost
+      port: 6379
+      pool-size: 10
+      min-idle-size: 5
+      idle-timeout: 30000
+      connect-timeout: 5000
+      retry-attempts: 3
+      retry-interval: 1000
+      ping-interval: 60000
+      keep-alive: true
+
+# 密钥
+SecretKey:
+  redis:
+    password: tGAT9CZU3ofzQeM5KLscNUR3S9gO1H54

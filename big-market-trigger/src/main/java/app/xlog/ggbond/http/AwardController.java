@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin("${app.config.CrossOrigin}")
 @RestController
 @RequestMapping("/api/award")
 public class AwardController {
