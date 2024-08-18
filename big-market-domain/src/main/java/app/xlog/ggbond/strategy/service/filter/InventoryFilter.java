@@ -4,6 +4,7 @@ import app.xlog.ggbond.strategy.model.vo.DecrQueueVO;
 import app.xlog.ggbond.strategy.model.vo.FilterParam;
 import app.xlog.ggbond.strategy.repository.IStrategyRepository;
 import app.xlog.ggbond.strategy.service.armory.IStrategyDispatch;
+import app.xlog.ggbond.strategy.service.filter.router.FilterRouter;
 import app.xlog.ggbond.strategy.service.filter.router.IFilterRouter;
 import app.xlog.ggbond.strategy.utils.SpringContextUtil;
 
@@ -12,12 +13,11 @@ import app.xlog.ggbond.strategy.utils.SpringContextUtil;
 public class InventoryFilter implements RaffleFilter {
 
     private IStrategyRepository strategyRepository;
-    private IFilterRouter filterRouter;
+    private final IFilterRouter filterRouter = new FilterRouter();
     private IStrategyDispatch strategyDispatch;
 
     public InventoryFilter() {
         strategyRepository = SpringContextUtil.getBean(IStrategyRepository.class);
-        filterRouter = SpringContextUtil.getBean(IFilterRouter.class);
         strategyDispatch = SpringContextUtil.getBean(IStrategyDispatch.class);
     }
 

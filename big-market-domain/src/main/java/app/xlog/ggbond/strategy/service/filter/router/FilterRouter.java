@@ -2,14 +2,16 @@ package app.xlog.ggbond.strategy.service.filter.router;
 
 import app.xlog.ggbond.strategy.model.vo.FilterParam;
 import app.xlog.ggbond.strategy.service.armory.IStrategyDispatch;
-import jakarta.annotation.Resource;
-import org.springframework.stereotype.Component;
+import app.xlog.ggbond.strategy.service.armory.StrategyArmoryDispatch;
+import app.xlog.ggbond.strategy.utils.SpringContextUtil;
 
-@Component
 public class FilterRouter implements IFilterRouter {
 
-    @Resource
-    private IStrategyDispatch strategyDispatch;
+    private final IStrategyDispatch strategyDispatch;
+
+    public FilterRouter() {
+        this.strategyDispatch = SpringContextUtil.getBean(StrategyArmoryDispatch.class);
+    }
 
     // 对Filter的结果进行处理，然后路由到指定的IStrategyDispatch
     @Override
