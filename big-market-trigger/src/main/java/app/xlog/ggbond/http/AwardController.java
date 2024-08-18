@@ -55,6 +55,7 @@ public class AwardController {
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.set("AwardList", objectMapper.valueToTree(awardBOS));
 
+        log.atInfo().log("查询了策略{}的奖品列表", strategyId);
         return ResponseEntity.status(HttpStatus.OK).body(objectNode);
     }
 
