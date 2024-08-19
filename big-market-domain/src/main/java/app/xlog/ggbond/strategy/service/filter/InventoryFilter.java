@@ -30,7 +30,7 @@ public class InventoryFilter implements RaffleFilter {
             filterParam.setMiddleFilterParam(FilterParam.MiddleFilterParam.INTERCEPT);
             filterRouter.filterRouter(filterParam);
 
-            // 将该库存为0的奖品从奖品池里移除
+            // 将该库存为0的奖品，从缓存的奖品池里移除
             strategyDispatch.removeAwardFromPools(filterParam.getStrategyId(), filterParam.getAwardId());
         }
 

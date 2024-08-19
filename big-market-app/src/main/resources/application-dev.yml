@@ -30,8 +30,3 @@ redis:
       retry-interval: 1000
       ping-interval: 60000
       keep-alive: true
-
-# 密钥
-SecretKey:
-  redis:
-    password: tGAT9CZU3ofzQeM5KLscNUR3S9gO1H54

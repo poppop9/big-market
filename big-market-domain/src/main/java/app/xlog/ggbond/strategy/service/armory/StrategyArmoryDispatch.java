@@ -142,6 +142,9 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         return strategyRepository.decreaseAwardCount(strategyId, awardId);
     }
 
+    /**
+    将该奖品从缓存中的所有抽奖池里移除
+     */
     @Override
     public void removeAwardFromPools(Integer strategyId, Integer awardId) {
         strategyRepository.removeAwardFromPools(strategyId, awardId);

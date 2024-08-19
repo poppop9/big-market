@@ -20,10 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /*
 策略仓库实现类
@@ -257,7 +254,6 @@ public class StrategyRepository implements IStrategyRepository {
 
     @Override
     public void removeAwardFromPools(Integer strategyId, Integer awardId) {
-        // todo 未测试
         // 由于黑名单抽奖池在redis中只有一个对象，所以不用去除，黑名单用户就让他一直抽随机积分就好了，而且随机积分的库存绝对够
         String[] cacheKeyLists = {
                 "strategy_" + strategyId + "_awards_Common",
@@ -268,12 +264,11 @@ public class StrategyRepository implements IStrategyRepository {
         // 获取redis中的奖品列表，过滤掉要移除的奖品
         for (String cacheKey : cacheKeyLists) {
             RList<AwardBO> rList = redissonClient.getList(cacheKey);
-            rList.remove(
-                    rList.stream()
-                            .filter(AwardBO -> Objects.equals(AwardBO.getAwardId(), awardId))
-                            .findFirst()
-                            .get()
-            );
+
+            Optional<AwardBO> optionalAwardBO = rList.stream()
+                    .filter(AwardBO -> Objects.equals(AwardBO.getAwardId(), awardId))
+                    .findFirst();
+            optionalAwardBO.ifPresent(rList::remove);
         }
 
         // 使用map集合和switch，动态判断要执行的方法
@@ -297,6 +292,8 @@ public class StrategyRepository implements IStrategyRepository {
                             ).toList();
                     WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
                     redissonClient.getBucket(cacheKey.getValue()).set(wr);
+
+                    log.atInfo().log("在缓存中的 {} 抽奖池，移除奖品 {} 成功", cacheKey.getValue(), awardId);
                 }
                 case 2 -> {
                     List<WeightRandom.WeightObj<Integer>> weightObjs = queryRuleLockAwards(strategyId).stream()
@@ -309,6 +306,8 @@ public class StrategyRepository implements IStrategyRepository {
                             ).toList();
                     WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
                     redissonClient.getBucket(cacheKey.getValue()).set(wr);
+
+                    log.atInfo().log("在缓存中的 {} 抽奖池，移除奖品 {} 成功", cacheKey.getValue(), awardId);
                 }
                 case 3 -> {
                     List<WeightRandom.WeightObj<Integer>> weightObjs = queryRuleLockLongAwards(strategyId).stream()
@@ -321,6 +320,8 @@ public class StrategyRepository implements IStrategyRepository {
                             ).toList();
                     WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
                     redissonClient.getBucket(cacheKey.getValue()).set(wr);
+
+                    log.atInfo().log("在缓存中的 {} 抽奖池，移除奖品 {} 成功", cacheKey.getValue(), awardId);
                 }
                 case 4 -> {
                     List<WeightRandom.WeightObj<Integer>> weightObjs = queryRuleGrandAwards(strategyId).stream()
@@ -333,6 +334,8 @@ public class StrategyRepository implements IStrategyRepository {
                             ).toList();
                     WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
                     redissonClient.getBucket(cacheKey.getValue()).set(wr);
+
+                    log.atInfo().log("在缓存中的 {} 抽奖池，移除奖品 {} 成功", cacheKey.getValue(), awardId);
                 }
             }
         }
