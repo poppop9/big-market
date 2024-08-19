@@ -8,6 +8,7 @@ import app.xlog.ggbond.strategy.model.AwardBO;
 import app.xlog.ggbond.strategy.model.vo.DecrQueueVO;
 import app.xlog.ggbond.strategy.repository.IStrategyRepository;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.http.HttpResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -197,5 +200,10 @@ public class MessTest {
 
             Thread.sleep(1000);
         }
+    }
+
+    @Test
+    public void test_HutoolResponse() {
+        ResponseEntity<String> response = ResponseEntity.status(HttpStatus.OK).body("yyy");
     }
 }
