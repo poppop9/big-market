@@ -30,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -203,7 +204,14 @@ public class MessTest {
     }
 
     @Test
-    public void test_HutoolResponse() {
-        ResponseEntity<String> response = ResponseEntity.status(HttpStatus.OK).body("yyy");
+    public void test_Optional() {
+//        Optional<String> optionalS = Optional.of("Hello world");
+//        optionalS.map(String::length)
+
+        Optional<String> optional = Optional.empty();
+        System.out.println(optional.orElse("为空为空 ！！！"));
+
+        optional.or(() -> Optional.of("Hello world"));
+
     }
 }
