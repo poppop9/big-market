@@ -1,7 +1,7 @@
 package app.xlog.ggbond.domain;
 
-import app.xlog.ggbond.strategy.service.armory.IStrategyArmory;
-import app.xlog.ggbond.strategy.service.armory.IStrategyDispatch;
+import app.xlog.ggbond.raffle.service.armory.IStrategyArmory;
+import app.xlog.ggbond.raffle.service.armory.IStrategyDispatch;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

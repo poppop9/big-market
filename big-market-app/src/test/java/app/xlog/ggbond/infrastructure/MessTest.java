@@ -2,13 +2,9 @@ package app.xlog.ggbond.infrastructure;
 
 import app.xlog.ggbond.persistent.mapper.AwardMapper;
 import app.xlog.ggbond.persistent.mapper.StrategyMapper;
-import app.xlog.ggbond.persistent.po.Award;
 import app.xlog.ggbond.persistent.po.Strategy;
-import app.xlog.ggbond.strategy.model.AwardBO;
-import app.xlog.ggbond.strategy.model.vo.DecrQueueVO;
-import app.xlog.ggbond.strategy.repository.IStrategyRepository;
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.http.HttpResponse;
+import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
+import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,23 +12,17 @@ import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBloomFilter;
-import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @SpringBootTest
 public class MessTest {
@@ -44,7 +34,7 @@ public class MessTest {
     @Resource
     private RedissonClient redissonClient;
     @Resource
-    private IStrategyRepository strategyRepository;
+    private IRaffleRepository strategyRepository;
 
     // Jackson对象
     @Autowired

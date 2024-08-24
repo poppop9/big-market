@@ -1,7 +1,7 @@
 package app.xlog.ggbond;
 
-import app.xlog.ggbond.strategy.model.AwardBO;
-import app.xlog.ggbond.strategy.repository.IStrategyRepository;
+import app.xlog.ggbond.raffle.model.AwardBO;
+import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ public class AppTest {
     @Autowired
     private RedissonClient redissonClient;
     @Autowired
-    private IStrategyRepository strategyRepository;
+    private IRaffleRepository strategyRepository;
 
     // 测试redisson能不能将java对象存储进redis，而且能够取出之后还能使用
     @Test

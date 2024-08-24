@@ -7,10 +7,10 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>big-market-trigger</artifactId>
+    <artifactId>big-market-api</artifactId>
     <packaging>jar</packaging>
 
-    <name>big-market-trigger</name>
+    <name>big-market-api</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -19,25 +19,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>app.xlog.ggbond</groupId>
-            <artifactId>big-market-domain</artifactId>
-        </dependency>
-
-        <!-- 第三方库 -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>app.xlog.ggbond</groupId>
-            <artifactId>big-market-api</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
