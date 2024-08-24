@@ -1,18 +1,13 @@
 package app.xlog.ggbond.raffle.service.filter;
 
 import app.xlog.ggbond.raffle.model.vo.FilterParam;
-import app.xlog.ggbond.raffle.utils.SpringContextUtil;
 import app.xlog.ggbond.user.service.IUserService;
 import app.xlog.ggbond.user.service.UserService;
 
 // 根据用户id判断是否是黑名单用户
 public class BlacklistRaffleFilter implements RaffleFilter {
 
-    private IUserService userService;
-
-    public BlacklistRaffleFilter() {
-        userService = SpringContextUtil.getBean(UserService.class);
-    }
+    private final IUserService userService = new UserService();
 
     @Override
     public FilterParam filter(FilterParam filterParam) {

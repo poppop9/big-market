@@ -1,13 +1,18 @@
 package app.xlog.ggbond.persistent.repository;
 
+import app.xlog.ggbond.persistent.mapper.AwardMapper;
+import app.xlog.ggbond.persistent.po.Award;
 import app.xlog.ggbond.raffle.model.AwardBO;
+import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import jakarta.annotation.Resource;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RList;
+import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +28,8 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
     private RedissonClient redissonClient;
     @Resource
     private IRaffleRepository raffleRepository;
+    @Resource
+    private AwardMapper awardMapper;
 
     @Override
     public Boolean decreaseAwardCount(Integer strategyId, Integer awardId) {
@@ -133,5 +140,29 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
                 }
             }
         }
+    }
+
+    @Override
+    public void addDecrAwardCountToQueue(DecrQueueVO decrQueueVO) {
+        // 建立队列
+        RQueue<Object> rQueue = redissonClient.getQueue("awards_DecrQueue");
+        // 写入队列
+        rQueue.add(decrQueueVO);
+    }
+
+    @Override
+    public DecrQueueVO queryDecrAwardCountFromQueue() {
+        RQueue<Object> rQueue = redissonClient.getQueue("awards_DecrQueue");
+        return (DecrQueueVO) rQueue.poll();
+    }
+
+    @Override
+    public void updateAwardCount(DecrQueueVO decrQueueVO) {
+        UpdateWrapper<Award> updateWrapper = new UpdateWrapper<Award>()
+                .setSql("award_count = award_count - 1")
+                .eq("strategy_id", decrQueueVO.getStrategyId())
+                .eq("award_id", decrQueueVO.getAwardId());
+
+        awardMapper.update(null, updateWrapper);
     }
 }

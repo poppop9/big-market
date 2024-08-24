@@ -22,13 +22,11 @@ public class RaffleFilterChain {
      **/
     public RaffleFilterChain addPreFilter(RaffleFilter raffleFilter) {
         preFilters.add(raffleFilter);
-
         return this;  // 返回链式调用
     }
 
     public RaffleFilterChain addAfterFilter(RaffleFilter raffleFilter) {
         afterFilters.add(raffleFilter);
-
         return this;  // 返回链式调用
     }
 

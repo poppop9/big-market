@@ -7,14 +7,13 @@ import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Slf4j
 @Service
-public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatch {
+public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     @Resource
     private IRaffleRepository raffleRepository;
     @Resource

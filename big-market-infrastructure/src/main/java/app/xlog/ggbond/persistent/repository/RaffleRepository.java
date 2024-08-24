@@ -230,27 +230,4 @@ public class RaffleRepository implements IRaffleRepository {
         return (WeightRandom<Integer>) redissonClient.getBucket(cacheKey).get();
     }
 
-    @Override
-    public void addDecrAwardCountToQueue(DecrQueueVO decrQueueVO) {
-        // 建立队列
-        RQueue<Object> rQueue = redissonClient.getQueue("awards_DecrQueue");
-        // 写入队列
-        rQueue.add(decrQueueVO);
-    }
-
-    @Override
-    public DecrQueueVO queryDecrAwardCountFromQueue() {
-        RQueue<Object> rQueue = redissonClient.getQueue("awards_DecrQueue");
-        return (DecrQueueVO) rQueue.poll();
-    }
-
-    @Override
-    public void updateAwardCount(DecrQueueVO decrQueueVO) {
-        UpdateWrapper<Award> updateWrapper = new UpdateWrapper<Award>()
-                .setSql("award_count = award_count - 1")
-                .eq("strategy_id", decrQueueVO.getStrategyId())
-                .eq("award_id", decrQueueVO.getAwardId());
-
-        awardMapper.update(null, updateWrapper);
-    }
 }

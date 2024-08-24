@@ -24,12 +24,11 @@ public class RaffleTimesRaffleFilter implements RaffleFilter {
 
     private static final Logger log = LoggerFactory.getLogger(RaffleTimesRaffleFilter.class);
 
-    private final IUserService userService;
+    private final IUserService userService = new UserService();
     private final IRaffleRepository raffleRepository;
     private final ObjectMapper objectMapper;
 
     public RaffleTimesRaffleFilter() {
-        userService = SpringContextUtil.getBean(UserService.class);
         raffleRepository = SpringContextUtil.getBean(IRaffleRepository.class);
         objectMapper = SpringContextUtil.getBean(ObjectMapper.class);
     }

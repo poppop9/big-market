@@ -4,6 +4,7 @@ import app.xlog.ggbond.persistent.mapper.AwardMapper;
 import app.xlog.ggbond.persistent.mapper.StrategyMapper;
 import app.xlog.ggbond.persistent.po.Strategy;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
+import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -35,62 +36,10 @@ public class MessTest {
     private RedissonClient redissonClient;
     @Resource
     private IRaffleRepository strategyRepository;
-
-    // Jackson对象
+    @Resource
+    private IAwardInventoryRepository awardInventoryRepository;
     @Autowired
     private ObjectMapper objectMapper;
-
-//    // 测试hutool的BeanUtil.copyProperties方法
-//    @Test
-//    public void testHutoolCopyProperties() {
-//        Award award = Award.builder()
-//                .id(1)
-//                .strategyId(1)
-//                .awardId(101)
-//                .awardKey("random_points")
-//                .awardConfig("random_points_config")
-//                .awardTitle("随机积分")
-//                .awardSubtitle("随机积分副标题")
-//                .awardCount(100)
-//                .awardRate(0.1f)
-//                .awardSort(1)
-//                .rules("Collections.emptyMap()")
-//                .createTime(LocalDateTime.now())
-//                .updateTime(LocalDateTime.now())
-//                .build();
-//
-//        AwardBO awardBO = new AwardBO();
-//
-//        BeanUtil.copyProperties(award, awardBO);
-//        System.out.println(awardBO);
-//    }
-//
-//    // 测试hutool的BeanUtil的copyToList方法
-//    @Test
-//    public void testcopyToList() {
-//        List<Award> awards = Stream.of(
-//                Award.builder()
-//                        .id(1).strategyId(1).awardId(101)
-//                        .awardKey("random").awardConfig("random")
-//                        .awardTitle("随机积分").awardSubtitle("副标题")
-//                        .awardCount(100).awardRate(0.1f).awardSort(1)
-//                        .rules("Collections.emptyMap()").createTime(LocalDateTime.now())
-//                        .updateTime(LocalDateTime.now())
-//                        .build(),
-//                Award.builder()
-//                        .id(2).strategyId(1).awardId(102)
-//                        .awardKey("random").awardConfig("config")
-//                        .awardTitle("随机积分").awardSubtitle("副")
-//                        .awardCount(100).awardRate(0.1f)
-//                        .awardSort(1).rules("Collections.emptyMap()")
-//                        .createTime(LocalDateTime.now())
-//                        .updateTime(LocalDateTime.now())
-//                        .build()
-//        ).toList();
-//
-//        List<AwardBO> awardBOs = BeanUtil.copyToList(awards, AwardBO.class);
-//        awardBOs.forEach(System.out::println);
-//    }
 
     // 测试数据库中的json数据类型，怎么映射到java的map集合上
     @Test
@@ -171,7 +120,7 @@ public class MessTest {
     @Test
     public void test_addQueue() {
         for (int i = 0; i < 5; i++) {
-            strategyRepository.addDecrAwardCountToQueue(
+            awardInventoryRepository.addDecrAwardCountToQueue(
                     DecrQueueVO.builder()
                             .strategyId(10001)
                             .awardId(101)
@@ -184,7 +133,7 @@ public class MessTest {
     @Test
     public void test_getQueue() throws InterruptedException {
         for (int i = 0; i < 4; i++) {
-            DecrQueueVO decrQueueVO = strategyRepository.queryDecrAwardCountFromQueue();
+            DecrQueueVO decrQueueVO = awardInventoryRepository.queryDecrAwardCountFromQueue();
             System.out.println(decrQueueVO);
             System.out.println(decrQueueVO.getStrategyId());
             System.out.println(decrQueueVO.getAwardId());

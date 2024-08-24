@@ -4,6 +4,7 @@ import app.xlog.ggbond.IRaffleApiService;
 import app.xlog.ggbond.model.Response;
 import app.xlog.ggbond.raffle.model.vo.FilterParam;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
+import app.xlog.ggbond.raffle.service.IRaffleService;
 import app.xlog.ggbond.raffle.service.filter.RaffleFilterChain;
 import cn.hutool.core.lang.Assert;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,11 +27,9 @@ public class RaffleController implements IRaffleApiService {
 
     private static final Logger log = LoggerFactory.getLogger(RaffleController.class);
     @Resource
-    private IRaffleRepository strategyRepository;
-    @Resource
     private ObjectMapper objectMapper;
     @Resource
-    private RaffleFilterChain raffleFilterChain;
+    private IRaffleService raffleService;
 
     /**
      * 根据策略id，查询奖品列表
@@ -39,24 +38,12 @@ public class RaffleController implements IRaffleApiService {
     public Response<JsonNode> queryAwardList(@RequestParam Integer strategyId) {
         Assert.notNull(strategyId, "策略id不存在");
 
-        List<ObjectNode> awardBOS = strategyRepository.queryCommonAwards(strategyId).stream()
-                .map(awardBO -> {
-                    try {
-                        ObjectNode objectNode = objectMapper.valueToTree(awardBO);
-                        ObjectNode rulesNode = awardBO.stringToObjectNode(objectNode.get("rules").asText());
-                        objectNode.set("rules", rulesNode);
-                        return objectNode;
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .sorted(Comparator.comparingInt(o -> o.get("awardSort").asInt()))
-                .toList();
+        List<ObjectNode> awardBOs = raffleService.queryAwardList(strategyId);
 
         log.atInfo().log("查询了策略 {} 的奖品列表", strategyId);
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
-                .data(objectMapper.valueToTree(awardBOS))
+                .data(objectMapper.valueToTree(awardBOs))
                 .build();
     }
 
@@ -69,20 +56,11 @@ public class RaffleController implements IRaffleApiService {
         Assert.notNull(userId, "用户id不存在");
         Assert.notNull(strategyId, "策略id不存在");
 
-        // 执行过滤器链
-        FilterParam filterParam = raffleFilterChain.doFilter(
-                FilterParam.builder()
-                        .UserId(userId)
-                        .StrategyId(strategyId)
-                        .build()
-        );
-
-        log.atInfo().log("调度了: {}", filterParam.getDispatchParam());
-        log.atInfo().log("抽到了: {}", filterParam.getAwardId());
+        Integer awardId = raffleService.getAward(userId, strategyId);
 
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
-                .data(objectMapper.valueToTree(filterParam.getAwardId()))
+                .data(objectMapper.valueToTree(awardId))
                 .build();
     }
 }

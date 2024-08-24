@@ -3,8 +3,7 @@ package app.xlog.ggbond.raffle.service.armory;
 /*
 装配策略的兵工厂，负责初始化策略奖品 ……
  */
-
-public interface IStrategyArmory {
+public interface IRaffleArmory {
     // 传入一个策略ID，装配所有奖品，由于要还要拼接rule的名字，所以改成String格式
     void assembleLotteryStrategyRuleCommon(Integer strategyId);
 

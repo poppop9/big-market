@@ -4,7 +4,7 @@ package app.xlog.ggbond.raffle.service.armory;
 策略抽奖调度，给出随机抽奖的接口
  */
 
-public interface IStrategyDispatch {
+public interface IRaffleDispatch {
     // 传入一个策略ID，获取一个所有奖品 101-109 中的随机奖品ID
     Integer getRuleCommonAwardIdByRandom(Integer strategyId);
 

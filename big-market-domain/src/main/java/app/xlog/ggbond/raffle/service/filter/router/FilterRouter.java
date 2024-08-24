@@ -1,16 +1,16 @@
 package app.xlog.ggbond.raffle.service.filter.router;
 
 import app.xlog.ggbond.raffle.model.vo.FilterParam;
-import app.xlog.ggbond.raffle.service.armory.IStrategyDispatch;
-import app.xlog.ggbond.raffle.service.armory.StrategyArmoryDispatch;
+import app.xlog.ggbond.raffle.service.armory.IRaffleDispatch;
+import app.xlog.ggbond.raffle.service.armory.RaffleArmoryDispatch;
 import app.xlog.ggbond.raffle.utils.SpringContextUtil;
 
 public class FilterRouter implements IFilterRouter {
 
-    private final IStrategyDispatch strategyDispatch;
+    private final IRaffleDispatch raffleDispatch;
 
     public FilterRouter() {
-        this.strategyDispatch = SpringContextUtil.getBean(StrategyArmoryDispatch.class);
+        this.raffleDispatch = SpringContextUtil.getBean(IRaffleDispatch.class);
     }
 
     // 对Filter的结果进行处理，然后路由到指定的IStrategyDispatch
@@ -18,11 +18,11 @@ public class FilterRouter implements IFilterRouter {
     public FilterParam filterRouter(FilterParam filterParam) {
         // 增强switch
         Integer awardId = switch (filterParam.getDispatchParam()) {
-            case CommonAwards -> strategyDispatch.getRuleCommonAwardIdByRandom(filterParam.getStrategyId());
-            case LockAwards -> strategyDispatch.getRuleLockAwardIdByRandom(filterParam.getStrategyId());
-            case LockLongAwards -> strategyDispatch.getRuleLockLongAwardIdByRandom(filterParam.getStrategyId());
-            case BlacklistAward -> strategyDispatch.getWorstAwardId(filterParam.getStrategyId());
-            case GrandAward -> strategyDispatch.getRuleGrandAwardIdByRandom(filterParam.getStrategyId());
+            case CommonAwards -> raffleDispatch.getRuleCommonAwardIdByRandom(filterParam.getStrategyId());
+            case LockAwards -> raffleDispatch.getRuleLockAwardIdByRandom(filterParam.getStrategyId());
+            case LockLongAwards -> raffleDispatch.getRuleLockLongAwardIdByRandom(filterParam.getStrategyId());
+            case BlacklistAward -> raffleDispatch.getWorstAwardId(filterParam.getStrategyId());
+            case GrandAward -> raffleDispatch.getRuleGrandAwardIdByRandom(filterParam.getStrategyId());
         };
 
         filterParam.setAwardId(awardId);

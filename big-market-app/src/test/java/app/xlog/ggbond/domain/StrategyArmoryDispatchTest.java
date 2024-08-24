@@ -1,7 +1,7 @@
 package app.xlog.ggbond.domain;
 
-import app.xlog.ggbond.raffle.service.armory.IStrategyArmory;
-import app.xlog.ggbond.raffle.service.armory.IStrategyDispatch;
+import app.xlog.ggbond.raffle.service.armory.IRaffleArmory;
+import app.xlog.ggbond.raffle.service.armory.IRaffleDispatch;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class StrategyArmoryDispatchTest {
     @Autowired
-    private IStrategyArmory strategyArmory;
+    private IRaffleArmory strategyArmory;
     @Autowired
-    private IStrategyDispatch strategyDispatch;
+    private IRaffleDispatch strategyDispatch;
 
     Logger logger = LoggerFactory.getLogger(StrategyArmoryDispatchTest.class);
 

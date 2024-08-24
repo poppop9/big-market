@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface IRaffleRepository {
     /**
-     * 装配策略
+     * 装配策略 ---------------------------------------------------------
      **/
     // 根据策略Id，装配对应的策略
     StrategyBO queryStrategys(Integer strategyId);
@@ -39,7 +39,6 @@ public interface IRaffleRepository {
     /**
      * 装配权重对象--------------------------------------------------------------
      **/
-
     // 将权重对象插入到Redis中，awardRule是奖品规则
     void insertWeightRandom(int strategyId, String awardRule, WeightRandom<Integer> wr);
 
@@ -55,15 +54,4 @@ public interface IRaffleRepository {
 
     WeightRandom<Integer> queryRuleGrandAwardIdByRandom(Integer strategyId);
 
-    /*
-    将扣减信息写入队列，缓慢更新数据库的库存数---------------------------------------
-     */
-    // 将扣减信息写入队列
-    void addDecrAwardCountToQueue(DecrQueueVO decrQueueVO);
-
-    // 查询出队列中的一个扣减信息
-    DecrQueueVO queryDecrAwardCountFromQueue();
-
-    // 根据策略id，奖品id，更新数据库中对应奖品的库存
-    void updateAwardCount(DecrQueueVO decrQueueVO);
 }
