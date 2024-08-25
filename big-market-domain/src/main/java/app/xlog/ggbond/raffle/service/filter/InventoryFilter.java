@@ -14,10 +14,11 @@ import app.xlog.ggbond.raffle.utils.SpringContextUtil;
 public class InventoryFilter implements RaffleFilter {
 
     private final IFilterRouter filterRouter = new FilterRouter();
-    private final IRaffleDispatch raffleDispatch = new RaffleArmoryDispatch();
+    private final IRaffleDispatch raffleDispatch;
     private final IAwardInventoryRepository awardInventoryRepository;
 
     public InventoryFilter() {
+        raffleDispatch = SpringContextUtil.getBean(IRaffleDispatch.class);
         awardInventoryRepository = SpringContextUtil.getBean(IAwardInventoryRepository.class);
     }
 

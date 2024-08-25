@@ -18,7 +18,7 @@
     </properties>
 
     <dependencies>
-        <!--工程模块-->
+        <!-- 工程模块 -->
         <dependency>
             <groupId>app.xlog.ggbond</groupId>
             <artifactId>big-market-domain</artifactId>

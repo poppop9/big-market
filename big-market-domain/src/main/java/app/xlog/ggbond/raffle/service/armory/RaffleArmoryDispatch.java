@@ -14,6 +14,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
+
     @Resource
     private IRaffleRepository raffleRepository;
     @Resource
@@ -145,7 +146,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     }
 
     /**
-    将该奖品从缓存中的所有抽奖池里移除
+     * 将该奖品从缓存中的所有抽奖池里移除
      */
     @Override
     public void removeAwardFromPools(Integer strategyId, Integer awardId) {

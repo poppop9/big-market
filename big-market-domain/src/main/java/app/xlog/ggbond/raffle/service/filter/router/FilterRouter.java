@@ -2,7 +2,6 @@ package app.xlog.ggbond.raffle.service.filter.router;
 
 import app.xlog.ggbond.raffle.model.vo.FilterParam;
 import app.xlog.ggbond.raffle.service.armory.IRaffleDispatch;
-import app.xlog.ggbond.raffle.service.armory.RaffleArmoryDispatch;
 import app.xlog.ggbond.raffle.utils.SpringContextUtil;
 
 public class FilterRouter implements IFilterRouter {
