@@ -54,22 +54,6 @@
             </dependency>
 
             <!-- 第三方依赖模块 -->
-<!--            <dependency>-->
-<!--                <groupId>org.springframework</groupId>-->
-<!--                <artifactId>spring-core</artifactId>-->
-<!--                <version>6.1.11</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>org.springframework</groupId>-->
-<!--                <artifactId>spring-context</artifactId>-->
-<!--                <version>6.1.11</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>org.springframework</groupId>-->
-<!--                <artifactId>spring-aspects</artifactId>-->
-<!--                <version>6.1.11</version>-->
-<!--            </dependency>-->
-
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
@@ -92,7 +76,7 @@
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
-                <version>3.32.0</version>
+                <version>3.35.0</version>
             </dependency>
             <!-- slf4j -->
             <dependency>

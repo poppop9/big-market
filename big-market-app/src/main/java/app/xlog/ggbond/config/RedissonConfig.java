@@ -13,15 +13,17 @@ public class RedissonConfig {
 //    @Value("${SecretKey.redis.password}")
 //    private String redisPassword;
 
+    @Value("${redis.address}")
+    private String redisAddress;
+
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
 
         //设置redis的地址，这里是单机模式
         config.useSingleServer()
-//                .setAddress("redis://redis-10676.c294.ap-northeast-1-2.ec2.redns.redis-cloud.com:10676")
 //                .setPassword(redisPassword)
-                .setAddress("redis://localhost:6379")
+                .setAddress(redisAddress)
                 // 设置连接池的大小，默认为64
                 .setConnectionPoolSize(64)
                 // 设置连接池的最小空闲连接数，默认为10

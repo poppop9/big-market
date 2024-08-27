@@ -67,21 +67,6 @@ public class MessTest {
         }
     }
 
-    // 测试toList
-    @Test
-    public void test_toList() {
-        List<String> list = new ArrayList<>();
-        list.add("a");
-        list.add("b");
-        list.add("c");
-
-        List<String> list1 = list.stream()
-                .toList();
-
-        List<String> collect = list1.stream()
-                .collect(Collectors.toList());
-    }
-
     // 测试布隆过滤器
     @Test
     public void test_BloomFilter() {

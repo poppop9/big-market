@@ -36,13 +36,12 @@ public class RaffleController implements IRaffleApiService {
      **/
     @GetMapping("/queryAwardList")
     public Response<JsonNode> queryAwardList(@RequestParam Integer strategyId) {
-        Assert.notNull(strategyId, "策略id不存在");
-
         List<ObjectNode> awardBOs = raffleService.queryAwardList(strategyId);
 
         log.atInfo().log("查询了策略 {} 的奖品列表", strategyId);
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
+                .info("调用成功")
                 .data(objectMapper.valueToTree(awardBOs))
                 .build();
     }
@@ -53,13 +52,11 @@ public class RaffleController implements IRaffleApiService {
     @GetMapping("/getAward")
     public Response<JsonNode> getAward(@RequestParam Integer userId,
                                        @RequestParam Integer strategyId) {
-        Assert.notNull(userId, "用户id不存在");
-        Assert.notNull(strategyId, "策略id不存在");
-
         Integer awardId = raffleService.getAward(userId, strategyId);
 
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
+                .info("调用成功")
                 .data(objectMapper.valueToTree(awardId))
                 .build();
     }

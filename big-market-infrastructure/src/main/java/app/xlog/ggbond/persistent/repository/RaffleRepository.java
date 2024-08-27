@@ -138,17 +138,16 @@ public class RaffleRepository implements IRaffleRepository {
         }
 
         List<AwardBO> awardBOs = queryCommonAwards(strategyId);
-        AwardBO awardBO = awardBOs.stream()
+        Optional<AwardBO> optional = awardBOs.stream()
                 .filter(
                         AwardBO -> AwardBO.getRules().contains("rule_common_blacklist")
                 )
-                .findFirst()
-                .get();
+                .findFirst();
 
         // 存入redis
-        bucket.set(awardBO);
+        bucket.set(optional.orElse(null));
 
-        return awardBO;
+        return optional.orElse(null);
     }
 
     @Override

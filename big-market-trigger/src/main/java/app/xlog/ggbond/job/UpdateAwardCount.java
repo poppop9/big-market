@@ -15,7 +15,7 @@ public class UpdateAwardCount {
     @Resource
     private IAwardInventoryRepository awardInventoryRepository;
 
-//    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0/5 * * * * ?")
     public void exec() {
         log.info("定时任务开始执行 - 将队列中的扣减信息取出");
         DecrQueueVO decrQueueVO = awardInventoryRepository.queryDecrAwardCountFromQueue();

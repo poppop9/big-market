@@ -131,6 +131,9 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     @Override
     public Integer getWorstAwardId(Integer strategyId) {
         AwardBO awardBO = raffleRepository.queryWorstAwardId(strategyId);
+        if (awardBO == null) {
+            return null;
+        }
         return awardBO.getAwardId();
     }
 

@@ -31,6 +31,10 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
     @Resource
     private AwardMapper awardMapper;
 
+    public AwardInventoryRepository() {
+        log.atInfo().log("AwardInventoryRepository 被实例化了");
+    }
+
     @Override
     public Boolean decreaseAwardCount(Integer strategyId, Integer awardId) {
         String cacheKey = "strategy_" + strategyId + "_awards_" + awardId + "_count";
