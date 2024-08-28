@@ -1,0 +1,29 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="VulnerableLibrariesLocal" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="isIgnoringEnabled" value="true" />
+      <option name="ignoredModules">
+        <list>
+          <option value="big-market-app" />
+          <option value="big-market-app" />
+          <option value="big-market-app" />
+        </list>
+      </option>
+      <option name="ignoredPackages">
+        <list>
+          <option value="com.jayway.jsonpath:json-path:2.8.0" />
+          <option value="ch.qos.logback:logback-classic:1.4.11" />
+          <option value="com.mysql:mysql-connector-j:8.1.0" />
+        </list>
+      </option>
+      <option name="ignoredReasons">
+        <list>
+          <option value="不可利用" />
+          <option value="不可利用" />
+          <option value="不可利用" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

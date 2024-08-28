@@ -1,0 +1,43 @@
+# 命令执行 docker-compose -f docker-compose-app.yml up -d
+
+x-variables:
+  big-market-version: 1962883041612/big-market:1.0.1
+  big-market-client-version: 1962883041612/big-market-client:1.0.1
+
+version: '3.8'
+services:
+  # 后端应用
+  big-market-app:
+    image: 1962883041612/big-market:1.0.1
+    container_name: big-market
+    restart: always
+    ports:
+      - "8080:8090"
+    environment:
+      - TZ=PRC
+    networks:
+      - big-market-network
+      - global-network
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+  # 前端应用
+  big-market-client:
+    image: 1962883041612/big-market-client:1.0.1
+    container_name: big-market-client
+    restart: always
+    networks:
+      - big-market-network
+      - global-network
+    ports:
+      - 5173:5173
+#    environment:
+#      - API_HOST_URL=http://127.0.0.1:8091
+#      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+networks:
+  big-market-network:
+    driver: bridge
+  global-network:
+    driver: bridge
