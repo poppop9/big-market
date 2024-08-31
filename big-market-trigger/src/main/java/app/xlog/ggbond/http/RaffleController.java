@@ -34,6 +34,7 @@ public class RaffleController implements IRaffleApiService {
     /**
      * 根据策略id，查询奖品列表
      **/
+    @Override
     @GetMapping("/queryAwardList")
     public Response<JsonNode> queryAwardList(@RequestParam Integer strategyId) {
         List<ObjectNode> awardBOs = raffleService.queryAwardList(strategyId);
@@ -49,6 +50,7 @@ public class RaffleController implements IRaffleApiService {
     /**
      * 根据策略id，抽取奖品
      **/
+    @Override
     @GetMapping("/getAward")
     public Response<JsonNode> getAward(@RequestParam Integer userId,
                                        @RequestParam Integer strategyId) {
