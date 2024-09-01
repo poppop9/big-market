@@ -17,4 +17,5 @@ public class StrategyRepositryTest {
         // 去掉随机积分奖品
         awardInventoryRepository.removeAwardFromPools(10001, 101);
     }
+
 }

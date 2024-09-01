@@ -27,12 +27,12 @@ import java.util.*;
  */
 @Repository
 public class RaffleRepository implements IRaffleRepository {
-    private static final Logger log = LoggerFactory.getLogger(RaffleRepository.class);
-    @Autowired
+
+    @Resource
     private RedissonClient redissonClient;
     @Resource
     private StrategyMapper strategyMapper;
-    @Autowired
+    @Resource
     private AwardMapper awardMapper;
 
     /**
@@ -89,7 +89,7 @@ public class RaffleRepository implements IRaffleRepository {
         // 先从缓存中取
         String cacheKey = "strategy_" + strategyId + "_awards_Lock";
         RList<AwardBO> rList = redissonClient.getList(cacheKey);
-        if (!rList.isEmpty() && rList != null) {
+        if (!rList.isEmpty()) {
             return rList;
         }
 
@@ -97,9 +97,7 @@ public class RaffleRepository implements IRaffleRepository {
         List<AwardBO> awardBOs = queryCommonAwards(strategyId);
         // 过滤
         List<AwardBO> awardRuleLockBOS = awardBOs.stream()
-                .filter(
-                        AwardBO -> !AwardBO.getRules().contains("rule_lock")
-                )
+                .filter(AwardBO -> !AwardBO.getRules().contains("rule_lock"))
                 .toList();
 
         // 存入redis
@@ -112,7 +110,7 @@ public class RaffleRepository implements IRaffleRepository {
     public List<AwardBO> queryRuleLockLongAwards(int strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_LockLong";
         RList<AwardBO> rList = redissonClient.getList(cacheKey);
-        if (!rList.isEmpty() && rList != null) {
+        if (!rList.isEmpty()) {
             return rList;
         }
 

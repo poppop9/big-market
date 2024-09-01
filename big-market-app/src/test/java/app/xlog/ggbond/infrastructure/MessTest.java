@@ -4,6 +4,7 @@ import app.xlog.ggbond.persistent.mapper.AwardMapper;
 import app.xlog.ggbond.persistent.mapper.StrategyMapper;
 import app.xlog.ggbond.persistent.po.Strategy;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
+import app.xlog.ggbond.raffle.model.vo.FilterParam;
 import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -137,5 +138,16 @@ public class MessTest {
 
         optional.or(() -> Optional.of("Hello world"));
 
+    }
+
+    /**
+     * 测试枚举的顺序
+     **/
+    @Test
+    void test_enumOrder() {
+        FilterParam.DispatchParam[] values = FilterParam.DispatchParam.values();
+        for (FilterParam.DispatchParam value : values) {
+            System.out.println(value);
+        }
     }
 }

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 // 这一定是最后一个前置过滤器，所以不用拦截
@@ -38,30 +39,33 @@ public class RaffleTimesRaffleFilter implements RaffleFilter {
      **/
     @Override
     public FilterParam filter(FilterParam filterParam) {
+        // 用户的抽奖次数 todo 到时候增加用户抽奖次数时，应该抽奖成功了次数才 +1，因为有可能抽奖会失败
         Integer raffleTimes = userService.queryRaffleTimesByUserId(filterParam.getUserId());
 
-        /**
-         * 策略规则
-         **/
+        /*
+          策略规则 - 优先
+         */
         StrategyBO strategyBO = raffleRepository.queryStrategys(filterParam.getStrategyId());
         try {
             Map<String, Integer> strategyRuleMap = objectMapper.readValue(
                             strategyBO.getRules(),
                             new TypeReference<Map<String, Integer>>() {
                             }
-                    )    // 将jsonNode对象，转Map
-                    .entrySet()  // 转entrySet，为过滤做准备
+                    )
+                    .entrySet()
                     .stream()
-                    // 过滤掉无效的-1值
-                    .filter(entry -> entry.getValue() != -1)
+                    .filter(entry -> entry.getValue() != -1)  // 过滤掉无效的 -1 值
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-            // todo 规则的先后怎么设置？ -> 目前能想到的就是：在数据库加优先级
+            // 规则的先后顺序 -> 就是数据库中 rules 里的 json 的先后顺序 -> json里在前，映射出来的map就在前，就会先遍历
             // 根据数据库，动态设定dispatchParam
-            for (FilterParam.DispatchParam dispatchParam : FilterParam.DispatchParam.values()) {
-                if (strategyRuleMap.containsKey(dispatchParam.getCode())) {
-                    filterParam.setDispatchParam(dispatchParam);
-                    return filterParam;
+            for (String key : strategyRuleMap.keySet()) {
+                Optional<FilterParam.DispatchParam> optional = FilterParam.DispatchParam.isExist(key);
+                if (optional.isPresent()) {
+                    if ((raffleTimes + 1) == strategyRuleMap.get(key)) {
+                        filterParam.setDispatchParam(optional.get());
+                        return filterParam;
+                    }
                 }
             }
         } catch (JsonProcessingException e) {

@@ -54,7 +54,6 @@ public class RaffleFilterChain {
           执行后置过滤器链
          */
         for (RaffleFilter raffleFilter : afterFilters) {
-            // todo 有个大问题 -> 如果黑名单拦截了，那将不会扣减库存
             // 如果上一个过滤器拦截了，那么就不再继续执行
             if (filterParam.getMiddleFilterParam() == FilterParam.MiddleFilterParam.INTERCEPT) {
                 break;

@@ -18,7 +18,6 @@ public class StrategyArmoryDispatchTest {
     Logger logger = LoggerFactory.getLogger(StrategyArmoryDispatchTest.class);
 
     // 装配对应策略的奖品，装配奖品的权重对象，装配所有对应策略的奖品库存
-    // todo 为什么没有装配，会把抽奖池里的奖品移除
     @Test
     public void testAssembleLotteryStrategy() {
         strategyArmory.assembleLotteryStrategyRuleCommon(10001);

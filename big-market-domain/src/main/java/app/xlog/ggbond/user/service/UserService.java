@@ -7,7 +7,7 @@ public class UserService implements IUserService {
 
     @Override
     public Boolean isBlacklistUser(Integer userId) {
-        // todo
+        // todo 用户为404，则是黑名单用户
         return userId == 404;
     }
 
