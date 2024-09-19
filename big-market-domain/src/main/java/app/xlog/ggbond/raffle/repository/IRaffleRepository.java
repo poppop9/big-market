@@ -1,9 +1,5 @@
 package app.xlog.ggbond.raffle.repository;
 
-/*
-策略仓库接口，被infrastructure层引入
- */
-
 import app.xlog.ggbond.raffle.model.AwardBO;
 import app.xlog.ggbond.raffle.model.StrategyBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
@@ -11,6 +7,9 @@ import cn.hutool.core.lang.WeightRandom;
 
 import java.util.List;
 
+/**
+ * 策略仓储接口
+ **/
 public interface IRaffleRepository {
     /**
      * 装配策略 ---------------------------------------------------------

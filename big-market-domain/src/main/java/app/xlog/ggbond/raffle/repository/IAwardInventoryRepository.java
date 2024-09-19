@@ -2,6 +2,9 @@ package app.xlog.ggbond.raffle.repository;
 
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 
+/**
+ * 奖品库存仓储接口
+ **/
 public interface IAwardInventoryRepository {
 
     /**
