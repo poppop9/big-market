@@ -6,21 +6,19 @@ import app.xlog.ggbond.persistent.po.Award;
 import app.xlog.ggbond.persistent.po.Strategy;
 import app.xlog.ggbond.raffle.model.AwardBO;
 import app.xlog.ggbond.raffle.model.StrategyBO;
-import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
-import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import jakarta.annotation.Resource;
-import org.redisson.api.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.redisson.api.RAtomicLong;
+import org.redisson.api.RBucket;
+import org.redisson.api.RList;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 /*
 策略仓库实现类
@@ -48,7 +46,7 @@ public class RaffleRepository implements IRaffleRepository {
         }
 
         QueryWrapper<Strategy> queryWrapper = new QueryWrapper<Strategy>()
-                .eq("strategy_id", strategyId);
+                .eq("strategyId", strategyId);
         Strategy strategy = strategyMapper.selectOne(queryWrapper);
 
         StrategyBO strategyBO = BeanUtil.copyProperties(strategy, StrategyBO.class);
@@ -72,7 +70,7 @@ public class RaffleRepository implements IRaffleRepository {
 
         // Redis缓存中不存在则查询数据库
         QueryWrapper<Award> queryWrapper = new QueryWrapper<Award>()
-                .eq("strategy_id", strategyId);
+                .eq("strategyId", strategyId);
 
         List<Award> awardPOs = awardMapper.selectList(queryWrapper);
         // 将PO转换为BO
@@ -152,7 +150,7 @@ public class RaffleRepository implements IRaffleRepository {
     public List<AwardBO> queryRuleGrandAwards(Integer strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_Grand";
         RList<AwardBO> rlist = redissonClient.getList(cacheKey);
-        if (!rlist.isEmpty() && rlist != null) {
+        if (!rlist.isEmpty()) {
             return rlist;
         }
 

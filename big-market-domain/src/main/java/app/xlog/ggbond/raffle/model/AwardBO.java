@@ -19,8 +19,8 @@ public class AwardBO {
     private Integer awardId;
     private String awardTitle;
     private String awardSubtitle;
-    private Integer awardCount;
-    private float awardRate;
+    private Long awardCount;
+    private Double awardRate;
     private Integer awardSort;
     private String rules;
 

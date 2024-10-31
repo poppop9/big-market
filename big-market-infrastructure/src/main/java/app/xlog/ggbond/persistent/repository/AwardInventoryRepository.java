@@ -2,6 +2,7 @@ package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.persistent.mapper.AwardMapper;
 import app.xlog.ggbond.persistent.po.Award;
+import app.xlog.ggbond.persistent.po.AwardRepository;
 import app.xlog.ggbond.raffle.model.AwardBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
@@ -30,7 +31,16 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
     private IRaffleRepository raffleRepository;
     @Resource
     private AwardMapper awardMapper;
+    @Resource
+    private AwardRepository awardRepository;
 
+    /**
+     * 更新奖品库存
+     *
+     * @param strategyId
+     * @param awardId
+     * @return
+     */
     @Override
     public Boolean decreaseAwardCount(Integer strategyId, Integer awardId) {
         String cacheKey = "strategy_" + strategyId + "_awards_" + awardId + "_count";
@@ -53,6 +63,9 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
         return false;
     }
 
+    /**
+     * 将该奖品从缓存中的所有抽奖池里移除
+     */
     @Override
     public void removeAwardFromPools(Integer strategyId, Integer awardId) {
         // 由于黑名单抽奖池在redis中只有一个对象，所以不用去除，黑名单用户就让他一直抽随机积分就好了，而且随机积分的库存绝对够
@@ -85,12 +98,11 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
                 case 1 -> {
                     List<WeightRandom.WeightObj<Integer>> weightObjs = raffleRepository.queryCommonAwards(strategyId).stream()
                             .filter(AwardBO -> !Objects.equals(AwardBO.getAwardId(), awardId))
-                            .map(
-                                    AwardBO -> new WeightRandom.WeightObj<>(
-                                            AwardBO.getAwardId(),
-                                            AwardBO.getAwardRate()
-                                    )
-                            ).toList();
+                            .map(AwardBO -> new WeightRandom.WeightObj<>(
+                                    AwardBO.getAwardId(),
+                                    AwardBO.getAwardRate()
+                            ))
+                            .toList();
                     WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
                     redissonClient.getBucket(cacheKey.getValue()).set(wr);
 
@@ -99,12 +111,11 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
                 case 2 -> {
                     List<WeightRandom.WeightObj<Integer>> weightObjs = raffleRepository.queryRuleLockAwards(strategyId).stream()
                             .filter(AwardBO -> Objects.equals(AwardBO.getAwardId(), awardId))
-                            .map(
-                                    AwardBO -> new WeightRandom.WeightObj<>(
-                                            AwardBO.getAwardId(),
-                                            AwardBO.getAwardRate()
-                                    )
-                            ).toList();
+                            .map(AwardBO -> new WeightRandom.WeightObj<>(
+                                    AwardBO.getAwardId(),
+                                    AwardBO.getAwardRate()
+                            ))
+                            .toList();
                     WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
                     redissonClient.getBucket(cacheKey.getValue()).set(wr);
 
@@ -113,12 +124,11 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
                 case 3 -> {
                     List<WeightRandom.WeightObj<Integer>> weightObjs = raffleRepository.queryRuleLockLongAwards(strategyId).stream()
                             .filter(AwardBO -> Objects.equals(AwardBO.getAwardId(), awardId))
-                            .map(
-                                    AwardBO -> new WeightRandom.WeightObj<>(
-                                            AwardBO.getAwardId(),
-                                            AwardBO.getAwardRate()
-                                    )
-                            ).toList();
+                            .map(AwardBO -> new WeightRandom.WeightObj<>(
+                                    AwardBO.getAwardId(),
+                                    AwardBO.getAwardRate()
+                            ))
+                            .toList();
                     WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
                     redissonClient.getBucket(cacheKey.getValue()).set(wr);
 
@@ -127,12 +137,11 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
                 case 4 -> {
                     List<WeightRandom.WeightObj<Integer>> weightObjs = raffleRepository.queryRuleGrandAwards(strategyId).stream()
                             .filter(awardBO -> Objects.equals(awardBO.getAwardId(), awardId))
-                            .map(
-                                    AwardBO -> new WeightRandom.WeightObj<>(
-                                            AwardBO.getAwardId(),
-                                            AwardBO.getAwardRate()
-                                    )
-                            ).toList();
+                            .map(AwardBO -> new WeightRandom.WeightObj<>(
+                                    AwardBO.getAwardId(),
+                                    AwardBO.getAwardRate()
+                            ))
+                            .toList();
                     WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
                     redissonClient.getBucket(cacheKey.getValue()).set(wr);
 
@@ -150,19 +159,25 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
         rQueue.add(decrQueueVO);
     }
 
+    /**
+     * 查询出队列中的一个扣减信息
+     */
     @Override
     public DecrQueueVO queryDecrAwardCountFromQueue() {
         RQueue<Object> rQueue = redissonClient.getQueue("awards_DecrQueue");
         return (DecrQueueVO) rQueue.poll();
     }
 
+    /**
+     * 根据策略id，奖品id，更新数据库中对应奖品的库存
+     *
+     * @param decrQueueVO 队列中的一个扣减信息
+     */
     @Override
     public void updateAwardCount(DecrQueueVO decrQueueVO) {
-        UpdateWrapper<Award> updateWrapper = new UpdateWrapper<Award>()
-                .setSql("award_count = award_count - 1")
-                .eq("strategy_id", decrQueueVO.getStrategyId())
-                .eq("award_id", decrQueueVO.getAwardId());
-
-        awardMapper.update(null, updateWrapper);
+        awardRepository.decrementAwardCountByStrategyIdAndAwardId(
+                decrQueueVO.getStrategyId(),
+                decrQueueVO.getAwardId()
+        );
     }
 }

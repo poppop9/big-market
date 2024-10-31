@@ -13,9 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Response<T> implements Serializable {
-
     private HttpStatus status;
     private String info;
     private T data;
-
 }

@@ -36,8 +36,6 @@ public class MessTest {
     @Resource
     private RedissonClient redissonClient;
     @Resource
-    private IRaffleRepository strategyRepository;
-    @Resource
     private IAwardInventoryRepository awardInventoryRepository;
     @Autowired
     private ObjectMapper objectMapper;

@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class FilterChainConfig {
-
     @Bean
     public RaffleFilterChain filterChain() {
         // 在这里构建过滤器链
