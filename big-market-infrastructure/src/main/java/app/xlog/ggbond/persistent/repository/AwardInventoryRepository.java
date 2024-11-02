@@ -1,15 +1,11 @@
 package app.xlog.ggbond.persistent.repository;
 
-import app.xlog.ggbond.persistent.mapper.AwardMapper;
-import app.xlog.ggbond.persistent.po.Award;
-import app.xlog.ggbond.persistent.po.AwardRepository;
 import app.xlog.ggbond.raffle.model.AwardBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import jakarta.annotation.Resource;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RList;
@@ -29,8 +25,6 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
     private RedissonClient redissonClient;
     @Resource
     private IRaffleRepository raffleRepository;
-    @Resource
-    private AwardMapper awardMapper;
     @Resource
     private AwardRepository awardRepository;
 

@@ -1,15 +1,10 @@
 package app.xlog.ggbond.persistent.repository;
 
-import app.xlog.ggbond.persistent.mapper.AwardMapper;
-import app.xlog.ggbond.persistent.mapper.StrategyMapper;
-import app.xlog.ggbond.persistent.po.Award;
-import app.xlog.ggbond.persistent.po.Strategy;
 import app.xlog.ggbond.raffle.model.AwardBO;
 import app.xlog.ggbond.raffle.model.StrategyBO;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBucket;
@@ -29,27 +24,24 @@ public class RaffleRepository implements IRaffleRepository {
     @Resource
     private RedissonClient redissonClient;
     @Resource
-    private StrategyMapper strategyMapper;
+    private StrategyRepository strategyRepository;
     @Resource
-    private AwardMapper awardMapper;
+    private AwardRepository awardRepository;
 
     /**
      * 装配策略
      **/
     @Override
     public StrategyBO queryStrategys(Integer strategyId) {
-        String cacheKey = "strategy_" + strategyId;
-
-        RBucket<Object> bucket = redissonClient.getBucket(cacheKey);
+        RBucket<Object> bucket = redissonClient.getBucket("strategy_" + strategyId);
         if (bucket.isExists()) {
             return (StrategyBO) bucket.get();
         }
 
-        QueryWrapper<Strategy> queryWrapper = new QueryWrapper<Strategy>()
-                .eq("strategyId", strategyId);
-        Strategy strategy = strategyMapper.selectOne(queryWrapper);
-
-        StrategyBO strategyBO = BeanUtil.copyProperties(strategy, StrategyBO.class);
+        StrategyBO strategyBO = BeanUtil.copyProperties(
+                strategyRepository.findByStrategyId(strategyId),
+                StrategyBO.class
+        );
         bucket.set(strategyBO);
 
         return strategyBO;
@@ -60,22 +52,17 @@ public class RaffleRepository implements IRaffleRepository {
      **/
     @Override
     public List<AwardBO> queryCommonAwards(int strategyId) {
-        String cacheKey = "strategy_" + strategyId + "_awards_Common";
-
         // Redis缓存中存在则直接返回
-        RList<AwardBO> rList = redissonClient.getList(cacheKey);
+        RList<AwardBO> rList = redissonClient.getList("strategy_" + strategyId + "_awards_Common");
         if (!rList.isEmpty()) {
             return rList;
         }
 
-        // Redis缓存中不存在则查询数据库
-        QueryWrapper<Award> queryWrapper = new QueryWrapper<Award>()
-                .eq("strategyId", strategyId);
-
-        List<Award> awardPOs = awardMapper.selectList(queryWrapper);
         // 将PO转换为BO
-        List<AwardBO> awardBOS = BeanUtil.copyToList(awardPOs, AwardBO.class);
-
+        List<AwardBO> awardBOS = BeanUtil.copyToList(
+                awardRepository.findByStrategyId(strategyId),
+                AwardBO.class
+        );
         // 将查询结果存入Redis缓存
         rList.addAll(awardBOS);
 
@@ -92,9 +79,7 @@ public class RaffleRepository implements IRaffleRepository {
         }
 
         // 缓存中没有则查询数据库
-        List<AwardBO> awardBOs = queryCommonAwards(strategyId);
-        // 过滤
-        List<AwardBO> awardRuleLockBOS = awardBOs.stream()
+        List<AwardBO> awardRuleLockBOS = queryCommonAwards(strategyId).stream()
                 .filter(AwardBO -> !AwardBO.getRules().contains("rule_lock"))
                 .toList();
 

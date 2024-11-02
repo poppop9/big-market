@@ -1,40 +1,35 @@
 package app.xlog.ggbond.infrastructure;
 
-import app.xlog.ggbond.persistent.mapper.AwardMapper;
-import app.xlog.ggbond.persistent.mapper.StrategyMapper;
 import app.xlog.ggbond.persistent.po.Strategy;
+import app.xlog.ggbond.persistent.repository.StrategyRepository;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.model.vo.FilterParam;
 import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
-import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+@Slf4j
 @SpringBootTest
 public class MessTest {
-    private static final Logger log = LoggerFactory.getLogger(MessTest.class);
-    @Autowired
-    private AwardMapper awardMapper;
-    @Autowired
-    private StrategyMapper strategyMapper;
+
     @Resource
     private RedissonClient redissonClient;
+    @Resource
+    private StrategyRepository strategyRepository;
+
     @Resource
     private IAwardInventoryRepository awardInventoryRepository;
     @Autowired
@@ -44,7 +39,8 @@ public class MessTest {
     @Test
     public void testJsonToMap() throws JsonProcessingException {
         // 查出所有的strategy
-        List<Strategy> strategies = strategyMapper.selectList(null);
+        List<Strategy> strategies = strategyRepository.findAll();
+
         // 只需要strategie属性中的rule，rules是所有规则字符串的集合
         List<String> rules = strategies.stream()
                 .map(Strategy::getRules)
