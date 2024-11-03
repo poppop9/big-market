@@ -7,6 +7,7 @@ import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RList;
 import org.redisson.api.RQueue;

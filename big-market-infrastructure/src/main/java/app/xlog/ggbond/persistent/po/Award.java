@@ -1,10 +1,7 @@
 package app.xlog.ggbond.persistent.po;
 
 import app.xlog.ggbond.raffle.utils.SpringContextUtil;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import cn.zhxu.bs.bean.SearchBean;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -25,24 +22,34 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "Award")
-@TableName("Award")
 public class Award {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @TableId(type = IdType.AUTO)
     private Long id;
 
+    @Column(name = "strategyId")
     private Integer strategyId;  // 策略id
+    @Column(name = "awardId")
     private Integer awardId;  // 奖品id
+    @Column(name = "awardKey")
     private String awardKey;  //
+    @Column(name = "awardConfig")
     private String awardConfig;  //
+    @Column(name = "awardTitle")
     private String awardTitle;  // 奖品标题
+    @Column(name = "awardSubtitle")
     private String awardSubtitle;  // 奖品副标题
+    @Column(name = "awardCount")
     private Long awardCount;  // 奖品库存
+    @Column(name = "awardRate")
     private Double awardRate;  // 奖品被抽取到的概率，单位是%
+    @Column(name = "awardSort")
     private Integer awardSort;  // 奖品在前端的排序
+    @Column(name = "rules")
     private String rules;  // 配置一些规则，数据类型是json，比如 { "rule_lock": "20" }，还有 { "rule_common_blacklist": "-1" }
+    @Column(name = "createTime")
     private LocalDateTime createTime;
+    @Column(name = "updateTime")
     private LocalDateTime updateTime;
 
     /**

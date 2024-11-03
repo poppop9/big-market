@@ -1,9 +1,5 @@
 package app.xlog.ggbond.persistent.po;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,11 +17,9 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "Strategy")
-@TableName("Strategy")
 public class Strategy {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     private Integer strategyId;  // 策略id
