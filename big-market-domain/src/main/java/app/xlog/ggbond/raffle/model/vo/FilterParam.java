@@ -18,15 +18,15 @@ public class FilterParam {
      **/
     private MiddleFilterParam middleFilterParam = MiddleFilterParam.PASS;
     // 用户id，需要判断是否是黑名单用户，还要判断用户的抽奖次数
-    private Integer UserId;
+    private Long UserId;
     // 策略id，需要根据策略id来判断到底是哪些奖品
-    private Integer StrategyId;
+    private Long StrategyId;
 
     /**
      * 过滤结果
      **/
     private DispatchParam dispatchParam;
-    private Integer awardId;
+    private Long awardId;
 
     // 每一个过滤器的返回值
     @Getter
@@ -57,7 +57,6 @@ public class FilterParam {
         /*
         后置过滤器的拦截值
          */
-
         private final String code;
         private final String info;
 

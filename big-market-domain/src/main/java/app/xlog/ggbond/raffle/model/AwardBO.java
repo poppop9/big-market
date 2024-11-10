@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AwardBO {
-    private Integer strategyId;
-    private Integer awardId;
+    private Long strategyId;
+    private Long awardId;
     private String awardTitle;
     private String awardSubtitle;
     private Long awardCount;

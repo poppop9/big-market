@@ -32,7 +32,7 @@ public class RaffleRepository implements IRaffleRepository {
      * 装配策略
      **/
     @Override
-    public StrategyBO queryStrategys(Integer strategyId) {
+    public StrategyBO queryStrategys(Long strategyId) {
         RBucket<Object> bucket = redissonClient.getBucket("strategy_" + strategyId);
         if (bucket.isExists()) {
             return (StrategyBO) bucket.get();
@@ -51,7 +51,7 @@ public class RaffleRepository implements IRaffleRepository {
      * 将数据库中的数据查询出来装配到 redis
      **/
     @Override
-    public List<AwardBO> queryCommonAwards(int strategyId) {
+    public List<AwardBO> queryCommonAwards(Long strategyId) {
         // Redis缓存中存在则直接返回
         RList<AwardBO> rList = redissonClient.getList("strategy_" + strategyId + "_awards_Common");
         if (!rList.isEmpty()) {
@@ -70,7 +70,7 @@ public class RaffleRepository implements IRaffleRepository {
     }
 
     @Override
-    public List<AwardBO> queryRuleLockAwards(int strategyId) {
+    public List<AwardBO> queryRuleLockAwards(Long strategyId) {
         // 先从缓存中取
         String cacheKey = "strategy_" + strategyId + "_awards_Lock";
         RList<AwardBO> rList = redissonClient.getList(cacheKey);
@@ -90,7 +90,7 @@ public class RaffleRepository implements IRaffleRepository {
     }
 
     @Override
-    public List<AwardBO> queryRuleLockLongAwards(int strategyId) {
+    public List<AwardBO> queryRuleLockLongAwards(Long strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_LockLong";
         RList<AwardBO> rList = redissonClient.getList(cacheKey);
         if (!rList.isEmpty()) {
@@ -110,7 +110,7 @@ public class RaffleRepository implements IRaffleRepository {
     }
 
     @Override
-    public AwardBO queryWorstAwardId(Integer strategyId) {
+    public AwardBO queryWorstAwardId(Long strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_Blacklist";
         // 由于黑名单奖品只有一个，所以不用rList
         RBucket<Object> bucket = redissonClient.getBucket(cacheKey);
@@ -132,7 +132,7 @@ public class RaffleRepository implements IRaffleRepository {
     }
 
     @Override
-    public List<AwardBO> queryRuleGrandAwards(Integer strategyId) {
+    public List<AwardBO> queryRuleGrandAwards(Long strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_Grand";
         RList<AwardBO> rlist = redissonClient.getList(cacheKey);
         if (!rlist.isEmpty()) {
@@ -152,7 +152,7 @@ public class RaffleRepository implements IRaffleRepository {
     }
 
     @Override
-    public void assembleAwardsCount(Integer strategyId) {
+    public void assembleAwardsCount(Long strategyId) {
         List<AwardBO> awardBOS = queryCommonAwards(strategyId);
         for (AwardBO awardBO : awardBOS) {
             String cacheKey = "strategy_" + strategyId + "_awards_" + awardBO.getAwardId() + "_count";
@@ -169,14 +169,14 @@ public class RaffleRepository implements IRaffleRepository {
      **/
     // 将权重对象插入到Redis中
     @Override
-    public void insertWeightRandom(int strategyId, String awardRule, WeightRandom<Integer> wr) {
+    public void insertWeightRandom(Long strategyId, String awardRule, WeightRandom<Long> wr) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_" + awardRule;
         redissonClient.getBucket(cacheKey).set(wr);
     }
 
     // 更新权重对象
     @Override
-    public void updateWeightRandom(int strategyId, String awardRule, WeightRandom<Integer> wr) {
+    public void updateWeightRandom(Long strategyId, String awardRule, WeightRandom<Long> wr) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_" + awardRule;
         RBucket<Object> bucket = redissonClient.getBucket(cacheKey);
         if (bucket.isExists()) {
@@ -186,28 +186,28 @@ public class RaffleRepository implements IRaffleRepository {
 
     // 根据策略ID，从redis中查询权重对象
     @Override
-    public WeightRandom<Integer> queryRuleCommonWeightRandom(int strategyId) {
+    public WeightRandom<Long> queryRuleCommonWeightRandom(Long strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_Common";
-        return (WeightRandom<Integer>) redissonClient.getBucket(cacheKey).get();
+        return (WeightRandom<Long>) redissonClient.getBucket(cacheKey).get();
     }
 
     // 根据策略ID，从redis中查询除去锁定的权重对象
     @Override
-    public WeightRandom<Integer> queryRuleLockWeightRandom(int strategyId) {
+    public WeightRandom<Long> queryRuleLockWeightRandom(Long strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_Lock";
-        return (WeightRandom<Integer>) redissonClient.getBucket(cacheKey).get();
+        return (WeightRandom<Long>) redissonClient.getBucket(cacheKey).get();
     }
 
     @Override
-    public WeightRandom<Integer> queryRuleLockLongWeightRandom(Integer strategyId) {
+    public WeightRandom<Long> queryRuleLockLongWeightRandom(Long strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_LockLong";
-        return (WeightRandom<Integer>) redissonClient.getBucket(cacheKey).get();
+        return (WeightRandom<Long>) redissonClient.getBucket(cacheKey).get();
     }
 
     @Override
-    public WeightRandom<Integer> queryRuleGrandAwardIdByRandom(Integer strategyId) {
+    public WeightRandom<Long> queryRuleGrandAwardIdByRandom(Long strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_Grand";
-        return (WeightRandom<Integer>) redissonClient.getBucket(cacheKey).get();
+        return (WeightRandom<Long>) redissonClient.getBucket(cacheKey).get();
     }
 
 }

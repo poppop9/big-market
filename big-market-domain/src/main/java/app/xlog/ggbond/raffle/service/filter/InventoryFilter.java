@@ -4,7 +4,6 @@ import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.model.vo.FilterParam;
 import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
 import app.xlog.ggbond.raffle.service.armory.IRaffleDispatch;
-import app.xlog.ggbond.raffle.service.armory.RaffleArmoryDispatch;
 import app.xlog.ggbond.raffle.service.filter.router.FilterRouter;
 import app.xlog.ggbond.raffle.service.filter.router.IFilterRouter;
 import app.xlog.ggbond.raffle.utils.SpringContextUtil;
@@ -39,11 +38,10 @@ public class InventoryFilter implements RaffleFilter {
         filterParam.setMiddleFilterParam(FilterParam.MiddleFilterParam.PASS);
 
         // 将扣减信息写入队列
-        awardInventoryRepository.addDecrAwardCountToQueue(
-                DecrQueueVO.builder()
-                        .strategyId(filterParam.getStrategyId())
-                        .awardId(filterParam.getAwardId())
-                        .build()
+        awardInventoryRepository.addDecrAwardCountToQueue(DecrQueueVO.builder()
+                .strategyId(filterParam.getStrategyId())
+                .awardId(filterParam.getAwardId())
+                .build()
         );
 
         return filterParam;

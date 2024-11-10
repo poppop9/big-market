@@ -22,7 +22,7 @@ public class Strategy {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Integer strategyId;  // 策略id
+    private Long strategyId;  // 策略id
     private String strategyDesc;  // 策略描述
     private String rules;  // 策略的规则，json格式
     private LocalDateTime createTime;

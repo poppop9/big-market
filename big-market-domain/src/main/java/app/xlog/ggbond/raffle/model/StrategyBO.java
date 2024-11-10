@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StrategyBO {
-    private Integer strategyId;
+    private Long strategyId;
     private String rules;
 }

@@ -18,10 +18,10 @@ public interface AwardRepository extends JpaRepository<Award, Long> {
             "SET a.awardCount = a.awardCount - 1 " +
             "WHERE a.strategyId = :strategyId " +
             "AND a.awardId = :awardId")
-    void decrementAwardCountByStrategyIdAndAwardId(Integer strategyId, Integer awardId);
+    void decrementAwardCountByStrategyIdAndAwardId(Long strategyId, Long awardId);
 
     @Query("select a from Award a where a.strategyId = ?1")
-    List<Award> findByStrategyId(Integer strategyId);
+    List<Award> findByStrategyId(Long strategyId);
 
     @Query("select a from Award a where a.awardCount between ?1 and ?2")
     List<Award> findByAwardCountBetween(Long awardCountStart, Long awardCountEnd);

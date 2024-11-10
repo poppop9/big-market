@@ -15,7 +15,7 @@ public class StrategyRepositryTest {
     @Test
     public void test_removeAwardFromPools() {
         // 去掉随机积分奖品
-        awardInventoryRepository.removeAwardFromPools(10001, 101);
+        awardInventoryRepository.removeAwardFromPools(10001L, 101L);
     }
 
 }

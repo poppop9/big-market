@@ -15,42 +15,42 @@ public interface IRaffleRepository {
      * 装配策略 ---------------------------------------------------------
      **/
     // 根据策略Id，装配对应的策略
-    StrategyBO queryStrategys(Integer strategyId);
+    StrategyBO queryStrategys(Long strategyId);
 
     /**
      * 装配，查询奖品-----------------------------------------------------------
      **/
     // 查询对应策略的所有奖品，并缓存到redis
-    List<AwardBO> queryCommonAwards(int strategyId);
+    List<AwardBO> queryCommonAwards(Long strategyId);
 
     // 根据策略ID，查询锁定奖品
-    List<AwardBO> queryRuleLockAwards(int strategyId);
+    List<AwardBO> queryRuleLockAwards(Long strategyId);
 
-    List<AwardBO> queryRuleLockLongAwards(int strategyId);
+    List<AwardBO> queryRuleLockLongAwards(Long strategyId);
 
-    AwardBO queryWorstAwardId(Integer strategyId);
+    AwardBO queryWorstAwardId(Long strategyId);
 
-    List<AwardBO> queryRuleGrandAwards(Integer strategyId);
+    List<AwardBO> queryRuleGrandAwards(Long strategyId);
 
-    void assembleAwardsCount(Integer strategyId);
+    void assembleAwardsCount(Long strategyId);
 
 
     /**
      * 装配权重对象--------------------------------------------------------------
      **/
     // 将权重对象插入到Redis中，awardRule是奖品规则
-    void insertWeightRandom(int strategyId, String awardRule, WeightRandom<Integer> wr);
+    void insertWeightRandom(Long strategyId, String awardRule, WeightRandom<Long> wr);
 
-    void updateWeightRandom(int strategyId, String awardRule, WeightRandom<Integer> wr);
+    void updateWeightRandom(Long strategyId, String awardRule, WeightRandom<Long> wr);
 
     // 从redis中取出所有奖品的权重对象
-    WeightRandom<Integer> queryRuleCommonWeightRandom(int strategyId);
+    WeightRandom<Long> queryRuleCommonWeightRandom(Long strategyId);
 
     // 从redis中取出除去锁定奖品的权重对象
-    WeightRandom<Integer> queryRuleLockWeightRandom(int strategyId);
+    WeightRandom<Long> queryRuleLockWeightRandom(Long strategyId);
 
-    WeightRandom<Integer> queryRuleLockLongWeightRandom(Integer strategyId);
+    WeightRandom<Long> queryRuleLockLongWeightRandom(Long strategyId);
 
-    WeightRandom<Integer> queryRuleGrandAwardIdByRandom(Integer strategyId);
+    WeightRandom<Long> queryRuleGrandAwardIdByRandom(Long strategyId);
 
 }

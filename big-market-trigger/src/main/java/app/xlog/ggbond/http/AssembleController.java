@@ -7,10 +7,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 装配奖品池
@@ -28,19 +29,19 @@ public class AssembleController implements IAssembleApiService {
     @Override
     @GetMapping("/v1/assembleRaffleAll")
     public Response<JsonNode> assembleRaffleAll(@RequestParam Integer strategyId) {
-        strategyArmory.assembleLotteryStrategyRuleCommon(10001);
+        strategyArmory.assembleLotteryStrategyRuleCommon(10001L);
         log.atInfo().log("装配策略10001的全奖品完成");
 
-        strategyArmory.assembleLotteryStrategyRuleLock(10001);
+        strategyArmory.assembleLotteryStrategyRuleLock(10001L);
         log.atInfo().log("装配策略10001的除锁定奖品完成");
 
-        strategyArmory.assembleLotteryStrategyRuleLockLong(10001);
+        strategyArmory.assembleLotteryStrategyRuleLockLong(10001L);
         log.atInfo().log("装配策略10001的除最后一个奖品完成");
 
-        strategyArmory.assembleLotteryStrategyRuleGrand(10001);
+        strategyArmory.assembleLotteryStrategyRuleGrand(10001L);
         log.atInfo().log("装配策略10001的大奖池完成");
 
-        strategyArmory.assembleLotteryStrategyAwardCount(10001);
+        strategyArmory.assembleLotteryStrategyAwardCount(10001L);
         log.atInfo().log("装配策略10001的奖品库存完成");
 
         return Response.<JsonNode>builder()

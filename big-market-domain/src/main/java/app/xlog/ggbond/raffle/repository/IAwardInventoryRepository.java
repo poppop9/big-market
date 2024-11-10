@@ -10,12 +10,12 @@ public interface IAwardInventoryRepository {
     /**
      * 更新奖品库存
      */
-    Boolean decreaseAwardCount(Integer strategyId, Integer awardId);
+    Boolean decreaseAwardCount(Long strategyId, Long awardId);
 
     /**
      * 将该奖品从缓存中的所有抽奖池里移除
      */
-    void removeAwardFromPools(Integer strategyId, Integer awardId);
+    void removeAwardFromPools(Long strategyId, Long awardId);
 
 
     /**

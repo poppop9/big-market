@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class SpringContextUtil implements ApplicationContextAware {
 
-    private static final Logger log = LoggerFactory.getLogger(SpringContextUtil.class);
     private static ApplicationContext context;
 
     @Override

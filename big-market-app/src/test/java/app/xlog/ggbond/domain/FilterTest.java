@@ -6,6 +6,7 @@ import app.xlog.ggbond.raffle.service.filter.InventoryFilter;
 import app.xlog.ggbond.raffle.service.filter.RaffleFilterChain;
 import app.xlog.ggbond.raffle.service.filter.RaffleTimesRaffleFilter;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.concurrent.CountDownLatch;
 
-
+@Slf4j
 @SpringBootTest
 public class FilterTest {
-    private static final Logger log = LoggerFactory.getLogger(FilterTest.class);
 
     @Resource
     private RaffleFilterChain raffleFilterChain;

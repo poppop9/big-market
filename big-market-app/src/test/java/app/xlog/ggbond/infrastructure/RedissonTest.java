@@ -1,22 +1,18 @@
 package app.xlog.ggbond.infrastructure;
 
-import app.xlog.ggbond.domain.StrategyArmoryDispatchTest;
-import app.xlog.ggbond.raffle.model.AwardBO;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RBucket;
-import org.redisson.api.RList;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
 import org.redisson.api.listener.ListAddListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 
+@Slf4j
 @SpringBootTest
 public class RedissonTest {
 
-    private static final Logger log = LoggerFactory.getLogger(RedissonTest.class);
     @Resource
     private RedissonClient redissonClient;
 

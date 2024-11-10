@@ -16,7 +16,7 @@ public class FilterRouter implements IFilterRouter {
     @Override
     public FilterParam filterRouter(FilterParam filterParam) {
         // 增强switch
-        Integer awardId = switch (filterParam.getDispatchParam()) {
+        Long awardId = switch (filterParam.getDispatchParam()) {
             case CommonAwards -> raffleDispatch.getRuleCommonAwardIdByRandom(filterParam.getStrategyId());
             case LockAwards -> raffleDispatch.getRuleLockAwardIdByRandom(filterParam.getStrategyId());
             case LockLongAwards -> raffleDispatch.getRuleLockLongAwardIdByRandom(filterParam.getStrategyId());

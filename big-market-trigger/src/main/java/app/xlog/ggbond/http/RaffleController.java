@@ -36,7 +36,7 @@ public class RaffleController implements IRaffleApiService {
      **/
     @Override
     @GetMapping("/v1/queryAwardList")
-    public Response<JsonNode> queryAwardList(@RequestParam Integer strategyId) {
+    public Response<JsonNode> queryAwardList(@RequestParam Long strategyId) {
         List<ObjectNode> awardBOs = raffleService.queryAwardList(strategyId);
 
         log.atInfo().log("查询了策略 {} 的奖品列表", strategyId);
@@ -52,9 +52,9 @@ public class RaffleController implements IRaffleApiService {
      **/
     @Override
     @GetMapping("/v1/getAward")
-    public Response<JsonNode> getAward(@RequestParam Integer userId,
-                                       @RequestParam Integer strategyId) {
-        Integer awardId = raffleService.getAward(userId, strategyId);
+    public Response<JsonNode> getAward(@RequestParam Long userId,
+                                       @RequestParam Long strategyId) {
+        Long awardId = raffleService.getAward(userId, strategyId);
 
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)

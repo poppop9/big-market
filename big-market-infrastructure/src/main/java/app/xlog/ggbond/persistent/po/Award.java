@@ -28,9 +28,9 @@ public class Award {
     private Long id;
 
     @Column(name = "strategyId")
-    private Integer strategyId;  // 策略id
+    private Long strategyId;  // 策略id
     @Column(name = "awardId")
-    private Integer awardId;  // 奖品id
+    private Long awardId;  // 奖品id
     @Column(name = "awardKey")
     private String awardKey;  //
     @Column(name = "awardConfig")

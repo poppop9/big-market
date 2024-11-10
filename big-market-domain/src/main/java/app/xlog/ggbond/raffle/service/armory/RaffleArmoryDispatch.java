@@ -28,19 +28,19 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
             - rule_lock_long：锁出最后一个奖品，8个奖品可以抽
      */
     @Override
-    public void assembleLotteryStrategyRuleCommon(Integer strategyId) {
+    public void assembleLotteryStrategyRuleCommon(Long strategyId) {
         // 1.查询对应策略的所有奖品，并缓存到redis
         List<AwardBO> awardBOs = raffleRepository.queryCommonAwards(strategyId);
 
         // 2. 将awards的awardId和awardRate封装成一个WeightRandom对象
-        List<WeightRandom.WeightObj<Integer>> weightObjs = awardBOs.stream()
+        List<WeightRandom.WeightObj<Long>> weightObjs = awardBOs.stream()
                 // 操作每一个AwardBO，将AwardId，和AwardRate封装成WeightObj对象
                 .map(AwardBO -> new WeightRandom.WeightObj<>(
                         AwardBO.getAwardId(),
                         AwardBO.getAwardRate())
                 ).toList();
 
-        WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
+        WeightRandom<Long> wr = RandomUtil.weightRandom(weightObjs);
 
         // 3. 将WeightRandom对象存入redis
         raffleRepository.insertWeightRandom(strategyId, "Common", wr);
@@ -48,19 +48,19 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     }
 
     @Override
-    public void assembleLotteryStrategyRuleLock(Integer strategyId) {
+    public void assembleLotteryStrategyRuleLock(Long strategyId) {
         // 拿到除去锁定的所有的奖品
         List<AwardBO> awardRuleLockBOS = raffleRepository.queryRuleLockAwards(strategyId);
 
         // 生成WeightRandom对象，存入redis中
-        List<WeightRandom.WeightObj<Integer>> weightObjs = awardRuleLockBOS.stream()
+        List<WeightRandom.WeightObj<Long>> weightObjs = awardRuleLockBOS.stream()
                 // 操作每一个AwardBO，将AwardId，和AwardRate封装成WeightObj对象
                 .map(AwardBO -> {
                     return new WeightRandom.WeightObj<>(AwardBO.getAwardId(),
                             AwardBO.getAwardRate());
                 }).toList();
 
-        WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
+        WeightRandom<Long> wr = RandomUtil.weightRandom(weightObjs);
 
         // 将新的WeightRandom对象存入redis，方便后续抽奖调用
         raffleRepository.insertWeightRandom(strategyId, "Lock", wr);
@@ -68,38 +68,38 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     }
 
     @Override
-    public void assembleLotteryStrategyRuleLockLong(Integer strategyId) {
+    public void assembleLotteryStrategyRuleLockLong(Long strategyId) {
         List<AwardBO> awardRuleLockLongBOS = raffleRepository.queryRuleLockLongAwards(strategyId);
 
-        List<WeightRandom.WeightObj<Integer>> weightObjs = awardRuleLockLongBOS.stream()
+        List<WeightRandom.WeightObj<Long>> weightObjs = awardRuleLockLongBOS.stream()
                 .map(AwardBO -> {
                     return new WeightRandom.WeightObj<>(AwardBO.getAwardId(),
                             AwardBO.getAwardRate());
                 }).toList();
 
-        WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
+        WeightRandom<Long> wr = RandomUtil.weightRandom(weightObjs);
 
         raffleRepository.insertWeightRandom(strategyId, "LockLong", wr);
         log.atInfo().log("装配策略 {} 的 rule_lock_long 奖品完成", strategyId);
     }
 
     @Override
-    public void assembleLotteryStrategyRuleGrand(Integer strategyId) {
+    public void assembleLotteryStrategyRuleGrand(Long strategyId) {
         List<AwardBO> awardRuleGrandBOS = raffleRepository.queryRuleGrandAwards(strategyId);
 
-        List<WeightRandom.WeightObj<Integer>> weightObjs = awardRuleGrandBOS.stream()
+        List<WeightRandom.WeightObj<Long>> weightObjs = awardRuleGrandBOS.stream()
                 .map(AwardBO -> {
                     return new WeightRandom.WeightObj<>(AwardBO.getAwardId(),
                             AwardBO.getAwardRate());
                 }).toList();
 
-        WeightRandom<Integer> wr = RandomUtil.weightRandom(weightObjs);
+        WeightRandom<Long> wr = RandomUtil.weightRandom(weightObjs);
         raffleRepository.insertWeightRandom(strategyId, "Grand", wr);
         log.atInfo().log("装配策略 {} 的 rule_grand 奖品完成", strategyId);
     }
 
     @Override
-    public void assembleLotteryStrategyAwardCount(Integer strategyId) {
+    public void assembleLotteryStrategyAwardCount(Long strategyId) {
         // 为什么不命名为query，因为目的不在query，目的在assemble
         raffleRepository.assembleAwardsCount(strategyId);
     }
@@ -109,27 +109,27 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      **/
     // 根据策略ID，获取对应所有奖品中的随机奖品
     @Override
-    public Integer getRuleCommonAwardIdByRandom(Integer strategyId) {
+    public Long getRuleCommonAwardIdByRandom(Long strategyId) {
         // 拿到redis中的WeightRandom对象
-        WeightRandom<Integer> wr = raffleRepository.queryRuleCommonWeightRandom(strategyId);
+        WeightRandom<Long> wr = raffleRepository.queryRuleCommonWeightRandom(strategyId);
         return wr.next();
     }
 
     // 根据策略ID，获取对应除去锁定奖品中的随机奖品
     @Override
-    public Integer getRuleLockAwardIdByRandom(Integer strategyId) {
-        WeightRandom<Integer> wr = raffleRepository.queryRuleLockWeightRandom(strategyId);
+    public Long getRuleLockAwardIdByRandom(Long strategyId) {
+        WeightRandom<Long> wr = raffleRepository.queryRuleLockWeightRandom(strategyId);
         return wr.next();
     }
 
     @Override
-    public Integer getRuleLockLongAwardIdByRandom(Integer strategyId) {
-        WeightRandom<Integer> wr = raffleRepository.queryRuleLockLongWeightRandom(strategyId);
+    public Long getRuleLockLongAwardIdByRandom(Long strategyId) {
+        WeightRandom<Long> wr = raffleRepository.queryRuleLockLongWeightRandom(strategyId);
         return wr.next();
     }
 
     @Override
-    public Integer getWorstAwardId(Integer strategyId) {
+    public Long getWorstAwardId(Long strategyId) {
         AwardBO awardBO = raffleRepository.queryWorstAwardId(strategyId);
         if (awardBO == null) {
             return null;
@@ -138,8 +138,8 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     }
 
     @Override
-    public Integer getRuleGrandAwardIdByRandom(Integer strategyId) {
-        WeightRandom<Integer> wr = raffleRepository.queryRuleGrandAwardIdByRandom(strategyId);
+    public Long getRuleGrandAwardIdByRandom(Long strategyId) {
+        WeightRandom<Long> wr = raffleRepository.queryRuleGrandAwardIdByRandom(strategyId);
         return wr.next();
     }
 
@@ -150,7 +150,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      * @return
      */
     @Override
-    public Boolean decreaseAwardCount(Integer strategyId, Integer awardId) {
+    public Boolean decreaseAwardCount(Long strategyId, Long awardId) {
         return awardInventoryRepository.decreaseAwardCount(strategyId, awardId);
     }
 
@@ -158,7 +158,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      * 将该奖品从缓存中的所有抽奖池里移除
      */
     @Override
-    public void removeAwardFromPools(Integer strategyId, Integer awardId) {
+    public void removeAwardFromPools(Long strategyId, Long awardId) {
         awardInventoryRepository.removeAwardFromPools(strategyId, awardId);
     }
 }

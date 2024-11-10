@@ -6,14 +6,14 @@ import org.springframework.stereotype.Service;
 public class UserService implements IUserService {
 
     @Override
-    public Boolean isBlacklistUser(Integer userId) {
+    public Boolean isBlacklistUser(Long userId) {
         // todo 用户为404，则是黑名单用户
         return userId == 404;
     }
 
     @Override
-    public Integer queryRaffleTimesByUserId(Integer userId) {
+    public Long queryRaffleTimesByUserId(Long userId) {
         // todo
-        return 49;
+        return 49L;
     }
 }

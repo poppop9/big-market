@@ -20,18 +20,17 @@ public class UpdateAwardCount {
     /**
      * 定时循环扣减队列信息，更新数据库中的奖品库存
      */
-    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(initialDelay = 5000, fixedDelay = 5000)
     public void exec() {
-        log.info("定时任务开始执行 - 将队列中的扣减信息取出");
         DecrQueueVO decrQueueVO = awardInventoryRepository.queryDecrAwardCountFromQueue();
 
         if (decrQueueVO != null) {
-            log.atInfo().log("定时任务 - 开始扣减数据库中 {} 策略 {} 奖品的库存", decrQueueVO.getStrategyId(), decrQueueVO.getAwardId());
+            log.atInfo().log("抽奖领域 - 定时任务 - 开始扣减数据库中 {} 策略 {} 奖品的库存", decrQueueVO.getStrategyId(), decrQueueVO.getAwardId());
             awardInventoryRepository.updateAwardCount(decrQueueVO);
 
-            log.atInfo().log("定时任务 - 扣减成功");
+            log.atInfo().log("抽奖领域 - 定时任务 - 扣减成功");
         }
 
-        log.atInfo().log("定时任务 - 队列中无扣减信息");
+        log.atInfo().log("抽奖领域 - 定时任务 - 队列中无扣减信息");
     }
 }

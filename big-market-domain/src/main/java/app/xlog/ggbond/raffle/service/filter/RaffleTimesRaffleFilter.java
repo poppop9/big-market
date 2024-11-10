@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +22,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 // 这一定是最后一个前置过滤器，所以不用拦截
+@Slf4j
 public class RaffleTimesRaffleFilter implements RaffleFilter {
-
-    private static final Logger log = LoggerFactory.getLogger(RaffleTimesRaffleFilter.class);
 
     private final IUserService userService = new UserService();
     private final IRaffleRepository raffleRepository;
@@ -40,7 +40,7 @@ public class RaffleTimesRaffleFilter implements RaffleFilter {
     @Override
     public FilterParam filter(FilterParam filterParam) {
         // 用户的抽奖次数 todo 到时候增加用户抽奖次数时，应该抽奖成功了次数才 +1，因为有可能抽奖会失败
-        Integer raffleTimes = userService.queryRaffleTimesByUserId(filterParam.getUserId());
+        Long raffleTimes = userService.queryRaffleTimesByUserId(filterParam.getUserId());
 
         /*
           策略规则 - 优先

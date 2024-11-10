@@ -22,21 +22,20 @@ public class RaffleFilterChain {
      **/
     public RaffleFilterChain addPreFilter(RaffleFilter raffleFilter) {
         preFilters.add(raffleFilter);
-        return this;  // 返回链式调用
+        return this;
     }
-
     public RaffleFilterChain addAfterFilter(RaffleFilter raffleFilter) {
         afterFilters.add(raffleFilter);
-        return this;  // 返回链式调用
+        return this;
     }
 
     /**
-     * 执行一整条过滤器链
+     * 执行整条过滤器链
      **/
     public FilterParam doFilter(FilterParam filterParam) {
-        /*
-          执行前置过滤器链
-         */
+        // +++++++++++++++++++++++++
+        // +++++ 执行前置过滤器链 +++++
+        // +++++++++++++++++++++++++
         for (RaffleFilter raffleFilter : preFilters) {
             // 如果上一个过滤器拦截了，那么就不再继续执行
             if (filterParam.getMiddleFilterParam() == FilterParam.MiddleFilterParam.INTERCEPT) {
@@ -50,9 +49,9 @@ public class RaffleFilterChain {
         // 执行路由，根据过滤参数，调度到指定的规则
         filterParam = filterRouter.filterRouter(filterParam);
 
-        /*
-          执行后置过滤器链
-         */
+        // +++++++++++++++++++++++++
+        // +++++ 执行后置过滤器链 +++++
+        // +++++++++++++++++++++++++
         for (RaffleFilter raffleFilter : afterFilters) {
             // 如果上一个过滤器拦截了，那么就不再继续执行
             if (filterParam.getMiddleFilterParam() == FilterParam.MiddleFilterParam.INTERCEPT) {
@@ -65,4 +64,5 @@ public class RaffleFilterChain {
 
         return filterParam;
     }
+
 }

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public interface IRaffleApiService {
 
-    public Response<JsonNode> queryAwardList(Integer strategyId);
+    public Response<JsonNode> queryAwardList(Long strategyId);
 
-    public Response<JsonNode> getAward(Integer userId, Integer strategyId);
+    public Response<JsonNode> getAward(Long userId, Long strategyId);
 
 }

@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class DecrQueueVO {
-    private Integer strategyId;
-    private Integer awardId;
+    private Long strategyId;
+    private Long awardId;
 }
