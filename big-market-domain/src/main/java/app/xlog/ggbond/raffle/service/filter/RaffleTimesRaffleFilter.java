@@ -12,8 +12,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
 import java.util.List;
@@ -51,9 +49,7 @@ public class RaffleTimesRaffleFilter implements RaffleFilter {
                             strategyBO.getRules(),
                             new TypeReference<Map<String, Integer>>() {
                             }
-                    )
-                    .entrySet()
-                    .stream()
+                    ).entrySet().stream()
                     .filter(entry -> entry.getValue() != -1)  // 过滤掉无效的 -1 值
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 

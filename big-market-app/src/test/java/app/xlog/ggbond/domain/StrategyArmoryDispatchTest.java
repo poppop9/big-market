@@ -41,7 +41,7 @@ public class StrategyArmoryDispatchTest {
     @Test
     public void testGetRandomRuleCommonAwardId() {
         Long randomAwardId = strategyDispatch.getRuleCommonAwardIdByRandom(10001L);
-        logger.atInfo().log("中奖的奖品id : {}", randomAwardId);
+        log.atInfo().log("中奖的奖品id : {}", randomAwardId);
     }
 
     // 测试获取除锁定奖品中的随机奖品ID

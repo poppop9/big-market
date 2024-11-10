@@ -24,19 +24,19 @@ public class AppTest {
     @Test
     public void testRedissonStorageObject() {
         List<AwardBO> awardBOs = raffleRepository.queryCommonAwards(10001L);
-        List<Integer> awardIds = awardBOs.stream()
+        List<Long> awardIds = awardBOs.stream()
                 .map(AwardBO::getAwardId)
                 .toList();
 
-        List<WeightRandom.WeightObj<Integer>> weightList = Stream.of(
-                new WeightRandom.WeightObj<Integer>(awardIds.get(0), 20),
-                new WeightRandom.WeightObj<Integer>(awardIds.get(1), 30),
-                new WeightRandom.WeightObj<Integer>(awardIds.get(2), 40),
-                new WeightRandom.WeightObj<Integer>(awardIds.get(3), 10)
+        List<WeightRandom.WeightObj<Long>> weightList = Stream.of(
+                new WeightRandom.WeightObj<>(awardIds.get(0), 20),
+                new WeightRandom.WeightObj<>(awardIds.get(1), 30),
+                new WeightRandom.WeightObj<>(awardIds.get(2), 40),
+                new WeightRandom.WeightObj<>(awardIds.get(3), 10)
         ).toList();
 
         // 拿到权重对象了，我要把它存到redis中
-        WeightRandom<Integer> wr = RandomUtil.weightRandom(weightList);
+        WeightRandom<Long> wr = RandomUtil.weightRandom(weightList);
 
         RBucket<Object> bucket = redissonClient.getBucket("test_stroage_object");
         bucket.set(wr);
@@ -98,10 +98,10 @@ public class AppTest {
     public void testRandomWeight() {
         // 构建权重对象WeightObj，将其加入list集合
         List<WeightRandom.WeightObj<String>> weightList = Stream.of(
-                new WeightRandom.WeightObj<String>("A", 20),
-                new WeightRandom.WeightObj<String>("B", 30),
-                new WeightRandom.WeightObj<String>("C", 40),
-                new WeightRandom.WeightObj<String>("D", 10)
+                new WeightRandom.WeightObj<>("A", 20),
+                new WeightRandom.WeightObj<>("B", 30),
+                new WeightRandom.WeightObj<>("C", 40),
+                new WeightRandom.WeightObj<>("D", 10)
         ).collect(Collectors.toList());
 
         // 生成权重随机对象

@@ -15,7 +15,6 @@ public class FilterRouter implements IFilterRouter {
     // 对Filter的结果进行处理，然后路由到指定的IStrategyDispatch
     @Override
     public FilterParam filterRouter(FilterParam filterParam) {
-        // 增强switch
         Long awardId = switch (filterParam.getDispatchParam()) {
             case CommonAwards -> raffleDispatch.getRuleCommonAwardIdByRandom(filterParam.getStrategyId());
             case LockAwards -> raffleDispatch.getRuleLockAwardIdByRandom(filterParam.getStrategyId());

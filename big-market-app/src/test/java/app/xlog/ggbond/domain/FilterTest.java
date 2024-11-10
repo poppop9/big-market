@@ -32,8 +32,8 @@ public class FilterTest {
             // 执行过滤器链
             FilterParam filterParam = raffleFilterChain.doFilter(
                     FilterParam.builder()
-                            .StrategyId(10001)
-                            .UserId(404)
+                            .StrategyId(10001L)
+                            .UserId(404L)
                             .build()
             );
 
