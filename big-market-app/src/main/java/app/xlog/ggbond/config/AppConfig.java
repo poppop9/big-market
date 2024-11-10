@@ -18,4 +18,5 @@ public class AppConfig {
     public void init(){
         springContextUtil.setApplicationContext(applicationContext);
     }
+
 }

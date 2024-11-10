@@ -1,4 +1,4 @@
-package app.xlog.ggbond.config;
+package app.xlog.ggbond.persistent.config;
 
 import cn.hutool.core.util.StrUtil;
 import cn.zhxu.bs.DbMapping;

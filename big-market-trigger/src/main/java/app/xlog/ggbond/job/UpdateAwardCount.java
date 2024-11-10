@@ -4,17 +4,22 @@ import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class UpdateAwardCount {
-    private static final Logger log = LoggerFactory.getLogger(UpdateAwardCount.class);
+
     @Resource
     private IAwardInventoryRepository awardInventoryRepository;
 
+    /**
+     * 定时循环扣减队列信息，更新数据库中的奖品库存
+     */
     @Scheduled(cron = "0/5 * * * * ?")
     public void exec() {
         log.info("定时任务开始执行 - 将队列中的扣减信息取出");

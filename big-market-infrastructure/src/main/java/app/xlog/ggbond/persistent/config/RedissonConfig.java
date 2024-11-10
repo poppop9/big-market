@@ -1,4 +1,4 @@
-package app.xlog.ggbond.config;
+package app.xlog.ggbond.persistent.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

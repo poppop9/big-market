@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -20,12 +21,11 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 
-@CrossOrigin("${app.config.CrossOrigin}")
+@Slf4j
 @RestController
 @RequestMapping("/api/award")
 public class RaffleController implements IRaffleApiService {
 
-    private static final Logger log = LoggerFactory.getLogger(RaffleController.class);
     @Resource
     private ObjectMapper objectMapper;
     @Resource
@@ -35,7 +35,7 @@ public class RaffleController implements IRaffleApiService {
      * 根据策略id，查询奖品列表
      **/
     @Override
-    @GetMapping("/queryAwardList")
+    @GetMapping("/v1/queryAwardList")
     public Response<JsonNode> queryAwardList(@RequestParam Integer strategyId) {
         List<ObjectNode> awardBOs = raffleService.queryAwardList(strategyId);
 
@@ -51,7 +51,7 @@ public class RaffleController implements IRaffleApiService {
      * 根据策略id，抽取奖品
      **/
     @Override
-    @GetMapping("/getAward")
+    @GetMapping("/v1/getAward")
     public Response<JsonNode> getAward(@RequestParam Integer userId,
                                        @RequestParam Integer strategyId) {
         Integer awardId = raffleService.getAward(userId, strategyId);

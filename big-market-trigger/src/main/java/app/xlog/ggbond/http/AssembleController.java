@@ -6,6 +6,7 @@ import app.xlog.ggbond.raffle.service.armory.IRaffleArmory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -14,19 +15,18 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 装配奖品池
  **/
-@CrossOrigin("${app.config.CrossOrigin}")
+@Slf4j
 @RestController
 @RequestMapping("/api/assemble")
 public class AssembleController implements IAssembleApiService {
 
-    private static final Logger log = LoggerFactory.getLogger(AssembleController.class);
     @Resource
     private ObjectMapper objectMapper;
     @Resource
     private IRaffleArmory strategyArmory;
 
     @Override
-    @GetMapping("/assembleRaffleAll")
+    @GetMapping("/v1/assembleRaffleAll")
     public Response<JsonNode> assembleRaffleAll(@RequestParam Integer strategyId) {
         strategyArmory.assembleLotteryStrategyRuleCommon(10001);
         log.atInfo().log("装配策略10001的全奖品完成");
