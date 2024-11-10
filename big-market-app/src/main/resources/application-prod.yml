@@ -28,3 +28,7 @@ redis:
       retry-interval: 1000
       ping-interval: 60000
       keep-alive: true
+
+# GLM
+glm:
+  apiKey: a79a6e151dc42dd50142f25a409bca54.JzVqaCdjk1uXC62Z

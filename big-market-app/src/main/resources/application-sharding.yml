@@ -1,0 +1,61 @@
+#file: noinspection SpringBootApplicationYaml
+
+# 数据源配置
+dataSources:
+  ds_0:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/big_market_0?allowPublicKeyRetrieval=true
+    username: root
+    #    password: root
+    password: 13433026660
+  ds_1:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/big_market_1?allowPublicKeyRetrieval=true
+    username: root
+    #    password: root
+    password: 13433026660
+
+# 规则配置
+rules:
+  - !SHARDING  # 数据分片
+    defaultDatabaseStrategy: # 默认的分库策略
+      standard:
+        shardingColumn: id
+        shardingAlgorithmName: database_inline
+    defaultTableStrategy: # 默认的分表策略
+      none:  # 将未配置的表视为单表
+    defaultShardingColumn: id  # 默认的分片列名
+    defaultKeyGenerateStrategy: # 默认的主键生成策略
+      column: id
+      keyGeneratorName: SNOWFLAKE
+    # 分片自动表
+    autoTables:
+      Account: # 逻辑表名
+        actualDataSources: ds_${0..1}
+        shardingStrategy: # 分表策略
+          standard:
+            shardingColumn: id
+            shardingAlgorithmName: HASH_MOD
+    shardingAlgorithms: # 定义分片算法策略
+      HASH_MOD:
+        type: HASH_MOD
+        props:
+          sharding-count: 4
+      database_inline:
+        type: INLINE
+        props:
+          algorithm-expression: ds_${id % 2}
+    keyGenerators: # 定义主键生成策略
+      SNOWFLAKE:
+        type: SNOWFLAKE
+        props:
+          worker-id: 2
+  - !SINGLE
+    tables:
+      - "*.*"  # 加载所有单表
+
+# 通用的属性配置
+props:
+  sql-show: true  # 显示 SQL 语句
