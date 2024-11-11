@@ -28,7 +28,7 @@ public class JpaTest {
     @Test
     void test_1() {
         awardRepository.findAll(Example.of(Award.builder()
-                .strategyId(10001)
+                .strategyId(10001L)
                 .awardTitle(null)
                 .build())
         ).forEach(System.out::println);

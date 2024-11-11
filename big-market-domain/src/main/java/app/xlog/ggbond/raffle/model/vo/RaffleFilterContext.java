@@ -5,27 +5,25 @@ import lombok.*;
 import java.util.Arrays;
 import java.util.Optional;
 
-
-// 过滤时的参数，包括了过滤要传入的参数和过滤后的结果，抽奖调度根据这个参数来决定抽奖的策略
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FilterParam {
+public class RaffleFilterContext{
 
     /**
-     * 过滤传入的参数
+     * 过滤初始传参
      **/
-    private MiddleFilterParam middleFilterParam = MiddleFilterParam.PASS;
+    private RaffleFilterContext.MiddleFilterParam middleFilterParam = RaffleFilterContext.MiddleFilterParam.PASS;
     // 用户id，需要判断是否是黑名单用户，还要判断用户的抽奖次数
     private Long UserId;
     // 策略id，需要根据策略id来判断到底是哪些奖品
     private Long StrategyId;
 
     /**
-     * 过滤结果
+     * 过滤结果出参
      **/
-    private DispatchParam dispatchParam;
+    private FilterParam.DispatchParam dispatchParam;
     private Long awardId;
 
     // 每一个过滤器的返回值
@@ -43,20 +41,16 @@ public class FilterParam {
         }
     }
 
+    // 最后过滤器的调度值
     @Getter
     public enum DispatchParam {
-        /*
-        前置过滤器的拦截值
-         */
+        // <++++++++++ 前置过滤器的拦截值 ++++++++++>
         CommonAwards("rule_common", "101-109 的所有奖品"),
         LockAwards("rule_lock", "除去锁定奖品，101-105 的所有奖品"),
         LockLongAwards("rule_lock_long", "除去最后一个奖品，101-108 的所有奖品"),
         BlacklistAward("rule_blacklist", "黑名单用户的最次奖品"),
         GrandAward("rule_grand", "大奖池，106-108奖品");
 
-        /*
-        后置过滤器的拦截值
-         */
         private final String code;
         private final String info;
 
@@ -65,8 +59,8 @@ public class FilterParam {
             this.info = info;
         }
 
-        public static Optional<DispatchParam> isExist(String code) {
-            return Arrays.stream(DispatchParam.values())
+        public static Optional<FilterParam.DispatchParam> isExist(String code) {
+            return Arrays.stream(FilterParam.DispatchParam.values())
                     .filter(item -> item.getCode().equals(code))
                     .findFirst();
         }

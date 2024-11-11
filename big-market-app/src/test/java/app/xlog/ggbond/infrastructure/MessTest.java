@@ -102,8 +102,8 @@ public class MessTest {
         for (int i = 0; i < 5; i++) {
             awardInventoryRepository.addDecrAwardCountToQueue(
                     DecrQueueVO.builder()
-                            .strategyId(10001)
-                            .awardId(101)
+                            .strategyId(10001L)
+                            .awardId(101L)
                             .build()
             );
         }
