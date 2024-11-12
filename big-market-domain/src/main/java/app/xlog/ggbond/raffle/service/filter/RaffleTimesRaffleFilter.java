@@ -41,12 +41,11 @@ public class RaffleTimesRaffleFilter implements RaffleFilter {
         Long raffleTimes = userService.queryRaffleTimesByUserId(filterParam.getUserId());
 
         /*
-          策略规则 - 优先
+         * 策略规则 - 优先
          */
-        StrategyBO strategyBO = raffleRepository.queryStrategys(filterParam.getStrategyId());
         try {
             Map<String, Integer> strategyRuleMap = objectMapper.readValue(
-                            strategyBO.getRules(),
+                            raffleRepository.findStrategyByStrategyId(filterParam.getStrategyId()).getRules(),
                             new TypeReference<Map<String, Integer>>() {
                             }
                     ).entrySet().stream()
@@ -103,4 +102,5 @@ public class RaffleTimesRaffleFilter implements RaffleFilter {
         filterParam.setDispatchParam(FilterParam.DispatchParam.CommonAwards);
         return filterParam;
     }
+
 }

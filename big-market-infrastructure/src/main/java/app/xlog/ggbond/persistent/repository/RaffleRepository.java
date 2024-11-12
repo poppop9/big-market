@@ -32,15 +32,12 @@ public class RaffleRepository implements IRaffleRepository {
      * 装配策略
      **/
     @Override
-    public StrategyBO queryStrategys(Long strategyId) {
+    public StrategyBO findStrategyByStrategyId(Long strategyId) {
         RBucket<Object> bucket = redissonClient.getBucket("strategy_" + strategyId);
-        if (bucket.isExists()) {
-            return (StrategyBO) bucket.get();
-        }
+        if (bucket.isExists()) return (StrategyBO) bucket.get();
 
         StrategyBO strategyBO = BeanUtil.copyProperties(
-                strategyRepository.findByStrategyId(strategyId),
-                StrategyBO.class
+                strategyRepository.findByStrategyId(strategyId), StrategyBO.class
         );
         bucket.set(strategyBO);
 
@@ -54,14 +51,11 @@ public class RaffleRepository implements IRaffleRepository {
     public List<AwardBO> queryCommonAwards(Long strategyId) {
         // Redis缓存中存在则直接返回
         RList<AwardBO> rList = redissonClient.getList("strategy_" + strategyId + "_awards_Common");
-        if (!rList.isEmpty()) {
-            return rList;
-        }
+        if (!rList.isEmpty()) return rList;
 
         // 将PO转换为BO
         List<AwardBO> awardBOS = BeanUtil.copyToList(
-                awardRepository.findByStrategyId(strategyId),
-                AwardBO.class
+                awardRepository.findByStrategyId(strategyId), AwardBO.class
         );
         // 将查询结果存入Redis缓存
         rList.addAll(awardBOS);
@@ -74,9 +68,7 @@ public class RaffleRepository implements IRaffleRepository {
         // 先从缓存中取
         String cacheKey = "strategy_" + strategyId + "_awards_Lock";
         RList<AwardBO> rList = redissonClient.getList(cacheKey);
-        if (!rList.isEmpty()) {
-            return rList;
-        }
+        if (!rList.isEmpty()) return rList;
 
         // 缓存中没有则查询数据库
         List<AwardBO> awardRuleLockBOS = queryCommonAwards(strategyId).stream()
@@ -93,12 +85,9 @@ public class RaffleRepository implements IRaffleRepository {
     public List<AwardBO> queryRuleLockLongAwards(Long strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_LockLong";
         RList<AwardBO> rList = redissonClient.getList(cacheKey);
-        if (!rList.isEmpty()) {
-            return rList;
-        }
+        if (!rList.isEmpty()) return rList;
 
-        List<AwardBO> awardBOs = queryCommonAwards(strategyId);
-        List<AwardBO> awardRuleLockBOS = awardBOs.stream()
+        List<AwardBO> awardRuleLockBOS = queryCommonAwards(strategyId).stream()
                 .filter(
                         AwardBO -> !AwardBO.getRules().contains("rule_lock_long")
                 )

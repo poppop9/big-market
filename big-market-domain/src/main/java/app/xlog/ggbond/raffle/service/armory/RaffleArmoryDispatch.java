@@ -143,22 +143,4 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
         return wr.next();
     }
 
-    /**
-     * 更新奖品库存
-     * @param strategyId
-     * @param awardId
-     * @return
-     */
-    @Override
-    public Boolean decreaseAwardCount(Long strategyId, Long awardId) {
-        return awardInventoryRepository.decreaseAwardCount(strategyId, awardId);
-    }
-
-    /**
-     * 将该奖品从缓存中的所有抽奖池里移除
-     */
-    @Override
-    public void removeAwardFromPools(Long strategyId, Long awardId) {
-        awardInventoryRepository.removeAwardFromPools(strategyId, awardId);
-    }
 }

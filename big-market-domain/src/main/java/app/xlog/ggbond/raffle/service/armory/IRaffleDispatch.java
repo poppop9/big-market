@@ -5,6 +5,7 @@ package app.xlog.ggbond.raffle.service.armory;
  */
 
 public interface IRaffleDispatch {
+
     // 传入一个策略ID，获取一个所有奖品 101-109 中的随机奖品ID
     Long getRuleCommonAwardIdByRandom(Long strategyId);
 
@@ -20,9 +21,4 @@ public interface IRaffleDispatch {
     // 传入一个策略ID，获取大奖池里的一个奖品
     Long getRuleGrandAwardIdByRandom(Long strategyId);
 
-    // 传入一个策略ID，奖品ID，扣减对应奖品的库存
-    Boolean decreaseAwardCount(Long strategyId, Long awardId);
-
-    // 传入一个策略ID，奖品ID，将该奖品从缓存中的所有抽奖池里移除
-    void removeAwardFromPools(Long strategyId, Long awardId);
 }

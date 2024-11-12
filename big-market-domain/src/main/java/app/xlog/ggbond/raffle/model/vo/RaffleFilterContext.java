@@ -16,14 +16,14 @@ public class RaffleFilterContext{
      **/
     private RaffleFilterContext.MiddleFilterParam middleFilterParam = RaffleFilterContext.MiddleFilterParam.PASS;
     // 用户id，需要判断是否是黑名单用户，还要判断用户的抽奖次数
-    private Long UserId;
+    private Long userId;
     // 策略id，需要根据策略id来判断到底是哪些奖品
-    private Long StrategyId;
+    private Long strategyId;
 
     /**
      * 过滤结果出参
      **/
-    private FilterParam.DispatchParam dispatchParam;
+    private RaffleFilterContext.DispatchParam dispatchParam;
     private Long awardId;
 
     // 每一个过滤器的返回值
@@ -59,8 +59,8 @@ public class RaffleFilterContext{
             this.info = info;
         }
 
-        public static Optional<FilterParam.DispatchParam> isExist(String code) {
-            return Arrays.stream(FilterParam.DispatchParam.values())
+        public static Optional<RaffleFilterContext.DispatchParam> isExist(String code) {
+            return Arrays.stream(RaffleFilterContext.DispatchParam.values())
                     .filter(item -> item.getCode().equals(code))
                     .findFirst();
         }

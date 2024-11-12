@@ -1,8 +1,9 @@
 package app.xlog.ggbond.raffle.service;
 
 import app.xlog.ggbond.raffle.model.vo.FilterParam;
+import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
-import app.xlog.ggbond.raffle.service.filter.RaffleFilterChain;
+import app.xlog.ggbond.raffle.service.filterChain.RaffleFilterChain;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.annotation.Resource;
@@ -47,15 +48,15 @@ public class RaffleService implements IRaffleService {
     @Override
     public Long getAward(Long userId, Long strategyId) {
         // 执行过滤器链
-        FilterParam filterParam = raffleFilterChain.doFilter(FilterParam.builder()
+/*        FilterParam filterParam = raffleFilterChain.doFilter(FilterParam.builder()
                 .UserId(userId)
                 .StrategyId(strategyId)
                 .build()
+        );*/
+        return raffleFilterChain.executeFilterChain(RaffleFilterContext.builder()
+                .userId(userId)
+                .strategyId(strategyId)
+                .build()
         );
-
-        log.atInfo().log("调度了: {}", filterParam.getDispatchParam());
-        log.atInfo().log("抽到了: {}", filterParam.getAwardId());
-
-        return filterParam.getAwardId();
     }
 }

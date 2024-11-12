@@ -18,9 +18,9 @@ public class UpdateAwardCount {
     private IAwardInventoryRepository awardInventoryRepository;
 
     /**
-     * 定时循环扣减队列信息，更新数据库中的奖品库存
+     * 定时循环扣减队列信息，更新数据库中的奖品库存  todo 临时注释
      */
-    @Scheduled(initialDelay = 5000, fixedDelay = 5000)
+//    @Scheduled(initialDelay = 5000, fixedDelay = 5000)
     public void exec() {
         DecrQueueVO decrQueueVO = awardInventoryRepository.queryDecrAwardCountFromQueue();
 

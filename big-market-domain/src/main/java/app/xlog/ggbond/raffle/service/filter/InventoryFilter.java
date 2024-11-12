@@ -13,25 +13,20 @@ import app.xlog.ggbond.raffle.utils.SpringContextUtil;
 public class InventoryFilter implements RaffleFilter {
 
     private final IFilterRouter filterRouter = new FilterRouter();
-    private final IRaffleDispatch raffleDispatch;
     private final IAwardInventoryRepository awardInventoryRepository;
 
     public InventoryFilter() {
-        raffleDispatch = SpringContextUtil.getBean(IRaffleDispatch.class);
         awardInventoryRepository = SpringContextUtil.getBean(IAwardInventoryRepository.class);
     }
 
     @Override
     public FilterParam filter(FilterParam filterParam) {
         // 调度扣减方法
-        Boolean result = raffleDispatch.decreaseAwardCount(filterParam.getStrategyId(), filterParam.getAwardId());
+        Boolean result = awardInventoryRepository.decreaseAwardCount(filterParam.getStrategyId(), filterParam.getAwardId());
         if (!result) {
             // 扣减库存失败，拦截，然后重新调度
             filterParam.setMiddleFilterParam(FilterParam.MiddleFilterParam.INTERCEPT);
             filterRouter.filterRouter(filterParam);
-
-            // 将该库存为0的奖品，从缓存的奖品池里移除
-            raffleDispatch.removeAwardFromPools(filterParam.getStrategyId(), filterParam.getAwardId());
         }
 
         // 扣减库存成功，放行

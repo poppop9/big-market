@@ -15,7 +15,7 @@ public interface IRaffleRepository {
      * 装配策略 ---------------------------------------------------------
      **/
     // 根据策略Id，装配对应的策略
-    StrategyBO queryStrategys(Long strategyId);
+    StrategyBO findStrategyByStrategyId(Long strategyId);
 
     /**
      * 装配，查询奖品-----------------------------------------------------------

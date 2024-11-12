@@ -52,8 +52,7 @@ public class RaffleController implements IRaffleApiService {
      **/
     @Override
     @GetMapping("/v1/getAward")
-    public Response<JsonNode> getAward(@RequestParam Long userId,
-                                       @RequestParam Long strategyId) {
+    public Response<JsonNode> getAward(@RequestParam Long userId, @RequestParam Long strategyId) {
         Long awardId = raffleService.getAward(userId, strategyId);
 
         return Response.<JsonNode>builder()

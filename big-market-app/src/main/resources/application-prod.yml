@@ -8,10 +8,6 @@ spring:
     username: root
     password: 13433026660
 
-app:
-  config:
-    CrossOrigin: '*'
-
 # Redis
 redis:
   # redis的地址

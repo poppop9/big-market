@@ -35,18 +35,17 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
      */
     @Override
     public Boolean decreaseAwardCount(Long strategyId, Long awardId) {
-        String cacheKey = "strategy_" + strategyId + "_awards_" + awardId + "_count";
-        RAtomicLong rAtomicLong = redissonClient.getAtomicLong(cacheKey);
-
+        RAtomicLong rAtomicLong = redissonClient.getAtomicLong("strategy_" + strategyId + "_awards_" + awardId + "_count");
         if (rAtomicLong.isExists()) {
-            // 返回扣减完成之后的值
-            long surplus = rAtomicLong.decrementAndGet();
-            if (surplus >= 0) {
+            long surplus = rAtomicLong.decrementAndGet();  // 返回扣减完成之后的值
+            if (surplus > 0) {
                 log.atInfo().log("抽奖领域 - 奖品 {} 库存扣减成功，剩余库存：{}", awardId, surplus);
                 return true;
-            } else {
-                log.atInfo().log("抽奖领域 - 奖品 {} 库存扣减失败", awardId);
-                return false;
+            } else if (surplus == 0) {
+                log.atInfo().log("抽奖领域 - 奖品 {} 库存扣减完成，剩余库存：{}", awardId, surplus);
+                // 将该奖品从缓存中的所有抽奖池里移除
+                removeAwardFromPools(strategyId, awardId);
+                return true;
             }
         }
 
@@ -60,31 +59,28 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
      */
     @Override
     public void removeAwardFromPools(Long strategyId, Long awardId) {
-        // 由于黑名单抽奖池在redis中只有一个对象，所以不用去除，黑名单用户就让他一直抽随机积分就好了，而且随机积分的库存绝对够
+        // 1. 在redis的所有抽奖池中，移除指定奖品。由于黑名单抽奖池在redis中只有一个对象，所以不用去除，黑名单用户就让他一直抽随机积分就好了，而且随机积分的库存绝对够
         String[] cacheKeyLists = {
                 "strategy_" + strategyId + "_awards_Common",
                 "strategy_" + strategyId + "_awards_Lock",
                 "strategy_" + strategyId + "_awards_LockLong",
                 "strategy_" + strategyId + "_awards_Grand"
         };
-        // 获取redis中的奖品列表，过滤掉要移除的奖品
         for (String cacheKey : cacheKeyLists) {
             RList<AwardBO> rList = redissonClient.getList(cacheKey);
-
-            Optional<AwardBO> optionalAwardBO = rList.stream()
+            rList.stream()
                     .filter(AwardBO -> Objects.equals(AwardBO.getAwardId(), awardId))
-                    .findFirst();
-            optionalAwardBO.ifPresent(rList::remove);
+                    .findFirst()
+                    .ifPresent(rList::remove);
         }
 
-        // 使用map集合和switch，动态判断要执行的方法
+        // 2. 调整权重对象
         Set<Map.Entry<Integer, String>> cacheKeyWeightRandoms = Map.of(
                 1, "strategy_" + strategyId + "_awards_WeightRandom_Common",
                 2, "strategy_" + strategyId + "_awards_WeightRandom_Lock",
                 3, "strategy_" + strategyId + "_awards_WeightRandom_LockLong",
                 4, "strategy_" + strategyId + "_awards_WeightRandom_Grand"
         ).entrySet();
-
         for (Map.Entry<Integer, String> cacheKey : cacheKeyWeightRandoms) {
             switch (cacheKey.getKey()) {
                 case 1 -> {

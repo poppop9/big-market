@@ -1,18 +1,11 @@
 package app.xlog.ggbond.domain;
 
-import app.xlog.ggbond.raffle.model.vo.FilterParam;
-import app.xlog.ggbond.raffle.service.filter.BlacklistRaffleFilter;
-import app.xlog.ggbond.raffle.service.filter.InventoryFilter;
-import app.xlog.ggbond.raffle.service.filter.RaffleFilterChain;
-import app.xlog.ggbond.raffle.service.filter.RaffleTimesRaffleFilter;
+import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
+import app.xlog.ggbond.raffle.service.filterChain.RaffleFilterChain;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.concurrent.CountDownLatch;
 
 @Slf4j
 @SpringBootTest
@@ -21,7 +14,7 @@ public class FilterTest {
     @Resource
     private RaffleFilterChain raffleFilterChain;
 
-    @Test
+/*    @Test
     public void test_FilterChain() throws InterruptedException {
         // 构造过滤器链
         raffleFilterChain.addPreFilter(new BlacklistRaffleFilter())
@@ -42,5 +35,15 @@ public class FilterTest {
         }
 
         new CountDownLatch(1).await();
+    }*/
+
+    @Test
+    void test_2() {
+        raffleFilterChain.executeFilterChain(RaffleFilterContext.builder()
+                .userId(404L)
+                .strategyId(10001L)
+                .middleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS)
+                .build()
+        );
     }
 }
