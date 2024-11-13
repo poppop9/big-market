@@ -1,0 +1,21 @@
+# curl -X GET "http://localhost:8090/api/assemble/v1/assembleRaffleAll?strategyId=1"
+GET http://localhost:8090/api/assemble/v1/assembleRaffleAll?strategyId=10001
+
+###
+
+# curl -X GET "http://localhost:8090/api/award/v1/queryAwardList?strategyId=1"
+GET http://localhost:8090/api/award/v1/queryAwardList?strategyId=10001
+
+###
+
+# curl -X GET "http://localhost:8090/api/award/v1/getAward?userId=123&strategyId=1"
+GET http://localhost:8090/api/award/v1/getAward?userId=123&strategyId=10001
+
+###
+
+
+
+
+
+
+

@@ -1,7 +1,6 @@
-package app.xlog.ggbond.persistent.po;
+package app.xlog.ggbond.persistent.po.raffle;
 
 import app.xlog.ggbond.raffle.utils.SpringContextUtil;
-import cn.zhxu.bs.bean.SearchBean;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -14,7 +13,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * 奖品表
+ * 奖品
  */
 @Data
 @NoArgsConstructor

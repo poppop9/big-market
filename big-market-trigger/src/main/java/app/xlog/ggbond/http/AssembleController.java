@@ -30,19 +30,10 @@ public class AssembleController implements IAssembleApiService {
     @GetMapping("/v1/assembleRaffleAll")
     public Response<JsonNode> assembleRaffleAll(@RequestParam Integer strategyId) {
         strategyArmory.assembleLotteryStrategyRuleCommon(10001L);
-        log.atInfo().log("装配策略10001的全奖品完成");
-
         strategyArmory.assembleLotteryStrategyRuleLock(10001L);
-        log.atInfo().log("装配策略10001的除锁定奖品完成");
-
         strategyArmory.assembleLotteryStrategyRuleLockLong(10001L);
-        log.atInfo().log("装配策略10001的除最后一个奖品完成");
-
         strategyArmory.assembleLotteryStrategyRuleGrand(10001L);
-        log.atInfo().log("装配策略10001的大奖池完成");
-
         strategyArmory.assembleLotteryStrategyAwardCount(10001L);
-        log.atInfo().log("装配策略10001的奖品库存完成");
 
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)

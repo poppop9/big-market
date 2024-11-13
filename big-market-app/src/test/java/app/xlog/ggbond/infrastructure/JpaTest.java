@@ -1,7 +1,7 @@
 package app.xlog.ggbond.infrastructure;
 
-import app.xlog.ggbond.persistent.po.Award;
-import app.xlog.ggbond.persistent.repository.AwardRepository;
+import app.xlog.ggbond.persistent.po.raffle.Award;
+import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
 import cn.zhxu.bs.BeanSearcher;
 import cn.zhxu.bs.SearchResult;
 import cn.zhxu.bs.operator.Between;
@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 @SpringBootTest

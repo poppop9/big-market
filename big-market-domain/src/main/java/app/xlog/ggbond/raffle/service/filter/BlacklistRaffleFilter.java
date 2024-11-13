@@ -12,7 +12,7 @@ public class BlacklistRaffleFilter implements RaffleFilter {
     @Override
     public FilterParam filter(FilterParam filterParam) {
         // 如果是黑名单用户，设置FilterParam中的MiddleFilterParam，并设置FilterParam的DispatchParam
-        if (userService.isBlacklistUser(filterParam.getUserId())) {
+        if (userService.isBlacklistUser()) {
             filterParam.setMiddleFilterParam(FilterParam.MiddleFilterParam.INTERCEPT);
             filterParam.setDispatchParam(FilterParam.DispatchParam.BlacklistAward);
 

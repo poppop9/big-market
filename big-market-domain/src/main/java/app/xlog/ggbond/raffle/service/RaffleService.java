@@ -34,8 +34,7 @@ public class RaffleService implements IRaffleService {
                 .map(awardBO -> {
                     try {
                         ObjectNode objectNode = objectMapper.valueToTree(awardBO);
-                        ObjectNode rulesNode = awardBO.stringToObjectNode(objectNode.get("rules").asText());
-                        objectNode.set("rules", rulesNode);
+                        objectNode.set("rules", awardBO.stringToObjectNode(objectNode.get("rules").asText()));
                         return objectNode;
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -56,6 +55,7 @@ public class RaffleService implements IRaffleService {
         return raffleFilterChain.executeFilterChain(RaffleFilterContext.builder()
                 .userId(userId)
                 .strategyId(strategyId)
+                .middleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS)
                 .build()
         );
     }

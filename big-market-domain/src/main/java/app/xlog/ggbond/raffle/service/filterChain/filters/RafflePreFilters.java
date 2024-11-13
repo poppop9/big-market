@@ -50,13 +50,12 @@ public class RafflePreFilters {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
 
         // 如果是黑名单用户，拦截
-        if (userService.isBlacklistUser(context.getUserId())) {
+        if (userService.isBlacklistUser()) {
             log.atInfo().log("抽奖领域 - 黑名单过滤器拦截");
             context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.INTERCEPT);
             context.setDispatchParam(RaffleFilterContext.DispatchParam.BlacklistAward);
         } else {
             log.atInfo().log("抽奖领域 - 黑名单过滤器放行");
-            context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS);
         }
     }
 

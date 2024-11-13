@@ -1,5 +1,7 @@
 package app.xlog.ggbond.persistent.repository;
 
+import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
+import app.xlog.ggbond.persistent.repository.jpa.StrategyRepository;
 import app.xlog.ggbond.raffle.model.AwardBO;
 import app.xlog.ggbond.raffle.model.StrategyBO;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
@@ -15,8 +17,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-/*
-策略仓库实现类
+/**
+ * 策略仓库实现类
  */
 @Repository
 public class RaffleRepository implements IRaffleRepository {

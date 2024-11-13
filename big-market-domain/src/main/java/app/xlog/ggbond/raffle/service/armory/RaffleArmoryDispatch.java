@@ -44,7 +44,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
 
         // 3. 将WeightRandom对象存入redis
         raffleRepository.insertWeightRandom(strategyId, "Common", wr);
-        log.atInfo().log("装配策略 {} 的 rule_common 奖品完成", strategyId);
+        log.atInfo().log("抽奖领域 - 装配策略 {} 的 rule_common 奖品完成", strategyId);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
 
         // 将新的WeightRandom对象存入redis，方便后续抽奖调用
         raffleRepository.insertWeightRandom(strategyId, "Lock", wr);
-        log.atInfo().log("装配策略 {} 的 rule_lock 奖品完成", strategyId);
+        log.atInfo().log("抽奖领域 - 装配策略 {} 的 rule_lock 奖品完成", strategyId);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
         WeightRandom<Long> wr = RandomUtil.weightRandom(weightObjs);
 
         raffleRepository.insertWeightRandom(strategyId, "LockLong", wr);
-        log.atInfo().log("装配策略 {} 的 rule_lock_long 奖品完成", strategyId);
+        log.atInfo().log("抽奖领域 - 装配策略 {} 的 rule_lock_long 奖品完成", strategyId);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
 
         WeightRandom<Long> wr = RandomUtil.weightRandom(weightObjs);
         raffleRepository.insertWeightRandom(strategyId, "Grand", wr);
-        log.atInfo().log("装配策略 {} 的 rule_grand 奖品完成", strategyId);
+        log.atInfo().log("抽奖领域 - 装配策略 {} 的 rule_grand 奖品完成", strategyId);
     }
 
     @Override

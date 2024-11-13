@@ -1,4 +1,4 @@
-package app.xlog.ggbond.persistent.po;
+package app.xlog.ggbond.persistent.po.raffle;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * 策略表
+ * 策略
  */
 @Data
 @NoArgsConstructor

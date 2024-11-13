@@ -33,6 +33,12 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
 
+        <!--++++++++++++++ 登录权限 ++++++++++++++-->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot3-starter</artifactId>
+            <version>1.39.0</version>
+        </dependency>
         <!--++++++++++++++ AI ++++++++++++++-->
         <dependency>
             <groupId>cn.bigmodel.openapi</groupId>
