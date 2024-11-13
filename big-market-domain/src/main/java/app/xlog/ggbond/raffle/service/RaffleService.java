@@ -1,6 +1,5 @@
 package app.xlog.ggbond.raffle.service;
 
-import app.xlog.ggbond.raffle.model.vo.FilterParam;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import app.xlog.ggbond.raffle.service.filterChain.RaffleFilterChain;
@@ -8,9 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import lombok.extern.slf4j.XSlf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

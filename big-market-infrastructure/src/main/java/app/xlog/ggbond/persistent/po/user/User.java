@@ -1,10 +1,7 @@
 package app.xlog.ggbond.persistent.po.user;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * 用户
@@ -22,5 +19,18 @@ public class User {
 
     private Long userId;  // 用户id
     private String userName;  // 用户名
-    private Long userRole;  // 用户的角色 : 0-管理员，1-普通用户，2-黑名单用户
+    private String password;  // 密码
+    private UserRole userRole;  // 用户的角色 : 0-管理员，1-普通用户，2-黑名单用户
+
+    @Getter
+    public enum UserRole {
+        ADMIN(0),
+        USER(1),
+        BLACKLIST(2);
+
+        private final int value;
+        UserRole(int value) {
+            this.value = value;
+        }
+    }
 }

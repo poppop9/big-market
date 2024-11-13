@@ -18,12 +18,13 @@
     </properties>
 
     <dependencies>
-        <!-- 工程模块 -->
+        <!--++++++++++++++ 工程模块 ++++++++++++++-->
         <dependency>
             <groupId>app.xlog.ggbond</groupId>
             <artifactId>big-market-domain</artifactId>
         </dependency>
 
+        <!--++++++++++++++ 日志，测试 ++++++++++++++-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -35,8 +36,12 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- orm -->
+        <!--++++++++++++++ 登录权限 ++++++++++++++-->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot3-starter</artifactId>
+        </dependency>
+        <!--++++++++++++++ ORM ++++++++++++++-->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -50,14 +55,14 @@
             <artifactId>bean-searcher-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
         </dependency>
-        <!-- hutool -->
+        <!--++++++++++++++ 工具包 ++++++++++++++-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>

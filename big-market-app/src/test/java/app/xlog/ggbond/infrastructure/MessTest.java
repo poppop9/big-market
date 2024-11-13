@@ -3,7 +3,6 @@ package app.xlog.ggbond.infrastructure;
 import app.xlog.ggbond.persistent.po.raffle.Strategy;
 import app.xlog.ggbond.persistent.repository.jpa.StrategyRepository;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
-import app.xlog.ggbond.raffle.model.vo.FilterParam;
 import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

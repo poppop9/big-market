@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <flow>
+    <!-- 抽奖领域 - 抽奖过滤器链 -->
     <chain name="raffleFilterChain">
         THEN(
-            // 前置过滤器链
+            // 1. 前置过滤器链
             IF(checkProceed, blacklistRaffleFilter),
             IF(checkProceed, matchRafflePoolFilter),
             THEN(
-                // 路由
+                // 2. 路由
                 raffleFilterRouter,
-                // 后置过滤器链
+                // 3. 后置过滤器链
                 awardInventoryFilter
             ).retry(3, "app.xlog.ggbond.raffle.service.filterChain.filters.RetryRouterException")
         );
