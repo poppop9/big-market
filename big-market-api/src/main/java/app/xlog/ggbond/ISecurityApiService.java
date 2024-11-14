@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * 用户权限
  */
-public interface IStpApiService {
+public interface ISecurityApiService {
 
     public Response<JsonNode> doLogin(Long userId, String password);
 

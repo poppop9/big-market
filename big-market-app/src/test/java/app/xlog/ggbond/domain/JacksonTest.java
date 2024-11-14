@@ -1,4 +1,4 @@
-package app.xlog.ggbond.infrastructure;
+package app.xlog.ggbond.domain;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,7 +1,9 @@
 package app.xlog.ggbond.infrastructure;
 
 import app.xlog.ggbond.persistent.po.raffle.Award;
+import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
+import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
 import cn.zhxu.bs.BeanSearcher;
 import cn.zhxu.bs.SearchResult;
 import cn.zhxu.bs.operator.Between;
@@ -23,6 +25,8 @@ public class JpaTest {
     private AwardRepository awardRepository;
     @Resource
     private BeanSearcher beanSearcher;
+    @Resource
+    private UserRepository userRepository;
 
     @Test
     void test_1() {
@@ -54,5 +58,17 @@ public class JpaTest {
         SearchResult<Award> search = beanSearcher.search(Award.class, map);
         System.out.println(Arrays.toString(search.getSummaries()) + " " + search.getTotalCount());
         search.getDataList().forEach(System.out::println);
+    }
+
+    @Test
+    void test_3() {
+        userRepository.save(User.builder()
+                .id(452L)
+                .userId(10001L)
+                .userName("测试33")
+                .password("123456")
+                .raffleTimes(888L)
+                .build()
+        );
     }
 }

@@ -3,7 +3,7 @@ package app.xlog.ggbond.raffle.service.filterChain.filters;
 import app.xlog.ggbond.raffle.model.AwardBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
-import app.xlog.ggbond.user.service.IUserService;
+import app.xlog.ggbond.security.service.ISecurityService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,7 +33,7 @@ public class RafflePreFilters {
     private ObjectMapper objectMapper;
 
     @Resource
-    private IUserService userService;
+    private ISecurityService securityService;
     @Resource
     private IRaffleRepository raffleRepository;
 
@@ -48,7 +48,7 @@ public class RafflePreFilters {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
 
         // 如果是黑名单用户，拦截
-        if (userService.isBlacklistUser()) {
+        if (securityService.isBlacklistUser()) {
             log.atInfo().log("抽奖领域 - 黑名单过滤器拦截");
             context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.INTERCEPT);
             context.setDispatchParam(RaffleFilterContext.DispatchParam.BlacklistAward);
@@ -68,7 +68,7 @@ public class RafflePreFilters {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
 
         // 用户的抽奖次数 todo 到时候增加用户抽奖次数时，应该抽奖成功了次数才 +1，因为有可能抽奖会失败
-        Long raffleTimes = userService.queryRaffleTimesByUserId(context.getUserId());
+        Long raffleTimes = securityService.queryRaffleTimesByUserId(context.getUserId());
 
         // <++++++++++ 策略规则 ++++++++++>
         try {

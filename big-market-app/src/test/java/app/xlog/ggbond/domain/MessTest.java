@@ -1,4 +1,4 @@
-package app.xlog.ggbond.infrastructure;
+package app.xlog.ggbond.domain;
 
 import app.xlog.ggbond.persistent.po.raffle.Strategy;
 import app.xlog.ggbond.persistent.repository.jpa.StrategyRepository;
@@ -133,14 +133,4 @@ public class MessTest {
 
     }
 
-    /**
-     * 测试枚举的顺序
-     **/
-    @Test
-    void test_enumOrder() {
-        FilterParam.DispatchParam[] values = FilterParam.DispatchParam.values();
-        for (FilterParam.DispatchParam value : values) {
-            System.out.println(value);
-        }
-    }
 }

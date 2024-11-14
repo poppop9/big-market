@@ -31,7 +31,6 @@ public interface IAwardInventoryRepository {
 
     /**
      * 根据策略id，奖品id，更新数据库中对应奖品的库存
-     * @param decrQueueVO
      */
     void updateAwardCount(DecrQueueVO decrQueueVO);
 }

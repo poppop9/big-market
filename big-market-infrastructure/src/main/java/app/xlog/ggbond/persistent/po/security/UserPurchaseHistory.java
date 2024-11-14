@@ -1,4 +1,4 @@
-package app.xlog.ggbond.persistent.po.raffle;
+package app.xlog.ggbond.persistent.po.security;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,21 +12,20 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 /**
- * 策略
+ * 用户购买历史
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "Strategy")
-public class Strategy {
+@Table(name = "UserPurchaseHistory")
+public class UserPurchaseHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Long strategyId;  // 策略id
-    private String strategyDesc;  // 策略描述
-    private String rules;  // 策略的规则，json格式
+    private Long userId;  // 用户id
+    private String purchaseName;  // 购买的商品名称
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();

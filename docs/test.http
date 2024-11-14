@@ -13,6 +13,11 @@ GET http://localhost:8090/api/award/v1/getAward?userId=123&strategyId=10001
 
 ###
 
+# curl -X GET "http://localhost:8090/api/user/v1/doLogin?userId=123&password=your_password"
+GET http://localhost:8090/api/user/v1/doLogin?userId=123&password=admin
+
+###
+
 
 
 

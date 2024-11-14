@@ -1,10 +1,7 @@
-package app.xlog.ggbond.persistent.po.raffle;
+package app.xlog.ggbond.persistent.po.security;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,24 +9,38 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 /**
- * 策略
+ * 用户
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "Strategy")
-public class Strategy {
+@Table(name = "User")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Long strategyId;  // 策略id
-    private String strategyDesc;  // 策略描述
-    private String rules;  // 策略的规则，json格式
+    private Long userId;  // 用户id
+    private String userName;  // 用户名
+    private String password;  // 密码
+    private UserRole userRole;  // 用户的角色 : 0-管理员，1-普通用户，2-黑名单用户
+    @Builder.Default
+    private Long raffleTimes = 0L;  // 用户的抽奖次数
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();
     @Builder.Default
     private LocalDateTime updateTime = LocalDateTime.now();
+
+
+    @Getter
+    @AllArgsConstructor
+    public enum UserRole {
+        ADMIN(0),
+        USER(1),
+        BLACKLIST(2);
+
+        private final int value;
+    }
 }

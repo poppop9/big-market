@@ -1,4 +1,4 @@
-package app.xlog.ggbond.infrastructure;
+package app.xlog.ggbond.domain;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

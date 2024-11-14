@@ -1,9 +1,10 @@
 package app.xlog.ggbond.persistent.repository;
 
-import app.xlog.ggbond.persistent.po.user.User;
+import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
-import app.xlog.ggbond.user.repository.IStpRepository;
-import cn.dev33.satoken.stp.StpUtil;
+import app.xlog.ggbond.security.model.UserBO;
+import app.xlog.ggbond.security.repository.ISecurityRepository;
+import cn.hutool.core.bean.BeanUtil;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Repository;
  * 用户仓储实现类
  */
 @Repository
-public class StpRepository implements IStpRepository {
+public class SecurityRepository implements ISecurityRepository {
 
     @Resource
     private UserRepository userRepository;
@@ -30,6 +31,16 @@ public class StpRepository implements IStpRepository {
     @Override
     public Boolean isBlacklistUser(Long userId) {
         return userRepository.findByUserId(userId).getUserRole() == User.UserRole.BLACKLIST;
+    }
+
+    /**
+     * 根据用户id，查询用户
+     */
+    @Override
+    public UserBO findByUserId(Long userId) {
+        return BeanUtil.copyProperties(
+                userRepository.findByUserId(userId), UserBO.class
+        );
     }
 
 }

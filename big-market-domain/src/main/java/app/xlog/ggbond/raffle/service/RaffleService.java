@@ -43,11 +43,6 @@ public class RaffleService implements IRaffleService {
     @Override
     public Long getAward(Long userId, Long strategyId) {
         // 执行过滤器链
-/*        FilterParam filterParam = raffleFilterChain.doFilter(FilterParam.builder()
-                .UserId(userId)
-                .StrategyId(strategyId)
-                .build()
-        );*/
         return raffleFilterChain.executeFilterChain(RaffleFilterContext.builder()
                 .userId(userId)
                 .strategyId(strategyId)
