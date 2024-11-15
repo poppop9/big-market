@@ -27,15 +27,7 @@ public class RaffleService implements IRaffleService {
     @Override
     public List<ObjectNode> queryAwardList(Long strategyId) {
         return raffleRepository.queryCommonAwards(strategyId).stream()
-                .map(awardBO -> {
-                    try {
-                        ObjectNode objectNode = objectMapper.valueToTree(awardBO);
-                        objectNode.set("rules", awardBO.stringToObjectNode(objectNode.get("rules").asText()));
-                        return objectNode;
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .map(awardBO -> objectMapper.<ObjectNode>valueToTree(awardBO))
                 .sorted(Comparator.comparingInt(o -> o.get("awardSort").asInt()))
                 .toList();
     }

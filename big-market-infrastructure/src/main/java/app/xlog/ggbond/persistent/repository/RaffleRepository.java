@@ -1,8 +1,11 @@
 package app.xlog.ggbond.persistent.repository;
 
+import app.xlog.ggbond.persistent.po.raffle.RaffleRule;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
+import app.xlog.ggbond.persistent.repository.jpa.RaffleRuleRepository;
 import app.xlog.ggbond.persistent.repository.jpa.StrategyRepository;
 import app.xlog.ggbond.raffle.model.AwardBO;
+import app.xlog.ggbond.raffle.model.RaffleRuleBO;
 import app.xlog.ggbond.raffle.model.StrategyBO;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import cn.hutool.core.bean.BeanUtil;
@@ -12,6 +15,7 @@ import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBucket;
 import org.redisson.api.RList;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,9 +33,11 @@ public class RaffleRepository implements IRaffleRepository {
     private StrategyRepository strategyRepository;
     @Resource
     private AwardRepository awardRepository;
+    @Resource
+    private RaffleRuleRepository raffleRuleRepository;
 
     /**
-     * 装配策略
+     * 根据策略ID查询策略
      **/
     @Override
     public StrategyBO findStrategyByStrategyId(Long strategyId) {
@@ -44,6 +50,20 @@ public class RaffleRepository implements IRaffleRepository {
         bucket.set(strategyBO);
 
         return strategyBO;
+    }
+
+    /**
+     * 查询指定策略下所有的抽奖规则
+     */
+    @Override
+    public List<RaffleRuleBO> findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(Long strategyId) {
+        List<RaffleRule> raffleRuleList = raffleRuleRepository.findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(
+                RaffleRule.RuleType.Strategy,
+                strategyId,
+                Sort.by("ruleGrade").ascending()
+        );
+
+        return BeanUtil.copyToList(raffleRuleList, RaffleRuleBO.class);
     }
 
     /**

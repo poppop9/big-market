@@ -1,6 +1,7 @@
 package app.xlog.ggbond.raffle.service.filterChain.filters;
 
 import app.xlog.ggbond.raffle.model.AwardBO;
+import app.xlog.ggbond.raffle.model.RaffleRuleBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import app.xlog.ggbond.security.service.ISecurityService;
@@ -16,10 +17,7 @@ import com.yomahub.liteflow.enums.NodeTypeEnum;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -67,12 +65,16 @@ public class RafflePreFilters {
     public void matchRafflePoolFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
 
-        // 用户的抽奖次数 todo 到时候增加用户抽奖次数时，应该抽奖成功了次数才 +1，因为有可能抽奖会失败
+        // 用户的抽奖次数 todo 增加用户抽奖次数时，应该抽奖成功了次数才 +1，因为有可能抽奖会失败
         Long raffleTimes = securityService.queryRaffleTimesByUserId(context.getUserId());
 
         // <++++++++++ 策略规则 ++++++++++>
         try {
-            String rules = raffleRepository.findStrategyByStrategyId(context.getStrategyId()).getRules();
+            for (RaffleRuleBO raffleRuleBO : raffleRepository.findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(context.getStrategyId())) {
+                // 如果匹配到了，就执行对应的路由方法
+            }
+
+/*            String rules = raffleRepository.findStrategyByStrategyId(context.getStrategyId()).getRules();
             Map<String, Integer> strategyRuleMap = objectMapper.readValue(rules, new TypeReference<Map<String, Integer>>() {
                     })
                     .entrySet()
@@ -92,13 +94,13 @@ public class RafflePreFilters {
                     // 结束整个方法
                     return;
                 }
-            }
+            }*/
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
 
         // <++++++++++ 奖品规则 ++++++++++>
-        List<JsonNode> ruleValues = raffleRepository.queryCommonAwards(context.getStrategyId()).stream()
+/*        List<JsonNode> ruleValues = raffleRepository.queryCommonAwards(context.getStrategyId()).stream()
                 .map(AwardBO::getRules)
                 .distinct()
                 .map(rules -> {
@@ -112,8 +114,6 @@ public class RafflePreFilters {
                 .sorted(Comparator.comparingInt(JsonNode::asInt))
                 .toList();
         log.atInfo().log("奖品规则 - ruleValues: {}", ruleValues);
-
-        // <++++++++++ 特殊规则 ++++++++++>
         for (JsonNode ruleValue : ruleValues) {
             if (raffleTimes < ruleValue.asInt()) {
                 // 动态获取枚举实例
@@ -122,7 +122,7 @@ public class RafflePreFilters {
                 ));
                 return;
             }
-        }
+        }*/
 
         // <++++++++++ 兜底规则 ++++++++++> : 其他奖品规则都不符合，那抽奖池就是所有奖品
         context.setDispatchParam(RaffleFilterContext.DispatchParam.CommonAwards);

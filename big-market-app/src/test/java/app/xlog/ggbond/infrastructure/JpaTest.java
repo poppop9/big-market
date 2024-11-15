@@ -1,8 +1,10 @@
 package app.xlog.ggbond.infrastructure;
 
 import app.xlog.ggbond.persistent.po.raffle.Award;
+import app.xlog.ggbond.persistent.po.raffle.RaffleRule;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
+import app.xlog.ggbond.persistent.repository.jpa.RaffleRuleRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
 import cn.zhxu.bs.BeanSearcher;
 import cn.zhxu.bs.SearchResult;
@@ -16,17 +18,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
 public class JpaTest {
 
     @Resource
+    private BeanSearcher beanSearcher;
+
+    @Resource
     private AwardRepository awardRepository;
     @Resource
-    private BeanSearcher beanSearcher;
-    @Resource
     private UserRepository userRepository;
+    @Resource
+    private RaffleRuleRepository raffleRuleRepository;
 
     @Test
     void test_1() {
@@ -70,5 +76,64 @@ public class JpaTest {
                 .raffleTimes(888L)
                 .build()
         );
+    }
+
+    /**
+     * 初始化RaffleRule表
+     */
+    @Test
+    void test_4() {
+        raffleRuleRepository.saveAll(List.of(
+                RaffleRule.builder()
+                        .ruleType(RaffleRule.RuleType.Strategy).strategyOrAwardId(10001L)
+                        .ruleKey(RaffleRule.RuleKey.rule_grand).ruleValue(50L)
+                        .ruleDescription("当用户抽奖第50次时，将获得一个rule_grand抽奖池里的奖品")
+                        .build(),
+                RaffleRule.builder()
+                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(101L)
+                        .ruleKey(RaffleRule.RuleKey.rule_common).ruleValue(-1L)
+                        .ruleDescription("该奖品无需任何条件，直接抽取")
+                        .build(),
+                RaffleRule.builder()
+                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(102L)
+                        .ruleKey(RaffleRule.RuleKey.rule_common).ruleValue(-1L)
+                        .ruleDescription("该奖品无需任何条件，直接抽取")
+                        .build(),
+                RaffleRule.builder()
+                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(103L)
+                        .ruleKey(RaffleRule.RuleKey.rule_common).ruleValue(-1L)
+                        .ruleDescription("该奖品无需任何条件，直接抽取")
+                        .build(),
+                RaffleRule.builder()
+                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(104L)
+                        .ruleKey(RaffleRule.RuleKey.rule_common).ruleValue(-1L)
+                        .ruleDescription("该奖品无需任何条件，直接抽取")
+                        .build(),
+                RaffleRule.builder()
+                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(105L)
+                        .ruleKey(RaffleRule.RuleKey.rule_common).ruleValue(-1L)
+                        .ruleDescription("该奖品无需任何条件，直接抽取")
+                        .build(),
+                RaffleRule.builder()
+                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(106L)
+                        .ruleKey(RaffleRule.RuleKey.rule_lock).ruleValue(10L)
+                        .ruleDescription("该奖品需要抽奖次数达到某个值，才能抽取")
+                        .build(),
+                RaffleRule.builder()
+                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(107L)
+                        .ruleKey(RaffleRule.RuleKey.rule_lock).ruleValue(10L)
+                        .ruleDescription("该奖品需要抽奖次数达到某个值，才能抽取")
+                        .build(),
+                RaffleRule.builder()
+                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(108L)
+                        .ruleKey(RaffleRule.RuleKey.rule_lock).ruleValue(10L)
+                        .ruleDescription("该奖品需要抽奖次数达到某个值，才能抽取")
+                        .build(),
+                RaffleRule.builder()
+                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(109L)
+                        .ruleKey(RaffleRule.RuleKey.rule_lock).ruleValue(20L)
+                        .ruleDescription("该奖品需要抽奖次数达到某个值，才能抽取")
+                        .build()
+        ));
     }
 }

@@ -1,6 +1,7 @@
 package app.xlog.ggbond.raffle.repository;
 
 import app.xlog.ggbond.raffle.model.AwardBO;
+import app.xlog.ggbond.raffle.model.RaffleRuleBO;
 import app.xlog.ggbond.raffle.model.StrategyBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import cn.hutool.core.lang.WeightRandom;
@@ -16,6 +17,9 @@ public interface IRaffleRepository {
      **/
     // 根据策略Id，装配对应的策略
     StrategyBO findStrategyByStrategyId(Long strategyId);
+
+    // 查询指定策略下所有的抽奖规则
+    List<RaffleRuleBO> findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(Long strategyId);
 
     /**
      * 装配，查询奖品-----------------------------------------------------------

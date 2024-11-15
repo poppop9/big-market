@@ -37,7 +37,7 @@ public class Award {
     private Long awardCount;  // 奖品库存
     private Double awardRate;  // 奖品被抽取到的概率，单位是%
     private Integer awardSort;  // 奖品在前端的排序
-    private String rules;  // 配置一些规则，数据类型是json，比如 { "rule_lock": "20" }，还有 { "rule_common_blacklist": "-1" }
+//    private String rules;  // 配置一些规则，数据类型是json，比如 { "rule_lock": "20" }，还有 { "rule_common_blacklist": "-1" }
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();

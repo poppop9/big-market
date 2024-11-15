@@ -26,7 +26,6 @@ public class Strategy {
     private Long id;
     private Long strategyId;  // 策略id
     private String strategyDesc;  // 策略描述
-    private String rules;  // 策略的规则，json格式
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();

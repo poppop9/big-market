@@ -1,4 +1,4 @@
-package app.xlog.ggbond.raffle.service.filterChain.filters;
+package app.xlog.ggbond.raffle.service.filterChain;
 
 /**
  * 抽奖重新调度异常
