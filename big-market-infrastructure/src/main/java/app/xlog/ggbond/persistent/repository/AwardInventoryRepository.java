@@ -1,16 +1,15 @@
 package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
-import app.xlog.ggbond.raffle.model.AwardBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import cn.hutool.core.lang.WeightRandom;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RAtomicLong;
-import org.redisson.api.RList;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Repository;
@@ -58,7 +57,7 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
     @Override
     public void removeAwardFromPools(Long strategyId, Long awardId) {
         // 1. 在redis的所有抽奖池中，移除指定奖品。由于黑名单抽奖池在redis中只有一个对象，所以不用去除，黑名单用户就让他一直抽随机积分就好了，而且随机积分的库存绝对够
-        String[] cacheKeyLists = {
+/*        String[] cacheKeyLists = {
                 "strategy_" + strategyId + "_awards_Common",
                 "strategy_" + strategyId + "_awards_Lock",
                 "strategy_" + strategyId + "_awards_LockLong",
@@ -67,23 +66,24 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
         for (String cacheKey : cacheKeyLists) {
             RList<AwardBO> rList = redissonClient.getList(cacheKey);
             rList.stream()
-                    .filter(AwardBO -> Objects.equals(AwardBO.getAwardId(), awardId))
+                    .filter(AwardBO -> NumberUtil.equals(AwardBO.getAwardId(), awardId))
                     .findFirst()
                     .ifPresent(rList::remove);
-        }
+        }*/
 
         // 2. 调整权重对象
         Set<Map.Entry<Integer, String>> cacheKeyWeightRandoms = Map.of(
-                1, "strategy_" + strategyId + "_awards_WeightRandom_Common",
-                2, "strategy_" + strategyId + "_awards_WeightRandom_Lock",
-                3, "strategy_" + strategyId + "_awards_WeightRandom_LockLong",
-                4, "strategy_" + strategyId + "_awards_WeightRandom_Grand"
+                1, strategyId + "_all_weightRandom",
+                2, strategyId + "_noLock_weightRandom",
+                3, strategyId + "_noLongLock_weightRandom",
+                4, strategyId + "_grand_weightRandom",
+                5, strategyId + "_blacklist_weightRandom"
         ).entrySet();
         for (Map.Entry<Integer, String> cacheKey : cacheKeyWeightRandoms) {
             switch (cacheKey.getKey()) {
                 case 1 -> {
-                    List<WeightRandom.WeightObj<Long>> weightObjs = raffleRepository.queryCommonAwards(strategyId).stream()
-                            .filter(AwardBO -> !Objects.equals(AwardBO.getAwardId(), awardId))
+                    List<WeightRandom.WeightObj<Long>> weightObjs = raffleRepository.findAwardsByStrategyId(strategyId).stream()
+                            .filter(AwardBO -> !NumberUtil.equals(AwardBO.getAwardId(), awardId))
                             .map(AwardBO -> new WeightRandom.WeightObj<>(
                                     AwardBO.getAwardId(),
                                     AwardBO.getAwardRate()
@@ -96,7 +96,7 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
                 }
                 case 2 -> {
                     List<WeightRandom.WeightObj<Long>> weightObjs = raffleRepository.queryRuleLockAwards(strategyId).stream()
-                            .filter(AwardBO -> Objects.equals(AwardBO.getAwardId(), awardId))
+                            .filter(AwardBO -> !NumberUtil.equals(AwardBO.getAwardId(), awardId))
                             .map(AwardBO -> new WeightRandom.WeightObj<>(
                                     AwardBO.getAwardId(),
                                     AwardBO.getAwardRate()

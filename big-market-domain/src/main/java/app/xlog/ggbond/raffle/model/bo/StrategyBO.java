@@ -1,4 +1,4 @@
-package app.xlog.ggbond.raffle.model;
+package app.xlog.ggbond.raffle.model.bo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

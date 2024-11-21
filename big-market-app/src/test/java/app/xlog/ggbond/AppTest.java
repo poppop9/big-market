@@ -1,6 +1,6 @@
 package app.xlog.ggbond;
 
-import app.xlog.ggbond.raffle.model.AwardBO;
+import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;

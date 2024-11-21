@@ -40,7 +40,6 @@ public class RedissonConfig {
                 .setPingConnectionInterval(0)
                 // 设置是否保持长连接，默认为true
                 .setKeepAlive(true);
-
         // 设置Redisson存储数据的格式，这里使用Json，一定要配置，防止乱码
         config.setCodec(new JsonJacksonCodec());
 

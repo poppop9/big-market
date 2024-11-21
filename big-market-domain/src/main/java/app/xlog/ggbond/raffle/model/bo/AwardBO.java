@@ -1,9 +1,5 @@
-package app.xlog.ggbond.raffle.model;
+package app.xlog.ggbond.raffle.model.bo;
 
-import app.xlog.ggbond.raffle.utils.SpringContextUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

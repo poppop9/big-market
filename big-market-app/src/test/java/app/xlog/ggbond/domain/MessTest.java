@@ -41,24 +41,8 @@ public class MessTest {
         List<Strategy> strategies = strategyRepository.findAll();
 
         // 只需要strategie属性中的rule，rules是所有规则字符串的集合
-        List<String> rules = strategies.stream()
-                .map(Strategy::getRules)
-                .toList();
-        rules.forEach(System.out::println);
 
         System.out.println("======================================");
-
-        // 一条规则是一条json数据
-        for (String rule : rules) {
-            Map<String, String> rulesMap = objectMapper.readValue(
-                    rule,
-                    new TypeReference<Map<String, String>>() {
-                    }
-            );
-
-            System.out.println(rulesMap.get("rule_weight"));
-            System.out.println(rulesMap.get("rule_blacklist"));
-        }
     }
 
     // 测试布隆过滤器
@@ -132,5 +116,4 @@ public class MessTest {
         optional.or(() -> Optional.of("Hello world"));
 
     }
-
 }

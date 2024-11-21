@@ -1,21 +1,22 @@
 package app.xlog.ggbond.raffle.service.armory;
 
-/*
-装配策略的兵工厂，负责初始化策略奖品 ……
+/**
+ * 装配策略的兵工厂，负责初始化策略奖品
  */
 public interface IRaffleArmory {
-    // 传入一个策略ID，装配所有奖品，由于要还要拼接rule的名字，所以改成String格式
-    void assembleLotteryStrategyRuleCommon(Long strategyId);
 
-    // 传入一个策略ID，装配除去锁出的四个奖品的其余奖品
+    // 根据指定策略id，装配该策略所需的所有权重对象
+    void assembleRaffleWeightRandomByStrategyId(Long strategyId);
+
+/*    void assembleLotteryStrategyRuleCommon(Long strategyId);
+
     void assembleLotteryStrategyRuleLock(Long strategyId);
 
-    // 传入一个策略ID，装配除去最后一个奖品的其余奖品
     void assembleLotteryStrategyRuleLockLong(Long strategyId);
 
-    // 传入一个策略ID，装配大奖的抽奖池
-    void assembleLotteryStrategyRuleGrand(Long strategyId);
+    void assembleLotteryStrategyRuleGrand(Long strategyId);*/
 
-    // 传入一个策略ID，装配所有奖品的库存
+    // 装配所有奖品的库存
     void assembleLotteryStrategyAwardCount(Long strategyId);
+
 }

@@ -1,9 +1,8 @@
 package app.xlog.ggbond.raffle.repository;
 
-import app.xlog.ggbond.raffle.model.AwardBO;
-import app.xlog.ggbond.raffle.model.RaffleRuleBO;
-import app.xlog.ggbond.raffle.model.StrategyBO;
-import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
+import app.xlog.ggbond.raffle.model.bo.AwardBO;
+import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
+import app.xlog.ggbond.raffle.model.bo.StrategyBO;
 import cn.hutool.core.lang.WeightRandom;
 
 import java.util.List;
@@ -13,22 +12,20 @@ import java.util.List;
  **/
 public interface IRaffleRepository {
     /**
-     * 装配策略 ---------------------------------------------------------
-     **/
+     * ---------------------------
+     * --------- 装配策略 ---------
+     * ---------------------------
+     */
     // 根据策略Id，装配对应的策略
     StrategyBO findStrategyByStrategyId(Long strategyId);
 
-    // 查询指定策略下所有的抽奖规则
-    List<RaffleRuleBO> findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(Long strategyId);
 
     /**
-     * 装配，查询奖品-----------------------------------------------------------
-     **/
-    // 查询对应策略的所有奖品，并缓存到redis
-    List<AwardBO> queryCommonAwards(Long strategyId);
-
-    // 根据策略ID，查询锁定奖品
-    List<AwardBO> queryRuleLockAwards(Long strategyId);
+     * ---------------------------
+     * --------- 查询奖品 ---------
+     * ---------------------------
+     */
+    List<AwardBO> findAwardsByStrategyId(Long strategyId);
 
     List<AwardBO> queryRuleLockLongAwards(Long strategyId);
 
@@ -38,10 +35,20 @@ public interface IRaffleRepository {
 
     void assembleAwardsCount(Long strategyId);
 
+    /**
+     * ------------------------------
+     * --------- 查询奖品规则 ---------
+     * ------------------------------
+     */
+    // 查询指定策略下所有的抽奖规则
+    List<RafflePoolBO> findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(Long strategyId);
+
 
     /**
-     * 装配权重对象--------------------------------------------------------------
-     **/
+     * ---------------------------
+     * --------- 装配权重对象 ------
+     * ---------------------------
+     */
     // 将权重对象插入到Redis中，awardRule是奖品规则
     void insertWeightRandom(Long strategyId, String awardRule, WeightRandom<Long> wr);
 

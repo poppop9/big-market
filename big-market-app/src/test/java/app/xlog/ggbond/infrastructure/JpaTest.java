@@ -1,7 +1,7 @@
 package app.xlog.ggbond.infrastructure;
 
 import app.xlog.ggbond.persistent.po.raffle.Award;
-import app.xlog.ggbond.persistent.po.raffle.RaffleRule;
+import app.xlog.ggbond.persistent.po.raffle.RafflePool;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
 import app.xlog.ggbond.persistent.repository.jpa.RaffleRuleRepository;
@@ -81,59 +81,72 @@ public class JpaTest {
     /**
      * 初始化RaffleRule表
      */
-    @Test
+/*    @Test
     void test_4() {
         raffleRuleRepository.saveAll(List.of(
-                RaffleRule.builder()
-                        .ruleType(RaffleRule.RuleType.Strategy).strategyOrAwardId(10001L)
-                        .ruleKey(RaffleRule.RuleKey.rule_grand).ruleValue(50L)
-                        .ruleDescription("当用户抽奖第50次时，将获得一个rule_grand抽奖池里的奖品")
+                RafflePool.builder()
+                        .ruleType(RafflePool.RuleType.Dispatch)
+                        .strategyId(10001L)
+                        .awardId(101L)
+                        .ruleKey(RafflePool.RuleKey.rule_blacklist)
+                        .ruleGrade(40).ruleDescription("黑名单用户专属奖品")
                         .build(),
-                RaffleRule.builder()
-                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(101L)
-                        .ruleKey(RaffleRule.RuleKey.rule_common).ruleValue(-1L)
-                        .ruleDescription("该奖品无需任何条件，直接抽取")
+                RafflePool.builder()
+                        .ruleType(RafflePool.RuleType.Limit)
+                        .strategyId(10001L)
+                        .awardId(106L)
+                        .ruleKey(RafflePool.RuleKey.rule_lock).ruleValue(10L)
+                        .ruleGrade(56).ruleDescription("该奖品需要抽奖次数达到某个值，才能抽取")
                         .build(),
-                RaffleRule.builder()
-                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(102L)
-                        .ruleKey(RaffleRule.RuleKey.rule_common).ruleValue(-1L)
-                        .ruleDescription("该奖品无需任何条件，直接抽取")
+                RafflePool.builder()
+                        .ruleType(RafflePool.RuleType.Limit)
+                        .strategyId(10001L)
+                        .awardId(106L)
+                        .ruleKey(RafflePool.RuleKey.rule_grand).ruleValue(50L)
+                        .ruleGrade(49).ruleDescription("当用户抽奖第50次时，将获得一个rule_grand抽奖池里的奖品")
                         .build(),
-                RaffleRule.builder()
-                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(103L)
-                        .ruleKey(RaffleRule.RuleKey.rule_common).ruleValue(-1L)
-                        .ruleDescription("该奖品无需任何条件，直接抽取")
+                RafflePool.builder()
+                        .ruleType(RafflePool.RuleType.Limit)
+                        .strategyId(10001L)
+                        .awardId(107L)
+                        .ruleKey(RafflePool.RuleKey.rule_lock).ruleValue(10L)
+                        .ruleGrade(56).ruleDescription("该奖品需要抽奖次数达到某个值，才能抽取")
                         .build(),
-                RaffleRule.builder()
-                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(104L)
-                        .ruleKey(RaffleRule.RuleKey.rule_common).ruleValue(-1L)
-                        .ruleDescription("该奖品无需任何条件，直接抽取")
+                RafflePool.builder()
+                        .ruleType(RafflePool.RuleType.Limit)
+                        .strategyId(10001L)
+                        .awardId(107L)
+                        .ruleKey(RafflePool.RuleKey.rule_grand).ruleValue(50L)
+                        .ruleGrade(49).ruleDescription("当用户抽奖第50次时，将获得一个rule_grand抽奖池里的奖品")
                         .build(),
-                RaffleRule.builder()
-                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(105L)
-                        .ruleKey(RaffleRule.RuleKey.rule_common).ruleValue(-1L)
-                        .ruleDescription("该奖品无需任何条件，直接抽取")
+                RafflePool.builder()
+                        .ruleType(RafflePool.RuleType.Limit)
+                        .strategyId(10001L)
+                        .awardId(108L)
+                        .ruleKey(RafflePool.RuleKey.rule_lock).ruleValue(10L)
+                        .ruleGrade(56).ruleDescription("该奖品需要抽奖次数达到某个值，才能抽取")
                         .build(),
-                RaffleRule.builder()
-                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(106L)
-                        .ruleKey(RaffleRule.RuleKey.rule_lock).ruleValue(10L)
-                        .ruleDescription("该奖品需要抽奖次数达到某个值，才能抽取")
+                RafflePool.builder()
+                        .ruleType(RafflePool.RuleType.Limit)
+                        .strategyId(10001L)
+                        .awardId(108L)
+                        .ruleKey(RafflePool.RuleKey.rule_grand).ruleValue(50L)
+                        .ruleGrade(49).ruleDescription("当用户抽奖第50次时，将获得一个rule_grand抽奖池里的奖品")
                         .build(),
-                RaffleRule.builder()
-                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(107L)
-                        .ruleKey(RaffleRule.RuleKey.rule_lock).ruleValue(10L)
-                        .ruleDescription("该奖品需要抽奖次数达到某个值，才能抽取")
+                RafflePool.builder()
+                        .ruleType(RafflePool.RuleType.Limit)
+                        .strategyId(10001L)
+                        .awardId(109L)
+                        .ruleKey(RafflePool.RuleKey.rule_lock).ruleValue(20L)
+                        .ruleGrade(56).ruleDescription("该奖品需要抽奖次数达到某个值，才能抽取")
                         .build(),
-                RaffleRule.builder()
-                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(108L)
-                        .ruleKey(RaffleRule.RuleKey.rule_lock).ruleValue(10L)
-                        .ruleDescription("该奖品需要抽奖次数达到某个值，才能抽取")
-                        .build(),
-                RaffleRule.builder()
-                        .ruleType(RaffleRule.RuleType.Award).strategyOrAwardId(109L)
-                        .ruleKey(RaffleRule.RuleKey.rule_lock).ruleValue(20L)
-                        .ruleDescription("该奖品需要抽奖次数达到某个值，才能抽取")
+                RafflePool.builder()
+                        .ruleType(RafflePool.RuleType.Limit)
+                        .strategyId(10001L)
+                        .awardId(109L)
+                        .ruleKey(RafflePool.RuleKey.rule_grand).ruleValue(50L)
+                        .ruleGrade(49).ruleDescription("当用户抽奖第50次时，将获得一个rule_grand抽奖池里的奖品")
                         .build()
         ));
-    }
+    }*/
 }

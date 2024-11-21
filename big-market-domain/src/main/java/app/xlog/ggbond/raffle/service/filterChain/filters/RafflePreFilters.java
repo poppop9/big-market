@@ -1,13 +1,9 @@
 package app.xlog.ggbond.raffle.service.filterChain.filters;
 
-import app.xlog.ggbond.raffle.model.AwardBO;
-import app.xlog.ggbond.raffle.model.RaffleRuleBO;
+import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import app.xlog.ggbond.security.service.ISecurityService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yomahub.liteflow.annotation.LiteflowComponent;
 import com.yomahub.liteflow.annotation.LiteflowMethod;
@@ -16,9 +12,6 @@ import com.yomahub.liteflow.enums.LiteFlowMethodEnum;
 import com.yomahub.liteflow.enums.NodeTypeEnum;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 前置过滤器链
@@ -69,9 +62,11 @@ public class RafflePreFilters {
         Long raffleTimes = securityService.queryRaffleTimesByUserId(context.getUserId());
 
         // <++++++++++ 策略规则 ++++++++++>
-        try {
-            for (RaffleRuleBO raffleRuleBO : raffleRepository.findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(context.getStrategyId())) {
+
+            // 查出来的策略规则已经按照等级排序了
+            for (RafflePoolBO rafflePoolBO : raffleRepository.findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(context.getStrategyId())) {
                 // 如果匹配到了，就执行对应的路由方法
+                RafflePoolBO.RuleKey ruleKey = rafflePoolBO.getRuleKey();
             }
 
 /*            String rules = raffleRepository.findStrategyByStrategyId(context.getStrategyId()).getRules();
@@ -95,9 +90,6 @@ public class RafflePreFilters {
                     return;
                 }
             }*/
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
 
         // <++++++++++ 奖品规则 ++++++++++>
 /*        List<JsonNode> ruleValues = raffleRepository.queryCommonAwards(context.getStrategyId()).stream()

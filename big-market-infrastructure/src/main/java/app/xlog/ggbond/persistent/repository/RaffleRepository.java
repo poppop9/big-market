@@ -1,12 +1,12 @@
 package app.xlog.ggbond.persistent.repository;
 
-import app.xlog.ggbond.persistent.po.raffle.RaffleRule;
+import app.xlog.ggbond.persistent.po.raffle.RafflePool;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
 import app.xlog.ggbond.persistent.repository.jpa.RaffleRuleRepository;
 import app.xlog.ggbond.persistent.repository.jpa.StrategyRepository;
-import app.xlog.ggbond.raffle.model.AwardBO;
-import app.xlog.ggbond.raffle.model.RaffleRuleBO;
-import app.xlog.ggbond.raffle.model.StrategyBO;
+import app.xlog.ggbond.raffle.model.bo.AwardBO;
+import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
+import app.xlog.ggbond.raffle.model.bo.StrategyBO;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 策略仓库实现类
+ * 策略仓库实现类  todo 很多方法需要修改
  */
 @Repository
 public class RaffleRepository implements IRaffleRepository {
@@ -56,26 +56,23 @@ public class RaffleRepository implements IRaffleRepository {
      * 查询指定策略下所有的抽奖规则
      */
     @Override
-    public List<RaffleRuleBO> findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(Long strategyId) {
-        List<RaffleRule> raffleRuleList = raffleRuleRepository.findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(
-                RaffleRule.RuleType.Strategy,
+    public List<RafflePoolBO> findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(Long strategyId) {
+        List<RafflePool> rafflePoolList = raffleRuleRepository.findByStrategyIdOrderByRuleGradeAsc(
                 strategyId,
                 Sort.by("ruleGrade").ascending()
         );
 
-        return BeanUtil.copyToList(raffleRuleList, RaffleRuleBO.class);
+        return BeanUtil.copyToList(rafflePoolList, RafflePoolBO.class);
     }
 
     /**
-     * 将数据库中的数据查询出来装配到 redis
+     * 将数据库中指定策略的奖品查询出来装配到 redis
      **/
     @Override
-    public List<AwardBO> queryCommonAwards(Long strategyId) {
-        // Redis缓存中存在则直接返回
-        RList<AwardBO> rList = redissonClient.getList("strategy_" + strategyId + "_awards_Common");
+    public List<AwardBO> findAwardsByStrategyId(Long strategyId) {
+        RList<AwardBO> rList = redissonClient.getList("strategy_" + strategyId + "_awards");
         if (!rList.isEmpty()) return rList;
 
-        // 将PO转换为BO
         List<AwardBO> awardBOS = BeanUtil.copyToList(
                 awardRepository.findByStrategyId(strategyId), AwardBO.class
         );
@@ -85,23 +82,20 @@ public class RaffleRepository implements IRaffleRepository {
         return awardBOS;
     }
 
-    @Override
+/*    @Override
     public List<AwardBO> queryRuleLockAwards(Long strategyId) {
-        // 先从缓存中取
-        String cacheKey = "strategy_" + strategyId + "_awards_Lock";
-        RList<AwardBO> rList = redissonClient.getList(cacheKey);
+        RList<AwardBO> rList = redissonClient.getList("strategy_" + strategyId + "_awards_Lock");
         if (!rList.isEmpty()) return rList;
 
         // 缓存中没有则查询数据库
         List<AwardBO> awardRuleLockBOS = queryCommonAwards(strategyId).stream()
-                .filter(AwardBO -> !AwardBO.getRules().contains("rule_lock"))
+//                .filter(AwardBO -> !AwardBO.getRules().contains("rule_lock"))
                 .toList();
 
-        // 存入redis
         rList.addAll(awardRuleLockBOS);
 
         return awardRuleLockBOS;
-    }
+    }*/
 
     @Override
     public List<AwardBO> queryRuleLockLongAwards(Long strategyId) {
@@ -109,10 +103,8 @@ public class RaffleRepository implements IRaffleRepository {
         RList<AwardBO> rList = redissonClient.getList(cacheKey);
         if (!rList.isEmpty()) return rList;
 
-        List<AwardBO> awardRuleLockBOS = queryCommonAwards(strategyId).stream()
-                .filter(
-                        AwardBO -> !AwardBO.getRules().contains("rule_lock_long")
-                )
+        List<AwardBO> awardRuleLockBOS = findAwardsByStrategyId(strategyId).stream()
+//                .filter(AwardBO -> !AwardBO.getRules().contains("rule_lock_long"))
                 .toList();
 
         rList.addAll(awardRuleLockBOS);
@@ -125,15 +117,11 @@ public class RaffleRepository implements IRaffleRepository {
         String cacheKey = "strategy_" + strategyId + "_awards_Blacklist";
         // 由于黑名单奖品只有一个，所以不用rList
         RBucket<Object> bucket = redissonClient.getBucket(cacheKey);
-        if (bucket.isExists()) {
-            return (AwardBO) bucket.get();
-        }
+        if (bucket.isExists()) return (AwardBO) bucket.get();
 
-        List<AwardBO> awardBOs = queryCommonAwards(strategyId);
+        List<AwardBO> awardBOs = findAwardsByStrategyId(strategyId);
         Optional<AwardBO> optional = awardBOs.stream()
-                .filter(
-                        AwardBO -> AwardBO.getRules().contains("rule_common_blacklist")
-                )
+//                .filter(AwardBO -> AwardBO.getRules().contains("rule_common_blacklist"))
                 .findFirst();
 
         // 存入redis
@@ -144,17 +132,12 @@ public class RaffleRepository implements IRaffleRepository {
 
     @Override
     public List<AwardBO> queryRuleGrandAwards(Long strategyId) {
-        String cacheKey = "strategy_" + strategyId + "_awards_Grand";
-        RList<AwardBO> rlist = redissonClient.getList(cacheKey);
-        if (!rlist.isEmpty()) {
-            return rlist;
-        }
+        RList<AwardBO> rlist = redissonClient.getList("strategy_" + strategyId + "_awards_Grand");
+        if (!rlist.isEmpty()) return rlist;
 
-        List<AwardBO> awardBOs = queryCommonAwards(strategyId);
+        List<AwardBO> awardBOs = findAwardsByStrategyId(strategyId);
         List<AwardBO> awardRuleGrandBOS = awardBOs.stream()
-                .filter(
-                        AwardBO -> AwardBO.getRules().contains("rule_lock")
-                )
+//                .filter(AwardBO -> AwardBO.getRules().contains("rule_lock"))
                 .toList();
 
         rlist.addAll(awardRuleGrandBOS);
@@ -164,7 +147,7 @@ public class RaffleRepository implements IRaffleRepository {
 
     @Override
     public void assembleAwardsCount(Long strategyId) {
-        List<AwardBO> awardBOS = queryCommonAwards(strategyId);
+        List<AwardBO> awardBOS = findAwardsByStrategyId(strategyId);
         for (AwardBO awardBO : awardBOS) {
             String cacheKey = "strategy_" + strategyId + "_awards_" + awardBO.getAwardId() + "_count";
             RAtomicLong rAtomicLong = redissonClient.getAtomicLong(cacheKey);
@@ -181,7 +164,7 @@ public class RaffleRepository implements IRaffleRepository {
     // 将权重对象插入到Redis中
     @Override
     public void insertWeightRandom(Long strategyId, String awardRule, WeightRandom<Long> wr) {
-        String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_" + awardRule;
+        String cacheKey = strategyId + "_" + awardRule + "weightRandom_";
         redissonClient.getBucket(cacheKey).set(wr);
     }
 

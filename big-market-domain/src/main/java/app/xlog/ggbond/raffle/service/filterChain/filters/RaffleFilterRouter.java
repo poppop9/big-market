@@ -34,7 +34,7 @@ public class RaffleFilterRouter {
     }
 
     /**
-     * 执行路由调度
+     * 执行路由调度  todo 需要修改
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
@@ -47,7 +47,6 @@ public class RaffleFilterRouter {
         Long awardId = switch (context.getDispatchParam()) {
             case CommonAwards -> raffleDispatch.getRuleCommonAwardIdByRandom(context.getStrategyId());
             case LockAwards -> raffleDispatch.getRuleLockAwardIdByRandom(context.getStrategyId());
-            case LockLongAwards -> raffleDispatch.getRuleLockLongAwardIdByRandom(context.getStrategyId());
             case BlacklistAward -> raffleDispatch.getWorstAwardId(context.getStrategyId());
             case GrandAward -> raffleDispatch.getRuleGrandAwardIdByRandom(context.getStrategyId());
         };
