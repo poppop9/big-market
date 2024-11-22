@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AwardBO {
-    private Long strategyId;
-    private Long awardId;
-    private String awardTitle;
-    private String awardSubtitle;
-    private Long awardCount;
-    private Double awardRate;
-    private Integer awardSort;
+    private Long strategyId;  // 策略id
+    private Long awardId;  // 奖品id
+    private String awardTitle;  // 奖品标题
+    private String awardSubtitle;  // 奖品副标题
+    private Long awardCount;  // 奖品库存
+    private Double awardRate;  // 奖品被抽取到的概率，单位是%
+    private Integer awardSort;  // 奖品在前端的排序
 }

@@ -3,6 +3,7 @@ package app.xlog.ggbond.raffle.model.bo;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 抽奖池业务对象
@@ -11,9 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RafflePoolBO {
+    private Long id;
     private Long strategyId;  // 绑定的策略id
-    private Long awardId;  // 绑定的奖品id
+    private List<Long> awardIds; // 绑定的奖品集合
     private String rafflePoolName;  // 抽奖池名称
-    private LocalDateTime createTime = LocalDateTime.now();
-    private LocalDateTime updateTime = LocalDateTime.now();
 }

@@ -2,7 +2,6 @@ package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.persistent.po.raffle.RafflePool;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
-import app.xlog.ggbond.persistent.repository.jpa.RaffleRuleRepository;
 import app.xlog.ggbond.persistent.repository.jpa.StrategyRepository;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;

@@ -28,11 +28,8 @@ public class AssembleController implements IAssembleApiService {
 
     @Override
     @GetMapping("/v1/assembleRaffleAll")
-    public Response<JsonNode> assembleRaffleAll(@RequestParam Integer strategyId) {
-        strategyArmory.assembleLotteryStrategyRuleCommon(10001L);
-        strategyArmory.assembleLotteryStrategyRuleLock(10001L);
-        strategyArmory.assembleLotteryStrategyRuleLockLong(10001L);
-        strategyArmory.assembleLotteryStrategyRuleGrand(10001L);
+    public Response<JsonNode> assembleRaffleAll(@RequestParam Long strategyId) {
+        strategyArmory.assembleRaffleWeightRandomByStrategyId(strategyId);
         strategyArmory.assembleLotteryStrategyAwardCount(10001L);
 
         return Response.<JsonNode>builder()

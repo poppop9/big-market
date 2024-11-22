@@ -5,6 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public interface IAssembleApiService {
 
-    public Response<JsonNode> assembleRaffleAll(Integer strategyId);
+    public Response<JsonNode> assembleRaffleAll(Long strategyId);
 
 }

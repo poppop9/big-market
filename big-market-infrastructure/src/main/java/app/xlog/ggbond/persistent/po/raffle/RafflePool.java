@@ -1,5 +1,6 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
+import app.xlog.ggbond.persistent.po.LongListToJsonConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,11 +21,10 @@ public class RafflePool {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Enumerated(EnumType.STRING)
     private Long strategyId;  // 绑定的策略id
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "awardId")  // 指定Award表中的外键为awardId  todo
-    private List<Award> awards; // 绑定的奖品集合
+    @Column(columnDefinition = "TEXT")
+    @Convert(converter = LongListToJsonConverter.class)
+    private List<Long> awardIds; // 绑定的奖品集合
     private String rafflePoolName;  // 抽奖池名称
     private String ruleDescription;  // 抽奖池描述
     @Builder.Default

@@ -30,14 +30,13 @@ public class Award {
     private Long id;
     private Long strategyId;  // 策略id
     private Long awardId;  // 奖品id
-    private String awardKey;  //
-    private String awardConfig;  //
+    private String awardKey;  // todo 好像没用
+    private String awardConfig;  // todo 好像没用
     private String awardTitle;  // 奖品标题
     private String awardSubtitle;  // 奖品副标题
     private Long awardCount;  // 奖品库存
     private Double awardRate;  // 奖品被抽取到的概率，单位是%
     private Integer awardSort;  // 奖品在前端的排序
-//    private String rules;  // 配置一些规则，数据类型是json，比如 { "rule_lock": "20" }，还有 { "rule_common_blacklist": "-1" }
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();

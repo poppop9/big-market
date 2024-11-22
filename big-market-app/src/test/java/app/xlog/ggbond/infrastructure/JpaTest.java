@@ -4,7 +4,7 @@ import app.xlog.ggbond.persistent.po.raffle.Award;
 import app.xlog.ggbond.persistent.po.raffle.RafflePool;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
-import app.xlog.ggbond.persistent.repository.jpa.RaffleRuleRepository;
+import app.xlog.ggbond.persistent.repository.jpa.RafflePoolRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
 import cn.zhxu.bs.BeanSearcher;
 import cn.zhxu.bs.SearchResult;
@@ -32,7 +32,7 @@ public class JpaTest {
     @Resource
     private UserRepository userRepository;
     @Resource
-    private RaffleRuleRepository raffleRuleRepository;
+    private RafflePoolRepository rafflePoolRepository;
 
     @Test
     void test_1() {
@@ -149,4 +149,43 @@ public class JpaTest {
                         .build()
         ));
     }*/
+
+    /**
+     * 初始化抽奖池规则
+     */
+    @Test
+    void test_5() {
+        rafflePoolRepository.saveAll(List.of(
+                RafflePool.builder()
+                        .strategyId(10001L)
+                        .awardIds(List.of(101L, 102L, 103L, 104L, 105L,106L, 107L, 108L, 109L))
+                        .rafflePoolName("10001 - 全奖品抽奖池")
+                        .ruleDescription("有所有奖品")
+                        .build(),
+                RafflePool.builder()
+                        .strategyId(10001L)
+                        .awardIds(List.of(101L))
+                        .rafflePoolName("10001 - 黑名单抽奖池")
+                        .ruleDescription("黑名单用户专属抽奖池")
+                        .build(),
+                RafflePool.builder()
+                        .strategyId(10001L)
+                        .awardIds(List.of(106L, 107L, 108L, 109L))
+                        .rafflePoolName("10001 - 一二级大奖抽奖池")
+                        .ruleDescription("都是一二级的大奖")
+                        .build(),
+                RafflePool.builder()
+                        .strategyId(10001L)
+                        .awardIds(List.of(101L, 102L, 103L, 104L, 105L, 106L, 107L, 108L))
+                        .rafflePoolName("10001 - 无一级抽奖池")
+                        .ruleDescription("没有 109 大奖")
+                        .build(),
+                RafflePool.builder()
+                        .strategyId(10001L)
+                        .awardIds(List.of(101L, 102L, 103L, 104L, 105L))
+                        .rafflePoolName("10001 - 无一二级抽奖池")
+                        .ruleDescription("没有 105，106，107，108，109 大奖")
+                        .build()
+                ));
+    }
 }
