@@ -2,7 +2,7 @@ package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IAssembleApiService;
 import app.xlog.ggbond.model.Response;
-import app.xlog.ggbond.raffle.service.armory.IRaffleArmory;
+import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;

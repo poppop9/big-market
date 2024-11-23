@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
-@Service("RaffleFilterChainNew")  // todo 临时指定bean名
+@Service
 public class RaffleFilterChain {
 
     @Resource
@@ -20,7 +20,7 @@ public class RaffleFilterChain {
      */
     public Long executeFilterChain(RaffleFilterContext context) {
         log.atInfo().log("抽奖领域 - 过滤器链开始执行");
-        LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("raffleFilterChain", null, context);
+        LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("RaffleFilterChain", null, context);
         log.atInfo().log("抽奖领域 - 过滤器链执行完毕");
 
         return liteflowResponse.getContextBean(RaffleFilterContext.class).getAwardId();

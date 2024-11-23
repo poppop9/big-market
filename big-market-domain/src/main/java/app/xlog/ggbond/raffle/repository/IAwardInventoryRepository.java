@@ -17,7 +17,6 @@ public interface IAwardInventoryRepository {
      */
     void removeAwardFromPools(Long strategyId, Long awardId);
 
-
     /**
      * 将扣减信息写入队列，缓慢更新数据库的库存数 ---------------------------------------
      */
@@ -33,4 +32,5 @@ public interface IAwardInventoryRepository {
      * 根据策略id，奖品id，更新数据库中对应奖品的库存
      */
     void updateAwardCount(DecrQueueVO decrQueueVO);
+
 }

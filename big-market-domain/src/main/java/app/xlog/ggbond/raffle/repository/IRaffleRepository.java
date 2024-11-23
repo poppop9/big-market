@@ -13,16 +13,21 @@ import java.util.List;
 public interface IRaffleRepository {
     /**
      * ---------------------------
-     * --------- 装配策略 ---------
+     * ----------- 装配 ----------
      * ---------------------------
      */
-    // 根据策略Id，装配对应的策略
-    StrategyBO findStrategyByStrategyId(Long strategyId);
+    // 将权重对象插入到Redis中，dispatchParam是抽奖池的名称
+    void insertWeightRandom(Long strategyId, String dispatchParam, WeightRandom<Long> wr);
 
+    // 从 redis 中查询出指定的权重对象
+    WeightRandom<Long> findWeightRandom(Long strategyId, String dispatchParam);
+
+    // 装配所有奖品的库存
+    void assembleAllAwardCountBystrategyId(Long strategyId);
 
     /**
      * ---------------------------
-     * --------- 查询奖品 ---------
+     * ----------- 奖品 ----------
      * ---------------------------
      */
     // 根据策略id，查询对应的所有奖品
@@ -31,34 +36,12 @@ public interface IRaffleRepository {
     // 根据奖品Id，查询对应的奖品
     AwardBO findAwardByAwardId(Long awardId);
 
-    List<AwardBO> queryRuleLockLongAwards(Long strategyId);
-
-    AwardBO queryWorstAwardId(Long strategyId);
-
-    List<AwardBO> queryRuleGrandAwards(Long strategyId);
-
-    // 装配所有奖品的库存
-    void assembleAllAwardCountBystrategyId(Long strategyId);
-
     /**
      * ------------------------------
-     * --------- 查询抽奖池规则 ---------
+     * ------------ 抽奖池 -----------
      * ------------------------------
      */
     // 根据策略Id，查询对应的所有抽奖池规则
     List<RafflePoolBO> findAllRafflePoolByStrategyId(Long strategyId);
-
-    /**
-     * ---------------------------
-     * --------- 装配权重对象 ------
-     * ---------------------------
-     */
-    // 将权重对象插入到Redis中，awardRule是奖品规则
-    void insertWeightRandom(Long strategyId, String awardRule, WeightRandom<Long> wr);
-
-    void updateWeightRandom(Long strategyId, String awardRule, WeightRandom<Long> wr);
-
-    // 从 redis 中查询出指定的权重对象
-    WeightRandom<Long> findWeightRandom(Long strategyId, String dispatchParam);
 
 }

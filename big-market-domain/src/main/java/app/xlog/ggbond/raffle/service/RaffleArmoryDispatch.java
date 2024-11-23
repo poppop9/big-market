@@ -1,30 +1,40 @@
-package app.xlog.ggbond.raffle.service.armory;
+package app.xlog.ggbond.raffle.service;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
-import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
+import app.xlog.ggbond.raffle.service.filterChain.RaffleFilterChain;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
+/**
+ * 抽奖领域 - 及（装配，查询，调度）于一身的实现类
+ */
 @Slf4j
 @Service
 public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
 
     @Resource
+    private ObjectMapper objectMapper;
+    
+    @Resource
+    private RaffleFilterChain raffleFilterChain;
+    @Resource
     private IRaffleRepository raffleRepository;
 
+    // ------------------------------
+    // ------------ 装配 -------------
+    // ------------------------------
     /**
      * 根据指定策略id，装配该策略所需的所有权重对象
-     * todo
      */
     @Override
     public void assembleRaffleWeightRandomByStrategyId(Long strategyId) {
@@ -54,6 +64,20 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     }
 
     // ------------------------------
+    // ------------ 查询 -------------
+    // ------------------------------
+    /**
+     * 根据策略id，查询对应的所有奖品
+     */
+    @Override
+    public List<ObjectNode> findAllAwardByStrategyId(Long strategyId) {
+        return raffleRepository.findAwardsByStrategyId(strategyId).stream()
+                .map(awardBO -> objectMapper.<ObjectNode>valueToTree(awardBO))
+                .sorted(Comparator.comparingInt(o -> o.get("awardSort").asInt()))
+                .toList();
+    }
+
+    // ------------------------------
     // ------------ 调度 -------------
     // ------------------------------
     /**
@@ -63,6 +87,20 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     public Long findAwardIdByDispatchParam(Long strategyId, RaffleFilterContext.DispatchParam dispatchParam) {
         WeightRandom<Long> weightRandom = raffleRepository.findWeightRandom(strategyId, dispatchParam.toString());
         return weightRandom.next();
+    }
+
+    /**
+     * 根据策略id，抽取奖品
+     */
+    @Override
+    public Long getAwardByStrategyId(Long userId, Long strategyId) {
+        // 执行过滤器链
+        return raffleFilterChain.executeFilterChain(RaffleFilterContext.builder()
+                .userId(userId)
+                .strategyId(strategyId)
+                .middleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS)
+                .build()
+        );
     }
 
 }

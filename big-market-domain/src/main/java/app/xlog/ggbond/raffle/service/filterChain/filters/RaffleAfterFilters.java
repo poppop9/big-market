@@ -3,7 +3,7 @@ package app.xlog.ggbond.raffle.service.filterChain.filters;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
-import app.xlog.ggbond.raffle.service.filterChain.RetryRouterException;
+import app.xlog.ggbond.raffle.model.vo.RetryRouterException;
 import com.yomahub.liteflow.annotation.LiteflowComponent;
 import com.yomahub.liteflow.annotation.LiteflowMethod;
 import com.yomahub.liteflow.core.NodeComponent;

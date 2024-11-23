@@ -1,7 +1,7 @@
 package app.xlog.ggbond.raffle.service.filterChain.filters;
 
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
-import app.xlog.ggbond.raffle.service.armory.IRaffleDispatch;
+import app.xlog.ggbond.raffle.service.IRaffleDispatch;
 import com.yomahub.liteflow.annotation.LiteflowComponent;
 import com.yomahub.liteflow.annotation.LiteflowMethod;
 import com.yomahub.liteflow.core.NodeComponent;
@@ -9,7 +9,6 @@ import com.yomahub.liteflow.enums.LiteFlowMethodEnum;
 import com.yomahub.liteflow.enums.NodeTypeEnum;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 /**
  * 抽奖过滤器路由
