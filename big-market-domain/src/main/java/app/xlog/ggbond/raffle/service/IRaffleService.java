@@ -6,7 +6,8 @@ import java.util.List;
 
 public interface IRaffleService {
 
-    List<ObjectNode> queryAwardList(Long strategyId);
+    // 根据策略id，查询对应的所有奖品
+    List<ObjectNode> findAwardsByStrategyId(Long strategyId);
 
     Long getAward(Long userId, Long strategyId);
 

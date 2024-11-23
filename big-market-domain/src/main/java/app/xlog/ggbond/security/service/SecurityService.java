@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * 安全服务
+ */
 @Slf4j
 @Service
 public class SecurityService implements ISecurityService {
@@ -45,10 +48,11 @@ public class SecurityService implements ISecurityService {
      */
     @Override
     public Boolean isBlacklistUser() {
-        return Optional.ofNullable(StpUtil.getLoginIdDefaultNull())
+        Boolean isBlacklistUser = Optional.ofNullable(StpUtil.getLoginIdDefaultNull())
                 .map(item -> (Long) item)
                 .map(userId -> securityRepository.isBlacklistUser(userId))
                 .orElse(false);  // 为null，则为游客，游客默认不是黑名单用户
+        return isBlacklistUser;
     }
 
 }

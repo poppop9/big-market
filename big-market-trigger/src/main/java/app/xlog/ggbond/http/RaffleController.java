@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 抽奖领域 - 抽奖
+ */
 @Slf4j
 @RestController
-@RequestMapping("/api/award")
+@RequestMapping("/api/raffle/award")
 public class RaffleController implements IRaffleApiService {
 
     @Resource
@@ -24,14 +27,14 @@ public class RaffleController implements IRaffleApiService {
     private IRaffleService raffleService;
 
     /**
-     * 根据策略id，查询奖品列表
+     * 根据策略id，查询对应的奖品列表
      **/
     @Override
     @GetMapping("/v1/queryAwardList")
     public Response<JsonNode> queryAwardList(@RequestParam Long strategyId) {
-        List<ObjectNode> awardBOs = raffleService.queryAwardList(strategyId);
+        List<ObjectNode> awardBOs = raffleService.findAwardsByStrategyId(strategyId);
 
-        log.atInfo().log("查询了策略 {} 的奖品列表", strategyId);
+        log.atDebug().log("查询了策略 {} 的奖品列表", strategyId);
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
                 .info("调用成功")
@@ -46,7 +49,7 @@ public class RaffleController implements IRaffleApiService {
     @GetMapping("/v1/getAward")
     public Response<JsonNode> getAward(@RequestParam Long userId, @RequestParam Long strategyId) {
         Long awardId = raffleService.getAward(userId, strategyId);
-        log.atInfo().log("抽奖领域 - 抽到 {} 奖品", awardId);
+        log.atInfo().log("抽奖领域 - 抽到 {} 策略的 {} 奖品", strategyId, awardId);
 
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
@@ -54,4 +57,5 @@ public class RaffleController implements IRaffleApiService {
                 .data(objectMapper.valueToTree(awardId))
                 .build();
     }
+
 }

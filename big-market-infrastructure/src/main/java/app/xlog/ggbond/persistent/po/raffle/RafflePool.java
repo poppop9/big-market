@@ -25,11 +25,32 @@ public class RafflePool {
     @Column(columnDefinition = "TEXT")
     @Convert(converter = LongListToJsonConverter.class)
     private List<Long> awardIds; // 绑定的奖品集合
+
+    @Enumerated(EnumType.STRING)
+    private RafflePoolType rafflePoolType;  // 抽奖池类型
     private String rafflePoolName;  // 抽奖池名称
     private String ruleDescription;  // 抽奖池描述
+
+    @Builder.Default
+    private Long normalTimeStartValue = -1L;  // 普通次数抽奖池的起始值
+    @Builder.Default
+    private Long normalTimeEndValue = -1L;  // 普通次数抽奖池的结束值
+    @Builder.Default
+    private Long specialTimeValue = -1L;  // 特殊次数抽奖池的值
+
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();
     @Builder.Default
     private LocalDateTime updateTime = LocalDateTime.now();
+
+    @AllArgsConstructor
+    @Getter
+    public enum RafflePoolType {
+        NormalTime("普通次数抽奖池"),  // 比如 AllAwardPool，No1stAnd2ndAwardPool ……
+        SpecialTime("特殊次数抽奖池"),  // 比如 1stAnd2ndAwardPool
+        SpecialRule("特殊规则抽奖池");  // 比如 BlacklistPool
+
+        private final String desc;
+    }
 }

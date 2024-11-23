@@ -14,5 +14,6 @@ public interface ISecurityRepository {
     Boolean isBlacklistUser(Long userId);
 
     // 根据用户id，查询用户
-    public UserBO findByUserId(Long userId);
+    UserBO findByUserId(Long userId);
+
 }

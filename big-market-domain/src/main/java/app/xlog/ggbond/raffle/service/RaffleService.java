@@ -24,9 +24,12 @@ public class RaffleService implements IRaffleService {
     @Resource
     private RaffleFilterChain raffleFilterChain;
 
+    /**
+     * 根据策略id，查询对应的所有奖品
+     */
     @Override
-    public List<ObjectNode> queryAwardList(Long strategyId) {
-        return raffleRepository.queryCommonAwards(strategyId).stream()
+    public List<ObjectNode> findAwardsByStrategyId(Long strategyId) {
+        return raffleRepository.findAwardsByStrategyId(strategyId).stream()
                 .map(awardBO -> objectMapper.<ObjectNode>valueToTree(awardBO))
                 .sorted(Comparator.comparingInt(o -> o.get("awardSort").asInt()))
                 .toList();

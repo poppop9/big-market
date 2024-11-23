@@ -1,6 +1,13 @@
 server:
   port: 8090
 
+# 日志
+logging:
+  level:
+    root: INFO  # 设置全局日志级别
+    app.xlog.ggbond: INFO  # 设置包级别日志级别
+    org.springframework: WARN  # 设置spring的日志级别
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 装配奖品池
+ * 抽奖领域 - 装配
  **/
 @Slf4j
 @RestController
-@RequestMapping("/api/assemble")
+@RequestMapping("/api/raffle/assemble")
 public class AssembleController implements IAssembleApiService {
 
     @Resource
@@ -26,11 +26,16 @@ public class AssembleController implements IAssembleApiService {
     @Resource
     private IRaffleArmory strategyArmory;
 
+    /**
+     * 抽奖前的装配准备
+     */
     @Override
     @GetMapping("/v1/assembleRaffleAll")
     public Response<JsonNode> assembleRaffleAll(@RequestParam Long strategyId) {
+        // 装配该策略所需的所有权重对象
         strategyArmory.assembleRaffleWeightRandomByStrategyId(strategyId);
-        strategyArmory.assembleLotteryStrategyAwardCount(10001L);
+        // 装配该策略所需的所有奖品的库存
+        strategyArmory.assembleAllAwardCountBystrategyId(strategyId);
 
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
@@ -38,4 +43,5 @@ public class AssembleController implements IAssembleApiService {
                 .data(objectMapper.valueToTree("装配完成"))
                 .build();
     }
+
 }

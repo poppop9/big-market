@@ -1,23 +1,13 @@
 package app.xlog.ggbond.raffle.service.armory;
 
+import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
+
 /**
  * 策略抽奖调度，给出随机抽奖的接口
  */
 public interface IRaffleDispatch {
 
-    // 获取一个所有奖品中的随机奖品ID
-    Long getRuleCommonAwardIdByRandom(Long strategyId);
-
-    // 获取一个除去锁定奖品的随机奖品ID
-    Long getRuleLockAwardIdByRandom(Long strategyId);
-
-    // 获取一个除去最后一个奖品的随机奖品ID
-    Long getRuleLockLongAwardIdByRandom(Long strategyId);
-
-    // 获取最次的一个奖品，给黑名单用户准备的
-    Long getWorstAwardId(Long strategyId);
-
-    // 获取大奖池里的一个奖品
-    Long getRuleGrandAwardIdByRandom(Long strategyId);
+    // 根据策略ID，指定的调度参数，获取对应抽奖池中的随机奖品
+    Long findAwardIdByDispatchParam(Long strategyId, RaffleFilterContext.DispatchParam dispatchParam);
 
 }

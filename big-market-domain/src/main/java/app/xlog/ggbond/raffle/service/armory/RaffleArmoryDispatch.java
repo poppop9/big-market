@@ -2,6 +2,7 @@ package app.xlog.ggbond.raffle.service.armory;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
+import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
@@ -27,121 +28,41 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      */
     @Override
     public void assembleRaffleWeightRandomByStrategyId(Long strategyId) {
-        // 对所有规则进行分类，Map<规则，奖品id集合>
-        Map<RafflePoolBO.RuleKey, ArrayList<Long>> listMap = raffleRepository.findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(strategyId).stream()
-                .collect(Collectors.toMap(
-                        RafflePoolBO::getRuleKey,
-                        item -> new ArrayList<>(List.of(item.getAwardId())),
-                        (exist, replace) -> {
-                            exist.addAll(replace);
-                            return exist;
-                        }
-                ));
-        // 所有奖品
-        List<AwardBO> allAwardList = raffleRepository.findAwardsByStrategyId(strategyId);
+        // 所有的权重对象集合
+        raffleRepository.findAllRafflePoolByStrategyId(strategyId)
+                .forEach(item -> {
+                    // 生成权重集合
+                    List<WeightRandom.WeightObj<Long>> weightObjs = item.getAwardIds().stream()
+                            .map(child -> {
+                                AwardBO award = raffleRepository.findAwardByAwardId(child);
+                                return new WeightRandom.WeightObj<>(child, award.getAwardRate());
+                            })
+                            .toList();
+                    WeightRandom<Long> WeightRandom = RandomUtil.weightRandom(weightObjs);
 
-        // 装配所有奖品的权重对象
-        List<WeightRandom.WeightObj<Long>> weightObjs = allAwardList.stream()
-                .map(AwardBO -> new WeightRandom.WeightObj<>(AwardBO.getAwardId(), AwardBO.getAwardRate()))
-                .toList();
-        raffleRepository.insertWeightRandom(strategyId, "all", RandomUtil.weightRandom(weightObjs));
-
-        // 按照规则装配权重对象
-        for (Map.Entry<RafflePoolBO.RuleKey, ArrayList<Long>> ruleEntry : listMap.entrySet()) {
-            raffleRepository.insertWeightRandom(
-                    strategyId,
-                    ruleEntry.getKey().getValue(),
-                    RandomUtil.weightRandom(allAwardList.stream()
-                            .filter(item -> ruleEntry.getValue().contains(item.getAwardId()))
-                            .map(AwardBO -> new WeightRandom.WeightObj<>(AwardBO.getAwardId(), AwardBO.getAwardRate()))
-                            .toList()
-                    )
-            );
-        }
-    }
-
-    @Override
-    public void assembleLotteryStrategyRuleLock(Long strategyId) {
-        List<WeightRandom.WeightObj<Long>> weightObjs = raffleRepository.queryRuleLockAwards(strategyId).stream()
-                .map(AwardBO -> new WeightRandom.WeightObj<>(AwardBO.getAwardId(), AwardBO.getAwardRate()))
-                .toList();
-
-        // 将新的WeightRandom对象存入redis，方便后续抽奖调用
-        raffleRepository.insertWeightRandom(strategyId, "Lock", RandomUtil.weightRandom(weightObjs));
-        log.atInfo().log("抽奖领域 - 装配策略 {} 的 rule_lock 奖品完成", strategyId);
-    }
-
-    @Override
-    public void assembleLotteryStrategyRuleLockLong(Long strategyId) {
-        List<WeightRandom.WeightObj<Long>> weightObjs = raffleRepository.queryRuleLockLongAwards(strategyId).stream()
-                .map(AwardBO -> new WeightRandom.WeightObj<>(AwardBO.getAwardId(), AwardBO.getAwardRate()))
-                .toList();
-
-        raffleRepository.insertWeightRandom(
-                strategyId,
-                "LockLong",
-                RandomUtil.weightRandom(weightObjs)
-        );
-        log.atInfo().log("抽奖领域 - 装配策略 {} 的 rule_lock_long 奖品完成", strategyId);
-    }
-
-    @Override
-    public void assembleLotteryStrategyRuleGrand(Long strategyId) {
-        List<WeightRandom.WeightObj<Long>> weightObjs = raffleRepository.queryRuleGrandAwards(strategyId).stream()
-                .map(AwardBO -> new WeightRandom.WeightObj<>(AwardBO.getAwardId(), AwardBO.getAwardRate()))
-                .toList();
-
-        raffleRepository.insertWeightRandom(
-                strategyId,
-                "Grand",
-                RandomUtil.weightRandom(weightObjs)
-        );
-        log.atInfo().log("抽奖领域 - 装配策略 {} 的 rule_grand 奖品完成", strategyId);
-    }
-
-
-    @Override
-    public void assembleLotteryStrategyAwardCount(Long strategyId) {
-        raffleRepository.assembleAwardsCount(strategyId);
+                    // 将WeightRandom对象存入redis，方便后续抽奖调用
+                    raffleRepository.insertWeightRandom(strategyId, item.getRafflePoolName(), WeightRandom);
+                });
     }
 
     /**
-     * 以下是调度
-     **/
-    // 根据策略ID，获取对应所有奖品中的随机奖品
+     * 装配所有奖品的库存
+     */
     @Override
-    public Long getRuleCommonAwardIdByRandom(Long strategyId) {
-        // 拿到redis中的WeightRandom对象
-        WeightRandom<Long> wr = raffleRepository.queryRuleCommonWeightRandom(strategyId);
-        return wr.next();
+    public void assembleAllAwardCountBystrategyId(Long strategyId) {
+        raffleRepository.assembleAllAwardCountBystrategyId(strategyId);
     }
 
-    // 根据策略ID，获取对应除去锁定奖品中的随机奖品
+    // ------------------------------
+    // ------------ 调度 -------------
+    // ------------------------------
+    /**
+     * 根据策略ID，指定的调度参数，获取对应抽奖池中的随机奖品
+     */
     @Override
-    public Long getRuleLockAwardIdByRandom(Long strategyId) {
-        WeightRandom<Long> wr = raffleRepository.queryRuleLockWeightRandom(strategyId);
-        return wr.next();
-    }
-
-    @Override
-    public Long getRuleLockLongAwardIdByRandom(Long strategyId) {
-        WeightRandom<Long> wr = raffleRepository.queryRuleLockLongWeightRandom(strategyId);
-        return wr.next();
-    }
-
-    @Override
-    public Long getWorstAwardId(Long strategyId) {
-        AwardBO awardBO = raffleRepository.queryWorstAwardId(strategyId);
-        if (awardBO == null) {
-            return null;
-        }
-        return awardBO.getAwardId();
-    }
-
-    @Override
-    public Long getRuleGrandAwardIdByRandom(Long strategyId) {
-        WeightRandom<Long> wr = raffleRepository.queryRuleGrandAwardIdByRandom(strategyId);
-        return wr.next();
+    public Long findAwardIdByDispatchParam(Long strategyId, RaffleFilterContext.DispatchParam dispatchParam) {
+        WeightRandom<Long> weightRandom = raffleRepository.findWeightRandom(strategyId, dispatchParam.toString());
+        return weightRandom.next();
     }
 
 }

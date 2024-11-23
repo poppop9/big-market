@@ -4,13 +4,14 @@
     <chain name="raffleFilterChain">
         THEN(
             // 1. 前置过滤器链
-            IF(checkProceed, blacklistRaffleFilter),
-            IF(checkProceed, matchRafflePoolFilter),
+            IF(CheckProceed, BlacklistRaffleFilter),
+            IF(CheckProceed, SpecialTimeMatchRafflePoolFilter),
+            IF(CheckProceed, NormalTimeMatchRafflePoolFilter),
             THEN(
                 // 2. 路由
-                raffleFilterRouter,
+                RaffleFilterRouter,
                 // 3. 后置过滤器链
-                awardInventoryFilter
+                AwardInventoryFilter
             ).retry(3, "app.xlog.ggbond.raffle.service.filterChain.RetryRouterException")
         );
     </chain>

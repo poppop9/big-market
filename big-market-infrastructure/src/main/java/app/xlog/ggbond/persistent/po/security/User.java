@@ -33,7 +33,6 @@ public class User {
     @Builder.Default
     private LocalDateTime updateTime = LocalDateTime.now();
 
-
     @Getter
     @AllArgsConstructor
     public enum UserRole {

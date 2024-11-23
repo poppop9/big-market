@@ -23,7 +23,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "Award")
+@Table(name = "Award",indexes = {
+        @Index(columnList = "strategyId"),
+        @Index(columnList = "awardId")
+})
 public class Award {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

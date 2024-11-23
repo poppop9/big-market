@@ -9,7 +9,7 @@ import java.util.Optional;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RaffleFilterContext{
+public class RaffleFilterContext {
 
     /**
      * 过滤初始传参
@@ -28,36 +28,26 @@ public class RaffleFilterContext{
 
     // 每一个过滤器的返回值
     @Getter
+    @AllArgsConstructor
     public enum MiddleFilterParam {
-        PASS("200", "放行，执行后续流程"),
-        INTERCEPT("400", "拦截，不执行后续流程");
+        PASS("放行，执行后续流程"),
+        INTERCEPT("拦截，不执行后续流程");
 
-        private final String code;
         private final String info;
-
-        MiddleFilterParam(String code, String info) {
-            this.code = code;
-            this.info = info;
-        }
     }
 
-    // 最后过滤器的调度值
+    // 过滤器的调度值
     @Getter
+    @AllArgsConstructor
     public enum DispatchParam {
-        // todo 随即积分没有必要设置黑名单规则，也不需要lock_long规则，用value值区分就好了
-        // <++++++++++ 前置过滤器的拦截值 ++++++++++>
-        CommonAwards("rule_common", "该策略里的所有奖品"),
-        LockAwards("rule_lock", "除去锁定奖品的所有奖品"),
-        BlacklistAward("rule_blacklist", "黑名单用户的最次奖品"),
-        GrandAward("rule_grand", "大奖池，106-108奖品");
+        AllAwardPool("rule_common", "所有奖品"),  // NormalTime
+        No1stAwardPool("rule_lock", "没有 109 大奖"),  // NormalTime
+        No1stAnd2ndAwardPool("rule_blacklist", "没有 105，106，107，108，109 大奖"),  // NormalTime
+        IstAnd2ndAwardPool("rule_grand","都是一二级的大奖"),  // SpecialTime
+        BlacklistPool("rule_blacklist","黑名单用户");  // SpecialRule
 
         private final String code;
         private final String info;
-
-        DispatchParam(String code, String info) {
-            this.code = code;
-            this.info = info;
-        }
 
         public static Optional<RaffleFilterContext.DispatchParam> isExist(String code) {
             return Arrays.stream(RaffleFilterContext.DispatchParam.values())

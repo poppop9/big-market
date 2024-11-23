@@ -1,7 +1,9 @@
 package app.xlog.ggbond.persistent.repository;
 
+import app.xlog.ggbond.persistent.po.raffle.Award;
 import app.xlog.ggbond.persistent.po.raffle.RafflePool;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
+import app.xlog.ggbond.persistent.repository.jpa.RafflePoolRepository;
 import app.xlog.ggbond.persistent.repository.jpa.StrategyRepository;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
@@ -14,6 +16,7 @@ import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBucket;
 import org.redisson.api.RList;
 import org.redisson.api.RedissonClient;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
@@ -33,7 +36,7 @@ public class RaffleRepository implements IRaffleRepository {
     @Resource
     private AwardRepository awardRepository;
     @Resource
-    private RaffleRuleRepository raffleRuleRepository;
+    private RafflePoolRepository rafflePoolRepository;
 
     /**
      * 根据策略ID查询策略
@@ -52,33 +55,22 @@ public class RaffleRepository implements IRaffleRepository {
     }
 
     /**
-     * 查询指定策略下所有的抽奖规则
-     */
-    @Override
-    public List<RafflePoolBO> findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(Long strategyId) {
-        List<RafflePool> rafflePoolList = raffleRuleRepository.findByStrategyIdOrderByRuleGradeAsc(
-                strategyId,
-                Sort.by("ruleGrade").ascending()
-        );
-
-        return BeanUtil.copyToList(rafflePoolList, RafflePoolBO.class);
-    }
-
-    /**
-     * 将数据库中指定策略的奖品查询出来装配到 redis
+     * 根据策略id，查询对应的所有奖品
      **/
     @Override
     public List<AwardBO> findAwardsByStrategyId(Long strategyId) {
-        RList<AwardBO> rList = redissonClient.getList("strategy_" + strategyId + "_awards");
-        if (!rList.isEmpty()) return rList;
-
-        List<AwardBO> awardBOS = BeanUtil.copyToList(
+        return BeanUtil.copyToList(
                 awardRepository.findByStrategyId(strategyId), AwardBO.class
         );
-        // 将查询结果存入Redis缓存
-        rList.addAll(awardBOS);
+    }
 
-        return awardBOS;
+    /**
+     * 根据奖品Id，查询对应的奖品
+     */
+    @Override
+    public AwardBO findAwardByAwardId(Long awardId) {
+        Award award = awardRepository.findByAwardId(awardId);
+        return BeanUtil.copyProperties(award, AwardBO.class);
     }
 
 /*    @Override
@@ -144,17 +136,28 @@ public class RaffleRepository implements IRaffleRepository {
         return awardRuleGrandBOS;
     }
 
+    /**
+     * 装配所有奖品的库存
+     */
     @Override
-    public void assembleAwardsCount(Long strategyId) {
-        List<AwardBO> awardBOS = findAwardsByStrategyId(strategyId);
-        for (AwardBO awardBO : awardBOS) {
-            String cacheKey = "strategy_" + strategyId + "_awards_" + awardBO.getAwardId() + "_count";
+    public void assembleAllAwardCountBystrategyId(Long strategyId) {
+        findAwardsByStrategyId(strategyId).forEach(item -> {
+            String cacheKey = strategyId + "_" + item.getAwardId() + "_Count";
             RAtomicLong rAtomicLong = redissonClient.getAtomicLong(cacheKey);
 
             if (!rAtomicLong.isExists()) {
-                rAtomicLong.set(awardBO.getAwardCount());
+                rAtomicLong.set(item.getAwardCount());
             }
-        }
+        });
+    }
+
+    /**
+     * 根据策略Id，查询对应的所有抽奖池规则
+     */
+    @Override
+    public List<RafflePoolBO> findAllRafflePoolByStrategyId(Long strategyId) {
+        List<RafflePool> allRafflePool = rafflePoolRepository.findByStrategyId(strategyId);
+        return BeanUtil.copyToList(allRafflePool, RafflePoolBO.class);
     }
 
     /**
@@ -163,44 +166,48 @@ public class RaffleRepository implements IRaffleRepository {
     // 将权重对象插入到Redis中
     @Override
     public void insertWeightRandom(Long strategyId, String awardRule, WeightRandom<Long> wr) {
-        String cacheKey = strategyId + "_" + awardRule + "weightRandom_";
+        String cacheKey = strategyId + "_" + awardRule + "_WeightRandom";
         redissonClient.getBucket(cacheKey).set(wr);
     }
 
     // 更新权重对象
     @Override
     public void updateWeightRandom(Long strategyId, String awardRule, WeightRandom<Long> wr) {
-        String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_" + awardRule;
+        String cacheKey = strategyId + "_" + awardRule + "_WeightRandom";
         RBucket<Object> bucket = redissonClient.getBucket(cacheKey);
         if (bucket.isExists()) {
             bucket.set(wr);
         }
     }
 
-    // 根据策略ID，从redis中查询权重对象
+    /**
+     * 从 redis 中查询出指定的权重对象
+     */
     @Override
+    public WeightRandom<Long> findWeightRandom(Long strategyId, String dispatchParam) {
+        String cacheKey = strategyId + "_" + dispatchParam + "_WeightRandom";
+        return (WeightRandom<Long>) redissonClient.getBucket(cacheKey).get();
+    }
+
+/*    @Override
     public WeightRandom<Long> queryRuleCommonWeightRandom(Long strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_Common";
         return (WeightRandom<Long>) redissonClient.getBucket(cacheKey).get();
     }
-
-    // 根据策略ID，从redis中查询除去锁定的权重对象
     @Override
     public WeightRandom<Long> queryRuleLockWeightRandom(Long strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_Lock";
         return (WeightRandom<Long>) redissonClient.getBucket(cacheKey).get();
     }
-
     @Override
     public WeightRandom<Long> queryRuleLockLongWeightRandom(Long strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_LockLong";
         return (WeightRandom<Long>) redissonClient.getBucket(cacheKey).get();
     }
-
     @Override
     public WeightRandom<Long> queryRuleGrandAwardIdByRandom(Long strategyId) {
         String cacheKey = "strategy_" + strategyId + "_awards_WeightRandom_Grand";
         return (WeightRandom<Long>) redissonClient.getBucket(cacheKey).get();
-    }
+    }*/
 
 }

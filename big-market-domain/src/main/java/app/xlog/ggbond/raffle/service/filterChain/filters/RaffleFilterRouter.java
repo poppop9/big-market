@@ -26,7 +26,7 @@ public class RaffleFilterRouter {
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.BOOLEAN,  // 组件类型 - 布尔组件
             value = LiteFlowMethodEnum.PROCESS_BOOLEAN,  // 组件方法类型 - boolean处理方法
-            nodeId = "checkProceed",
+            nodeId = "CheckProceed",
             nodeName = "是否继续执行过滤器")
     public boolean checkProceed(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
@@ -34,22 +34,18 @@ public class RaffleFilterRouter {
     }
 
     /**
-     * 执行路由调度  todo 需要修改
+     * 执行路由调度
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "raffleFilterRouter",
+            nodeId = "RaffleFilterRouter",
             nodeName = "抽奖过滤器路由")
     public void raffleFilterRouter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
 
         log.atInfo().log("抽奖领域 - 抽奖过滤器路由调度开始执行");
-        Long awardId = switch (context.getDispatchParam()) {
-            case CommonAwards -> raffleDispatch.getRuleCommonAwardIdByRandom(context.getStrategyId());
-            case LockAwards -> raffleDispatch.getRuleLockAwardIdByRandom(context.getStrategyId());
-            case BlacklistAward -> raffleDispatch.getWorstAwardId(context.getStrategyId());
-            case GrandAward -> raffleDispatch.getRuleGrandAwardIdByRandom(context.getStrategyId());
-        };
+        Long awardId = raffleDispatch.findAwardIdByDispatchParam(context.getStrategyId(), context.getDispatchParam());
+
         context.setAwardId(awardId);
         context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS);
         log.atInfo().log("抽奖领域 - 抽奖过滤器路由调度执行完毕");

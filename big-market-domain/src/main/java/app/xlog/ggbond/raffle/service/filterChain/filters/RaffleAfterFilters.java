@@ -27,14 +27,14 @@ public class RaffleAfterFilters {
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "awardInventoryFilter",
+            nodeId = "AwardInventoryFilter",
             nodeName = "奖品库存过滤器")
     public void awardInventoryFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
 
+        log.atInfo().log("抽奖领域 - 奖品库存过滤器开始执行");
         // 调度扣减方法
         if (!awardInventoryRepository.decreaseAwardCount(context.getStrategyId(), context.getAwardId())) {
-            // 扣减库存失败，重新调度
             throw new RetryRouterException("扣减库存失败，重新调度");
         }
 
@@ -44,6 +44,7 @@ public class RaffleAfterFilters {
                 .awardId(context.getAwardId())
                 .build()
         );
+        log.atInfo().log("抽奖领域 - 奖品库存过滤器执行完毕");
     }
 
 }

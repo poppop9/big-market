@@ -10,4 +10,5 @@ public interface ISecurityService {
 
     // 查询用户的抽奖次数
     Long queryRaffleTimesByUserId(Long userId);
+
 }

@@ -25,7 +25,11 @@ public interface IRaffleRepository {
      * --------- 查询奖品 ---------
      * ---------------------------
      */
+    // 根据策略id，查询对应的所有奖品
     List<AwardBO> findAwardsByStrategyId(Long strategyId);
+
+    // 根据奖品Id，查询对应的奖品
+    AwardBO findAwardByAwardId(Long awardId);
 
     List<AwardBO> queryRuleLockLongAwards(Long strategyId);
 
@@ -33,16 +37,16 @@ public interface IRaffleRepository {
 
     List<AwardBO> queryRuleGrandAwards(Long strategyId);
 
-    void assembleAwardsCount(Long strategyId);
+    // 装配所有奖品的库存
+    void assembleAllAwardCountBystrategyId(Long strategyId);
 
     /**
      * ------------------------------
-     * --------- 查询奖品规则 ---------
+     * --------- 查询抽奖池规则 ---------
      * ------------------------------
      */
-    // 查询指定策略下所有的抽奖规则
-    List<RafflePoolBO> findByRuleTypeAndStrategyOrAwardIdOrderByRuleGradeAsc(Long strategyId);
-
+    // 根据策略Id，查询对应的所有抽奖池规则
+    List<RafflePoolBO> findAllRafflePoolByStrategyId(Long strategyId);
 
     /**
      * ---------------------------
@@ -54,14 +58,7 @@ public interface IRaffleRepository {
 
     void updateWeightRandom(Long strategyId, String awardRule, WeightRandom<Long> wr);
 
-    // 从redis中取出所有奖品的权重对象
-    WeightRandom<Long> queryRuleCommonWeightRandom(Long strategyId);
-
-    // 从redis中取出除去锁定奖品的权重对象
-    WeightRandom<Long> queryRuleLockWeightRandom(Long strategyId);
-
-    WeightRandom<Long> queryRuleLockLongWeightRandom(Long strategyId);
-
-    WeightRandom<Long> queryRuleGrandAwardIdByRandom(Long strategyId);
+    // 从 redis 中查询出指定的权重对象
+    WeightRandom<Long> findWeightRandom(Long strategyId, String dispatchParam);
 
 }

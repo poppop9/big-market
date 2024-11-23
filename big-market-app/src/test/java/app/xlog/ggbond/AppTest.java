@@ -23,7 +23,7 @@ public class AppTest {
     // 测试redisson能不能将java对象存储进redis，而且能够取出之后还能使用
     @Test
     public void testRedissonStorageObject() {
-        List<AwardBO> awardBOs = raffleRepository.queryCommonAwards(10001L);
+        List<AwardBO> awardBOs = raffleRepository.findAwardsByStrategyId(10001L);
         List<Long> awardIds = awardBOs.stream()
                 .map(AwardBO::getAwardId)
                 .toList();
@@ -43,21 +43,6 @@ public class AppTest {
 
         WeightRandom wr2 = (WeightRandom) bucket.get();
         System.out.println(wr2.next());
-    }
-
-    // 测试redisson存储集合
-    @Test
-    public void testRedissonStorageList() {
-//        List<AwardBO> AwardBOs = Stream.of(
-//                new AwardBO(1, 1, 1, 0.1f, "10"),
-//                new AwardBO(1, 2, 1, 0.2f, "10"),
-//                new AwardBO(1, 3, 1, 0.3f, "20")
-//        ).toList();
-//
-//        RList<Object> rList = redissonClient.getList("testList");
-//        rList.addAll(AwardBOs);
-//
-//        rList.forEach(System.out::println);
     }
 
     // 测试redisson

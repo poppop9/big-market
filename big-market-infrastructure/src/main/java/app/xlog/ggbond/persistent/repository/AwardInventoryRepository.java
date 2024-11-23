@@ -1,7 +1,9 @@
 package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
+import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
+import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import cn.hutool.core.lang.WeightRandom;
@@ -32,7 +34,7 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
      */
     @Override
     public Boolean decreaseAwardCount(Long strategyId, Long awardId) {
-        RAtomicLong rAtomicLong = redissonClient.getAtomicLong("strategy_" + strategyId + "_awards_" + awardId + "_count");
+        RAtomicLong rAtomicLong = redissonClient.getAtomicLong(strategyId + "_" + awardId + "_Count");
         if (rAtomicLong.isExists()) {
             long surplus = rAtomicLong.decrementAndGet();  // 返回扣减完成之后的值
             if (surplus > 0) {
@@ -52,89 +54,26 @@ public class AwardInventoryRepository implements IAwardInventoryRepository {
     }
 
     /**
-     * 将该奖品从缓存中的所有抽奖池里移除
+     * 将该奖品从缓存中的所有抽奖池权重对象中移除
      */
     @Override
     public void removeAwardFromPools(Long strategyId, Long awardId) {
-        // 1. 在redis的所有抽奖池中，移除指定奖品。由于黑名单抽奖池在redis中只有一个对象，所以不用去除，黑名单用户就让他一直抽随机积分就好了，而且随机积分的库存绝对够
-/*        String[] cacheKeyLists = {
-                "strategy_" + strategyId + "_awards_Common",
-                "strategy_" + strategyId + "_awards_Lock",
-                "strategy_" + strategyId + "_awards_LockLong",
-                "strategy_" + strategyId + "_awards_Grand"
-        };
-        for (String cacheKey : cacheKeyLists) {
-            RList<AwardBO> rList = redissonClient.getList(cacheKey);
-            rList.stream()
-                    .filter(AwardBO -> NumberUtil.equals(AwardBO.getAwardId(), awardId))
-                    .findFirst()
-                    .ifPresent(rList::remove);
-        }*/
-
-        // 2. 调整权重对象
-        Set<Map.Entry<Integer, String>> cacheKeyWeightRandoms = Map.of(
-                1, strategyId + "_all_weightRandom",
-                2, strategyId + "_noLock_weightRandom",
-                3, strategyId + "_noLongLock_weightRandom",
-                4, strategyId + "_grand_weightRandom",
-                5, strategyId + "_blacklist_weightRandom"
-        ).entrySet();
-        for (Map.Entry<Integer, String> cacheKey : cacheKeyWeightRandoms) {
-            switch (cacheKey.getKey()) {
-                case 1 -> {
-                    List<WeightRandom.WeightObj<Long>> weightObjs = raffleRepository.findAwardsByStrategyId(strategyId).stream()
-                            .filter(AwardBO -> !NumberUtil.equals(AwardBO.getAwardId(), awardId))
-                            .map(AwardBO -> new WeightRandom.WeightObj<>(
-                                    AwardBO.getAwardId(),
-                                    AwardBO.getAwardRate()
-                            ))
+        // 所有的权重对象集合
+        raffleRepository.findAllRafflePoolByStrategyId(strategyId).stream()
+                .peek(item -> item.getAwardIds().remove(awardId))
+                .forEach(item -> {
+                    // 生成权重集合
+                    List<WeightRandom.WeightObj<Long>> weightObjs = item.getAwardIds().stream()
+                            .map(child -> {
+                                AwardBO award = raffleRepository.findAwardByAwardId(child);
+                                return new WeightRandom.WeightObj<>(child, award.getAwardRate());
+                            })
                             .toList();
-                    WeightRandom<Long> wr = RandomUtil.weightRandom(weightObjs);
-                    redissonClient.getBucket(cacheKey.getValue()).set(wr);
+                    WeightRandom<Long> WeightRandom = RandomUtil.weightRandom(weightObjs);
 
-                    log.atInfo().log("抽奖领域 - 在缓存中的 {} 抽奖池，移除奖品 {} 成功", cacheKey.getValue(), awardId);
-                }
-                case 2 -> {
-                    List<WeightRandom.WeightObj<Long>> weightObjs = raffleRepository.queryRuleLockAwards(strategyId).stream()
-                            .filter(AwardBO -> !NumberUtil.equals(AwardBO.getAwardId(), awardId))
-                            .map(AwardBO -> new WeightRandom.WeightObj<>(
-                                    AwardBO.getAwardId(),
-                                    AwardBO.getAwardRate()
-                            ))
-                            .toList();
-                    WeightRandom<Long> wr = RandomUtil.weightRandom(weightObjs);
-                    redissonClient.getBucket(cacheKey.getValue()).set(wr);
-
-                    log.atInfo().log("抽奖领域 - 在缓存中的 {} 抽奖池，移除奖品 {} 成功", cacheKey.getValue(), awardId);
-                }
-                case 3 -> {
-                    List<WeightRandom.WeightObj<Long>> weightObjs = raffleRepository.queryRuleLockLongAwards(strategyId).stream()
-                            .filter(AwardBO -> Objects.equals(AwardBO.getAwardId(), awardId))
-                            .map(AwardBO -> new WeightRandom.WeightObj<>(
-                                    AwardBO.getAwardId(),
-                                    AwardBO.getAwardRate()
-                            ))
-                            .toList();
-                    WeightRandom<Long> wr = RandomUtil.weightRandom(weightObjs);
-                    redissonClient.getBucket(cacheKey.getValue()).set(wr);
-
-                    log.atInfo().log("抽奖领域 - 在缓存中的 {} 抽奖池，移除奖品 {} 成功", cacheKey.getValue(), awardId);
-                }
-                case 4 -> {
-                    List<WeightRandom.WeightObj<Long>> weightObjs = raffleRepository.queryRuleGrandAwards(strategyId).stream()
-                            .filter(awardBO -> Objects.equals(awardBO.getAwardId(), awardId))
-                            .map(AwardBO -> new WeightRandom.WeightObj<>(
-                                    AwardBO.getAwardId(),
-                                    AwardBO.getAwardRate()
-                            ))
-                            .toList();
-                    WeightRandom<Long> wr = RandomUtil.weightRandom(weightObjs);
-                    redissonClient.getBucket(cacheKey.getValue()).set(wr);
-
-                    log.atInfo().log("抽奖领域 - 在缓存中的 {} 抽奖池，移除奖品 {} 成功", cacheKey.getValue(), awardId);
-                }
-            }
-        }
+                    // 将WeightRandom对象存入redis，方便后续抽奖调用
+                    raffleRepository.insertWeightRandom(strategyId, item.getRafflePoolName(), WeightRandom);
+                });
     }
 
     @Override

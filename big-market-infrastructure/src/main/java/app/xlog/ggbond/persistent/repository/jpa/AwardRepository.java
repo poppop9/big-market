@@ -28,4 +28,8 @@ public interface AwardRepository extends JpaRepository<Award, Long> {
 
     @Query("select a from Award a where a.awardTitle like concat('%', ?1, '%') and a.awardCount between ?2 and ?3")
     List<Award> findByAwardTitleContainsAndAwardCountBetween(String awardTitle, Long awardCountStart, Long awardCountEnd);
+
+    @Query("select a from Award a where a.awardId = ?1")
+    Award findByAwardId(Long awardId);
+
 }
