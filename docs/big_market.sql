@@ -11,7 +11,7 @@
  Target Server Version : 80403 (8.4.3)
  File Encoding         : 65001
 
- Date: 24/11/2024 12:04:08
+ Date: 24/11/2024 22:01:37
 */
 
 SET NAMES utf8mb4;
@@ -51,19 +51,6 @@ INSERT INTO `Award` VALUES (3, 8, 10000, 108, '2024-11-24 12:02:20.064602', 8, 1
 INSERT INTO `Award` VALUES (1, 9, 100, 109, '2024-11-24 12:02:20.064602', 9, 10001, '2024-11-24 12:02:20.064602', '抽奖 20 次后解锁', 'iPhone 15 Pro Max');
 
 -- ----------------------------
--- Table structure for Award_SEQ
--- ----------------------------
-DROP TABLE IF EXISTS `Award_SEQ`;
-CREATE TABLE `Award_SEQ`  (
-  `next_val` bigint NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of Award_SEQ
--- ----------------------------
-INSERT INTO `Award_SEQ` VALUES (101);
-
--- ----------------------------
 -- Table structure for RafflePool
 -- ----------------------------
 DROP TABLE IF EXISTS `RafflePool`;
@@ -92,19 +79,6 @@ INSERT INTO `RafflePool` VALUES ('2024-11-24 12:02:20.201995', 4, -1, -1, 50, 10
 INSERT INTO `RafflePool` VALUES ('2024-11-24 12:02:20.201995', 5, -1, -1, -1, 10001, '2024-11-24 12:02:20.201995', '[101]', 'BlacklistPool', '黑名单用户专属抽奖池', 'SpecialRule');
 
 -- ----------------------------
--- Table structure for RafflePool_SEQ
--- ----------------------------
-DROP TABLE IF EXISTS `RafflePool_SEQ`;
-CREATE TABLE `RafflePool_SEQ`  (
-  `next_val` bigint NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of RafflePool_SEQ
--- ----------------------------
-INSERT INTO `RafflePool_SEQ` VALUES (101);
-
--- ----------------------------
 -- Table structure for Strategy
 -- ----------------------------
 DROP TABLE IF EXISTS `Strategy`;
@@ -121,19 +95,6 @@ CREATE TABLE `Strategy`  (
 -- Records of Strategy
 -- ----------------------------
 INSERT INTO `Strategy` VALUES ('2024-11-24 12:02:19.923165', 1, 10001, '2024-11-24 12:02:19.923165', '策略 1');
-
--- ----------------------------
--- Table structure for Strategy_SEQ
--- ----------------------------
-DROP TABLE IF EXISTS `Strategy_SEQ`;
-CREATE TABLE `Strategy_SEQ`  (
-  `next_val` bigint NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of Strategy_SEQ
--- ----------------------------
-INSERT INTO `Strategy_SEQ` VALUES (51);
 
 -- ----------------------------
 -- Table structure for User
@@ -177,19 +138,6 @@ CREATE TABLE `UserPurchaseHistory`  (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for UserPurchaseHistory_SEQ
--- ----------------------------
-DROP TABLE IF EXISTS `UserPurchaseHistory_SEQ`;
-CREATE TABLE `UserPurchaseHistory_SEQ`  (
-  `next_val` bigint NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of UserPurchaseHistory_SEQ
--- ----------------------------
-INSERT INTO `UserPurchaseHistory_SEQ` VALUES (1);
-
--- ----------------------------
 -- Table structure for UserRaffleHistory
 -- ----------------------------
 DROP TABLE IF EXISTS `UserRaffleHistory`;
@@ -206,31 +154,5 @@ CREATE TABLE `UserRaffleHistory`  (
 -- ----------------------------
 -- Records of UserRaffleHistory
 -- ----------------------------
-
--- ----------------------------
--- Table structure for UserRaffleHistory_SEQ
--- ----------------------------
-DROP TABLE IF EXISTS `UserRaffleHistory_SEQ`;
-CREATE TABLE `UserRaffleHistory_SEQ`  (
-  `next_val` bigint NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of UserRaffleHistory_SEQ
--- ----------------------------
-INSERT INTO `UserRaffleHistory_SEQ` VALUES (1);
-
--- ----------------------------
--- Table structure for User_SEQ
--- ----------------------------
-DROP TABLE IF EXISTS `User_SEQ`;
-CREATE TABLE `User_SEQ`  (
-  `next_val` bigint NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of User_SEQ
--- ----------------------------
-INSERT INTO `User_SEQ` VALUES (101);
 
 SET FOREIGN_KEY_CHECKS = 1;

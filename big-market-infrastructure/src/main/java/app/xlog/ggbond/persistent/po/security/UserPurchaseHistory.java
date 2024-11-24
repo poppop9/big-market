@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Table(name = "UserPurchaseHistory")
 public class UserPurchaseHistory {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;  // 用户id
     private String purchaseName;  // 购买的商品名称

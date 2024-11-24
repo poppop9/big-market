@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Table(name = "User")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;  // 用户id
     private String userName;  // 用户名

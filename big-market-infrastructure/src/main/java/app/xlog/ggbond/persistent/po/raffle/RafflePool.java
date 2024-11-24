@@ -19,8 +19,9 @@ import java.util.List;
 @Table(name = "RafflePool")
 public class RafflePool {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long strategyId;  // 绑定的策略id
     @Column(columnDefinition = "TEXT")
     @Convert(converter = LongListToJsonConverter.class)

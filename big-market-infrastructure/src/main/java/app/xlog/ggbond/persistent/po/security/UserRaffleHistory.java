@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Table(name = "UserRaffleHistory")
 public class UserRaffleHistory {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;  // 用户id
     private Long strategyId;  // 用户在哪个策略下抽奖的
