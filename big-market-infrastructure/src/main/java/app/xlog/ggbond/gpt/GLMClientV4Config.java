@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * 智谱AI配置类
+ */
 @Configuration
 public class GLMClientV4Config {
 
@@ -17,4 +20,5 @@ public class GLMClientV4Config {
                 .enableTokenCache()  // 缓存token
                 .build();
     }
+
 }

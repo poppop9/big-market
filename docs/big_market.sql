@@ -3,15 +3,15 @@
 
  Source Server         : localhost - mysql
  Source Server Type    : MySQL
- Source Server Version : 90001 (9.0.1)
+ Source Server Version : 80403 (8.4.3)
  Source Host           : localhost:3306
  Source Schema         : big_market
 
  Target Server Type    : MySQL
- Target Server Version : 90001 (9.0.1)
+ Target Server Version : 80403 (8.4.3)
  File Encoding         : 65001
 
- Date: 09/11/2024 16:40:47
+ Date: 24/11/2024 12:04:08
 */
 
 SET NAMES utf8mb4;
@@ -22,34 +22,33 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `Award`;
 CREATE TABLE `Award`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `strategyId` int NOT NULL COMMENT '策略id',
-  `awardId` int NOT NULL COMMENT '奖品id',
-  `awardKey` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '奖品key',
-  `awardConfig` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '奖品配置',
-  `awardTitle` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '奖品标题',
-  `awardSubtitle` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '奖品副标题',
-  `awardCount` bigint NOT NULL COMMENT '奖品库存',
-  `awardRate` double NOT NULL COMMENT '奖品被抽取到的概率',
-  `awardSort` int NOT NULL COMMENT '奖品在前端的排序',
-  `rules` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '奖品规则',
-  `createTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '奖品表' ROW_FORMAT = Dynamic;
+  `awardRate` double NULL DEFAULT NULL,
+  `awardSort` int NULL DEFAULT NULL,
+  `awardCount` bigint NULL DEFAULT NULL,
+  `awardId` bigint NULL DEFAULT NULL,
+  `createTime` datetime(6) NULL DEFAULT NULL,
+  `id` bigint NOT NULL,
+  `strategyId` bigint NULL DEFAULT NULL,
+  `updateTime` datetime(6) NULL DEFAULT NULL,
+  `awardSubtitle` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `awardTitle` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `IDXby462r777g4s8bki2waeghb0i`(`strategyId` ASC) USING BTREE,
+  INDEX `IDXnlh7tf9u7pis1h9m2ht4123pc`(`awardId` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of Award
 -- ----------------------------
-INSERT INTO `Award` VALUES (1, 10001, 101, '', '', '随机积分', '', 79998, 74, 1, '{ \"rule_common_blacklist\": \"-1\" }', '2024-09-21 20:53:58', '2024-09-21 23:09:50');
-INSERT INTO `Award` VALUES (2, 10001, 102, NULL, NULL, '淘宝优惠券', NULL, 50000, 4, 2, '{ \"rule_common\": \"-1\" }', '2024-09-21 21:01:52', '2024-09-21 23:07:46');
-INSERT INTO `Award` VALUES (3, 10001, 103, NULL, NULL, '京东优惠券', NULL, 50000, 4, 3, '{ \"rule_common\": \"-1\" }', '2024-09-21 21:04:12', '2024-09-21 23:07:47');
-INSERT INTO `Award` VALUES (4, 10001, 104, NULL, NULL, '1 天 VIP', NULL, 50000, 4, 4, '{ \"rule_common\": \"-1\" }', '2024-09-21 21:05:18', '2024-09-21 23:07:48');
-INSERT INTO `Award` VALUES (5, 10001, 105, NULL, NULL, '高额随机积分', NULL, 50000, 4, 5, '{ \"rule_common\": \"-1\" }', '2024-09-21 21:05:41', '2024-09-21 23:07:49');
-INSERT INTO `Award` VALUES (6, 10001, 106, NULL, NULL, '付费音乐 30 天免费听', '抽奖 10 次之后解锁', 10000, 3, 6, '{ \"rule_lock\": \"10\" }', '2024-09-21 21:06:24', '2024-09-21 21:31:04');
-INSERT INTO `Award` VALUES (7, 10001, 107, NULL, NULL, '付费视频 30 天免费看', '抽奖 10 次之后解锁', 10000, 3, 7, '{ \"rule_lock\": \"10\" }', '2024-09-21 21:06:50', '2024-09-21 21:31:00');
-INSERT INTO `Award` VALUES (8, 10001, 108, NULL, NULL, '电子书 30 天免费看', '抽奖 10 次之后解锁', 10000, 3, 8, '{ \"rule_lock\": \"10\" }', '2024-09-21 21:07:22', '2024-09-21 21:30:58');
-INSERT INTO `Award` VALUES (9, 10001, 109, NULL, NULL, '30 天 VIP', '抽奖 20 次之后解锁', 1000, 1, 9, '{ \"rule_lock_long\": \"20\" }', '2024-09-21 21:07:54', '2024-09-21 21:31:13');
+INSERT INTO `Award` VALUES (74, 1, 80000, 101, '2024-11-24 12:02:20.064602', 1, 10001, '2024-11-24 12:02:20.064602', NULL, '随机积分');
+INSERT INTO `Award` VALUES (4, 2, 50000, 102, '2024-11-24 12:02:20.064602', 2, 10001, '2024-11-24 12:02:20.064602', NULL, '淘宝优惠券');
+INSERT INTO `Award` VALUES (4, 3, 50000, 103, '2024-11-24 12:02:20.064602', 3, 10001, '2024-11-24 12:02:20.064602', NULL, '京东优惠券');
+INSERT INTO `Award` VALUES (4, 4, 50000, 104, '2024-11-24 12:02:20.064602', 4, 10001, '2024-11-24 12:02:20.064602', NULL, '1 天 VIP');
+INSERT INTO `Award` VALUES (4, 5, 50000, 105, '2024-11-24 12:02:20.064602', 5, 10001, '2024-11-24 12:02:20.064602', NULL, '高额随机积分');
+INSERT INTO `Award` VALUES (3, 6, 10000, 106, '2024-11-24 12:02:20.064602', 6, 10001, '2024-11-24 12:02:20.064602', '抽奖 10 次后解锁', '付费音乐 30 天免费听');
+INSERT INTO `Award` VALUES (3, 7, 10000, 107, '2024-11-24 12:02:20.064602', 7, 10001, '2024-11-24 12:02:20.064602', '抽奖 10 次后解锁', '付费电影 30 天免费看');
+INSERT INTO `Award` VALUES (3, 8, 10000, 108, '2024-11-24 12:02:20.064602', 8, 10001, '2024-11-24 12:02:20.064602', '抽奖 10 次后解锁', '付费小说 30 天免费看');
+INSERT INTO `Award` VALUES (1, 9, 100, 109, '2024-11-24 12:02:20.064602', 9, 10001, '2024-11-24 12:02:20.064602', '抽奖 20 次后解锁', 'iPhone 15 Pro Max');
 
 -- ----------------------------
 -- Table structure for Award_SEQ
@@ -62,26 +61,66 @@ CREATE TABLE `Award_SEQ`  (
 -- ----------------------------
 -- Records of Award_SEQ
 -- ----------------------------
-INSERT INTO `Award_SEQ` VALUES (1);
+INSERT INTO `Award_SEQ` VALUES (101);
+
+-- ----------------------------
+-- Table structure for RafflePool
+-- ----------------------------
+DROP TABLE IF EXISTS `RafflePool`;
+CREATE TABLE `RafflePool`  (
+  `createTime` datetime(6) NULL DEFAULT NULL,
+  `id` bigint NOT NULL,
+  `normalTimeEndValue` bigint NULL DEFAULT NULL,
+  `normalTimeStartValue` bigint NULL DEFAULT NULL,
+  `specialTimeValue` bigint NULL DEFAULT NULL,
+  `strategyId` bigint NULL DEFAULT NULL,
+  `updateTime` datetime(6) NULL DEFAULT NULL,
+  `awardIds` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `rafflePoolName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `ruleDescription` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `rafflePoolType` enum('NormalTime','SpecialTime','SpecialRule') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of RafflePool
+-- ----------------------------
+INSERT INTO `RafflePool` VALUES ('2024-11-24 12:02:20.201995', 1, 9223372036854775807, 20, -1, 10001, '2024-11-24 12:02:20.201995', '[101,102,103,104,105,106,107,108,109]', 'AllAwardPool', '所有奖品。抽奖次数大于等于 20 时', 'NormalTime');
+INSERT INTO `RafflePool` VALUES ('2024-11-24 12:02:20.201995', 2, 19, 10, -1, 10001, '2024-11-24 12:02:20.201995', '[101,102,103,104,105,106,107,108]', 'No1stAwardPool', '没有 109 大奖。抽奖次数在 10-19 次时', 'NormalTime');
+INSERT INTO `RafflePool` VALUES ('2024-11-24 12:02:20.201995', 3, 9, 0, -1, 10001, '2024-11-24 12:02:20.201995', '[101,102,103,104,105]', 'No1stAnd2ndAwardPool', '没有 105，106，107，108，109 大奖。抽奖次数在 0-9 次时', 'NormalTime');
+INSERT INTO `RafflePool` VALUES ('2024-11-24 12:02:20.201995', 4, -1, -1, 50, 10001, '2024-11-24 12:02:20.201995', '[106,107,108,109]', '1stAnd2ndAwardPool', '都是一二级的大奖。抽奖第 50 次，必中大奖', 'SpecialTime');
+INSERT INTO `RafflePool` VALUES ('2024-11-24 12:02:20.201995', 5, -1, -1, -1, 10001, '2024-11-24 12:02:20.201995', '[101]', 'BlacklistPool', '黑名单用户专属抽奖池', 'SpecialRule');
+
+-- ----------------------------
+-- Table structure for RafflePool_SEQ
+-- ----------------------------
+DROP TABLE IF EXISTS `RafflePool_SEQ`;
+CREATE TABLE `RafflePool_SEQ`  (
+  `next_val` bigint NULL DEFAULT NULL
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of RafflePool_SEQ
+-- ----------------------------
+INSERT INTO `RafflePool_SEQ` VALUES (101);
 
 -- ----------------------------
 -- Table structure for Strategy
 -- ----------------------------
 DROP TABLE IF EXISTS `Strategy`;
 CREATE TABLE `Strategy`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `strategyId` int NOT NULL COMMENT '策略id',
-  `strategyDesc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '策略描述',
-  `rules` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '策略的规则，json格式',
-  `createTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `createTime` datetime(6) NULL DEFAULT NULL,
+  `id` bigint NOT NULL,
+  `strategyId` bigint NULL DEFAULT NULL,
+  `updateTime` datetime(6) NULL DEFAULT NULL,
+  `strategyDesc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '策略表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of Strategy
 -- ----------------------------
-INSERT INTO `Strategy` VALUES (1, 10001, '测试策略', '{ \"rule_grand\": \"50\" }', '2024-09-21 21:38:14', '2024-09-21 21:41:43');
+INSERT INTO `Strategy` VALUES ('2024-11-24 12:02:19.923165', 1, 10001, '2024-11-24 12:02:19.923165', '策略 1');
 
 -- ----------------------------
 -- Table structure for Strategy_SEQ
@@ -94,6 +133,104 @@ CREATE TABLE `Strategy_SEQ`  (
 -- ----------------------------
 -- Records of Strategy_SEQ
 -- ----------------------------
-INSERT INTO `Strategy_SEQ` VALUES (1);
+INSERT INTO `Strategy_SEQ` VALUES (51);
+
+-- ----------------------------
+-- Table structure for User
+-- ----------------------------
+DROP TABLE IF EXISTS `User`;
+CREATE TABLE `User`  (
+  `userRole` tinyint NULL DEFAULT NULL,
+  `createTime` datetime(6) NULL DEFAULT NULL,
+  `id` bigint NOT NULL,
+  `raffleTimes` bigint NULL DEFAULT NULL,
+  `updateTime` datetime(6) NULL DEFAULT NULL,
+  `userId` bigint NULL DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `userName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  CONSTRAINT `User_chk_1` CHECK (`userRole` between 0 and 2)
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of User
+-- ----------------------------
+INSERT INTO `User` VALUES (2, '2024-11-24 12:02:20.141266', 1, 0, '2024-11-24 12:02:20.141266', 404, NULL, '404用户');
+INSERT INTO `User` VALUES (0, '2024-11-24 12:02:20.141266', 2, 0, '2024-11-24 12:02:20.141266', 111, NULL, '管理员');
+INSERT INTO `User` VALUES (1, '2024-11-24 12:02:20.141266', 3, 0, '2024-11-24 12:02:20.141266', 222, NULL, '普通用户');
+
+-- ----------------------------
+-- Table structure for UserPurchaseHistory
+-- ----------------------------
+DROP TABLE IF EXISTS `UserPurchaseHistory`;
+CREATE TABLE `UserPurchaseHistory`  (
+  `createTime` datetime(6) NULL DEFAULT NULL,
+  `id` bigint NOT NULL,
+  `updateTime` datetime(6) NULL DEFAULT NULL,
+  `userId` bigint NULL DEFAULT NULL,
+  `purchaseName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of UserPurchaseHistory
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for UserPurchaseHistory_SEQ
+-- ----------------------------
+DROP TABLE IF EXISTS `UserPurchaseHistory_SEQ`;
+CREATE TABLE `UserPurchaseHistory_SEQ`  (
+  `next_val` bigint NULL DEFAULT NULL
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of UserPurchaseHistory_SEQ
+-- ----------------------------
+INSERT INTO `UserPurchaseHistory_SEQ` VALUES (1);
+
+-- ----------------------------
+-- Table structure for UserRaffleHistory
+-- ----------------------------
+DROP TABLE IF EXISTS `UserRaffleHistory`;
+CREATE TABLE `UserRaffleHistory`  (
+  `awardId` bigint NULL DEFAULT NULL,
+  `createTime` datetime(6) NULL DEFAULT NULL,
+  `id` bigint NOT NULL,
+  `strategyId` bigint NULL DEFAULT NULL,
+  `updateTime` datetime(6) NULL DEFAULT NULL,
+  `userId` bigint NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of UserRaffleHistory
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for UserRaffleHistory_SEQ
+-- ----------------------------
+DROP TABLE IF EXISTS `UserRaffleHistory_SEQ`;
+CREATE TABLE `UserRaffleHistory_SEQ`  (
+  `next_val` bigint NULL DEFAULT NULL
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of UserRaffleHistory_SEQ
+-- ----------------------------
+INSERT INTO `UserRaffleHistory_SEQ` VALUES (1);
+
+-- ----------------------------
+-- Table structure for User_SEQ
+-- ----------------------------
+DROP TABLE IF EXISTS `User_SEQ`;
+CREATE TABLE `User_SEQ`  (
+  `next_val` bigint NULL DEFAULT NULL
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of User_SEQ
+-- ----------------------------
+INSERT INTO `User_SEQ` VALUES (101);
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -24,8 +24,10 @@ public class Strategy {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private Long strategyId;  // 策略id
     private String strategyDesc;  // 策略描述
+
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();

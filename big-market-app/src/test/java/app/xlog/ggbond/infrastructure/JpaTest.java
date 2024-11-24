@@ -2,9 +2,11 @@ package app.xlog.ggbond.infrastructure;
 
 import app.xlog.ggbond.persistent.po.raffle.Award;
 import app.xlog.ggbond.persistent.po.raffle.RafflePool;
+import app.xlog.ggbond.persistent.po.raffle.Strategy;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
 import app.xlog.ggbond.persistent.repository.jpa.RafflePoolRepository;
+import app.xlog.ggbond.persistent.repository.jpa.StrategyRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
 import cn.zhxu.bs.BeanSearcher;
 import cn.zhxu.bs.SearchResult;
@@ -28,6 +30,8 @@ public class JpaTest {
     private BeanSearcher beanSearcher;
 
     @Resource
+    private StrategyRepository strategyRepository;
+    @Resource
     private AwardRepository awardRepository;
     @Resource
     private UserRepository userRepository;
@@ -50,7 +54,6 @@ public class JpaTest {
         awardRepository.findByAwardCountBetween(10000L, 500000L)
                 .forEach(System.out::println);
     }
-
     @Test
     void test_2() {
         String s = null;
@@ -66,16 +69,113 @@ public class JpaTest {
         search.getDataList().forEach(System.out::println);
     }
 
+    /**
+     * 初始化所有数据
+     */
+    @Test
+    void initAllData() {
+        test_3();
+        test_99();
+        test_4();
+        test_5();
+    }
+
+    /**
+     * 初始化策略
+     */
     @Test
     void test_3() {
-        userRepository.save(User.builder()
-                .id(452L)
-                .userId(10001L)
-                .userName("测试33")
-                .password("123456")
-                .raffleTimes(888L)
-                .build()
-        );
+        strategyRepository.saveAll(List.of(
+                Strategy.builder()
+                        .strategyId(10001L)
+                        .strategyDesc("策略 1")
+                        .build()
+        ));
+    }
+
+    /**
+     * 初始化奖品
+     */
+    @Test
+    void test_99() {
+        awardRepository.saveAll(List.of(
+                Award.builder()
+                        .strategyId(10001L)
+                        .awardId(101L)
+                        .awardTitle("随机积分")
+                        .awardCount(80000L)
+                        .awardRate(74.0)
+                        .awardSort(1)
+                        .build(),
+                Award.builder()
+                        .strategyId(10001L)
+                        .awardId(102L)
+                        .awardTitle("淘宝优惠券")
+                        .awardCount(50000L)
+                        .awardRate(4.0)
+                        .awardSort(2)
+                        .build(),
+                Award.builder()
+                        .strategyId(10001L)
+                        .awardId(103L)
+                        .awardTitle("京东优惠券")
+                        .awardCount(50000L)
+                        .awardRate(4.0)
+                        .awardSort(3)
+                        .build(),
+                Award.builder()
+                        .strategyId(10001L)
+                        .awardId(104L)
+                        .awardTitle("1 天 VIP")
+                        .awardCount(50000L)
+                        .awardRate(4.0)
+                        .awardSort(4)
+                        .build(),
+                Award.builder()
+                        .strategyId(10001L)
+                        .awardId(105L)
+                        .awardTitle("高额随机积分")
+                        .awardCount(50000L)
+                        .awardRate(4.0)
+                        .awardSort(5)
+                        .build(),
+                Award.builder()
+                        .strategyId(10001L)
+                        .awardId(106L)
+                        .awardTitle("付费音乐 30 天免费听")
+                        .awardSubtitle("抽奖 10 次后解锁")
+                        .awardCount(10000L)
+                        .awardRate(3.0)
+                        .awardSort(6)
+                        .build(),
+                Award.builder()
+                        .strategyId(10001L)
+                        .awardId(107L)
+                        .awardTitle("付费电影 30 天免费看")
+                        .awardSubtitle("抽奖 10 次后解锁")
+                        .awardCount(10000L)
+                        .awardRate(3.0)
+                        .awardSort(7)
+                        .build(),
+                Award.builder()
+                        .strategyId(10001L)
+                        .awardId(108L)
+                        .awardTitle("付费小说 30 天免费看")
+                        .awardSubtitle("抽奖 10 次后解锁")
+                        .awardCount(10000L)
+                        .awardRate(3.0)
+                        .awardSort(8)
+                        .build(),
+                Award.builder()
+                        .strategyId(10001L)
+                        .awardId(109L)
+                        .awardTitle("iPhone 15 Pro Max")
+                        .awardSubtitle("抽奖 20 次后解锁")
+                        .awardCount(100L)
+                        .awardRate(1.0)
+                        .awardSort(9)
+                        .build()
+        ));
     }
 
     /**
@@ -86,7 +186,7 @@ public class JpaTest {
         userRepository.saveAll(List.of(
                 User.builder()
                         .userId(404L)
-                        .userName("404用户")
+                        .userName("404 用户")
                         .userRole(User.UserRole.BLACKLIST)
                         .build(),
                 User.builder()
@@ -152,4 +252,5 @@ public class JpaTest {
                         .build()
         ));
     }
+
 }

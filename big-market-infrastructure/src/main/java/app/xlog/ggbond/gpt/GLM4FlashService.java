@@ -1,5 +1,6 @@
 package app.xlog.ggbond.gpt;
 
+import app.xlog.ggbond.recommend.IntelligentRecommendService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhipu.oapi.ClientV4;
@@ -21,7 +22,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class GLM4FlashService {
+public class GLM4FlashService implements IntelligentRecommendService {
 
     @Value("${glm.modelName}")
     private String modelName;
@@ -31,6 +32,17 @@ public class GLM4FlashService {
     @Resource
     private ObjectMapper objectMapper;
 
+
+    // --------------------------
+    // ---- 对外的推荐服务封装 -----
+    // --------------------------
+
+
+
+
+    // --------------------------
+    // ------- GPT调用方法 -------
+    // --------------------------
     /**
      * 同步调用
      */

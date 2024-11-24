@@ -10,11 +10,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class BeanSearcherConfig {
-
     /**
      * 让BeanSearcher适配JPA
-     * @param config
-     * @return
      */
     @Bean
     public DbMapping bsJpaDbMapping(BeanSearcherProperties config) {

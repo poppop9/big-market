@@ -14,7 +14,7 @@ public class GLM4FlashTest {
 
     @Test
     void test_1() throws JsonProcessingException {
-        glm4FlashService.syncInvoke("""
+        String answer = glm4FlashService.syncInvoke("""
                 Map<String, Integer> map = MapBuilder.create(new HashMap<String, Integer>())
                 		.put("a", 1)
                 		.put("b", 2)
