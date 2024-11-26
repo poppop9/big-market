@@ -33,10 +33,14 @@ public class SecurityController implements ISecurityApiService {
     @GetMapping("/v1/doLogin")
     public Response<JsonNode> doLogin(@RequestParam Long userId, @RequestParam String password) {
         Boolean isSuccess = securityService.doLogin(userId, password);
+        if (!isSuccess) {
+            throw new RuntimeException("用户名或密码错误");
+        }
+
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
                 .info("调用成功")
-                .data(isSuccess ? objectMapper.valueToTree("登录成功") : objectMapper.valueToTree("登录失败"))
+                .data(objectMapper.valueToTree("登录成功"))
                 .build();
     }
 

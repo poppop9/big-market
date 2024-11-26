@@ -34,6 +34,31 @@ public class SecurityService implements ISecurityService {
         }
     }
 
+    // --------------------------------
+    // ------------- 查询 --------------
+    // --------------------------------
+
+    /**
+     * 获取当前登录用户id
+     */
+    @Override
+    public Long getLoginIdDefaultNull() {
+        return (Long) StpUtil.getLoginIdDefaultNull();
+    }
+
+    /**
+     * 判断用户是否为黑名单用户
+     */
+    @Override
+    public Boolean isBlacklistUser(Long userId) {
+        if (userId == null) {
+            // id为空，则为游客，不是黑名单用户
+            return true;
+        }
+
+        return securityRepository.isBlacklistUser(userId);
+    }
+
     /**
      * 查询用户的抽奖次数
      */
@@ -43,16 +68,5 @@ public class SecurityService implements ISecurityService {
         return userBO.getRaffleTimes();
     }
 
-    /**
-     * 判断当前登录用户，是否为黑名单用户
-     */
-    @Override
-    public Boolean isBlacklistUser() {
-        Boolean isBlacklistUser = Optional.ofNullable(StpUtil.getLoginIdDefaultNull())
-                .map(item -> (Long) item)
-                .map(userId -> securityRepository.isBlacklistUser(userId))
-                .orElse(false);  // 为null，则为游客，游客默认不是黑名单用户
-        return isBlacklistUser;
-    }
 
 }

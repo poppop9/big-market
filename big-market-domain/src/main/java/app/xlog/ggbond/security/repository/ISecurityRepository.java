@@ -10,7 +10,7 @@ public interface ISecurityRepository {
     // 登录
     Boolean doLogin(Long userId, String password);
 
-    // 判断当前登录用户，是否为黑名单用户
+    // 判断用户是否为黑名单用户
     Boolean isBlacklistUser(Long userId);
 
     // 根据用户id，查询用户

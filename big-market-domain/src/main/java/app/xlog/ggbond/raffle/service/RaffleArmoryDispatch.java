@@ -4,6 +4,7 @@ import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleRepository;
 import app.xlog.ggbond.raffle.service.filterChain.RaffleFilterChain;
+import app.xlog.ggbond.security.service.ISecurityService;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +25,10 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
 
     @Resource
     private ObjectMapper objectMapper;
-    
+
+    @Resource
+    private ISecurityService securityService;
+
     @Resource
     private RaffleFilterChain raffleFilterChain;
     @Resource
@@ -33,6 +37,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     // ------------------------------
     // ------------ 装配 -------------
     // ------------------------------
+
     /**
      * 根据指定策略id，装配该策略所需的所有权重对象
      */
@@ -66,6 +71,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     // ------------------------------
     // ------------ 查询 -------------
     // ------------------------------
+
     /**
      * 根据策略id，查询对应的所有奖品
      */
@@ -80,6 +86,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     // ------------------------------
     // ------------ 调度 -------------
     // ------------------------------
+
     /**
      * 根据策略ID，指定的调度参数，获取对应抽奖池中的随机奖品
      */
@@ -96,7 +103,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     public Long getAwardByStrategyId(Long userId, Long strategyId) {
         // 执行过滤器链
         return raffleFilterChain.executeFilterChain(RaffleFilterContext.builder()
-                .userId(userId)
+                .userId(securityService.getLoginIdDefaultNull())
                 .strategyId(strategyId)
                 .middleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS)
                 .build()
