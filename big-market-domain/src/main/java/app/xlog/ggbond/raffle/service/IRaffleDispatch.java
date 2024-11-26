@@ -3,7 +3,7 @@ package app.xlog.ggbond.raffle.service;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 
 /**
- * 策略抽奖调度，给出随机抽奖的接口
+ * 抽奖领域 - 抽奖调度功能
  */
 public interface IRaffleDispatch {
 

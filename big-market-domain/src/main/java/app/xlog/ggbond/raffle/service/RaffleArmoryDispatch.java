@@ -2,7 +2,8 @@ package app.xlog.ggbond.raffle.service;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
-import app.xlog.ggbond.raffle.repository.IRaffleRepository;
+import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
+import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
 import app.xlog.ggbond.raffle.service.filterChain.RaffleFilterChain;
 import app.xlog.ggbond.security.service.ISecurityService;
 import cn.hutool.core.lang.WeightRandom;
@@ -32,31 +33,35 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     @Resource
     private RaffleFilterChain raffleFilterChain;
     @Resource
-    private IRaffleRepository raffleRepository;
+    private IRaffleDispatchRepo raffleDispatchRepo;
+    @Resource
+    private IRaffleArmoryRepo raffleArmoryRepo;
 
-    // ------------------------------
-    // ------------ 装配 -------------
-    // ------------------------------
 
+    /**
+     * ------------------------------
+     * ------------ 装配 -------------
+     * ------------------------------
+     */
     /**
      * 根据指定策略id，装配该策略所需的所有权重对象
      */
     @Override
     public void assembleRaffleWeightRandomByStrategyId(Long strategyId) {
         // 所有的权重对象集合
-        raffleRepository.findAllRafflePoolByStrategyId(strategyId)
+        raffleArmoryRepo.findAllRafflePoolByStrategyId(strategyId)
                 .forEach(item -> {
                     // 生成权重集合
                     List<WeightRandom.WeightObj<Long>> weightObjs = item.getAwardIds().stream()
                             .map(child -> {
-                                AwardBO award = raffleRepository.findAwardByAwardId(child);
+                                AwardBO award = raffleArmoryRepo.findAwardByAwardId(child);
                                 return new WeightRandom.WeightObj<>(child, award.getAwardRate());
                             })
                             .toList();
                     WeightRandom<Long> WeightRandom = RandomUtil.weightRandom(weightObjs);
 
                     // 将WeightRandom对象存入redis，方便后续抽奖调用
-                    raffleRepository.insertWeightRandom(strategyId, item.getRafflePoolName(), WeightRandom);
+                    raffleArmoryRepo.insertWeightRandom(strategyId, item.getRafflePoolName(), WeightRandom);
                 });
     }
 
@@ -65,7 +70,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      */
     @Override
     public void assembleAllAwardCountBystrategyId(Long strategyId) {
-        raffleRepository.assembleAllAwardCountBystrategyId(strategyId);
+        raffleArmoryRepo.assembleAllAwardCountBystrategyId(strategyId);
     }
 
     // ------------------------------
@@ -77,7 +82,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      */
     @Override
     public List<ObjectNode> findAllAwardByStrategyId(Long strategyId) {
-        return raffleRepository.findAwardsByStrategyId(strategyId).stream()
+        return raffleArmoryRepo.findAwardsByStrategyId(strategyId).stream()
                 .map(awardBO -> objectMapper.<ObjectNode>valueToTree(awardBO))
                 .sorted(Comparator.comparingInt(o -> o.get("awardSort").asInt()))
                 .toList();
@@ -92,7 +97,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      */
     @Override
     public Long findAwardIdByDispatchParam(Long strategyId, RaffleFilterContext.DispatchParam dispatchParam) {
-        WeightRandom<Long> weightRandom = raffleRepository.findWeightRandom(strategyId, dispatchParam.toString());
+        WeightRandom<Long> weightRandom = raffleDispatchRepo.findWeightRandom(strategyId, dispatchParam.toString());
         return weightRandom.next();
     }
 

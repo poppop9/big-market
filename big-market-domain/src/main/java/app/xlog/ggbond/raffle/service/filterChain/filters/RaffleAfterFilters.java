@@ -2,8 +2,8 @@ package app.xlog.ggbond.raffle.service.filterChain.filters;
 
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
-import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
 import app.xlog.ggbond.raffle.model.vo.RetryRouterException;
+import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
 import com.yomahub.liteflow.annotation.LiteflowComponent;
 import com.yomahub.liteflow.annotation.LiteflowMethod;
 import com.yomahub.liteflow.core.NodeComponent;
@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RaffleAfterFilters {
 
     @Resource
-    private IAwardInventoryRepository awardInventoryRepository;
+    private IRaffleDispatchRepo raffleDispatchRepo;
 
     /**
      * 奖品库存过滤器 - 对库存做处理
@@ -34,12 +34,12 @@ public class RaffleAfterFilters {
 
         log.atInfo().log("抽奖领域 - 奖品库存过滤器开始执行");
         // 调度扣减方法
-        if (!awardInventoryRepository.decreaseAwardCount(context.getStrategyId(), context.getAwardId())) {
+        if (!raffleDispatchRepo.decreaseAwardCount(context.getStrategyId(), context.getAwardId())) {
             throw new RetryRouterException("扣减库存失败，重新调度");
         }
 
         // 将扣减信息写入队列
-        awardInventoryRepository.addDecrAwardCountToQueue(DecrQueueVO.builder()
+        raffleDispatchRepo.addDecrAwardCountToQueue(DecrQueueVO.builder()
                 .strategyId(context.getStrategyId())
                 .awardId(context.getAwardId())
                 .build()

@@ -3,9 +3,8 @@ package app.xlog.ggbond.domain;
 import app.xlog.ggbond.persistent.po.raffle.Strategy;
 import app.xlog.ggbond.persistent.repository.jpa.StrategyRepository;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
-import app.xlog.ggbond.raffle.repository.IAwardInventoryRepository;
+import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -30,7 +28,7 @@ public class MessTest {
     private StrategyRepository strategyRepository;
 
     @Resource
-    private IAwardInventoryRepository awardInventoryRepository;
+    private IRaffleDispatchRepo raffleDispatchRepo;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -83,7 +81,7 @@ public class MessTest {
     @Test
     public void test_addQueue() {
         for (int i = 0; i < 5; i++) {
-            awardInventoryRepository.addDecrAwardCountToQueue(
+            raffleDispatchRepo.addDecrAwardCountToQueue(
                     DecrQueueVO.builder()
                             .strategyId(10001L)
                             .awardId(101L)
@@ -96,7 +94,7 @@ public class MessTest {
     @Test
     public void test_getQueue() throws InterruptedException {
         for (int i = 0; i < 4; i++) {
-            DecrQueueVO decrQueueVO = awardInventoryRepository.queryDecrAwardCountFromQueue();
+            DecrQueueVO decrQueueVO = raffleDispatchRepo.queryDecrAwardCountFromQueue();
             System.out.println(decrQueueVO);
             System.out.println(decrQueueVO.getStrategyId());
             System.out.println(decrQueueVO.getAwardId());

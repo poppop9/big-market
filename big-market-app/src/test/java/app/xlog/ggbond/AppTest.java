@@ -1,11 +1,15 @@
 package app.xlog.ggbond;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
-import app.xlog.ggbond.raffle.repository.IRaffleRepository;
+import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
-import org.redisson.api.*;
+import org.redisson.api.RBucket;
+import org.redisson.api.RKeys;
+import org.redisson.api.RMap;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -15,15 +19,16 @@ import java.util.stream.Stream;
 
 @SpringBootTest
 public class AppTest {
+
     @Autowired
     private RedissonClient redissonClient;
-    @Autowired
-    private IRaffleRepository raffleRepository;
+    @Resource
+    private IRaffleArmoryRepo raffleArmoryRepo;
 
     // 测试redisson能不能将java对象存储进redis，而且能够取出之后还能使用
     @Test
     public void testRedissonStorageObject() {
-        List<AwardBO> awardBOs = raffleRepository.findAwardsByStrategyId(10001L);
+        List<AwardBO> awardBOs = raffleArmoryRepo.findAwardsByStrategyId(10001L);
         List<Long> awardIds = awardBOs.stream()
                 .map(AwardBO::getAwardId)
                 .toList();

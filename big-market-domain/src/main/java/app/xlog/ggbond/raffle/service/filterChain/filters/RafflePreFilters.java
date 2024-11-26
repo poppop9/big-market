@@ -2,9 +2,8 @@ package app.xlog.ggbond.raffle.service.filterChain.filters;
 
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
-import app.xlog.ggbond.raffle.repository.IRaffleRepository;
+import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import app.xlog.ggbond.security.service.ISecurityService;
-import cn.hutool.core.lang.Range;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yomahub.liteflow.annotation.LiteflowComponent;
 import com.yomahub.liteflow.annotation.LiteflowMethod;
@@ -17,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 前置过滤器链
@@ -32,7 +30,7 @@ public class RafflePreFilters {
     @Resource
     private ISecurityService securityService;
     @Resource
-    private IRaffleRepository raffleRepository;
+    private IRaffleArmoryRepo raffleArmoryRepo;
 
     /**
      * 黑名单过滤器
@@ -67,7 +65,7 @@ public class RafflePreFilters {
         Long raffleTimes = securityService.queryRaffleTimesByUserId(context.getUserId());
 
         // 所有的特殊次数抽奖池
-        Map<Long, String> timeNameMap = raffleRepository.findAllRafflePoolByStrategyId(context.getStrategyId()).stream()
+        Map<Long, String> timeNameMap = raffleArmoryRepo.findAllRafflePoolByStrategyId(context.getStrategyId()).stream()
                 .filter(item -> item.getRafflePoolType() == RafflePoolBO.RafflePoolType.SpecialTime)
                 .collect(Collectors.toMap(
                         RafflePoolBO::getSpecialTimeValue,
@@ -98,7 +96,7 @@ public class RafflePreFilters {
         Long raffleTimes = securityService.queryRaffleTimesByUserId(context.getUserId());
 
         // 所有的普通次数抽奖池
-        Map<List<Long>, String> rangeNameMap = raffleRepository.findAllRafflePoolByStrategyId(context.getStrategyId()).stream()
+        Map<List<Long>, String> rangeNameMap = raffleArmoryRepo.findAllRafflePoolByStrategyId(context.getStrategyId()).stream()
                 .filter(item -> item.getRafflePoolType() == RafflePoolBO.RafflePoolType.NormalTime)
                 .collect(Collectors.toMap(
                         item -> List.of(item.getNormalTimeStartValue(), item.getNormalTimeEndValue()),
