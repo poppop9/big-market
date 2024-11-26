@@ -27,7 +27,7 @@ public class UpdateAwardCount {
             raffleDispatchRepo.updateAwardCount(decrQueueVO);
             log.atInfo().log("抽奖领域 - 定时任务 - 扣减数据库中 {} 策略 {} 奖品的库存成功", decrQueueVO.getStrategyId(), decrQueueVO.getAwardId());
         }
-        log.atInfo().log("测试");
+        log.atInfo().log("测试" + Thread.currentThread().getName());
     }
 
 }

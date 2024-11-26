@@ -9,7 +9,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Repository;
 
 /**
- * 用户仓储实现类
+ * 安全领域 - 安全仓储实现类
  */
 @Repository
 public class SecurityRepository implements ISecurityRepository {

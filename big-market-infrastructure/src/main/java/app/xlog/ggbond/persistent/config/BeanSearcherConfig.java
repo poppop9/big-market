@@ -8,6 +8,9 @@ import cn.zhxu.bs.implement.DefaultDbMapping;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * BeanSearcher 配置类
+ */
 @Configuration
 public class BeanSearcherConfig {
     /**

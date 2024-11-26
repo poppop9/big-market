@@ -1,5 +1,8 @@
 package app.xlog.ggbond.security.service;
 
+/**
+ * 安全领域 - 安全服务接口
+ */
 public interface ISecurityService {
 
     // 登录

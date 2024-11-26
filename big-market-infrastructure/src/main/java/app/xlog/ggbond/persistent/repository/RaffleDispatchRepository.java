@@ -16,6 +16,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * 抽奖领域 - 抽奖调度仓库
+ */
 @Slf4j
 @Repository
 public class RaffleDispatchRepository implements IRaffleDispatchRepo {
