@@ -11,7 +11,8 @@
                 // 2. 路由
                 RaffleFilterRouter,
                 // 3. 后置过滤器链
-                AwardInventoryFilter
+                AwardInventoryFilter,
+                UserRaffleTimeFilter
             ).retry(3, "app.xlog.ggbond.raffle.model.vo.RetryRouterException")
         );
     </chain>

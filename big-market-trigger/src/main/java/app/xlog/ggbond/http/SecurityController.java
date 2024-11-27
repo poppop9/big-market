@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 用户权限
+ * 安全领域 - 用户权限
  */
 @Slf4j
 @RestController
@@ -40,7 +40,7 @@ public class SecurityController implements ISecurityApiService {
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
                 .info("调用成功")
-                .data(objectMapper.valueToTree("登录成功"))
+                .data(objectMapper.valueToTree("用户 " + userId + " 登录成功"))
                 .build();
     }
 

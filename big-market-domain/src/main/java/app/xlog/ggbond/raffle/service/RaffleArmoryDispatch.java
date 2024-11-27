@@ -37,14 +37,8 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
 
-
     /**
-     * ------------------------------
-     * ------------ 装配 -------------
-     * ------------------------------
-     */
-    /**
-     * 根据指定策略id，装配该策略所需的所有权重对象
+     * 装配 - 根据指定策略id，装配该策略所需的所有权重对象
      */
     @Override
     public void assembleRaffleWeightRandomByStrategyId(Long strategyId) {
@@ -66,19 +60,15 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     }
 
     /**
-     * 装配所有奖品的库存
+     * 装配 - 装配所有奖品的库存
      */
     @Override
     public void assembleAllAwardCountBystrategyId(Long strategyId) {
         raffleArmoryRepo.assembleAllAwardCountBystrategyId(strategyId);
     }
 
-    // ------------------------------
-    // ------------ 查询 -------------
-    // ------------------------------
-
     /**
-     * 根据策略id，查询对应的所有奖品
+     * 查询 - 根据策略id，查询对应的所有奖品
      */
     @Override
     public List<ObjectNode> findAllAwardByStrategyId(Long strategyId) {
@@ -88,12 +78,8 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
                 .toList();
     }
 
-    // ------------------------------
-    // ------------ 调度 -------------
-    // ------------------------------
-
     /**
-     * 根据策略ID，指定的调度参数，获取对应抽奖池中的随机奖品
+     * 调度 - 根据策略ID，指定的调度参数，获取对应抽奖池中的随机奖品
      */
     @Override
     public Long findAwardIdByDispatchParam(Long strategyId, RaffleFilterContext.DispatchParam dispatchParam) {
@@ -102,7 +88,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     }
 
     /**
-     * 根据策略id，抽取奖品
+     * 调度 - 根据策略id，抽取奖品
      */
     @Override
     public Long getAwardByStrategyId(Long userId, Long strategyId) {

@@ -43,7 +43,10 @@ public class SecurityService implements ISecurityService {
      */
     @Override
     public Long getLoginIdDefaultNull() {
-        return (Long) StpUtil.getLoginIdDefaultNull();
+        return Optional.ofNullable(StpUtil.getLoginIdDefaultNull())
+                .map(Object::toString)
+                .map(Long::valueOf)
+                .orElse(null);
     }
 
     /**
@@ -63,10 +66,9 @@ public class SecurityService implements ISecurityService {
      * 查询用户的抽奖次数
      */
     @Override
-    public Long queryRaffleTimesByUserId(Long userId) {
+    public Long queryRaffleTimesByUserId(Long userId, Long strategyId) {
         UserBO userBO = securityRepository.findByUserId(userId);
-        return userBO.getRaffleTimes();
+        return userBO.getStrategyRaffleTimeMap().getOrDefault(strategyId, 0L);
     }
-
 
 }

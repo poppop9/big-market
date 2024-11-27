@@ -54,6 +54,7 @@ public class JpaTest {
         awardRepository.findByAwardCountBetween(10000L, 500000L)
                 .forEach(System.out::println);
     }
+
     @Test
     void test_2() {
         String s = null;
@@ -67,6 +68,14 @@ public class JpaTest {
         SearchResult<Award> search = beanSearcher.search(Award.class, map);
         System.out.println(Arrays.toString(search.getSummaries()) + " " + search.getTotalCount());
         search.getDataList().forEach(System.out::println);
+    }
+
+    @Test
+    void test_9032() {
+        User user = userRepository.findByUserId(404L);
+        Map<Long, Long> strategyRaffleTimeMap = user.getStrategyRaffleTimeMap();
+        strategyRaffleTimeMap.keySet().forEach(System.out::println);
+        strategyRaffleTimeMap.values().forEach(System.out::println);
     }
 
     /**
@@ -187,16 +196,19 @@ public class JpaTest {
                 User.builder()
                         .userId(404L)
                         .userName("404 用户")
+                        .password("404")
                         .userRole(User.UserRole.BLACKLIST)
                         .build(),
                 User.builder()
                         .userId(111L)
                         .userName("管理员")
+                        .password("111")
                         .userRole(User.UserRole.ADMIN)
                         .build(),
                 User.builder()
                         .userId(222L)
                         .userName("普通用户")
+                        .password("222")
                         .userRole(User.UserRole.USER)
                         .build()
         ));

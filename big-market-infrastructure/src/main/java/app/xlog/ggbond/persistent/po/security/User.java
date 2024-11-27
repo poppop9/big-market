@@ -1,5 +1,7 @@
 package app.xlog.ggbond.persistent.po.security;
 
+import app.xlog.ggbond.persistent.po.LongListToJsonConverter;
+import app.xlog.ggbond.persistent.po.MapToJsonConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -7,6 +9,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 用户
@@ -26,7 +30,9 @@ public class User {
     private String password;  // 密码
     private UserRole userRole;  // 用户的角色 : 0-管理员，1-普通用户，2-黑名单用户
     @Builder.Default
-    private Long raffleTimes = 0L;  // 用户的抽奖次数
+    @Column(columnDefinition = "TEXT")
+    @Convert(converter = MapToJsonConverter.class)
+    private Map<Long, Long> strategyRaffleTimeMap = new HashMap<>();  // 用户各个策略中的抽奖次数
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();

@@ -25,6 +25,7 @@ public class Strategy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private Long strategyId;  // 策略id
     private String strategyDesc;  // 策略描述
 

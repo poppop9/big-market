@@ -33,6 +33,7 @@ public class Award {
     private Long id;
 
     private Long strategyId;  // 策略id
+    @Column(unique = true)
     private Long awardId;  // 奖品id
     private String awardTitle;  // 奖品标题
     private String awardSubtitle;  // 奖品副标题

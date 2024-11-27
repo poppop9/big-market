@@ -13,8 +13,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/big_market
     username: root
-    password: 13433026660
-#    password: root
+#    password: 13433026660
+    password: root
   jpa:
     open-in-view: false  # 避免内存泄漏
     hibernate:

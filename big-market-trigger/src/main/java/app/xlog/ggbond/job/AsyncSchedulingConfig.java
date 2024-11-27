@@ -19,11 +19,12 @@ public class AsyncSchedulingConfig {
 
     /**
      * 定时调度线程池
+     * - 会被@Scheduled注解自动应用
      */
     @Bean(name = "myScheduledThreadPool")
     public ThreadPoolTaskScheduler myScheduledThreadPool() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setPoolSize(50); // 设置线程池大小
+        scheduler.setPoolSize(30); // 设置线程池大小
         scheduler.setThreadNamePrefix("MyScheduledThreadPool - ");
         scheduler.initialize();
 

@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 前置过滤器链
+ * 前置过滤器链  TODO 给所有的过滤器的日志都加id
  */
 @Slf4j
 @LiteflowComponent
@@ -44,11 +44,11 @@ public class RafflePreFilters {
 
         // 如果是黑名单用户，拦截
         if (securityService.isBlacklistUser(context.getUserId())) {
-            log.atInfo().log("抽奖领域 - 黑名单过滤器拦截");
+            log.atInfo().log("抽奖领域 - " + context.getUserId() + " 黑名单过滤器拦截");
             context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.INTERCEPT);
             context.setDispatchParam(RaffleFilterContext.DispatchParam.BlacklistPool);
         } else {
-            log.atInfo().log("抽奖领域 - 黑名单过滤器放行");
+            log.atInfo().log("抽奖领域 - " + context.getUserId() + " 黑名单过滤器放行");
         }
     }
 
@@ -62,7 +62,7 @@ public class RafflePreFilters {
     public void specialTimeMatchRafflePoolFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         // 用户的抽奖次数
-        Long raffleTimes = securityService.queryRaffleTimesByUserId(context.getUserId());
+        Long raffleTimes = securityService.queryRaffleTimesByUserId(context.getUserId(), context.getStrategyId());
 
         // 所有的特殊次数抽奖池
         Map<Long, String> timeNameMap = raffleArmoryRepo.findAllRafflePoolByStrategyId(context.getStrategyId()).stream()
@@ -73,13 +73,13 @@ public class RafflePreFilters {
                 ));
 
         if (timeNameMap.containsKey(raffleTimes + 1L)) {
-            log.atInfo().log("抽奖领域 - 特殊次数抽奖池匹配过滤器拦截");
+            log.atInfo().log("抽奖领域 - " + context.getUserId() + " 特殊次数抽奖池匹配过滤器拦截");
             context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.INTERCEPT);
             context.setDispatchParam(
                     RaffleFilterContext.DispatchParam.valueOf(timeNameMap.get(raffleTimes + 1L))
             );
         } else {
-            log.atInfo().log("抽奖领域 - 特殊次数抽奖池匹配过滤器放行");
+            log.atInfo().log("抽奖领域 - " + context.getUserId() + " 特殊次数抽奖池匹配过滤器放行");
         }
     }
 
@@ -92,8 +92,8 @@ public class RafflePreFilters {
             nodeName = "普通次数抽奖池匹配过滤器")
     public void normalTimeMatchRafflePoolFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
-        // 用户的抽奖次数 todo 增加用户抽奖次数时，应该抽奖成功了次数才 +1，因为有可能抽奖会失败
-        Long raffleTimes = securityService.queryRaffleTimesByUserId(context.getUserId());
+        // 用户的抽奖次数
+        Long raffleTimes = securityService.queryRaffleTimesByUserId(context.getUserId(), context.getStrategyId());
 
         // 所有的普通次数抽奖池
         Map<List<Long>, String> rangeNameMap = raffleArmoryRepo.findAllRafflePoolByStrategyId(context.getStrategyId()).stream()
@@ -109,7 +109,7 @@ public class RafflePreFilters {
                 .findFirst()
                 .get();
 
-        log.atInfo().log("抽奖领域 - 普通次数抽奖池匹配过滤器拦截，调度到 " + rafflePoolName + " 抽奖池");
+        log.atInfo().log("抽奖领域 - " + context.getUserId() + " 普通次数抽奖池匹配过滤器拦截，调度到 " + rafflePoolName + " 抽奖池");
         context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.INTERCEPT);
         context.setDispatchParam(RaffleFilterContext.DispatchParam.valueOf(rafflePoolName));
     }

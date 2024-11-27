@@ -18,6 +18,6 @@ public interface ISecurityService {
     Boolean isBlacklistUser(Long userId);
 
     // 查询当前用户的抽奖次数
-    Long queryRaffleTimesByUserId(Long userId);
+    Long queryRaffleTimesByUserId(Long userId, Long strategyId);
 
 }
