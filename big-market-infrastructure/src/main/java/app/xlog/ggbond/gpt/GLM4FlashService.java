@@ -43,7 +43,7 @@ public class GLM4FlashService implements IntelligentRecommendService {
     /**
      * GPT调用方法 - 同步调用
      */
-    public String syncInvoke(String question) throws JsonProcessingException {
+    public String syncInvoke(String question) {
         List<ChatMessage> chatMessages = List.of(new ChatMessage(
                 ChatMessageRole.USER.value(), question
         ));

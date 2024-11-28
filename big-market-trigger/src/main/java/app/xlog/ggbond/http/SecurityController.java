@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 安全领域 - 用户权限
+ * 安全领域 - 用户权限接口
  */
 @Slf4j
 @RestController

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * 抽奖领域 - 抽奖
+ * 抽奖领域 - 抽奖接口
  */
 @Slf4j
 @RestController

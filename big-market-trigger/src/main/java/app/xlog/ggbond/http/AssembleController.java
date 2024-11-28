@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 抽奖领域 - 装配
+ * 抽奖领域 - 装配接口
  **/
 @Slf4j
 @RestController
