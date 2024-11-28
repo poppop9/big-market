@@ -32,13 +32,26 @@ rules:
       keyGeneratorName: SNOWFLAKE
     # 分片自动表
     autoTables:
-      Account: # 逻辑表名
+      Strategy: # 策略
         actualDataSources: ds_${0..1}
-        shardingStrategy: # 分表策略
-          standard:
-            shardingColumn: id
-            shardingAlgorithmName: HASH_MOD
-    shardingAlgorithms: # 定义分片算法策略
+        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD } }
+      Award: # 奖品
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD } }
+      RafflePool: # 抽奖池
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD } }
+      User: # 用户
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD } }
+      UserPurchaseHistory: # 用户购买历史
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD } }
+      UserRaffleHistory: # 用户抽奖历史
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD } }
+    # 定义分片算法策略
+    shardingAlgorithms:
       HASH_MOD:
         type: HASH_MOD
         props:

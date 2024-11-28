@@ -67,6 +67,17 @@
             </dependency>
             <!--++++++++++++++ ORM ++++++++++++++-->
             <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>shardingsphere-jdbc</artifactId>
+                <version>5.5.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.shardingsphere</groupId>
+                        <artifactId>shardingsphere-test-util</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>cn.zhxu</groupId>
                 <artifactId>bean-searcher-boot-starter</artifactId>
                 <version>4.3.4</version>

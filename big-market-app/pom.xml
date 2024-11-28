@@ -18,7 +18,7 @@
     </properties>
 
     <dependencies>
-        <!-- 工程模块 -->
+        <!--++++++++++++++ 工程模块 ++++++++++++++-->
         <dependency>
             <groupId>app.xlog.ggbond</groupId>
             <artifactId>big-market-infrastructure</artifactId>
@@ -28,7 +28,7 @@
             <artifactId>big-market-trigger</artifactId>
         </dependency>
 
-        <!-- 第三方依赖包 -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -48,14 +48,23 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-
-        <!-- ORM -->
+        <!--++++++++++++++ ORM ++++++++++++++-->
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>shardingsphere-jdbc</artifactId>
+            <version>5.5.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.shardingsphere</groupId>
+                    <artifactId>shardingsphere-test-util</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
         </dependency>
-
-        <!-- 工具包 -->
+        <!--++++++++++++++ 工具包 ++++++++++++++-->
         <dependency>
             <groupId>com.yomahub</groupId>
             <artifactId>liteflow-spring-boot-starter</artifactId>
