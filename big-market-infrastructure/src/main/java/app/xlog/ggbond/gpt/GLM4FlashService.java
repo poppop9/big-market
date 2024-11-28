@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 智谱AI服务
+ * 智谱 AI 服务
  */
 @Slf4j
 @Service
@@ -40,11 +40,8 @@ public class GLM4FlashService implements IntelligentRecommendService {
 
 
 
-    // --------------------------
-    // ------- GPT调用方法 -------
-    // --------------------------
     /**
-     * 同步调用
+     * GPT调用方法 - 同步调用
      */
     public String syncInvoke(String question) throws JsonProcessingException {
         List<ChatMessage> chatMessages = List.of(new ChatMessage(
@@ -65,7 +62,7 @@ public class GLM4FlashService implements IntelligentRecommendService {
                 .toString();
 
 //        System.out.println(objectMapper.writeValueAsString(invokeModelApiResp));
-        log.atInfo().log("智谱AI服务返回结果 : " + invokeModelApiResp.getData().getRequestId() + " " + respContent);
+        log.atInfo().log("推荐领域 - 智谱AI服务返回结果 : " + invokeModelApiResp.getData().getRequestId() + " " + respContent);
         return respContent;
     }
 

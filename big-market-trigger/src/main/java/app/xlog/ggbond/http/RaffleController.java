@@ -55,7 +55,7 @@ public class RaffleController implements IRaffleApiService {
     @GetMapping("/v1/getAward")
     public Response<JsonNode> getAward(@RequestParam Long userId, @RequestParam Long strategyId) {
         Long awardId = raffleDispatch.getAwardByStrategyId(userId, strategyId);
-        log.atInfo().log("抽奖领域 - 抽到 {} 策略的 {} 奖品", strategyId, awardId);
+        log.atInfo().log("抽奖领域 - " + userId + " 抽到 {} 策略的 {} 奖品", strategyId, awardId);
 
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
