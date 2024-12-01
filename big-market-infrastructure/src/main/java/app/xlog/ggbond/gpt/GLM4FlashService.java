@@ -1,7 +1,6 @@
 package app.xlog.ggbond.gpt;
 
 import app.xlog.ggbond.recommend.IntelligentRecommendService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhipu.oapi.ClientV4;
 import com.zhipu.oapi.Constants;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,7 +54,6 @@ public class GLM4FlashService implements IntelligentRecommendService {
         );
         String respContent = invokeModelApiResp.getData().getChoices().get(0).getMessage().getContent().toString();
 
-//        System.out.println(objectMapper.writeValueAsString(invokeModelApiResp));
         log.atInfo().log("推荐领域 - 智谱AI服务返回结果 : " + invokeModelApiResp.getData().getRequestId() + " " + respContent);
         return respContent;
     }
