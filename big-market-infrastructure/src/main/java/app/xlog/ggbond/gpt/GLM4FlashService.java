@@ -38,8 +38,6 @@ public class GLM4FlashService implements IntelligentRecommendService {
     // --------------------------
 
 
-
-
     /**
      * GPT调用方法 - 同步调用
      */
@@ -56,10 +54,7 @@ public class GLM4FlashService implements IntelligentRecommendService {
                 .requestId("RecommendProduct-" + System.currentTimeMillis())  // 业务id
                 .build()
         );
-        String respContent = invokeModelApiResp.getData().getChoices().get(0)
-                .getMessage()
-                .getContent()
-                .toString();
+        String respContent = invokeModelApiResp.getData().getChoices().get(0).getMessage().getContent().toString();
 
 //        System.out.println(objectMapper.writeValueAsString(invokeModelApiResp));
         log.atInfo().log("推荐领域 - 智谱AI服务返回结果 : " + invokeModelApiResp.getData().getRequestId() + " " + respContent);
