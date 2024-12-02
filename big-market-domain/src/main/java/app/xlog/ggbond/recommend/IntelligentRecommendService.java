@@ -8,6 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public interface IntelligentRecommendService {
 
     // GPT调用方法 - 同步调用
-    String syncInvoke(String question);
+    String syncInvoke(String roleDesc, String question) throws JsonProcessingException;
 
 }

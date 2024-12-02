@@ -17,7 +17,7 @@ public class GLMClientV4Config {
     @Bean
     public ClientV4 clientV4() {
         return new ClientV4.Builder(apiKey)
-//                .enableTokenCache()  // 缓存token
+                .enableTokenCache()  // 缓存token
                 .build();
     }
 

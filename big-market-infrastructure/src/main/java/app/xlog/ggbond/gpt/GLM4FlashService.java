@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class GLM4FlashService implements IntelligentRecommendService {
+public class GLM4FlashService {
 
     @Value("${glm.modelName}")
     private String modelName;
