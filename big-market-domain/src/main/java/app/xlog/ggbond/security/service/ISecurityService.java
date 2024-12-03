@@ -26,6 +26,6 @@ public interface ISecurityService {
     Long queryRaffleTimesByUserId(Long userId, Long strategyId);
 
     // 插入 - 将黑名单用户放入布隆过滤器
-    void insertBlacklistUserListToBloomFilter(List<UserBO> userBOS);
+    void insertBlacklistUserListToBloomFilter(List<Long> userIds);
 
 }

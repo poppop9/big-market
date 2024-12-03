@@ -36,14 +36,16 @@ public class SecurityRepo implements ISecurityRepo {
 
     /**
      * 判断当前登录用户，是否为黑名单用户
-     * todo 项目初始化时，需要在redis中初始化一个黑名单的布隆过滤器。后续如果还有黑名单用户，再往里面加
+     * todo 后续如果还有黑名单用户，再往里面加
      * todo 未测试
      */
     @Override
     public Boolean isBlacklistUser(Long userId) {
         // 获取布隆过滤器
-        RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter("BlacklistUserList");
-        if (!bloomFilter.isExists()) bloomFilter.tryInit(100000L, 0.03);
+        RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter("BlacklistUserList");
+        if (!bloomFilter.isExists()) {
+            bloomFilter.tryInit(100000L, 0.03);
+        }
 
         boolean isBlackListUser = bloomFilter.contains(userId);
         if (isBlackListUser) {
@@ -82,13 +84,15 @@ public class SecurityRepo implements ISecurityRepo {
      * 插入 - 将黑名单用户放入布隆过滤器
      */
     @Override
-    public void insertBlacklistUserListToBloomFilter(List<UserBO> userBOS) {
-        RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter("BlacklistUserList");
+    public void insertBlacklistUserListToBloomFilter(List<Long> userIds) {
+        RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter("BlacklistUserList");
         // 删除旧的布隆过滤器
-        if (bloomFilter.isExists()) bloomFilter.delete();
+        if (bloomFilter.isExists()) {
+            bloomFilter.delete();
+        }
 
         bloomFilter.tryInit(100000L, 0.03);
-        bloomFilter.add(userBOS.stream().map(UserBO::getUserId).toList());
+        bloomFilter.add(userIds);
     }
 
 }

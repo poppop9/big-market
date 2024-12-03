@@ -7,6 +7,6 @@ public interface IRaffleApiService {
 
     public Response<JsonNode> queryAwardList(Long strategyId);
 
-    public Response<JsonNode> getAward(Long userId, Long strategyId);
+    public Response<JsonNode> getAward(Long strategyId);
 
 }

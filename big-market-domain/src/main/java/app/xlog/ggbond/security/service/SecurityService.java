@@ -81,8 +81,8 @@ public class SecurityService implements ISecurityService {
      * 插入 - 将黑名单用户放入布隆过滤器
      */
     @Override
-    public void insertBlacklistUserListToBloomFilter(List<UserBO> userBOS) {
-        securityRepo.insertBlacklistUserListToBloomFilter(userBOS);
+    public void insertBlacklistUserListToBloomFilter(List<Long> userIds) {
+        securityRepo.insertBlacklistUserListToBloomFilter(userIds);
     }
 
 }

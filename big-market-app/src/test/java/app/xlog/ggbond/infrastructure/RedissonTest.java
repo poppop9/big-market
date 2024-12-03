@@ -52,12 +52,12 @@ public class RedissonTest {
      * 测试布隆过滤器
      */
     @Test
-    void test_BloomFilter() {
-        RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter("BlacklistUserList");
-        System.out.println(bloomFilter.contains("404"));
-        System.out.println(bloomFilter.contains("404"));
-        System.out.println(bloomFilter.contains("101"));
-        System.out.println(bloomFilter.contains("101"));
+    void test_849() {
+        RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter("BlacklistUserList");
+        System.out.println(bloomFilter.contains(404L));
+        System.out.println(bloomFilter.contains(404L));
+        System.out.println(bloomFilter.contains(101L));
+        System.out.println(bloomFilter.contains(101L));
     }
 
 }

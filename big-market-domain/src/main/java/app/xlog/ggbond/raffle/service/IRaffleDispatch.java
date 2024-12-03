@@ -11,6 +11,6 @@ public interface IRaffleDispatch {
     Long findAwardIdByDispatchParam(Long strategyId, RaffleFilterContext.DispatchParam dispatchParam);
 
     // 根据策略id，抽取奖品
-    Long getAwardByStrategyId(Long userId, Long strategyId);
+    Long getAwardByStrategyId(Long strategyId);
 
 }

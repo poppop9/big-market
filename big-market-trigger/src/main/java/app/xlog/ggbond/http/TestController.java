@@ -3,6 +3,7 @@ package app.xlog.ggbond.http;
 import app.xlog.ggbond.recommend.IntelligentRecommendService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

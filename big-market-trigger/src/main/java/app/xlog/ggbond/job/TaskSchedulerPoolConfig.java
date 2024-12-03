@@ -10,7 +10,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import java.util.concurrent.Executor;
 
 /**
- * 定时任务线程池配置类
+ * 全局 - 定时任务线程池配置类
  */
 @EnableScheduling
 @Configuration

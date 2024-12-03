@@ -9,7 +9,7 @@ GET http://localhost:8090/api/raffle/award/v1/queryAwardList?strategyId=10001
 ###
 
 # curl -X GET "http://localhost:8090/api/award/v1/getAward?userId=123&strategyId=1"
-GET http://localhost:8090/api/raffle/award/v1/getAward?userId=404&strategyId=10001
+GET http://localhost:8090/api/raffle/award/v1/getAward?strategyId=10001
 
 ###
 

@@ -4,6 +4,7 @@ import app.xlog.ggbond.IRaffleApiService;
 import app.xlog.ggbond.model.Response;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import app.xlog.ggbond.raffle.service.IRaffleDispatch;
+import app.xlog.ggbond.security.service.ISecurityService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -31,6 +32,8 @@ public class RaffleController implements IRaffleApiService {
     private IRaffleArmory raffleArmory;
     @Resource
     private IRaffleDispatch raffleDispatch;
+    @Resource
+    private ISecurityService securityService;
 
     /**
      * 根据策略id，查询对应的奖品列表
@@ -53,9 +56,12 @@ public class RaffleController implements IRaffleApiService {
      **/
     @Override
     @GetMapping("/v1/getAward")
-    public Response<JsonNode> getAward(@RequestParam Long userId, @RequestParam Long strategyId) {
-        Long awardId = raffleDispatch.getAwardByStrategyId(userId, strategyId);
-        log.atInfo().log("抽奖领域 - " + userId + " 抽到 {} 策略的 {} 奖品", strategyId, awardId);
+    public Response<JsonNode> getAward(@RequestParam Long strategyId) {
+        Long awardId = raffleDispatch.getAwardByStrategyId(strategyId);
+        Long userId = securityService.getLoginIdDefaultNull();
+        log.atInfo().log("抽奖领域 - " + (userId == null ? "游客" : userId)
+                + " 抽到 {} 策略的 {} 奖品", strategyId, awardId
+        );
 
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
