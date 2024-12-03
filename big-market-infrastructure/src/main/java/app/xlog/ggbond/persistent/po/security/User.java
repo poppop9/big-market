@@ -28,7 +28,8 @@ public class User {
     private Long userId;  // 用户id
     private String userName;  // 用户名
     private String password;  // 密码
-    private UserRole userRole;  // 用户的角色 : 0-管理员，1-普通用户，2-黑名单用户
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;  // 用户的角色
     @Builder.Default
     @Column(columnDefinition = "TEXT")
     @Convert(converter = MapToJsonConverter.class)

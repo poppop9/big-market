@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,4 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("update User u set u.strategyRaffleTimeMap = ?1 where u.userId = ?2")
     void updateStrategyRaffleTimeMapByUserId(Map<Long, Long> strategyRaffleTimeMap, Long userId);
+
+    @Query("select u from User u where u.userRole = ?1")
+    List<User> findByUserRole(User.UserRole userRole);
 }

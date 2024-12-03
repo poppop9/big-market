@@ -3,6 +3,7 @@ package app.xlog.ggbond.infrastructure;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RBloomFilter;
 import org.redisson.api.RBucket;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
@@ -46,4 +47,17 @@ public class RedissonTest {
         boolean empty = bucket.isExists();
         System.out.println(empty);
     }
+
+    /**
+     * 测试布隆过滤器
+     */
+    @Test
+    void test_BloomFilter() {
+        RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter("BlacklistUserList");
+        System.out.println(bloomFilter.contains("404"));
+        System.out.println(bloomFilter.contains("404"));
+        System.out.println(bloomFilter.contains("101"));
+        System.out.println(bloomFilter.contains("101"));
+    }
+
 }

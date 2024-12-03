@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * 抽奖领域任务
+ * 抽奖领域 - 抽奖领域任务
  */
 @Slf4j
 @Component
@@ -21,7 +21,6 @@ public class RaffleJob {
     /**
      * 扣减队列信息，更新数据库中的奖品库存
      */
-    @Async("myAsyncExecutorThreadPool")
     @Scheduled(initialDelay = 5000, fixedDelay = 1000)
     public void updateAwardCount() {
         DecrQueueVO decrQueueVO = raffleDispatchRepo.queryDecrAwardCountFromQueue();

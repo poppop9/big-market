@@ -1,12 +1,13 @@
 package app.xlog.ggbond.security.service;
 
 import app.xlog.ggbond.security.model.UserBO;
-import app.xlog.ggbond.security.repository.ISecurityRepository;
+import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,7 +18,7 @@ import java.util.Optional;
 public class SecurityService implements ISecurityService {
 
     @Resource
-    private ISecurityRepository securityRepository;
+    private ISecurityRepo securityRepo;
 
     /**
      * 登录
@@ -25,7 +26,7 @@ public class SecurityService implements ISecurityService {
     @Override
     public Boolean doLogin(Long userId, String password) {
         // 进行数据库验证
-        if (securityRepository.doLogin(userId, password)) {
+        if (securityRepo.doLogin(userId, password)) {
             StpUtil.login(userId);
             return true;
         } else {
@@ -34,12 +35,9 @@ public class SecurityService implements ISecurityService {
         }
     }
 
-    // --------------------------------
-    // ------------- 查询 --------------
-    // --------------------------------
 
     /**
-     * 获取当前登录用户id
+     * 查询 - 获取当前登录用户id
      */
     @Override
     public Long getLoginIdDefaultNull() {
@@ -50,7 +48,7 @@ public class SecurityService implements ISecurityService {
     }
 
     /**
-     * 判断用户是否为黑名单用户
+     * 查询 - 判断用户是否为黑名单用户
      */
     @Override
     public Boolean isBlacklistUser(Long userId) {
@@ -59,16 +57,32 @@ public class SecurityService implements ISecurityService {
             return true;
         }
 
-        return securityRepository.isBlacklistUser(userId);
+        return securityRepo.isBlacklistUser(userId);
     }
 
     /**
-     * 查询用户的抽奖次数
+     * 查询 - 查询出所有的黑名单用户
+     */
+    @Override
+    public List<UserBO> queryAllBlacklistUser() {
+        return securityRepo.queryAllBlacklistUser();
+    }
+
+    /**
+     * 查询 - 查询用户的抽奖次数
      */
     @Override
     public Long queryRaffleTimesByUserId(Long userId, Long strategyId) {
-        UserBO userBO = securityRepository.findByUserId(userId);
+        UserBO userBO = securityRepo.findByUserId(userId);
         return userBO.getStrategyRaffleTimeMap().getOrDefault(strategyId, 0L);
+    }
+
+    /**
+     * 插入 - 将黑名单用户放入布隆过滤器
+     */
+    @Override
+    public void insertBlacklistUserListToBloomFilter(List<UserBO> userBOS) {
+        securityRepo.insertBlacklistUserListToBloomFilter(userBOS);
     }
 
 }
