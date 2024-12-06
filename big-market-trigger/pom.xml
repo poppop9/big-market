@@ -18,26 +18,31 @@
     </properties>
 
     <dependencies>
+        <!--++++++++++++++ 工程模块 ++++++++++++++-->
         <dependency>
             <groupId>app.xlog.ggbond</groupId>
             <artifactId>big-market-domain</artifactId>
         </dependency>
+        <dependency>
+            <groupId>app.xlog.ggbond</groupId>
+            <artifactId>big-market-api</artifactId>
+        </dependency>
 
-        <!-- 第三方库 -->
+        <!--++++++++++++++ 日志，测试 ++++++++++++++-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!--++++++++++++++ 工具包 ++++++++++++++-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>app.xlog.ggbond</groupId>
-            <artifactId>big-market-api</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
         </dependency>
     </dependencies>
 </project>

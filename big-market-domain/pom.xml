@@ -18,21 +18,11 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
+        <!--++++++++++++++ 日志，测试 ++++++++++++++-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-
         <!--++++++++++++++ 登录权限 ++++++++++++++-->
         <dependency>
             <groupId>cn.dev33</groupId>
@@ -45,6 +35,10 @@
             <version>release-V4-2.3.0</version>
         </dependency>
         <!--++++++++++++++ 工具包 ++++++++++++++-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.yomahub</groupId>
             <artifactId>liteflow-spring-boot-starter</artifactId>

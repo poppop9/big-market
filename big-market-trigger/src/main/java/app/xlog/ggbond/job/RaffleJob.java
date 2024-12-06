@@ -2,6 +2,8 @@ package app.xlog.ggbond.job;
 
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
+import com.xxl.job.core.context.XxlJobHelper;
+import com.xxl.job.core.handler.annotation.XxlJob;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -21,13 +23,16 @@ public class RaffleJob {
     /**
      * 扣减队列信息，更新数据库中的奖品库存
      */
-    @Scheduled(initialDelay = 5000, fixedDelay = 1000)
+    @XxlJob("updateAwardCount")
+    //@Scheduled(initialDelay = 5000, fixedDelay = 1000)
     public void updateAwardCount() {
         DecrQueueVO decrQueueVO = raffleDispatchRepo.queryDecrAwardCountFromQueue();
 
         if (decrQueueVO != null) {
             raffleDispatchRepo.updateAwardCount(decrQueueVO);
-            log.atInfo().log("抽奖领域 - 定时任务 - 扣减数据库中 {} 策略 {} 奖品的库存成功", decrQueueVO.getStrategyId(), decrQueueVO.getAwardId());
+            XxlJobHelper.log("抽奖领域 - 扣减数据库中 {} 策略 {} 奖品的库存成功", decrQueueVO.getStrategyId(), decrQueueVO.getAwardId());
+        } else {
+            XxlJobHelper.log("抽奖领域 - 队列中没有需要扣减的奖品库存");
         }
     }
 
