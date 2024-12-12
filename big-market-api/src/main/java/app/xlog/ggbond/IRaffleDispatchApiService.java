@@ -3,7 +3,10 @@ package app.xlog.ggbond;
 import app.xlog.ggbond.model.Response;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public interface IRaffleApiService {
+/**
+ * 抽奖领域 - 调度api
+ */
+public interface IRaffleDispatchApiService {
 
     public Response<JsonNode> queryAwardList(Long strategyId);
 

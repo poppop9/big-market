@@ -1,6 +1,6 @@
 package app.xlog.ggbond.http;
 
-import app.xlog.ggbond.IRaffleApiService;
+import app.xlog.ggbond.IRaffleDispatchApiService;
 import app.xlog.ggbond.model.Response;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import app.xlog.ggbond.raffle.service.IRaffleDispatch;
@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * 抽奖领域 - 抽奖接口
+ * 抽奖领域 - 调度接口
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/raffle/award")
-public class RaffleController implements IRaffleApiService {
+@RequestMapping("/api/raffle/dispatch")
+public class RaffleDispatchController implements IRaffleDispatchApiService {
 
     @Resource
     private ObjectMapper objectMapper;
@@ -59,8 +59,8 @@ public class RaffleController implements IRaffleApiService {
     public Response<JsonNode> getAward(@RequestParam Long strategyId) {
         Long awardId = raffleDispatch.getAwardByStrategyId(strategyId);
         Long userId = securityService.getLoginIdDefaultNull();
-        log.atInfo().log("抽奖领域 - " + (userId == null ? "游客" : userId)
-                + " 抽到 {} 策略的 {} 奖品", strategyId, awardId
+        log.atInfo().log(
+                "抽奖领域 - " + (userId == null ? "游客" : userId) + " 抽到 {} 策略的 {} 奖品", strategyId, awardId
         );
 
         return Response.<JsonNode>builder()

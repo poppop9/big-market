@@ -8,7 +8,7 @@ dataSources:
     url: jdbc:mysql://localhost:3306/big_market_0?allowPublicKeyRetrieval=true
     username: root
     password: root
-#    password: 13433026660
+  #    password: 13433026660
   ds_1:
     dataSourceClassName: com.zaxxer.hikari.HikariDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
@@ -20,10 +20,6 @@ dataSources:
 # 规则配置
 rules:
   - !SHARDING  # 数据分片
-    defaultDatabaseStrategy: # 默认的分库策略
-      standard:
-        shardingColumn: id
-        shardingAlgorithmName: database_inline
     defaultTableStrategy: # 默认的分表策略
       none:  # 将未配置的表视为单表
     defaultShardingColumn: id  # 默认的分片列名
@@ -34,32 +30,36 @@ rules:
     autoTables:
       Strategy: # 策略
         actualDataSources: ds_${0..1}
-        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD } }
+        shardingStrategy: { standard: { shardingColumn: strategyId, shardingAlgorithmName: HASH_MOD_4 } }
       Award: # 奖品
         actualDataSources: ds_${0..1}
-        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD } }
+        shardingStrategy: { standard: { shardingColumn: strategyId, shardingAlgorithmName: HASH_MOD_4 } }
       RafflePool: # 抽奖池
         actualDataSources: ds_${0..1}
-        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD } }
+        shardingStrategy: { standard: { shardingColumn: strategyId, shardingAlgorithmName: HASH_MOD_4 } }
       User: # 用户
         actualDataSources: ds_${0..1}
-        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD } }
+        shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
       UserPurchaseHistory: # 用户购买历史
         actualDataSources: ds_${0..1}
-        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD } }
+        shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
       UserRaffleHistory: # 用户抽奖历史
         actualDataSources: ds_${0..1}
-        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD } }
+        shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
+    # 绑定表
+    bindingTables:
+      - Strategy, Award, RafflePool
+      - User, UserPurchaseHistory, UserRaffleHistory
     # 定义分片算法策略
     shardingAlgorithms:
-      HASH_MOD:
+      HASH_MOD_2:
+        type: HASH_MOD
+        props:
+          sharding-count: 2
+      HASH_MOD_4:
         type: HASH_MOD
         props:
           sharding-count: 4
-      database_inline:
-        type: INLINE
-        props:
-          algorithm-expression: ds_${id % 2}
     keyGenerators: # 定义主键生成策略
       SNOWFLAKE:
         type: SNOWFLAKE

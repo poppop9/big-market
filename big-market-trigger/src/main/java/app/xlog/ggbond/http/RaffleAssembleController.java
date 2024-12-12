@@ -1,6 +1,6 @@
 package app.xlog.ggbond.http;
 
-import app.xlog.ggbond.IAssembleApiService;
+import app.xlog.ggbond.IRaffleAssembleApiService;
 import app.xlog.ggbond.model.Response;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/api/raffle/assemble")
-public class AssembleController implements IAssembleApiService {
+public class RaffleAssembleController implements IRaffleAssembleApiService {
 
     @Resource
     private ObjectMapper objectMapper;

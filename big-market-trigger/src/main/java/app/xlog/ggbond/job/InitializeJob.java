@@ -25,7 +25,7 @@ public class InitializeJob {
         List<Long> userIds = securityService.queryAllBlacklistUser().stream()
                 .map(UserBO::getUserId)
                 .toList();
-        securityService.insertBlacklistUserListToBloomFilter(userIds);
+        if (!userIds.isEmpty()) securityService.insertBlacklistUserListToBloomFilter(userIds);
     }
 
 }

@@ -1,5 +1,6 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
+import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +27,8 @@ public class Strategy {
     private Long id;
 
     @Column(unique = true)
-    private Long strategyId;  // 策略id
+    @Builder.Default
+    private Long strategyId = IdUtil.getSnowflakeNextId();  // 策略id
     private String strategyDesc;  // 策略描述
 
     @Builder.Default

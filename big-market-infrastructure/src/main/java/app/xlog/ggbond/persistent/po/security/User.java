@@ -2,6 +2,7 @@ package app.xlog.ggbond.persistent.po.security;
 
 import app.xlog.ggbond.persistent.po.LongListToJsonConverter;
 import app.xlog.ggbond.persistent.po.MapToJsonConverter;
+import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -25,7 +26,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;  // 用户id
+    @Builder.Default
+    private Long userId = IdUtil.getSnowflakeNextId();  // 用户id
     private String userName;  // 用户名
     private String password;  // 密码
     @Enumerated(EnumType.STRING)

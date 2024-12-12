@@ -1,6 +1,7 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
 import app.xlog.ggbond.raffle.utils.SpringContextUtil;
+import cn.hutool.core.util.IdUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -34,7 +35,8 @@ public class Award {
 
     private Long strategyId;  // 策略id
     @Column(unique = true)
-    private Long awardId;  // 奖品id
+    @Builder.Default
+    private Long awardId = IdUtil.getSnowflakeNextId();  // 奖品id
     private String awardTitle;  // 奖品标题
     private String awardSubtitle;  // 奖品副标题
     private Long awardCount;  // 奖品库存

@@ -1,5 +1,6 @@
 package app.xlog.ggbond.persistent.po.security;
 
+import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

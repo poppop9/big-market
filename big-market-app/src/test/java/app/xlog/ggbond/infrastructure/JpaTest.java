@@ -8,6 +8,8 @@ import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
 import app.xlog.ggbond.persistent.repository.jpa.RafflePoolRepository;
 import app.xlog.ggbond.persistent.repository.jpa.StrategyRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.zhxu.bs.BeanSearcher;
 import cn.zhxu.bs.SearchResult;
 import cn.zhxu.bs.operator.Between;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +81,47 @@ public class JpaTest {
         strategyRaffleTimeMap.values().forEach(System.out::println);
     }
 
+    @Test
+    void test_784239() {
+        /*awardRepository.saveAll(List.of(
+                Award.builder()
+                        .strategyId(10001L)
+                        .awardId(101L)
+                        .awardTitle("随机积分 - 测试")
+                        .awardCount(80000L)
+                        .awardRate(74.0)
+                        .awardSort(1)
+                        .build()
+        ));*/
+        long snowflakeNextId = IdUtil.getSnowflakeNextId();
+        userRepository.saveAll(List.of(
+                User.builder()
+                        .userId(snowflakeNextId)
+                        .userName("普通用户2 - 测试")
+                        .password("222")
+                        .userRole(User.UserRole.USER)
+                        .build(),
+                User.builder()
+                        .userId(snowflakeNextId)
+                        .userName("普通用户2 - 测试")
+                        .password("222")
+                        .userRole(User.UserRole.USER)
+                        .build(),
+                User.builder()
+                        .userId(snowflakeNextId)
+                        .userName("普通用户2 - 测试")
+                        .password("222")
+                        .userRole(User.UserRole.USER)
+                        .build(),
+                User.builder()
+                        .userId(snowflakeNextId)
+                        .userName("普通用户2 - 测试")
+                        .password("222")
+                        .userRole(User.UserRole.USER)
+                        .build()
+        ));
+    }
+
     /**
      * 初始化所有数据
      */
@@ -98,6 +142,10 @@ public class JpaTest {
                 Strategy.builder()
                         .strategyId(10001L)
                         .strategyDesc("策略 1")
+                        .build(),
+                Strategy.builder()
+                        .strategyId(IdUtil.getSnowflakeNextId())
+                        .strategyDesc("策略 2 - 测试")
                         .build()
         ));
     }
@@ -208,6 +256,12 @@ public class JpaTest {
                 User.builder()
                         .userId(222L)
                         .userName("普通用户")
+                        .password("222")
+                        .userRole(User.UserRole.USER)
+                        .build(),
+                User.builder()
+                        .userId(IdUtil.getSnowflakeNextId())
+                        .userName("普通用户2 - 测试")
                         .password("222")
                         .userRole(User.UserRole.USER)
                         .build()

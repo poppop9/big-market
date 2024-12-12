@@ -36,3 +36,4 @@ build/
 
 ### Mac OS ###
 .DS_Store
+big-market-app/src/main/resources/application-dev.yml
