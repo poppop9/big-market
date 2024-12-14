@@ -78,6 +78,15 @@ public class SecurityService implements ISecurityService {
     }
 
     /**
+     * 查询 - 跟据userId，查询当前用户
+     */
+    @Override
+    public UserBO findUserByUserId(Long userId) {
+        UserBO user = securityRepo.findByUserId(userId);
+        return user;
+    }
+
+    /**
      * 插入 - 将黑名单用户放入布隆过滤器
      */
     @Override

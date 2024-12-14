@@ -7,10 +7,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Converter
-public class MapToJsonConverter implements AttributeConverter<Map<Long, Long>, String> {
+public class MapToJsonConverter implements AttributeConverter<LinkedHashMap<Long, Long>, String> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -18,7 +19,7 @@ public class MapToJsonConverter implements AttributeConverter<Map<Long, Long>, S
      * 将 Map 转换为 JSON 字符串
      */
     @Override
-    public String convertToDatabaseColumn(Map<Long, Long> map) {
+    public String convertToDatabaseColumn(LinkedHashMap<Long, Long> map) {
         if (map == null) return null;
 
         try {
@@ -32,7 +33,7 @@ public class MapToJsonConverter implements AttributeConverter<Map<Long, Long>, S
      * 将 JSON 字符串转换为 Map
      */
     @Override
-    public Map<Long, Long> convertToEntityAttribute(String json) {
+    public LinkedHashMap<Long, Long> convertToEntityAttribute(String json) {
         if (StrUtil.isBlank(json)) return null;
 
         try {

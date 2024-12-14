@@ -3,6 +3,7 @@ package app.xlog.ggbond.security.model;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Data
@@ -15,7 +16,7 @@ public class UserBO {
     private String userName;  // 用户名
     private String password;  // 密码
     private UserRole userRole;  // 用户的角色 : 0-管理员，1-普通用户，2-黑名单用户
-    private Map<Long, Long> strategyRaffleTimeMap;  // 用户各个策略中的抽奖次数
+    private LinkedHashMap<Long, Long> strategyRaffleTimeMap;  // 用户各个策略中的抽奖次数
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 

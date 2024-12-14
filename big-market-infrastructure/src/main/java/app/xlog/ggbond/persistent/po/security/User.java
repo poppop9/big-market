@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -35,7 +36,7 @@ public class User {
     @Builder.Default
     @Column(columnDefinition = "TEXT")
     @Convert(converter = MapToJsonConverter.class)
-    private Map<Long, Long> strategyRaffleTimeMap = new HashMap<>();  // 用户各个策略中的抽奖次数
+    private LinkedHashMap<Long, Long> strategyRaffleTimeMap = new LinkedHashMap<>();  // 用户各个策略中的抽奖次数
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();
