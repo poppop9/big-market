@@ -96,6 +96,27 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <docker>
+                        <host>//./pipe/dockerDesktopLinuxEngine</host>
+                    </docker>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-image</goal>  <!-- 默认打image包 -->
+                        </goals>
+                        <configuration>
+                            <image>
+                                <name>big-market:1.1.0</name>
+                                <env>
+                                    <BP_JVM_VERSION>17</BP_JVM_VERSION>
+                                    <TZ>Asia/Shanghai</TZ>
+                                </env>
+                            </image>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
         <!-- 用于install时，动态加载prod.yml文件 -->

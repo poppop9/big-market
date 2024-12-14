@@ -31,10 +31,10 @@ public class SecurityController implements ISecurityApiService {
      */
     @Override
     @GetMapping("/v1/doLogin")
-    public Response<JsonNode> doLogin(@RequestParam Long userId, @RequestParam String password) {
+    public Response<JsonNode> doLogin(@RequestParam Long userId, @RequestParam String password) throws Exception {
         Boolean isSuccess = securityService.doLogin(userId, password);
         if (!isSuccess) {
-            throw new RuntimeException("用户名或密码错误");
+            throw new Exception("用户名或密码错误");
         }
 
         return Response.<JsonNode>builder()

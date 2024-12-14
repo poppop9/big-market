@@ -1,4 +1,5 @@
 # 命令执行 docker-compose -f docker-compose-app.yml up -d
+#  docker run -p 8090:8090 -d --restart=always --name big-market big-market:1.1.0
 
 x-variables:
   big-market-version: 1962883041612/big-market:1.0.1

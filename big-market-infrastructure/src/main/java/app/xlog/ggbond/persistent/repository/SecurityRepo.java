@@ -31,7 +31,8 @@ public class SecurityRepo implements ISecurityRepo {
      */
     @Override
     public Boolean doLogin(Long userId, String password) {
-        return userRepository.findByUserIdAndPassword(userId, password) != null;
+        User user = userRepository.findByUserIdAndPassword(userId, password);
+        return user != null;
     }
 
     /**

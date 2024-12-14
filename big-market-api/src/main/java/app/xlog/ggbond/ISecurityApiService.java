@@ -8,6 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public interface ISecurityApiService {
 
-    public Response<JsonNode> doLogin(Long userId, String password);
+    public Response<JsonNode> doLogin(Long userId, String password) throws Exception;
 
 }
