@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/*
-奖品业务对象 - 用于业务逻辑处理，所以简化了一些属性
+/**
+ * 奖品
  */
 @Data
 @AllArgsConstructor

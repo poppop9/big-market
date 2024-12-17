@@ -1,6 +1,7 @@
 package app.xlog.ggbond.raffle.service;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
+import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
@@ -76,6 +77,14 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
                 .map(awardBO -> objectMapper.<ObjectNode>valueToTree(awardBO))
                 .sorted(Comparator.comparingInt(o -> o.get("awardSort").asInt()))
                 .toList();
+    }
+
+    /**
+     * 查询 - 根据用户id，策略id，查询用户的抽奖历史
+     */
+    @Override
+    public List<UserRaffleHistoryBO> getWinningAwardsInfo(Long userId, Long strategyId) {
+        return raffleArmoryRepo.getWinningAwardsInfo(userId, strategyId);
     }
 
     /**

@@ -2,10 +2,13 @@ package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.persistent.po.raffle.Award;
 import app.xlog.ggbond.persistent.po.raffle.RafflePool;
+import app.xlog.ggbond.persistent.po.raffle.UserRaffleHistory;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
 import app.xlog.ggbond.persistent.repository.jpa.RafflePoolRepository;
+import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
+import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
@@ -31,14 +34,11 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     private RafflePoolRepository rafflePoolRepository;
     @Resource
     private AwardRepository awardRepository;
+    @Resource
+    private UserRaffleHistoryRepository userRaffleHistoryRepository;
 
     /**
-     * ---------------------------
-     * ----------- 查询 ----------
-     * ---------------------------
-     */
-    /**
-     * 根据策略id，查询对应的所有奖品
+     * 查询 - 根据策略id，查询对应的所有奖品
      **/
     @Override
     public List<AwardBO> findAwardsByStrategyId(Long strategyId) {
@@ -48,7 +48,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     }
 
     /**
-     * 根据奖品Id，查询对应的奖品
+     * 查询 - 根据奖品Id，查询对应的奖品
      */
     @Override
     public AwardBO findAwardByAwardId(Long awardId) {
@@ -57,7 +57,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     }
 
     /**
-     * 根据策略Id，查询对应的所有抽奖池规则
+     * 查询 - 根据策略Id，查询对应的所有抽奖池规则
      */
     @Override
     public List<RafflePoolBO> findAllRafflePoolByStrategyId(Long strategyId) {
@@ -66,12 +66,16 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     }
 
     /**
-     * ---------------------------
-     * ----------- 装配 ----------
-     * ---------------------------
+     * 查询 - 根据用户id，策略id，查询用户的抽奖历史
      */
+    @Override
+    public List<UserRaffleHistoryBO> getWinningAwardsInfo(Long userId, Long strategyId) {
+        List<UserRaffleHistory> list = userRaffleHistoryRepository.findByUserIdAndStrategyIdOrderByCreateTimeAsc(userId, strategyId);
+        return BeanUtil.copyToList(list, UserRaffleHistoryBO.class);
+    }
+
     /**
-     * 装配所有奖品的库存
+     * 装配 - 装配所有奖品的库存
      */
     @Override
     public void assembleAllAwardCountBystrategyId(Long strategyId) {
@@ -86,7 +90,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     }
 
     /**
-     * 将权重对象插入到Redis中
+     * 装配 - 将权重对象插入到Redis中
      */
     @Override
     public void insertWeightRandom(Long strategyId, String dispatchParam, WeightRandom<Long> wr) {

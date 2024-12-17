@@ -1,14 +1,10 @@
-package app.xlog.ggbond.persistent.po.security;
+package app.xlog.ggbond.persistent.po.raffle;
 
-import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 

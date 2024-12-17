@@ -2,6 +2,7 @@ package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IRaffleDispatchApiService;
 import app.xlog.ggbond.model.Response;
+import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import app.xlog.ggbond.raffle.service.IRaffleDispatch;
 import app.xlog.ggbond.security.model.UserBO;
@@ -130,12 +131,20 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
      */
     @GetMapping(value = "/v1/getWinningAwardsInfo", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Response<JsonNode>> getWinningAwardsInfo() {
+        // 自动获取当前用户的最新的策略id
+        UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
+        LinkedHashMap<Long, Long> strategyRaffleTimeMap = user.getStrategyRaffleTimeMap();
+        String strategyId = strategyRaffleTimeMap.keySet().toArray()[strategyRaffleTimeMap.size() - 1].toString();
+
+        // 查询该用户的中奖奖品信息
+        List<UserRaffleHistoryBO> winningAwards = raffleArmory.getWinningAwardsInfo(user.getUserId(), Long.valueOf(strategyId));
+
         return Flux.interval(Duration.ofSeconds(1))
                 .flatMap(sequence -> Mono
                         .fromCallable(() -> Response.<JsonNode>builder()
                                 .status(HttpStatus.OK)
                                 .info("调用成功")
-                                .data(objectMapper.valueToTree("奖品1"))
+                                .data(objectMapper.valueToTree(winningAwards))
                                 .build())
                         .onErrorReturn(Response.<JsonNode>builder()
                                 .status(HttpStatus.OK)

@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 抽奖池业务对象
+ * 抽奖池
  */
 @Data
 @AllArgsConstructor
