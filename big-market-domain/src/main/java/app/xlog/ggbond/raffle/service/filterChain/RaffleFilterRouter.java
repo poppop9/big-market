@@ -1,4 +1,4 @@
-package app.xlog.ggbond.raffle.service.filterChain.filters;
+package app.xlog.ggbond.raffle.service.filterChain;
 
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.service.IRaffleDispatch;
@@ -11,7 +11,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 抽奖过滤器路由
+ * 抽奖领域 - 抽奖路由器
  */
 @Slf4j
 @LiteflowComponent

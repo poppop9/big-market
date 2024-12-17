@@ -1,5 +1,6 @@
 package app.xlog.ggbond.security.service;
 
+import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.dev33.satoken.stp.StpUtil;
@@ -44,7 +45,7 @@ public class SecurityService implements ISecurityService {
         return Optional.ofNullable(StpUtil.getLoginIdDefaultNull())
                 .map(Object::toString)
                 .map(Long::valueOf)
-                .orElse(null);
+                .orElse(GlobalConstant.tourist);
     }
 
     /**
@@ -82,8 +83,9 @@ public class SecurityService implements ISecurityService {
      */
     @Override
     public UserBO findUserByUserId(Long userId) {
-        UserBO user = securityRepo.findByUserId(userId);
-        return user;
+        return Optional.ofNullable(userId)
+                .map(item -> securityRepo.findByUserId(item))
+                .orElse(null);
     }
 
     /**

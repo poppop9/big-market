@@ -1,7 +1,9 @@
 package app.xlog.ggbond.persistent.repository;
 
+import app.xlog.ggbond.persistent.po.raffle.UserRaffleHistory;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
+import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
@@ -36,6 +38,8 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     private IRaffleArmoryRepo raffleArmoryRepo;
     @Resource
     private UserRepository userRepository;
+    @Resource
+    private UserRaffleHistoryRepository userRaffleHistoryRepository;
 
     /**
      * 权重对象 - 从 redis 中查询出指定的权重对象
@@ -137,6 +141,19 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
         );
 
         userRepository.updateStrategyRaffleTimeMapByUserId(strategyRaffleTimeMap, userId);
+    }
+
+    /**
+     * 用户抽奖历史 - 添加用户抽奖流水记录
+     */
+    @Override
+    public void addUserRaffleFlowRecordFilter(Long userId, Long strategyId, Long awardId) {
+        userRaffleHistoryRepository.save(UserRaffleHistory.builder()
+                .userId(userId)
+                .strategyId(strategyId)
+                .awardId(awardId)
+                .build()
+        );
     }
 
 }

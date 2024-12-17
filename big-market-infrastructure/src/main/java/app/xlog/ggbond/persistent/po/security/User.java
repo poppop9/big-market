@@ -1,16 +1,12 @@
 package app.xlog.ggbond.persistent.po.security;
 
-import app.xlog.ggbond.persistent.po.LongListToJsonConverter;
+import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.persistent.po.MapToJsonConverter;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -33,10 +29,10 @@ public class User {
     private String password;  // 密码
     @Enumerated(EnumType.STRING)
     private UserRole userRole;  // 用户的角色
-    @Builder.Default
+/*    @Builder.Default
     @Column(columnDefinition = "TEXT")
     @Convert(converter = MapToJsonConverter.class)
-    private LinkedHashMap<Long, Long> strategyRaffleTimeMap = new LinkedHashMap<>();  // 用户各个策略中的抽奖次数
+    private LinkedHashMap<Long, Long> strategyRaffleTimeMap = new LinkedHashMap<>(Map.of(GlobalConstant.defaultStrategyId, 0L));  // 用户各个策略中的抽奖次数*/
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();

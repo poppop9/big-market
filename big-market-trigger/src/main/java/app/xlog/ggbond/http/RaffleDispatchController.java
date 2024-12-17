@@ -2,11 +2,13 @@ package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IRaffleDispatchApiService;
 import app.xlog.ggbond.model.Response;
+import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import app.xlog.ggbond.raffle.service.IRaffleDispatch;
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.service.ISecurityService;
+import cn.hutool.core.collection.CollUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -22,8 +24,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * 抽奖领域 - 调度接口
@@ -43,61 +44,20 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
     private ISecurityService securityService;
 
     /**
-     * 弃用 - 根据策略id，查询对应的奖品列表
-     **/
-    @Deprecated
-    @Override
-    @GetMapping("/v1/queryAwardList")
-    public Response<JsonNode> queryAwardList(@RequestParam Long strategyId) {
-        List<ObjectNode> awardBOs = raffleArmory.findAllAwardByStrategyId(strategyId);
-
-        log.atDebug().log("查询了策略 {} 的奖品列表", strategyId);
-        return Response.<JsonNode>builder()
-                .status(HttpStatus.OK)
-                .info("调用成功")
-                .data(objectMapper.valueToTree(awardBOs))
-                .build();
-    }
-
-    /**
-     * 查询对应的奖品列表
+     * 查询对应的奖品列表  todo 大改，所有层级要加上activity
      **/
     @Override
     @GetMapping("/v2/queryAwardList")
-    public Response<JsonNode> queryAwardList() {
+    public Response<JsonNode> queryAwardList(@RequestParam Long activityId) {
         // 自动获取当前用户的最新的策略id
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
-        LinkedHashMap<Long, Long> strategyRaffleTimeMap = user.getStrategyRaffleTimeMap();
-        String strategyId = strategyRaffleTimeMap.keySet().toArray()[strategyRaffleTimeMap.size() - 1].toString();
+        List<AwardBO> awardBOs = raffleArmory.findAllAwards(activityId, user.getUserId());
 
-        // 查询奖品列表
-        List<ObjectNode> awardBOs = raffleArmory.findAllAwardByStrategyId(Long.valueOf(strategyId));
-
-        log.atDebug().log("查询了策略 {} 的奖品列表", strategyId);
+        log.atDebug().log("查询了活动 {} ，用户 {} 的奖品列表", activityId, user.getUserId());
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
                 .info("调用成功")
                 .data(objectMapper.valueToTree(awardBOs))
-                .build();
-    }
-
-    /**
-     * 根据策略id，抽取奖品
-     **/
-    @Deprecated
-    @Override
-    @GetMapping("/v1/getAward")
-    public Response<JsonNode> getAward(@RequestParam Long strategyId) {
-        Long awardId = raffleDispatch.getAwardByStrategyId(strategyId);
-        Long userId = securityService.getLoginIdDefaultNull();
-        log.atInfo().log(
-                "抽奖领域 - " + (userId == null ? "游客" : userId) + " 抽到 {} 策略的 {} 奖品", strategyId, awardId
-        );
-
-        return Response.<JsonNode>builder()
-                .status(HttpStatus.OK)
-                .info("调用成功")
-                .data(objectMapper.valueToTree(awardId))
                 .build();
     }
 
@@ -106,22 +66,30 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
      **/
     @Override
     @GetMapping("/v2/getAward")
-    public Response<JsonNode> getAward() {
+    public Response<JsonNode> getAward(@RequestParam Long activityId) {
         // 自动获取当前用户的最新的策略id
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
-        LinkedHashMap<Long, Long> strategyRaffleTimeMap = user.getStrategyRaffleTimeMap();
-        String strategyId = strategyRaffleTimeMap.keySet().toArray()[strategyRaffleTimeMap.size() - 1].toString();
 
+        // todo raffleDispatch.getAwardId(activityId, user.getUserId());
+
+        LinkedHashMap<Long, Long> strategyRaffleTimeMap = user.getStrategyRaffleTimeMap();
+
+        String strategyId = strategyRaffleTimeMap.keySet().toArray()[strategyRaffleTimeMap.size() - 1].toString();
         // 抽取奖品
         Long awardId = raffleDispatch.getAwardByStrategyId(Long.valueOf(strategyId));
-        Long userId = securityService.getLoginIdDefaultNull();
         log.atInfo().log(
-                "抽奖领域 - " + (userId == null ? "游客" : userId) + " 抽到 {} 策略的 {} 奖品", strategyId, awardId
+                "抽奖领域 - " + securityService.getLoginIdDefaultNull() + " 抽到 {} 策略的 {} 奖品", strategyId, awardId
         );
 
-        return Response.<JsonNode>builder()
+        return awardId != null
+                ? Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
                 .info("调用成功")
+                .data(objectMapper.valueToTree(awardId))
+                .build()
+                : Response.<JsonNode>builder()
+                .status(HttpStatus.OK)
+                .info("调用失败")
                 .data(objectMapper.valueToTree(awardId))
                 .build();
     }
@@ -134,10 +102,14 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
         // 自动获取当前用户的最新的策略id
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
         LinkedHashMap<Long, Long> strategyRaffleTimeMap = user.getStrategyRaffleTimeMap();
-        String strategyId = strategyRaffleTimeMap.keySet().toArray()[strategyRaffleTimeMap.size() - 1].toString();
 
-        // 查询该用户的中奖奖品信息
-        List<UserRaffleHistoryBO> winningAwards = raffleArmory.getWinningAwardsInfo(user.getUserId(), Long.valueOf(strategyId));
+        List<UserRaffleHistoryBO> winningAwards = Optional.ofNullable(CollUtil.isEmpty(strategyRaffleTimeMap) ? null : strategyRaffleTimeMap)
+                .map(item -> {
+                    String strategyId = item.keySet().toArray()[strategyRaffleTimeMap.size() - 1].toString();
+                    // 查询该用户的中奖奖品信息
+                    return raffleArmory.getWinningAwardsInfo(user.getUserId(), Long.valueOf(strategyId));
+                })
+                .orElse(new ArrayList<>());
 
         return Flux.interval(Duration.ofSeconds(1))
                 .flatMap(sequence -> Mono

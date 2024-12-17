@@ -1,5 +1,6 @@
 package app.xlog.ggbond.raffle.service;
 
+import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -28,5 +29,8 @@ public interface IRaffleArmory {
 
     // 根据用户id，策略id，查询用户的抽奖历史
     List<UserRaffleHistoryBO> getWinningAwardsInfo(Long userId, Long strategyId);
+
+    // 根据活动id，用户id，查询用户的所有奖品
+    List<AwardBO> findAllAwards(Long activityId, Long userId);
 
 }

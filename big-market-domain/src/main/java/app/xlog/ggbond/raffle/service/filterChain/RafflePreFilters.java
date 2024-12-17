@@ -1,4 +1,4 @@
-package app.xlog.ggbond.raffle.service.filterChain.filters;
+package app.xlog.ggbond.raffle.service.filterChain;
 
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 前置过滤器链
+ * 抽奖领域 - 前置过滤器链
  */
 @Slf4j
 @LiteflowComponent

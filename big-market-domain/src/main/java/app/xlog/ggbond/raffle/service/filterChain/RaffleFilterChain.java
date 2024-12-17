@@ -1,13 +1,15 @@
 package app.xlog.ggbond.raffle.service.filterChain;
 
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
-import app.xlog.ggbond.raffle.service.filterChain.filters.RaffleFilterRouter;
 import com.yomahub.liteflow.core.FlowExecutor;
 import com.yomahub.liteflow.flow.LiteflowResponse;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * 抽奖领域 - 抽奖过滤器链
+ */
 @Slf4j
 @Service
 public class RaffleFilterChain {

@@ -1,5 +1,6 @@
-package app.xlog.ggbond.raffle.service.filterChain.filters;
+package app.xlog.ggbond.raffle.service.filterChain;
 
+import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.model.vo.RetryRouterException;
@@ -13,7 +14,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 后置过滤器链
+ * 抽奖领域 - 后置过滤器链
  */
 @Slf4j
 @LiteflowComponent
@@ -60,13 +61,34 @@ public class RaffleAfterFilters {
         log.atInfo().log("抽奖领域 - " + context.getUserId() + " 用户抽奖次数过滤器开始执行");
 
         // 如果是游客，就不要增加抽奖次数
-        if (context.getUserId() == null) {
+        if (GlobalConstant.tourist.equals(context.getUserId())) {
             log.atInfo().log("抽奖领域 - " + context.getUserId() + " 用户抽奖次数过滤器执行完毕");
             return;
         }
 
         raffleDispatchRepo.addUserRaffleTimeByStrategyId(context.getUserId(), context.getStrategyId());
         log.atInfo().log("抽奖领域 - " + context.getUserId() + " 用户抽奖次数过滤器执行完毕");
+    }
+
+    /**
+     * 用户抽奖流水记录过滤器
+     */
+    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
+            value = LiteFlowMethodEnum.PROCESS,
+            nodeId = "UserRaffleFlowRecordFilter",
+            nodeName = "用户抽奖流水记录过滤器")
+    public void userRaffleFlowRecordFilter(NodeComponent bindCmp) {
+        RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
+        log.atInfo().log("抽奖领域 - " + context.getUserId() + " 用户抽奖流水记录过滤器开始执行");
+
+        // 如果是游客，就不要增加抽奖流水记录
+        if (GlobalConstant.tourist.equals(context.getUserId())) {
+            log.atInfo().log("抽奖领域 - " + context.getUserId() + " 用户抽奖流水记录过滤器执行完毕");
+            return;
+        }
+
+        raffleDispatchRepo.addUserRaffleFlowRecordFilter(context.getUserId(), context.getStrategyId(), context.getAwardId());
+        log.atInfo().log("抽奖领域 - " + context.getUserId() + " 用户抽奖流水记录过滤器执行完毕");
     }
 
 }

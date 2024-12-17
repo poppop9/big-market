@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * JPA - 抽奖池仓储
+ */
 @Repository
 public interface RafflePoolRepository extends JpaRepository<RafflePool, Long> {
 

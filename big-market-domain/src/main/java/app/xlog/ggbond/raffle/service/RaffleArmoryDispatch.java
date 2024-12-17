@@ -88,6 +88,14 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     }
 
     /**
+     * 根据活动id，用户id，查询用户的所有奖品
+     */
+    @Override
+    public List<AwardBO> findAllAwards(Long activityId, Long userId) {
+        return raffleArmoryRepo.findAllAwards(activityId, userId);
+    }
+
+    /**
      * 调度 - 根据策略ID，指定的调度参数，获取对应抽奖池中的随机奖品
      */
     @Override

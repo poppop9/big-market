@@ -254,9 +254,9 @@ public class JpaTest {
                         .userRole(User.UserRole.ADMIN)
                         .build(),
                 User.builder()
-                        .userId(222L)
-                        .userName("普通用户")
-                        .password("222")
+                        .userId(200L)
+                        .userName("游客用户")
+                        .password("user200")
                         .userRole(User.UserRole.USER)
                         .build(),
                 User.builder()

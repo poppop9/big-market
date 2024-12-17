@@ -31,8 +31,10 @@ public interface IRaffleDispatchRepo {
     DecrQueueVO queryDecrAwardCountFromQueue();
 
 
-
     // 抽奖次数 - 给用户的指定策略增加抽奖次数
     void addUserRaffleTimeByStrategyId(Long userId, Long strategyId);
+
+    // 用户抽奖历史 - 添加用户抽奖流水记录
+    void addUserRaffleFlowRecordFilter(Long userId, Long strategyId, Long awardId);
 
 }

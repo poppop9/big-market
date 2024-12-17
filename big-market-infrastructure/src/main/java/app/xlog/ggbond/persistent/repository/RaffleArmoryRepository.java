@@ -2,9 +2,11 @@ package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.persistent.po.raffle.Award;
 import app.xlog.ggbond.persistent.po.raffle.RafflePool;
+import app.xlog.ggbond.persistent.po.raffle.UserRaffleConfig;
 import app.xlog.ggbond.persistent.po.raffle.UserRaffleHistory;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
 import app.xlog.ggbond.persistent.repository.jpa.RafflePoolRepository;
+import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
@@ -36,6 +38,8 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     private AwardRepository awardRepository;
     @Resource
     private UserRaffleHistoryRepository userRaffleHistoryRepository;
+    @Resource
+    private UserRaffleConfigRepository userRaffleConfigRepository;
 
     /**
      * 查询 - 根据策略id，查询对应的所有奖品
@@ -72,6 +76,17 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     public List<UserRaffleHistoryBO> getWinningAwardsInfo(Long userId, Long strategyId) {
         List<UserRaffleHistory> list = userRaffleHistoryRepository.findByUserIdAndStrategyIdOrderByCreateTimeAsc(userId, strategyId);
         return BeanUtil.copyToList(list, UserRaffleHistoryBO.class);
+    }
+
+    /**
+     * 查询 - 根据活动id，用户id，查询用户的所有奖品
+     */
+    @Override
+    public List<AwardBO> findAllAwards(Long activityId, Long userId) {
+        Long strategyId = userRaffleConfigRepository.findByUserIdAndActivityId(activityId, userId).getStrategyId();
+        return BeanUtil.copyToList(
+                awardRepository.findByStrategyId(strategyId), AwardBO.class
+        );
     }
 
     /**

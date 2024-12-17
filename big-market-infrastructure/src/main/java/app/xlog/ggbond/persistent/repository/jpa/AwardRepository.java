@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * JPA - 奖品仓储
+ */
 @Repository
 public interface AwardRepository extends JpaRepository<Award, Long> {
 

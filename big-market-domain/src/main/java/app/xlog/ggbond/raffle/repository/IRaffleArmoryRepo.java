@@ -26,6 +26,8 @@ public interface IRaffleArmoryRepo {
     // 查询 - 根据用户id，策略id，查询用户的抽奖历史
     List<UserRaffleHistoryBO> getWinningAwardsInfo(Long userId, Long strategyId);
 
+    // 查询 - 根据活动id，用户id，查询用户的所有奖品
+    List<AwardBO> findAllAwards(Long activityId, Long userId);
 
     // 装配 - 装配所有奖品的库存
     void assembleAllAwardCountBystrategyId(Long strategyId);
