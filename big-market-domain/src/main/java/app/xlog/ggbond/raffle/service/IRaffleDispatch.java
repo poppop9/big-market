@@ -10,7 +10,7 @@ public interface IRaffleDispatch {
     // 根据策略ID，指定的调度参数，获取对应抽奖池中的随机奖品
     Long findAwardIdByDispatchParam(Long strategyId, RaffleFilterContext.DispatchParam dispatchParam);
 
-    // 根据策略id，抽取奖品
-    Long getAwardByStrategyId(Long strategyId);
+    // 调度 - 抽取奖品
+    Long getAwardId(Long activityId, Long userId);
 
 }

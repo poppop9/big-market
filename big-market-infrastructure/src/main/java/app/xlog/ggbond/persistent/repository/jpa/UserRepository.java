@@ -22,11 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.userId = ?1")
     User findByUserId(Long userId);
 
-    @Transactional
-    @Modifying
-    @Query("update User u set u.strategyRaffleTimeMap = ?1 where u.userId = ?2")
-    void updateStrategyRaffleTimeMapByUserId(Map<Long, Long> strategyRaffleTimeMap, Long userId);
-
     @Query("select u from User u where u.userRole = ?1")
     List<User> findByUserRole(User.UserRole userRole);
+
 }

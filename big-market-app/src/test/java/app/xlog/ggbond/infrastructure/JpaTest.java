@@ -1,15 +1,9 @@
 package app.xlog.ggbond.infrastructure;
 
-import app.xlog.ggbond.persistent.po.raffle.Award;
-import app.xlog.ggbond.persistent.po.raffle.RafflePool;
-import app.xlog.ggbond.persistent.po.raffle.Strategy;
+import app.xlog.ggbond.persistent.po.raffle.*;
 import app.xlog.ggbond.persistent.po.security.User;
-import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
-import app.xlog.ggbond.persistent.repository.jpa.RafflePoolRepository;
-import app.xlog.ggbond.persistent.repository.jpa.StrategyRepository;
-import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
+import app.xlog.ggbond.persistent.repository.jpa.*;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.NumberUtil;
 import cn.zhxu.bs.BeanSearcher;
 import cn.zhxu.bs.SearchResult;
 import cn.zhxu.bs.operator.Between;
@@ -21,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
 
-import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +27,8 @@ public class JpaTest {
     private BeanSearcher beanSearcher;
 
     @Resource
+    private ActivityRepository activityRepository;
+    @Resource
     private StrategyRepository strategyRepository;
     @Resource
     private AwardRepository awardRepository;
@@ -40,6 +36,8 @@ public class JpaTest {
     private UserRepository userRepository;
     @Resource
     private RafflePoolRepository rafflePoolRepository;
+    @Resource
+    private UserRaffleConfigRepository userRaffleConfigRepository;
 
     @Test
     void test_1() {
@@ -71,14 +69,6 @@ public class JpaTest {
         SearchResult<Award> search = beanSearcher.search(Award.class, map);
         System.out.println(Arrays.toString(search.getSummaries()) + " " + search.getTotalCount());
         search.getDataList().forEach(System.out::println);
-    }
-
-    @Test
-    void test_9032() {
-        User user = userRepository.findByUserId(404L);
-        Map<Long, Long> strategyRaffleTimeMap = user.getStrategyRaffleTimeMap();
-        strategyRaffleTimeMap.keySet().forEach(System.out::println);
-        strategyRaffleTimeMap.values().forEach(System.out::println);
     }
 
     @Test
@@ -127,10 +117,58 @@ public class JpaTest {
      */
     @Test
     void initAllData() {
+        long snowflakeNextId = IdUtil.getSnowflakeNextId();
+
+        // === 抽奖领域 ===
+        test_activity();
         test_3();
         test_99();
-        test_4();
         test_5();
+        test_userRaffleConfig(snowflakeNextId);
+        // === 安全领域 ===
+        test_4(snowflakeNextId);
+    }
+
+    /**
+     * 初始化活动
+     */
+    @Test
+    void test_activity() {
+        activityRepository.save(Activity.builder()
+                .activityId(10001L)
+                .defaultStrategyId(10001L)
+                .strategyIdList(new ArrayList<>(List.of(10001L)))
+                .build()
+        );
+    }
+
+    /**
+     * 初始化用户抽奖配置
+     */
+    @Test
+    void test_userRaffleConfig(long snowflakeNextId) {
+        userRaffleConfigRepository.saveAll(List.of(
+                UserRaffleConfig.builder()
+                        .userId(404L)
+                        .activityId(10001L)
+                        .strategyId(10001L)
+                        .build(),
+                UserRaffleConfig.builder()
+                        .userId(111L)
+                        .activityId(10001L)
+                        .strategyId(10001L)
+                        .build(),
+                UserRaffleConfig.builder()
+                        .userId(200L)
+                        .activityId(10001L)
+                        .strategyId(10001L)
+                        .build(),
+                UserRaffleConfig.builder()
+                        .userId(snowflakeNextId)
+                        .activityId(10001L)
+                        .strategyId(10001L)
+                        .build()
+                ));
     }
 
     /**
@@ -239,7 +277,7 @@ public class JpaTest {
      * 初始化用户
      */
     @Test
-    void test_4() {
+    void test_4(long snowflakeNextId) {
         userRepository.saveAll(List.of(
                 User.builder()
                         .userId(404L)
@@ -260,7 +298,7 @@ public class JpaTest {
                         .userRole(User.UserRole.USER)
                         .build(),
                 User.builder()
-                        .userId(IdUtil.getSnowflakeNextId())
+                        .userId(snowflakeNextId)
                         .userName("普通用户2 - 测试")
                         .password("222")
                         .userRole(User.UserRole.USER)

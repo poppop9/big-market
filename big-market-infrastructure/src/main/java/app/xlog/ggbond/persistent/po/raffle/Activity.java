@@ -32,8 +32,9 @@ public class Activity {
     private LocalDateTime updateTime = LocalDateTime.now();
 
     private Long activityId;  // 活动id
+    private Long defaultStrategyId;  // 默认策略id（每个活动都会有一个默认的策略id）
     @Builder.Default
     @Column(columnDefinition = "TEXT")
     @Convert(converter = LongListToJsonConverter.class)
-    private List<Long> strategyIdList = new ArrayList<>(List.of(GlobalConstant.defaultStrategyId));  // 该活动下的所有的策略id
+    private List<Long> strategyIdList = new ArrayList<>();  // 该活动下的所有的策略id（不同活动的策略id也不能重复）
 }

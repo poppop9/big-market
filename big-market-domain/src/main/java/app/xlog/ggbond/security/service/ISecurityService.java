@@ -22,14 +22,10 @@ public interface ISecurityService {
     // 查询 - 查询出所有的黑名单用户
     List<UserBO> queryAllBlacklistUser();
 
-    // 查询 - 查询当前用户的抽奖次数
-    Long queryRaffleTimesByUserId(Long userId, Long strategyId);
-
     // 查询 - 跟据userId，查询当前用户
     UserBO findUserByUserId(Long userId);
 
     // 插入 - 将黑名单用户放入布隆过滤器
     void insertBlacklistUserListToBloomFilter(List<Long> userIds);
-
 
 }

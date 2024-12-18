@@ -4,12 +4,10 @@ import app.xlog.ggbond.persistent.po.raffle.Award;
 import app.xlog.ggbond.persistent.po.raffle.RafflePool;
 import app.xlog.ggbond.persistent.po.raffle.UserRaffleConfig;
 import app.xlog.ggbond.persistent.po.raffle.UserRaffleHistory;
-import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
-import app.xlog.ggbond.persistent.repository.jpa.RafflePoolRepository;
-import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
-import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
+import app.xlog.ggbond.persistent.repository.jpa.*;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
+import app.xlog.ggbond.raffle.model.bo.UserRaffleConfigBO;
 import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import cn.hutool.core.bean.BeanUtil;
@@ -20,6 +18,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 抽奖领域 - 抽奖的兵工厂仓库:
@@ -40,6 +39,8 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     private UserRaffleHistoryRepository userRaffleHistoryRepository;
     @Resource
     private UserRaffleConfigRepository userRaffleConfigRepository;
+    @Resource
+    private ActivityRepository activityRepository;
 
     /**
      * 查询 - 根据策略id，查询对应的所有奖品
@@ -87,6 +88,25 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
         return BeanUtil.copyToList(
                 awardRepository.findByStrategyId(strategyId), AwardBO.class
         );
+    }
+
+    /**
+     * 查询 - 跟据活动id，用户id，查询用户的策略id
+     */
+    @Override
+    public Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId) {
+        UserRaffleConfig userConfig = userRaffleConfigRepository.findByUserIdAndActivityId(userId, activityId);
+        return Optional.ofNullable(userConfig.getStrategyId())
+                .orElseGet(() -> activityRepository.findByActivityId(activityId).getDefaultStrategyId());
+    }
+
+    /**
+     * 查询 - 查询当前用户的抽奖次数
+     */
+    @Override
+    public Long queryRaffleTimesByUserId(Long userId, Long strategyId) {
+        UserRaffleConfig userRaffleConfig = userRaffleConfigRepository.findByUserIdAndStrategyId(userId, strategyId);
+        return BeanUtil.copyProperties(userRaffleConfig, UserRaffleConfigBO.class).getRaffleTime();
     }
 
     /**

@@ -70,15 +70,6 @@ public class SecurityService implements ISecurityService {
     }
 
     /**
-     * 查询 - 查询用户的抽奖次数
-     */
-    @Override
-    public Long queryRaffleTimesByUserId(Long userId, Long strategyId) {
-        UserBO userBO = securityRepo.findByUserId(userId);
-        return userBO.getStrategyRaffleTimeMap().getOrDefault(strategyId, 0L);
-    }
-
-    /**
      * 查询 - 跟据userId，查询当前用户
      */
     @Override

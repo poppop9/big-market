@@ -24,20 +24,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Builder.Default
+    @Column(updatable = false)
+    private LocalDateTime createTime = LocalDateTime.now();
+    @Builder.Default
+    private LocalDateTime updateTime = LocalDateTime.now();
+
+    @Builder.Default
     private Long userId = IdUtil.getSnowflakeNextId();  // 用户id
     private String userName;  // 用户名
     private String password;  // 密码
     @Enumerated(EnumType.STRING)
     private UserRole userRole;  // 用户的角色
-/*    @Builder.Default
-    @Column(columnDefinition = "TEXT")
-    @Convert(converter = MapToJsonConverter.class)
-    private LinkedHashMap<Long, Long> strategyRaffleTimeMap = new LinkedHashMap<>(Map.of(GlobalConstant.defaultStrategyId, 0L));  // 用户各个策略中的抽奖次数*/
-    @Builder.Default
-    @Column(updatable = false)
-    private LocalDateTime createTime = LocalDateTime.now();
-    @Builder.Default
-    private LocalDateTime updateTime = LocalDateTime.now();
 
     @Getter
     @AllArgsConstructor

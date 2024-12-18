@@ -62,7 +62,7 @@ public class RafflePreFilters {
     public void specialTimeMatchRafflePoolFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         // 用户的抽奖次数
-        Long raffleTimes = securityService.queryRaffleTimesByUserId(context.getUserId(), context.getStrategyId());
+        Long raffleTime = raffleArmoryRepo.queryRaffleTimesByUserId(context.getUserId(), context.getStrategyId());
 
         // 所有的特殊次数抽奖池
         Map<Long, String> timeNameMap = raffleArmoryRepo.findAllRafflePoolByStrategyId(context.getStrategyId()).stream()
@@ -72,11 +72,11 @@ public class RafflePreFilters {
                         RafflePoolBO::getRafflePoolName
                 ));
 
-        if (timeNameMap.containsKey(raffleTimes + 1L)) {
+        if (timeNameMap.containsKey(raffleTime + 1L)) {
             log.atInfo().log("抽奖领域 - " + context.getUserId() + " 特殊次数抽奖池匹配过滤器拦截");
             context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.INTERCEPT);
             context.setDispatchParam(
-                    RaffleFilterContext.DispatchParam.valueOf(timeNameMap.get(raffleTimes + 1L))
+                    RaffleFilterContext.DispatchParam.valueOf(timeNameMap.get(raffleTime + 1L))
             );
         } else {
             log.atInfo().log("抽奖领域 - " + context.getUserId() + " 特殊次数抽奖池匹配过滤器放行");
@@ -93,7 +93,7 @@ public class RafflePreFilters {
     public void normalTimeMatchRafflePoolFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         // 用户的抽奖次数
-        Long raffleTimes = securityService.queryRaffleTimesByUserId(context.getUserId(), context.getStrategyId());
+        Long raffleTime = raffleArmoryRepo.queryRaffleTimesByUserId(context.getUserId(), context.getStrategyId());
 
         // 所有的普通次数抽奖池
         Map<List<Long>, String> rangeNameMap = raffleArmoryRepo.findAllRafflePoolByStrategyId(context.getStrategyId()).stream()
@@ -104,7 +104,7 @@ public class RafflePreFilters {
                 ));
 
         String rafflePoolName = rangeNameMap.entrySet().stream()
-                .filter(item -> raffleTimes >= item.getKey().get(0) && raffleTimes <= item.getKey().get(1))
+                .filter(item -> raffleTime >= item.getKey().get(0) && raffleTime <= item.getKey().get(1))
                 .map(Map.Entry::getValue)
                 .findFirst()
                 .get();

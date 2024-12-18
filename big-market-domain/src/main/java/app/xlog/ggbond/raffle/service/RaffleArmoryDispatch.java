@@ -96,6 +96,16 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     }
 
     /**
+     * 查询 - 查询用户某个活动的中奖奖品信息
+     */
+    @Override
+    public List<UserRaffleHistoryBO> findWinningAwardsInfo(Long activityId, Long userId) {
+        // 跟据活动id，用户id，查询用户的策略id
+        Long strategyId = raffleArmoryRepo.findStrategyIdByActivityIdAndUserId(activityId, userId);
+        return raffleArmoryRepo.getWinningAwardsInfo(userId, strategyId);
+    }
+
+    /**
      * 调度 - 根据策略ID，指定的调度参数，获取对应抽奖池中的随机奖品
      */
     @Override
@@ -108,7 +118,9 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      * 调度 - 根据策略id，抽取奖品
      */
     @Override
-    public Long getAwardByStrategyId(Long strategyId) {
+    public Long getAwardId(Long activityId, Long userId) {
+        // 跟据活动id，用户id，查询用户的策略id
+        Long strategyId = raffleArmoryRepo.findStrategyIdByActivityIdAndUserId(activityId, userId);
         // 执行过滤器链
         return raffleFilterChain.executeFilterChain(RaffleFilterContext.builder()
                 .userId(securityService.getLoginIdDefaultNull())

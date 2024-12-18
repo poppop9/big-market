@@ -30,7 +30,7 @@ public class UserRaffleConfig {
 
     private Long userId;  // 用户id
     private Long activityId;  // 活动id
+    private Long strategyId;  // 用户在哪个策略下抽奖的（如果为null，默认为Activity中的defaultStrategyId），这个表是以策略id为单位的，一个策略id一条数据
     @Builder.Default
-    private Long strategyId = GlobalConstant.defaultStrategyId;  // 用户在哪个策略下抽奖的（所有活动的默认都有相同的策略id，如果后续生成了，就覆盖）
-    private Long raffleTime;  // 抽奖次数
+    private Long raffleTime = 0L;  // 抽奖次数
 }

@@ -25,15 +25,15 @@ public class Strategy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(unique = true)
-    @Builder.Default
-    private Long strategyId = IdUtil.getSnowflakeNextId();  // 策略id
-    private String strategyDesc;  // 策略描述
-
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();
     @Builder.Default
     private LocalDateTime updateTime = LocalDateTime.now();
+
+    private Long activityId;  // 活动id
+    @Column(unique = true)
+    @Builder.Default
+    private Long strategyId = IdUtil.getSnowflakeNextId();  // 策略id（不同活动的策略id也不能重复）
+    private String strategyDesc;  // 策略描述
 }

@@ -1,9 +1,7 @@
 package app.xlog.ggbond.raffle.model.bo;
 
-import app.xlog.ggbond.GlobalConstant;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,5 +10,6 @@ import java.util.List;
 @Data
 public class ActivityBO {
     private Long activityId;  // 活动id
-    private List<Long> strategyIdList = new ArrayList<>(List.of(GlobalConstant.defaultStrategyId));  // 该活动下的所有的策略id
+    private Long defaultStrategyId;  // 默认策略id（每个活动都会有一个默认的策略id）
+    private List<Long> strategyIdList;  // 该活动下的所有的策略id
 }

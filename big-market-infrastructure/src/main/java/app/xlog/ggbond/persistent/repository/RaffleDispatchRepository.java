@@ -3,6 +3,7 @@ package app.xlog.ggbond.persistent.repository;
 import app.xlog.ggbond.persistent.po.raffle.UserRaffleHistory;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
+import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
@@ -40,6 +41,8 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     private UserRepository userRepository;
     @Resource
     private UserRaffleHistoryRepository userRaffleHistoryRepository;
+    @Resource
+    private UserRaffleConfigRepository userRaffleConfigRepository;
 
     /**
      * 权重对象 - 从 redis 中查询出指定的权重对象
@@ -133,14 +136,11 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public void addUserRaffleTimeByStrategyId(Long userId, Long strategyId) {
-        Map<Long, Long> strategyRaffleTimeMap = userRepository.findByUserId(userId).getStrategyRaffleTimeMap();
-        // 如果存在，则 +1，不存在则初始化为 1
-        strategyRaffleTimeMap.compute(
+        userRaffleConfigRepository.updateRaffleTimeByUserIdAndStrategyId(
+                userId,
                 strategyId,
-                (key, value) -> value == null ? 1 : value + 1
+                userRaffleConfigRepository.findByUserIdAndStrategyId(userId, strategyId).getRaffleTime() + 1
         );
-
-        userRepository.updateStrategyRaffleTimeMapByUserId(strategyRaffleTimeMap, userId);
     }
 
     /**
