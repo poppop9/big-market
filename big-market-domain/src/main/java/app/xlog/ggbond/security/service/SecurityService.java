@@ -30,7 +30,7 @@ public class SecurityService implements ISecurityService {
         // 进行数据库验证
         if (securityRepo.doLogin(userId, password)) {
             StpUtil.login(userId, GlobalConstant.tokenExpireTime);
-            // todo 一旦登录，就会在tokenExpireTime后，清除redis中的权重对象，以及库存，加入redis延迟队列
+            // todo 一旦登录，就会写入一个tokenExpireTime时间的任务进延迟队列，系统会定时拉取这个队列进行权重对象和库存的销毁
             return true;
         } else {
             log.atInfo().log("用户领域 - 用户登录失败，用户名或密码错误，userId : " + userId + " password : " + password);

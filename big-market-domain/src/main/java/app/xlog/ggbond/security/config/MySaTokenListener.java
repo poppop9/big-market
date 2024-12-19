@@ -5,6 +5,7 @@ import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.listener.SaTokenListener;
 import cn.dev33.satoken.listener.SaTokenListenerForSimple;
+import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;

@@ -29,6 +29,7 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
     /**
      * 抽奖前的装配准备
      * todo 如果用户一旦doLogin，我就开始装配这个用户的
+     * todo 要装配布隆过滤器
      */
     @Override
     @GetMapping("/v1/assembleRaffleAll")

@@ -37,7 +37,8 @@ public class TestController {
      */
     @GetMapping("/v1/isTokenExpired")
     public void isTokenExpired() {
-        System.out.println(StpUtil.getLoginIdDefaultNull());   // 获取当前 token 距离被冻结还剩多少时间 (单位: 秒)
+        System.out.println("会话超时时间 : " + StpUtil.getSessionTimeout());
+        System.out.println("" + StpUtil.getLoginIdDefaultNull());   // 获取当前 token 距离被冻结还剩多少时间 (单位: 秒)
         System.out.println(StpUtil.getTokenValue());   // 获取当前 token 距离被冻结还剩多少时间 (单位: 秒)
         System.out.println(StpUtil.getTokenActiveTimeout());   // 获取当前 token 距离被冻结还剩多少时间 (单位: 秒)
 

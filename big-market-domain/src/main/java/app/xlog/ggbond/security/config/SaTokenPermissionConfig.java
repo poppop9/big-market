@@ -1,7 +1,10 @@
 package app.xlog.ggbond.security.config;
 
+import app.xlog.ggbond.security.model.UserBO;
+import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.dev33.satoken.stp.StpInterface;
 import cn.hutool.core.map.MapBuilder;
+import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
@@ -13,6 +16,9 @@ import java.util.Map;
  */
 @Configuration
 public class SaTokenPermissionConfig implements StpInterface {
+
+    @Resource
+    private ISecurityRepo securityRepo;
 
     /**
      * 返回一个账号所拥有的权限码集合
@@ -30,15 +36,8 @@ public class SaTokenPermissionConfig implements StpInterface {
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        // todo
-        Map<String, List<String>> roleMap = MapBuilder.create(new HashMap<String, List<String>>())
-                .put("10001", List.of("admin"))
-                .put("10002", List.of("user"))
-                .put("10003", List.of("guest"))
-                .build();
-
-        // return roleMap.get(loginId.toString());
-        return List.of("user");
+        UserBO user = securityRepo.findByUserId(Long.valueOf(loginId.toString()));
+        return List.of(user.getUserRole().name());
     }
 
 }
