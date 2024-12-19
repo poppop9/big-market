@@ -28,10 +28,13 @@ public class SecurityController implements ISecurityApiService {
 
     /**
      * 登录
+     * @param activityId 这个参数用来鉴定是哪个活动的登录
+     * @param userId
+     * @param password
      */
     @Override
     @GetMapping("/v1/doLogin")
-    public Response<JsonNode> doLogin(@RequestParam Long userId, @RequestParam String password) throws Exception {
+    public Response<JsonNode> doLogin(@RequestParam Long activityId, @RequestParam Long userId, @RequestParam String password) throws Exception {
         Boolean isSuccess = securityService.doLogin(userId, password);
         if (!isSuccess) {
             throw new Exception("用户名或密码错误");

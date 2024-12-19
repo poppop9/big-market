@@ -1,7 +1,6 @@
 package app.xlog.ggbond.persistent.repository;
 
-import app.xlog.ggbond.persistent.po.raffle.UserRaffleHistory;
-import app.xlog.ggbond.persistent.po.security.User;
+import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
@@ -17,11 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 抽奖领域 - 抽奖调度仓库

@@ -26,12 +26,19 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "Award",indexes = {
         @Index(columnList = "strategyId"),
-        @Index(columnList = "awardId")
+        @Index(columnList = "awardId"),
+        @Index(columnList = "awardCount"),
+        @Index(columnList = "strategyId, awardId")
 })
 public class Award {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Builder.Default
+    @Column(updatable = false)
+    private LocalDateTime createTime = LocalDateTime.now();
+    @Builder.Default
+    private LocalDateTime updateTime = LocalDateTime.now();
 
     private Long strategyId;  // 策略id
     @Column(unique = true)
@@ -42,20 +49,4 @@ public class Award {
     private Long awardCount;  // 奖品库存
     private Double awardRate;  // 奖品被抽取到的概率，单位是%
     private Integer awardSort;  // 奖品在前端的排序
-
-    @Builder.Default
-    @Column(updatable = false)
-    private LocalDateTime createTime = LocalDateTime.now();
-    @Builder.Default
-    private LocalDateTime updateTime = LocalDateTime.now();
-
-    /**
-     * 将rules字段转为ObjectNode对象
-     */
-    public ObjectNode stringToObjectNode(String s) throws JsonProcessingException {
-        // 手动获取Bean
-        ObjectMapper objectMapper = SpringContextUtil.getBean(ObjectMapper.class);
-        s = s.replace("\\", "");
-        return objectMapper.readValue(s, ObjectNode.class);
-    }
 }

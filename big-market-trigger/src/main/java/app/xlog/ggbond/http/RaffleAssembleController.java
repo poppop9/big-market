@@ -24,18 +24,19 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
     @Resource
     private ObjectMapper objectMapper;
     @Resource
-    private IRaffleArmory strategyArmory;
+    private IRaffleArmory raffleArmory;
 
     /**
      * 抽奖前的装配准备
+     * todo 如果用户一旦doLogin，我就开始装配这个用户的
      */
     @Override
     @GetMapping("/v1/assembleRaffleAll")
     public Response<JsonNode> assembleRaffleAll(@RequestParam Long strategyId) {
         // 装配该策略所需的所有权重对象
-        strategyArmory.assembleRaffleWeightRandomByStrategyId(strategyId);
+        raffleArmory.assembleRaffleWeightRandomByStrategyId(strategyId);
         // 装配该策略所需的所有奖品的库存
-        strategyArmory.assembleAllAwardCountBystrategyId(strategyId);
+        raffleArmory.assembleAllAwardCountBystrategyId(strategyId);
 
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)

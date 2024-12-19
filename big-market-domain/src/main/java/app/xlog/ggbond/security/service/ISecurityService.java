@@ -1,6 +1,7 @@
 package app.xlog.ggbond.security.service;
 
 import app.xlog.ggbond.security.model.UserBO;
+import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 
 import java.util.List;
 
@@ -24,6 +25,15 @@ public interface ISecurityService {
 
     // 查询 - 跟据userId，查询当前用户
     UserBO findUserByUserId(Long userId);
+
+    // 查询 - 查询用户的抽奖次数
+    Long queryRaffleTimesByUserId(Long userId, Long strategyId);
+
+    // 查询 - 查询用户某个活动的中奖奖品信息
+    List<UserRaffleHistoryBO> findWinningAwardsInfo(Long activityId, Long userId);
+
+    // 查询 - 根据活动id，用户id，查询用户的策略id
+    Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId);
 
     // 插入 - 将黑名单用户放入布隆过滤器
     void insertBlacklistUserListToBloomFilter(List<Long> userIds);

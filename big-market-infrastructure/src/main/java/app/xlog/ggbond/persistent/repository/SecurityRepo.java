@@ -1,17 +1,24 @@
 package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.persistent.po.security.User;
+import app.xlog.ggbond.persistent.po.security.UserRaffleConfig;
+import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
+import app.xlog.ggbond.persistent.repository.jpa.ActivityRepository;
+import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
+import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
 import app.xlog.ggbond.security.model.UserBO;
+import app.xlog.ggbond.security.model.UserRaffleConfigBO;
+import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.hutool.core.bean.BeanUtil;
 import jakarta.annotation.Resource;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -24,7 +31,13 @@ public class SecurityRepo implements ISecurityRepo {
     private RedissonClient redissonClient;
 
     @Resource
+    private ActivityRepository activityRepository;
+    @Resource
     private UserRepository userRepository;
+    @Resource
+    private UserRaffleConfigRepository userRaffleConfigRepository;
+    @Resource
+    private UserRaffleHistoryRepository userRaffleHistoryRepository;
 
     /**
      * 登录
@@ -36,9 +49,8 @@ public class SecurityRepo implements ISecurityRepo {
     }
 
     /**
-     * 判断当前登录用户，是否为黑名单用户
+     * 查询 - 判断当前登录用户，是否为黑名单用户
      * todo 后续如果还有黑名单用户，再往里面加
-     * todo 未测试
      */
     @Override
     public Boolean isBlacklistUser(Long userId) {
@@ -62,7 +74,7 @@ public class SecurityRepo implements ISecurityRepo {
     }
 
     /**
-     * 根据用户id，查询用户
+     * 查询 - 根据用户id，查询用户
      */
     @Override
     public UserBO findByUserId(Long userId) {
@@ -72,13 +84,41 @@ public class SecurityRepo implements ISecurityRepo {
     }
 
     /**
-     * 查询出所有的黑名单用户
+     * 查询 - 查询出所有的黑名单用户
      */
     @Override
     public List<UserBO> queryAllBlacklistUser() {
         return BeanUtil.copyToList(
                 userRepository.findByUserRole(User.UserRole.BLACKLIST), UserBO.class
         );
+    }
+
+    /**
+     * 查询 - 跟据活动id，用户id，查询用户的策略id
+     */
+    @Override
+    public Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId) {
+        UserRaffleConfig userConfig = userRaffleConfigRepository.findByUserIdAndActivityId(userId, activityId);
+        return Optional.ofNullable(userConfig.getStrategyId())
+                .orElseGet(() -> activityRepository.findByActivityId(activityId).getDefaultStrategyId());
+    }
+
+    /**
+     * 查询 - 根据用户id，策略id，查询用户的抽奖历史
+     */
+    @Override
+    public List<UserRaffleHistoryBO> getWinningAwardsInfo(Long userId, Long strategyId) {
+        List<UserRaffleHistory> list = userRaffleHistoryRepository.findByUserIdAndStrategyIdOrderByCreateTimeAsc(userId, strategyId);
+        return BeanUtil.copyToList(list, UserRaffleHistoryBO.class);
+    }
+
+    /**
+     * 查询 - 查询当前用户的抽奖次数
+     */
+    @Override
+    public Long queryRaffleTimesByUserId(Long userId, Long strategyId) {
+        UserRaffleConfig userRaffleConfig = userRaffleConfigRepository.findByUserIdAndStrategyId(userId, strategyId);
+        return BeanUtil.copyProperties(userRaffleConfig, UserRaffleConfigBO.class).getRaffleTime();
     }
 
     /**

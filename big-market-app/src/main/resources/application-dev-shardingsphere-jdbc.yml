@@ -8,7 +8,7 @@ dataSources:
     url: jdbc:mysql://localhost:3306/big_market_0?allowPublicKeyRetrieval=true
     username: root
     password: root
-#    password: 13433026660
+  #    password: 13433026660
   ds_1:
     dataSourceClassName: com.zaxxer.hikari.HikariDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
@@ -40,16 +40,19 @@ rules:
       User: # 用户
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
-      UserPurchaseHistory: # 用户购买历史
+      UserRaffleConfig: # 用户抽奖配置
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
       UserRaffleHistory: # 用户抽奖历史
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
+      UserPurchaseHistory: # 用户购买历史
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
     # 绑定表
     bindingTables:
       - Strategy, Award, RafflePool
-      - User, UserPurchaseHistory, UserRaffleHistory
+      - User, UserRaffleConfig, UserPurchaseHistory, UserRaffleHistory
     # 定义分片算法策略
     shardingAlgorithms:
       HASH_MOD_2:
@@ -67,7 +70,7 @@ rules:
           worker-id: 2
   - !SINGLE
     tables:
-      - "*.*"  # 加载所有单表
+      - "*.*"  # 加载所有单表（Activity）
 
 # 通用的属性配置
 props:

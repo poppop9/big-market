@@ -2,6 +2,7 @@ package app.xlog.ggbond.security.service;
 
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.security.model.UserBO;
+import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
@@ -28,7 +29,8 @@ public class SecurityService implements ISecurityService {
     public Boolean doLogin(Long userId, String password) {
         // 进行数据库验证
         if (securityRepo.doLogin(userId, password)) {
-            StpUtil.login(userId);
+            StpUtil.login(userId, GlobalConstant.tokenExpireTime);
+            // todo 一旦登录，就会在tokenExpireTime后，清除redis中的权重对象，以及库存，加入redis延迟队列
             return true;
         } else {
             log.atInfo().log("用户领域 - 用户登录失败，用户名或密码错误，userId : " + userId + " password : " + password);
@@ -77,6 +79,32 @@ public class SecurityService implements ISecurityService {
         return Optional.ofNullable(userId)
                 .map(item -> securityRepo.findByUserId(item))
                 .orElse(null);
+    }
+
+    /**
+     * 查询 - 查询用户的抽奖次数
+     */
+    @Override
+    public Long queryRaffleTimesByUserId(Long userId, Long strategyId) {
+        return securityRepo.queryRaffleTimesByUserId(userId, strategyId);
+    }
+
+    /**
+     * 查询 - 查询用户某个活动的中奖奖品信息
+     */
+    @Override
+    public List<UserRaffleHistoryBO> findWinningAwardsInfo(Long activityId, Long userId) {
+        // 跟据活动id，用户id，查询用户的策略id
+        Long strategyId = securityRepo.findStrategyIdByActivityIdAndUserId(activityId, userId);
+        return securityRepo.getWinningAwardsInfo(userId, strategyId);
+    }
+
+    /**
+     * 查询 - 根据活动id，用户id，查询用户的策略id
+     */
+    @Override
+    public Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId) {
+        return securityRepo.findStrategyIdByActivityIdAndUserId(activityId, userId);
     }
 
     /**

@@ -20,7 +20,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "Strategy")
+@Table(name = "Strategy", indexes = {
+        @Index(columnList = "activityId")
+})
 public class Strategy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

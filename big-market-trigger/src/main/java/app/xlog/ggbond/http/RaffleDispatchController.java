@@ -3,7 +3,7 @@ package app.xlog.ggbond.http;
 import app.xlog.ggbond.IRaffleDispatchApiService;
 import app.xlog.ggbond.model.Response;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
-import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
+import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import app.xlog.ggbond.raffle.service.IRaffleDispatch;
 import app.xlog.ggbond.security.model.UserBO;
@@ -42,7 +42,7 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
     private ISecurityService securityService;
 
     /**
-     * 查询对应的奖品列表  todo 大改，所有层级要加上activity
+     * 查询对应的奖品列表
      **/
     @Override
     @GetMapping("/v2/queryAwardList")
@@ -92,9 +92,9 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
     @Override
     @GetMapping(value = "/v1/getWinningAwardsInfo", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Response<JsonNode>> getWinningAwardsInfo(@RequestParam Long activityId) {
-        // 自动获取当前用户的最新的策略id
+        // 自动获取当前用户
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
-        List<UserRaffleHistoryBO> winningAwards = raffleArmory.findWinningAwardsInfo(activityId, user.getUserId());
+        List<UserRaffleHistoryBO> winningAwards = securityService.findWinningAwardsInfo(activityId, user.getUserId());
 
         return Flux.interval(Duration.ofSeconds(1))
                 .flatMap(sequence -> Mono

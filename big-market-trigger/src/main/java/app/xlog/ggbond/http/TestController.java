@@ -1,6 +1,7 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.recommend.IntelligentRecommendService;
+import cn.dev33.satoken.stp.StpUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,19 @@ public class TestController {
                         """
         );
         return answer;
+    }
+
+    /**
+     * 安全领域 - 判断 token 过期
+     */
+    @GetMapping("/v1/isTokenExpired")
+    public void isTokenExpired() {
+        System.out.println(StpUtil.getLoginIdDefaultNull());   // 获取当前 token 距离被冻结还剩多少时间 (单位: 秒)
+        System.out.println(StpUtil.getTokenValue());   // 获取当前 token 距离被冻结还剩多少时间 (单位: 秒)
+        System.out.println(StpUtil.getTokenActiveTimeout());   // 获取当前 token 距离被冻结还剩多少时间 (单位: 秒)
+
+        System.out.println(StpUtil.getTokenTimeout());   // 获取当前登录者的 token 剩余有效时间 (单位: 秒)
+        System.out.println(StpUtil.getSessionTimeout());   // 获取当前登录者的 Account-Session 剩余有效时间 (单位: 秒)
     }
 
 }

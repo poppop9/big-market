@@ -1,6 +1,5 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
-import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.persistent.po.LongListToJsonConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,9 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "Activity")
+@Table(name = "Activity", indexes = {
+        @Index(columnList = "activityId")
+})
 public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

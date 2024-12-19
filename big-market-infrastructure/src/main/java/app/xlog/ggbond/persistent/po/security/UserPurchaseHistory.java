@@ -24,11 +24,12 @@ public class UserPurchaseHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;  // 用户id
-    private String purchaseName;  // 购买的商品名称
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();
     @Builder.Default
     private LocalDateTime updateTime = LocalDateTime.now();
+    
+    private Long userId;  // 用户id
+    private String purchaseName;  // 购买的商品名称
 }

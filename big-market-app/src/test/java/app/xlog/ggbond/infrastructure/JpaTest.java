@@ -2,6 +2,7 @@ package app.xlog.ggbond.infrastructure;
 
 import app.xlog.ggbond.persistent.po.raffle.*;
 import app.xlog.ggbond.persistent.po.security.User;
+import app.xlog.ggbond.persistent.po.security.UserRaffleConfig;
 import app.xlog.ggbond.persistent.repository.jpa.*;
 import cn.hutool.core.util.IdUtil;
 import cn.zhxu.bs.BeanSearcher;
@@ -124,9 +125,9 @@ public class JpaTest {
         test_3();
         test_99();
         test_5();
-        test_userRaffleConfig(snowflakeNextId);
         // === 安全领域 ===
         test_4(snowflakeNextId);
+        test_userRaffleConfig(snowflakeNextId);
     }
 
     /**

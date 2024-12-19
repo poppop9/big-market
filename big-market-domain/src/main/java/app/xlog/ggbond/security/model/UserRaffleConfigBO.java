@@ -1,12 +1,6 @@
-package app.xlog.ggbond.raffle.model.bo;
+package app.xlog.ggbond.security.model;
 
-import app.xlog.ggbond.GlobalConstant;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 /**
  * 用户抽奖配置

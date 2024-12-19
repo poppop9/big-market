@@ -1,7 +1,6 @@
 package app.xlog.ggbond.raffle.service;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
-import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
@@ -69,40 +68,11 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     }
 
     /**
-     * 查询 - 根据策略id，查询对应的所有奖品
-     */
-    @Override
-    public List<ObjectNode> findAllAwardByStrategyId(Long strategyId) {
-        return raffleArmoryRepo.findAwardsByStrategyId(strategyId).stream()
-                .map(awardBO -> objectMapper.<ObjectNode>valueToTree(awardBO))
-                .sorted(Comparator.comparingInt(o -> o.get("awardSort").asInt()))
-                .toList();
-    }
-
-    /**
-     * 查询 - 根据用户id，策略id，查询用户的抽奖历史
-     */
-    @Override
-    public List<UserRaffleHistoryBO> getWinningAwardsInfo(Long userId, Long strategyId) {
-        return raffleArmoryRepo.getWinningAwardsInfo(userId, strategyId);
-    }
-
-    /**
      * 根据活动id，用户id，查询用户的所有奖品
      */
     @Override
     public List<AwardBO> findAllAwards(Long activityId, Long userId) {
         return raffleArmoryRepo.findAllAwards(activityId, userId);
-    }
-
-    /**
-     * 查询 - 查询用户某个活动的中奖奖品信息
-     */
-    @Override
-    public List<UserRaffleHistoryBO> findWinningAwardsInfo(Long activityId, Long userId) {
-        // 跟据活动id，用户id，查询用户的策略id
-        Long strategyId = raffleArmoryRepo.findStrategyIdByActivityIdAndUserId(activityId, userId);
-        return raffleArmoryRepo.getWinningAwardsInfo(userId, strategyId);
     }
 
     /**
@@ -120,7 +90,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     @Override
     public Long getAwardId(Long activityId, Long userId) {
         // 跟据活动id，用户id，查询用户的策略id
-        Long strategyId = raffleArmoryRepo.findStrategyIdByActivityIdAndUserId(activityId, userId);
+        Long strategyId = securityService.findStrategyIdByActivityIdAndUserId(activityId, userId);
         // 执行过滤器链
         return raffleFilterChain.executeFilterChain(RaffleFilterContext.builder()
                 .userId(securityService.getLoginIdDefaultNull())

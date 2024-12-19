@@ -11,12 +11,8 @@ public interface IRaffleDispatchRepo {
     // 权重对象 - 从 redis 中查询出指定的权重对象
     WeightRandom<Long> findWeightRandom(Long strategyId, String dispatchParam);
 
-
-
     // 抽奖池 - 将该奖品从缓存中的所有抽奖池里移除
     void removeAwardFromPools(Long strategyId, Long awardId);
-
-
 
     // 库存 - 根据策略id，奖品id，更新数据库中对应奖品的库存
     void updateAwardCount(DecrQueueVO decrQueueVO);

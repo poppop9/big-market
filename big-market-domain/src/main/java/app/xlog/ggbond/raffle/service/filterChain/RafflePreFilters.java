@@ -62,7 +62,7 @@ public class RafflePreFilters {
     public void specialTimeMatchRafflePoolFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         // 用户的抽奖次数
-        Long raffleTime = raffleArmoryRepo.queryRaffleTimesByUserId(context.getUserId(), context.getStrategyId());
+        Long raffleTime = securityService.queryRaffleTimesByUserId(context.getUserId(), context.getStrategyId());
 
         // 所有的特殊次数抽奖池
         Map<Long, String> timeNameMap = raffleArmoryRepo.findAllRafflePoolByStrategyId(context.getStrategyId()).stream()
@@ -93,7 +93,7 @@ public class RafflePreFilters {
     public void normalTimeMatchRafflePoolFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         // 用户的抽奖次数
-        Long raffleTime = raffleArmoryRepo.queryRaffleTimesByUserId(context.getUserId(), context.getStrategyId());
+        Long raffleTime = securityService.queryRaffleTimesByUserId(context.getUserId(), context.getStrategyId());
 
         // 所有的普通次数抽奖池
         Map<List<Long>, String> rangeNameMap = raffleArmoryRepo.findAllRafflePoolByStrategyId(context.getStrategyId()).stream()

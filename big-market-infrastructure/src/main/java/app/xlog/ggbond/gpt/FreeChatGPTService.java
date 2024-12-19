@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * 免费的gpt服务 https://github.com/chatanywhere/GPT_API_free
+ * 免费 gpt 服务
+ *
+ * - https://github.com/chatanywhere/GPT_API_free
  */
 @Service
 public class FreeChatGPTService implements IntelligentRecommendService {

@@ -2,7 +2,7 @@ package app.xlog.ggbond.raffle.repository;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
-import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
+import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import cn.hutool.core.lang.WeightRandom;
 
 import java.util.List;
@@ -23,17 +23,8 @@ public interface IRaffleArmoryRepo {
     // 查询 - 根据策略Id，查询对应的所有抽奖池规则
     List<RafflePoolBO> findAllRafflePoolByStrategyId(Long strategyId);
 
-    // 查询 - 根据用户id，策略id，查询用户的抽奖历史
-    List<UserRaffleHistoryBO> getWinningAwardsInfo(Long userId, Long strategyId);
-
     // 查询 - 根据活动id，用户id，查询用户的所有奖品
     List<AwardBO> findAllAwards(Long activityId, Long userId);
-
-    // 查询 - 跟据活动id，用户id，查询用户的策略id
-    Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId);
-
-    // 查询 - 查询当前用户的抽奖次数
-    Long queryRaffleTimesByUserId(Long userId, Long strategyId);
 
     // 装配 - 装配所有奖品的库存
     void assembleAllAwardCountBystrategyId(Long strategyId);

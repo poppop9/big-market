@@ -1,8 +1,6 @@
 package app.xlog.ggbond.persistent.repository.jpa;
 
-import app.xlog.ggbond.persistent.po.raffle.Strategy;
-import app.xlog.ggbond.persistent.po.raffle.UserRaffleConfig;
-import app.xlog.ggbond.raffle.model.bo.UserRaffleConfigBO;
+import app.xlog.ggbond.persistent.po.security.UserRaffleConfig;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -15,11 +15,18 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "RafflePool")
+@Table(name = "RafflePool", indexes = {
+        @Index(columnList = "strategyId")
+})
 public class RafflePool {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Builder.Default
+    @Column(updatable = false)
+    private LocalDateTime createTime = LocalDateTime.now();
+    @Builder.Default
+    private LocalDateTime updateTime = LocalDateTime.now();
 
     private Long strategyId;  // 绑定的策略id
     @Column(columnDefinition = "TEXT")
@@ -37,12 +44,6 @@ public class RafflePool {
     private Long normalTimeEndValue = -1L;  // 普通次数抽奖池的结束值
     @Builder.Default
     private Long specialTimeValue = -1L;  // 特殊次数抽奖池的值
-
-    @Builder.Default
-    @Column(updatable = false)
-    private LocalDateTime createTime = LocalDateTime.now();
-    @Builder.Default
-    private LocalDateTime updateTime = LocalDateTime.now();
 
     @AllArgsConstructor
     @Getter

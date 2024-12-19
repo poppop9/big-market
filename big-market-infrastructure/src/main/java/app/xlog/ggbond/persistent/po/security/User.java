@@ -18,7 +18,10 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "User")
+@Table(name = "User", indexes = {
+        @Index(columnList = "userRole"),
+        @Index(columnList = "userId, password")
+})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
