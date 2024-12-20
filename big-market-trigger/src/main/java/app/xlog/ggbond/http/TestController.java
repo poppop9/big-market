@@ -36,14 +36,22 @@ public class TestController {
      * 安全领域 - 判断 token 过期
      */
     @GetMapping("/v1/isTokenExpired")
-    public void isTokenExpired() {
-        System.out.println("会话超时时间 : " + StpUtil.getSessionTimeout());
-        System.out.println("" + StpUtil.getLoginIdDefaultNull());   // 获取当前 token 距离被冻结还剩多少时间 (单位: 秒)
-        System.out.println(StpUtil.getTokenValue());   // 获取当前 token 距离被冻结还剩多少时间 (单位: 秒)
-        System.out.println(StpUtil.getTokenActiveTimeout());   // 获取当前 token 距离被冻结还剩多少时间 (单位: 秒)
+    public void isTokenExpired(String var1) {
+        System.out.println("Account-Session 会话超时时间 : " + StpUtil.getSessionTimeout());
+        System.out.println("当前用户 : " + StpUtil.getLoginIdDefaultNull());
+        System.out.println("token值 : " + StpUtil.getTokenValue());
+        System.out.println("token冻结时间 : " + StpUtil.getTokenActiveTimeout());
+        System.out.println("token超时时间 : " + StpUtil.getTokenTimeout());
 
-        System.out.println(StpUtil.getTokenTimeout());   // 获取当前登录者的 token 剩余有效时间 (单位: 秒)
-        System.out.println(StpUtil.getSessionTimeout());   // 获取当前登录者的 Account-Session 剩余有效时间 (单位: 秒)
+/*        StpUtil.logout();
+        StpUtil.getSession().logout();*/
+
+/*        for (String token : StpUtil.searchTokenValue("", 0, 1000, true)) {
+            if (StpUtil.getTokenActiveTimeout() == -2) {
+                // Token 已经过期
+                System.out.println("Token 已过期: " + token);
+            }
+        }*/
     }
 
 }

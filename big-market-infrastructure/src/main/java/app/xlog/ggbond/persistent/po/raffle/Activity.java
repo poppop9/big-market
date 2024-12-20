@@ -23,6 +23,7 @@ import java.util.List;
         @Index(columnList = "activityId")
 })
 public class Activity {
+    // todo 主键未配置雪花算法
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

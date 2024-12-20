@@ -29,8 +29,8 @@ public class SecurityController implements ISecurityApiService {
     /**
      * 登录
      * @param activityId 这个参数用来鉴定是哪个活动的登录
-     * @param userId
-     * @param password
+     * @param userId 用户id
+     * @param password 密码
      */
     @Override
     @GetMapping("/v1/doLogin")
