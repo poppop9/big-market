@@ -3,10 +3,7 @@ package app.xlog.ggbond.infrastructure;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.redisson.api.RBloomFilter;
-import org.redisson.api.RBucket;
-import org.redisson.api.RQueue;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.*;
 import org.redisson.api.listener.ListAddListener;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -58,6 +55,11 @@ public class RedissonTest {
         System.out.println(bloomFilter.contains(404L));
         System.out.println(bloomFilter.contains(101L));
         System.out.println(bloomFilter.contains(101L));
+    }
+
+    @Test
+    void test_ru48e() {
+        RSet<String> electronics = redissonClient.getSet("products:electronics");
     }
 
 }

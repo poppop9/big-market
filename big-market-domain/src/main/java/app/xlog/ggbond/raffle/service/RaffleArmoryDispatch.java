@@ -86,6 +86,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
 
     /**
      * 调度 - 根据策略id，抽取奖品
+     * todo 使用RScoredSortedSet代替权重对象
      */
     @Override
     public Long getAwardId(Long activityId, Long userId) {
