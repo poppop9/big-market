@@ -8,28 +8,35 @@ import cn.hutool.core.lang.WeightRandom;
 import java.util.List;
 
 /**
- * 抽奖领域 - 抽奖的兵工厂仓库:
+ * 抽奖领域 - 抽奖的兵工厂仓库
+ *
  * - 1.初始化装配各种数据
  * - 2.作为外部查询抽奖信息的接口
  */
 public interface IRaffleArmoryRepo {
 
-    // 查询 - 根据策略id，查询对应的所有奖品
+    // 查询 - 权重对象 - 从 redis 中查询出指定的权重对象
+    WeightRandom<Long> findWeightRandom(Long strategyId, String dispatchParam);
+
+    // 查询 - 权重对象 - 从 redis 中查询出指定策略的所有权重对象
+    List<WeightRandom<Long>> findAllWeightRandomByStrategyId(Long strategyId);
+    
+    // 查询 - 奖品 - 根据策略id，查询对应的所有奖品
     List<AwardBO> findAwardsByStrategyId(Long strategyId);
 
-    // 查询 - 根据奖品Id，查询对应的奖品
+    // 查询 - 奖品 - 根据奖品Id，查询对应的奖品
     AwardBO findAwardByAwardId(Long awardId);
 
-    // 查询 - 根据策略Id，查询对应的所有抽奖池规则
+    // 查询 - 抽奖池 - 根据策略Id，查询对应的所有抽奖池规则
     List<RafflePoolBO> findAllRafflePoolByStrategyId(Long strategyId);
 
-    // 查询 - 根据活动id，用户id，查询用户的所有奖品
+    // 查询 - 奖品 - 根据活动id，用户id，查询用户的所有奖品
     List<AwardBO> findAllAwards(Long activityId, Long userId);
 
-    // 装配 - 装配所有奖品的库存
-    void assembleAllAwardCountBystrategyId(Long strategyId);
+    // 装配 - 奖品库存 - 装配所有奖品的库存
+    void assembleAllAwardCountByStrategyId(Long strategyId);
 
-    // 装配 - 将权重对象插入到Redis中，dispatchParam是抽奖池的名称
+    // 装配 - 权重对象 - 将权重对象插入到Redis中，dispatchParam是抽奖池的名称
     void insertWeightRandom(Long strategyId, String dispatchParam, WeightRandom<Long> wr);
 
 }

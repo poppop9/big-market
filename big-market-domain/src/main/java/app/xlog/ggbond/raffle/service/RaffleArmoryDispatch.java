@@ -59,7 +59,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      */
     @Override
     public void assembleAllAwardCountBystrategyId(Long strategyId) {
-        raffleArmoryRepo.assembleAllAwardCountBystrategyId(strategyId);
+        raffleArmoryRepo.assembleAllAwardCountByStrategyId(strategyId);
     }
 
     /**
@@ -75,7 +75,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      */
     @Override
     public Long findAwardIdByDispatchParam(Long strategyId, RaffleFilterContext.DispatchParam dispatchParam) {
-        WeightRandom<Long> weightRandom = raffleDispatchRepo.findWeightRandom(strategyId, dispatchParam.toString());
+        WeightRandom<Long> weightRandom = raffleArmoryRepo.findWeightRandom(strategyId, dispatchParam.toString());
         return weightRandom.next();
     }
 

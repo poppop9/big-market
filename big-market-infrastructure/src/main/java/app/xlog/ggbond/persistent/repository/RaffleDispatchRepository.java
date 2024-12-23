@@ -8,6 +8,7 @@ import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
+import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
 import cn.hutool.core.lang.WeightRandom;
@@ -19,6 +20,8 @@ import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Repository;
 
+import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,19 +39,9 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
     @Resource
-    private UserRepository userRepository;
-    @Resource
     private UserRaffleHistoryRepository userRaffleHistoryRepository;
     @Resource
     private UserRaffleConfigRepository userRaffleConfigRepository;
-
-    /**
-     * 权重对象 - 从 redis 中查询出指定的权重对象
-     */
-    @Override
-    public WeightRandom<Long> findWeightRandom(Long strategyId, String dispatchParam) {
-        return (WeightRandom<Long>) redissonClient.getBucket(GlobalConstant.getWeightRandomCacheKey(strategyId, dispatchParam)).get();
-    }
 
     /**
      * 抽奖池 - 将该奖品从缓存中的所有抽奖池权重对象中移除
@@ -129,6 +122,20 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     }
 
     /**
+     * 库存 - 更新所有奖品库存的过期时间
+     */
+    @Override
+    public void updateAllAwardCountExpireTime(Long strategyId) {
+        raffleArmoryRepo.findAwardsByStrategyId(strategyId).forEach(item -> {
+            RAtomicLong rAtomicLong = redissonClient.getAtomicLong(GlobalConstant.getAwardCountCacheKey(strategyId, item.getAwardId()));
+
+            if (rAtomicLong.isExists()) {
+                rAtomicLong.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
+            }
+        });
+    }
+
+    /**
      * 抽奖次数 - 给用户的指定策略增加抽奖次数
      */
     @Override
@@ -151,6 +158,16 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
                 .awardId(awardId)
                 .build()
         );
+    }
+
+    /**
+     * 权重对象 - 更新所有权重对象的过期时间
+     */
+    @Override
+    public void updateAllWeightRandomExpireTime(Long strategyId) {
+        Arrays.stream(RaffleFilterContext.DispatchParam.values())
+                .map(item -> redissonClient.getBucket(GlobalConstant.getWeightRandomCacheKey(strategyId, item.name())))
+                .forEach(item -> item.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime)));
     }
 
 }

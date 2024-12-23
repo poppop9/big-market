@@ -11,6 +11,7 @@
                 // 2. 路由
                 RaffleFilterRouter,
                 // 3. 后置过滤器链
+                UpdateExpireTimeFilter,
                 AwardInventoryFilter,
                 UserRaffleTimeFilter,
                 UserRaffleFlowRecordFilter

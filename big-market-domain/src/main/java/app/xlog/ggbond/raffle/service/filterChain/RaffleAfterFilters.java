@@ -4,6 +4,7 @@ import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.model.vo.RetryRouterException;
+import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
 import com.yomahub.liteflow.annotation.LiteflowComponent;
 import com.yomahub.liteflow.annotation.LiteflowMethod;
@@ -22,17 +23,23 @@ public class RaffleAfterFilters {
 
     @Resource
     private IRaffleDispatchRepo raffleDispatchRepo;
+    @Resource
+    private IRaffleArmoryRepo raffleArmoryRepo;
 
     /**
      * 更新过期时间过滤器 - 更新redis中的过期时间
-     * todo
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
             nodeId = "UpdateExpireTimeFilter",
             nodeName = "更新过期时间过滤器")
     public void updateExpireTimeFilter(NodeComponent bindCmp) {
+        RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
 
+        // 更新所有权重对象的过期时间
+        raffleDispatchRepo.updateAllWeightRandomExpireTime(context.getStrategyId());
+        // 更新所有奖品库存的过期时间
+        raffleDispatchRepo.updateAllAwardCountExpireTime(context.getStrategyId());
     }
 
     /**
