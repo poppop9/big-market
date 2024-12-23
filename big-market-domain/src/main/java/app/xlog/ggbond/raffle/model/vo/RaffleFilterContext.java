@@ -1,5 +1,6 @@
 package app.xlog.ggbond.raffle.model.vo;
 
+import app.xlog.ggbond.raffle.model.bo.UserBO;
 import lombok.*;
 
 import java.util.Arrays;
@@ -15,10 +16,8 @@ public class RaffleFilterContext {
      * 过滤初始传参
      **/
     private RaffleFilterContext.MiddleFilterParam middleFilterParam = RaffleFilterContext.MiddleFilterParam.PASS;
-    // 用户id，需要判断是否是黑名单用户，还要判断用户的抽奖次数
-    private Long userId;
-    // 策略id，需要根据策略id来判断到底是哪些奖品
-    private Long strategyId;
+    private UserBO userBO;  // 用户
+    private Long strategyId;  // 策略id，需要根据策略id来判断到底是哪些奖品
 
     /**
      * 过滤结果出参

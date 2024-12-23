@@ -32,7 +32,8 @@ public class RaffleAfterFilters {
             nodeName = "奖品库存过滤器")
     public void awardInventoryFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
-        log.atInfo().log("抽奖领域 - " + context.getUserId() + " 奖品库存过滤器开始执行");
+        Long userId = context.getUserBO().getUserId();
+        log.atInfo().log("抽奖领域 - " + userId + " 奖品库存过滤器开始执行");
 
         // 调度扣减方法
         if (!raffleDispatchRepo.decreaseAwardCount(context.getStrategyId(), context.getAwardId())) {
@@ -45,7 +46,7 @@ public class RaffleAfterFilters {
                 .awardId(context.getAwardId())
                 .build()
         );
-        log.atInfo().log("抽奖领域 - " + context.getUserId() + " 奖品库存过滤器执行完毕");
+        log.atInfo().log("抽奖领域 - " + userId + " 奖品库存过滤器执行完毕");
     }
 
     /**
@@ -58,16 +59,18 @@ public class RaffleAfterFilters {
             nodeName = "用户抽奖次数过滤器")
     public void userRaffleTimeFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
-        log.atInfo().log("抽奖领域 - " + context.getUserId() + " 用户抽奖次数过滤器开始执行");
+        Long userId = context.getUserBO().getUserId();
+
+        log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖次数过滤器开始执行");
 
         // 如果是游客，就不要增加抽奖次数
-        if (GlobalConstant.tourist.equals(context.getUserId())) {
-            log.atInfo().log("抽奖领域 - " + context.getUserId() + " 用户抽奖次数过滤器执行完毕");
+        if (GlobalConstant.tourist.equals(userId)) {
+            log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖次数过滤器执行完毕");
             return;
         }
 
-        raffleDispatchRepo.addUserRaffleTimeByStrategyId(context.getUserId(), context.getStrategyId());
-        log.atInfo().log("抽奖领域 - " + context.getUserId() + " 用户抽奖次数过滤器执行完毕");
+        raffleDispatchRepo.addUserRaffleTimeByStrategyId(userId, context.getStrategyId());
+        log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖次数过滤器执行完毕");
     }
 
     /**
@@ -79,16 +82,17 @@ public class RaffleAfterFilters {
             nodeName = "用户抽奖流水记录过滤器")
     public void userRaffleFlowRecordFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
-        log.atInfo().log("抽奖领域 - " + context.getUserId() + " 用户抽奖流水记录过滤器开始执行");
+        Long userId = context.getUserBO().getUserId();
+        log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器开始执行");
 
         // 如果是游客，就不要增加抽奖流水记录
-        if (GlobalConstant.tourist.equals(context.getUserId())) {
-            log.atInfo().log("抽奖领域 - " + context.getUserId() + " 用户抽奖流水记录过滤器执行完毕");
+        if (GlobalConstant.tourist.equals(userId)) {
+            log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器执行完毕");
             return;
         }
 
-        raffleDispatchRepo.addUserRaffleFlowRecordFilter(context.getUserId(), context.getStrategyId(), context.getAwardId());
-        log.atInfo().log("抽奖领域 - " + context.getUserId() + " 用户抽奖流水记录过滤器执行完毕");
+        raffleDispatchRepo.addUserRaffleFlowRecordFilter(userId, context.getStrategyId(), context.getAwardId());
+        log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器执行完毕");
     }
 
 }

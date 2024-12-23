@@ -1,5 +1,6 @@
 package app.xlog.ggbond.raffle.service;
 
+import app.xlog.ggbond.raffle.model.bo.UserBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 
 /**
@@ -11,6 +12,6 @@ public interface IRaffleDispatch {
     Long findAwardIdByDispatchParam(Long strategyId, RaffleFilterContext.DispatchParam dispatchParam);
 
     // 调度 - 抽取奖品
-    Long getAwardId(Long activityId, Long userId);
+    Long getAwardId(Long activityId, Long strategyId, UserBO userBO);
 
 }

@@ -1,6 +1,7 @@
 package app.xlog.ggbond.raffle.service;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
+import app.xlog.ggbond.raffle.model.bo.UserBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
@@ -87,14 +88,13 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     /**
      * 调度 - 根据策略id，抽取奖品
      * todo 使用RScoredSortedSet代替权重对象
+     * todo 如果用户抽奖时，没有装配完怎么办
      */
     @Override
-    public Long getAwardId(Long activityId, Long userId) {
-        // 跟据活动id，用户id，查询用户的策略id
-        Long strategyId = securityService.findStrategyIdByActivityIdAndUserId(activityId, userId);
+    public Long getAwardId(Long activityId, Long strategyId, UserBO userBO) {
         // 执行过滤器链
         return raffleFilterChain.executeFilterChain(RaffleFilterContext.builder()
-                .userId(securityService.getLoginIdDefaultNull())
+                .userBO(userBO)
                 .strategyId(strategyId)
                 .middleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS)
                 .build()

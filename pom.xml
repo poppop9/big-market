@@ -32,7 +32,11 @@
     <dependencyManagement>
         <dependencies>
             <!--++++++++++++++ 工程模块 ++++++++++++++-->
-            <!-- 这里只是做一个依赖管理，为什么没有app层，引入app层不需要被其他层引入-->
+            <dependency>
+                <groupId>app.xlog.ggbond</groupId>
+                <artifactId>big-market-app</artifactId>
+                <version>1.0</version>
+            </dependency>
             <dependency>
                 <groupId>app.xlog.ggbond</groupId>
                 <artifactId>big-market-api</artifactId>

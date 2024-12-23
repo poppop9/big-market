@@ -3,6 +3,7 @@ package app.xlog.ggbond.http;
 import app.xlog.ggbond.IRaffleDispatchApiService;
 import app.xlog.ggbond.model.Response;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
+import app.xlog.ggbond.raffleAndSecurity.RaffleSecurityAppService;
 import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import app.xlog.ggbond.raffle.service.IRaffleDispatch;
@@ -35,9 +36,11 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
     @Resource
     private ObjectMapper objectMapper;
     @Resource
-    private IRaffleArmory raffleArmory;
-    @Resource
-    private IRaffleDispatch raffleDispatch;
+    private RaffleSecurityAppService raffleSecurityAppService;
+    // @Resource
+    // private IRaffleArmory raffleArmory;
+    // @Resource
+    // private IRaffleDispatch raffleDispatch;
     @Resource
     private ISecurityService securityService;
 
@@ -47,11 +50,8 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
     @Override
     @GetMapping("/v2/queryAwardList")
     public Response<JsonNode> queryAwardList(@RequestParam Long activityId) {
-        // 自动获取当前用户
-        UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
-        List<AwardBO> awardBOs = raffleArmory.findAllAwards(activityId, user.getUserId());
+        List<AwardBO> awardBOs = raffleSecurityAppService.findAllAwardsByActivityIdAndCurrentUser(activityId);
 
-        log.atDebug().log("查询了活动 {} ，用户 {} 的奖品列表", activityId, user.getUserId());
         return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
                 .info("调用成功")
@@ -65,29 +65,18 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
     @Override
     @GetMapping("/v2/getAward")
     public Response<JsonNode> getAward(@RequestParam Long activityId) {
-        // 自动获取当前用户
-        UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
-        Long awardId = raffleDispatch.getAwardId(activityId, user.getUserId());
+        Long awardId = raffleSecurityAppService.dispatchAwardIdByActivityIdAndCurrentUser(activityId);
 
-        log.atInfo().log(
-                "抽奖领域 - " + securityService.getLoginIdDefaultNull() + " 抽到 {} 活动的 {} 奖品", activityId, awardId
-        );
-
-        return awardId != null
-                ? Response.<JsonNode>builder()
+        return Response.<JsonNode>builder()
                 .status(HttpStatus.OK)
                 .info("调用成功")
                 .data(objectMapper.valueToTree(awardId))
-                .build()
-                : Response.<JsonNode>builder()
-                .status(HttpStatus.OK)
-                .info("调用失败")
-                .data(objectMapper.valueToTree(null))
                 .build();
     }
 
     /**
      * 实时获取中奖奖品信息
+     * todo 待大改
      */
     @Override
     @GetMapping(value = "/v1/getWinningAwardsInfo", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

@@ -1,6 +1,7 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
 import app.xlog.ggbond.persistent.po.LongListToJsonConverter;
+import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,10 +24,11 @@ import java.util.List;
         @Index(columnList = "activityId")
 })
 public class Activity {
-    // todo 主键未配置雪花算法
+    // todo 主键的雪花算法最好使用shardingSphere配置
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Builder.Default
+    private Long id = IdUtil.getSnowflakeNextId();
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();

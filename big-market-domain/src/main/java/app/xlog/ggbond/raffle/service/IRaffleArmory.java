@@ -7,7 +7,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
 
 /**
- * 抽奖领域 - 抽奖的兵工厂 :
+ * 抽奖领域 - 抽奖的兵工厂
+ *
  * - 1.初始化装配各种数据
  * - 2.作为外部查询抽奖信息的接口
  */

@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * 安全领域 - 用户
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

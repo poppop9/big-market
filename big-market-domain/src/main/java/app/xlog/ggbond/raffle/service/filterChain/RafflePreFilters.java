@@ -1,6 +1,7 @@
 package app.xlog.ggbond.raffle.service.filterChain;
 
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
+import app.xlog.ggbond.raffle.model.bo.UserBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import app.xlog.ggbond.security.service.ISecurityService;
@@ -25,15 +26,11 @@ import java.util.stream.Collectors;
 public class RafflePreFilters {
 
     @Resource
-    private ObjectMapper objectMapper;
-
-    @Resource
-    private ISecurityService securityService;
-    @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
 
     /**
      * 黑名单过滤器
+     * todo 解耦security和raffle，引入application，从application中获取用户信息，并传入
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
@@ -41,14 +38,15 @@ public class RafflePreFilters {
             nodeName = "黑名单过滤器")
     public void blacklistRaffleFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
+        UserBO userBO = context.getUserBO();
 
         // 如果是黑名单用户，拦截
-        if (securityService.isBlacklistUser(context.getUserId())) {
-            log.atInfo().log("抽奖领域 - " + context.getUserId() + " 黑名单过滤器拦截");
+        if (userBO.isBlacklistUser()) {
+            log.atInfo().log("抽奖领域 - " + userBO.getUserId() + " 黑名单过滤器拦截");
             context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.INTERCEPT);
             context.setDispatchParam(RaffleFilterContext.DispatchParam.BlacklistPool);
         } else {
-            log.atInfo().log("抽奖领域 - " + context.getUserId() + " 黑名单过滤器放行");
+            log.atInfo().log("抽奖领域 - " + userBO.getUserId() + " 黑名单过滤器放行");
         }
     }
 
@@ -61,8 +59,8 @@ public class RafflePreFilters {
             nodeName = "特殊次数抽奖池匹配过滤器")
     public void specialTimeMatchRafflePoolFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
-        // 用户的抽奖次数
-        Long raffleTime = securityService.queryRaffleTimesByUserId(context.getUserId(), context.getStrategyId());
+        UserBO userBO = context.getUserBO();
+        Long raffleTime = userBO.getRaffleTime();
 
         // 所有的特殊次数抽奖池
         Map<Long, String> timeNameMap = raffleArmoryRepo.findAllRafflePoolByStrategyId(context.getStrategyId()).stream()
@@ -73,13 +71,13 @@ public class RafflePreFilters {
                 ));
 
         if (timeNameMap.containsKey(raffleTime + 1L)) {
-            log.atInfo().log("抽奖领域 - " + context.getUserId() + " 特殊次数抽奖池匹配过滤器拦截");
+            log.atInfo().log("抽奖领域 - " + userBO.getUserId() + " 特殊次数抽奖池匹配过滤器拦截");
             context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.INTERCEPT);
             context.setDispatchParam(
                     RaffleFilterContext.DispatchParam.valueOf(timeNameMap.get(raffleTime + 1L))
             );
         } else {
-            log.atInfo().log("抽奖领域 - " + context.getUserId() + " 特殊次数抽奖池匹配过滤器放行");
+            log.atInfo().log("抽奖领域 - " + userBO.getUserId() + " 特殊次数抽奖池匹配过滤器放行");
         }
     }
 
@@ -92,8 +90,7 @@ public class RafflePreFilters {
             nodeName = "普通次数抽奖池匹配过滤器")
     public void normalTimeMatchRafflePoolFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
-        // 用户的抽奖次数
-        Long raffleTime = securityService.queryRaffleTimesByUserId(context.getUserId(), context.getStrategyId());
+        Long raffleTime = context.getUserBO().getRaffleTime();  // 用户的抽奖次数
 
         // 所有的普通次数抽奖池
         Map<List<Long>, String> rangeNameMap = raffleArmoryRepo.findAllRafflePoolByStrategyId(context.getStrategyId()).stream()
@@ -109,7 +106,7 @@ public class RafflePreFilters {
                 .findFirst()
                 .get();
 
-        log.atInfo().log("抽奖领域 - " + context.getUserId() + " 普通次数抽奖池匹配过滤器拦截，调度到 " + rafflePoolName + " 抽奖池");
+        log.atInfo().log("抽奖领域 - " + context.getUserBO().getUserId() + " 普通次数抽奖池匹配过滤器拦截，调度到 " + rafflePoolName + " 抽奖池");
         context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.INTERCEPT);
         context.setDispatchParam(RaffleFilterContext.DispatchParam.valueOf(rafflePoolName));
     }
