@@ -47,10 +47,10 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
                                 return new WeightRandom.WeightObj<>(child, award.getAwardRate());
                             })
                             .toList();
-                    WeightRandom<Long> WeightRandom = RandomUtil.weightRandom(weightObjs);
+                    WeightRandom<Long> weightRandom = RandomUtil.weightRandom(weightObjs);
 
                     // 将WeightRandom对象存入redis，方便后续抽奖调用
-                    raffleArmoryRepo.insertWeightRandom(strategyId, item.getRafflePoolName(), WeightRandom);
+                    raffleArmoryRepo.insertWeightRandom(strategyId, item.getRafflePoolName(), weightRandom);
                 });
     }
 
@@ -81,7 +81,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
 
     /**
      * 调度 - 根据策略id，抽取奖品
-     * todo 使用RScoredSortedSet代替权重对象
+     * todo 使用RMap代替一个一个权重对象
      */
     @Override
     public Long getAwardId(Long activityId, Long strategyId, UserBO userBO) {

@@ -40,7 +40,7 @@ public class FilterTest {
     @Test
     void test_2() {
         raffleFilterChain.executeFilterChain(RaffleFilterContext.builder()
-                .userId(404L)
+                // .userId(404L)
                 .strategyId(10001L)
                 .middleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS)
                 .build()

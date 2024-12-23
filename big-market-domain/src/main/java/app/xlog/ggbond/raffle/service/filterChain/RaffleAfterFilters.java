@@ -54,12 +54,12 @@ public class RaffleAfterFilters {
         Long userId = context.getUserBO().getUserId();
         log.atInfo().log("抽奖领域 - " + userId + " 奖品库存过滤器开始执行");
 
-        // 调度扣减方法
+        // 调度扣减方法  todo 使用RMap来代替扣减库存的单个对象，addAndGet方法也是原子性的
         if (!raffleDispatchRepo.decreaseAwardCount(context.getStrategyId(), context.getAwardId())) {
             throw new RetryRouterException("扣减库存失败，重新调度");
         }
 
-        // 将扣减信息写入队列
+        // 将扣减信息写入队列  todo 优化成把扣减信息写入kafka
         raffleDispatchRepo.addDecrAwardCountToQueue(DecrQueueVO.builder()
                 .strategyId(context.getStrategyId())
                 .awardId(context.getAwardId())
