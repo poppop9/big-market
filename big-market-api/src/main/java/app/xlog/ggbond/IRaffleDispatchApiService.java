@@ -12,13 +12,7 @@ import reactor.core.publisher.Flux;
  */
 public interface IRaffleDispatchApiService {
 
-    // 根据策略id，查询对应的奖品列表
-    Response<JsonNode> queryAwardList(Long strategyId);
-
     // 根据策略id，抽取奖品
     Response<JsonNode> getAward(Long strategyId);
-
-    // 实时获取中奖奖品信息
-    Flux<Response<JsonNode>> getWinningAwardsInfo(@RequestParam Long activityId);
 
 }

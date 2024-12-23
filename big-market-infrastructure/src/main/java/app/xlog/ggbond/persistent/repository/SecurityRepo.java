@@ -1,5 +1,6 @@
 package app.xlog.ggbond.persistent.repository;
 
+import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.po.security.UserRaffleConfig;
 import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
@@ -50,12 +51,11 @@ public class SecurityRepo implements ISecurityRepo {
 
     /**
      * 查询 - 判断当前登录用户，是否为黑名单用户
-     * todo 后续如果还有黑名单用户，再往里面加
      */
     @Override
     public Boolean isBlacklistUser(Long userId) {
-        // 获取布隆过滤器
-        RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter("BlacklistUserList");
+        // 获取布隆过滤器  todo 黑名单用户是否要根据活动区分
+        RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter(GlobalConstant.getBlacklistUserList());
         if (!bloomFilter.isExists()) {
             bloomFilter.tryInit(100000L, 0.03);
         }
@@ -126,7 +126,7 @@ public class SecurityRepo implements ISecurityRepo {
      */
     @Override
     public void insertBlacklistUserListToBloomFilter(List<Long> userIds) {
-        RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter("BlacklistUserList");
+        RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter(GlobalConstant.getBlacklistUserList());
         // 删除旧的布隆过滤器
         if (bloomFilter.isExists()) {
             bloomFilter.delete();

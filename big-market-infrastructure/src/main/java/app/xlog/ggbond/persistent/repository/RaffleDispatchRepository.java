@@ -1,5 +1,6 @@
 package app.xlog.ggbond.persistent.repository;
 
+import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
@@ -46,8 +47,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public WeightRandom<Long> findWeightRandom(Long strategyId, String dispatchParam) {
-        String cacheKey = strategyId + "_" + dispatchParam + "_WeightRandom";
-        return (WeightRandom<Long>) redissonClient.getBucket(cacheKey).get();
+        return (WeightRandom<Long>) redissonClient.getBucket(GlobalConstant.getWeightRandomCacheKey(strategyId, dispatchParam)).get();
     }
 
     /**
@@ -91,7 +91,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public Boolean decreaseAwardCount(Long strategyId, Long awardId) {
-        RAtomicLong rAtomicLong = redissonClient.getAtomicLong(strategyId + "_" + awardId + "_Count");
+        RAtomicLong rAtomicLong = redissonClient.getAtomicLong(GlobalConstant.getAwardCountCacheKey(strategyId, awardId));
         if (rAtomicLong.isExists()) {
             long surplus = rAtomicLong.decrementAndGet();  // 返回扣减完成之后的值
             if (surplus > 0) {
@@ -115,7 +115,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public void addDecrAwardCountToQueue(DecrQueueVO decrQueueVO) {
-        RQueue<DecrQueueVO> rQueue = redissonClient.getQueue("awards_DecrQueue");
+        RQueue<DecrQueueVO> rQueue = redissonClient.getQueue(GlobalConstant.getAwardCountDecrQueue());
         rQueue.add(decrQueueVO);
     }
 
@@ -124,7 +124,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public DecrQueueVO queryDecrAwardCountFromQueue() {
-        RQueue<DecrQueueVO> rQueue = redissonClient.getQueue("awards_DecrQueue");
+        RQueue<DecrQueueVO> rQueue = redissonClient.getQueue(GlobalConstant.getAwardCountDecrQueue());
         return rQueue.poll();
     }
 

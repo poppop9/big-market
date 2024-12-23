@@ -1,8 +1,6 @@
 package app.xlog.ggbond.raffle.service;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
-import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.List;
 

@@ -19,9 +19,11 @@ public class InitializeJob {
     @Resource
     private ISecurityService securityService;
 
+    /**
+     * 查询出所有黑名单用户，将其放入到布隆过滤器中
+     */
     @PostConstruct
     public void initialize() {
-        // 查询出所有黑名单用户，将其放入到布隆过滤器中
         List<Long> userIds = securityService.queryAllBlacklistUser().stream()
                 .map(UserBO::getUserId)
                 .toList();

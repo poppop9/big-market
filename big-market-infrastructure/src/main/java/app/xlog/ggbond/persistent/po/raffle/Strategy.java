@@ -36,6 +36,6 @@ public class Strategy {
     private Long activityId;  // 活动id
     @Column(unique = true)
     @Builder.Default
-    private Long strategyId = IdUtil.getSnowflakeNextId();  // 策略id（不同活动的策略id也不能重复）
+    private Long strategyId = IdUtil.getSnowflakeNextId();  // 策略id，全局唯一（不同活动的策略id也不能重复）
     private String strategyDesc;  // 策略描述
 }

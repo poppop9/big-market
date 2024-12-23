@@ -6,16 +6,13 @@ import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
 import app.xlog.ggbond.raffle.service.filterChain.RaffleFilterChain;
-import app.xlog.ggbond.security.service.ISecurityService;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -27,9 +24,6 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
 
     @Resource
     private ObjectMapper objectMapper;
-
-    @Resource
-    private ISecurityService securityService;
 
     @Resource
     private RaffleFilterChain raffleFilterChain;
@@ -88,7 +82,6 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     /**
      * 调度 - 根据策略id，抽取奖品
      * todo 使用RScoredSortedSet代替权重对象
-     * todo 如果用户抽奖时，没有装配完怎么办
      */
     @Override
     public Long getAwardId(Long activityId, Long strategyId, UserBO userBO) {

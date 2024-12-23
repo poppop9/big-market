@@ -24,6 +24,18 @@ public class RaffleAfterFilters {
     private IRaffleDispatchRepo raffleDispatchRepo;
 
     /**
+     * 更新过期时间过滤器 - 更新redis中的过期时间
+     * todo
+     */
+    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
+            value = LiteFlowMethodEnum.PROCESS,
+            nodeId = "UpdateExpireTimeFilter",
+            nodeName = "更新过期时间过滤器")
+    public void updateExpireTimeFilter(NodeComponent bindCmp) {
+
+    }
+
+    /**
      * 奖品库存过滤器 - 对库存做处理
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,

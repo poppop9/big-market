@@ -4,6 +4,7 @@ import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import app.xlog.ggbond.raffle.service.IRaffleDispatch;
 import app.xlog.ggbond.security.model.UserBO;
+import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import app.xlog.ggbond.security.service.ISecurityService;
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.stp.StpUtil;
@@ -68,6 +69,17 @@ public class RaffleSecurityAppService {
     }
 
     /**
+     * 抽奖领域 - 查询所有中奖记录
+     */
+    public List<UserRaffleHistoryBO> findAllWinningAwards(Long activityId) {
+        // 自动获取当前用户
+        UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
+        List<UserRaffleHistoryBO> winningAwards = securityService.findWinningAwardsInfo(activityId, user.getUserId());
+
+        return winningAwards;
+    }
+
+    /**
      * 安全领域 - 登录
      */
     public void doLogin(Long userId, String password) throws Exception {
@@ -76,7 +88,6 @@ public class RaffleSecurityAppService {
             throw new Exception("用户名或密码错误");
         }
 
-        // 装配该用户相关的权重对象，以及所有奖品的库存
         String activityId = SaHolder.getRequest().getParam("activityId");
         // 只要登录了，我就把activityId塞到token session里，后面的操作都可以直接从这里取
         StpUtil.getTokenSession().set("activityId", activityId);
@@ -88,5 +99,6 @@ public class RaffleSecurityAppService {
         // 装配该策略所需的所有奖品的库存
         raffleArmory.assembleAllAwardCountBystrategyId(strategyId);
     }
+
 
 }

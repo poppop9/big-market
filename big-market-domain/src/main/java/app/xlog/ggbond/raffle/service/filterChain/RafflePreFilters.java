@@ -4,8 +4,6 @@ import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.bo.UserBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
-import app.xlog.ggbond.security.service.ISecurityService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yomahub.liteflow.annotation.LiteflowComponent;
 import com.yomahub.liteflow.annotation.LiteflowMethod;
 import com.yomahub.liteflow.core.NodeComponent;
@@ -30,7 +28,6 @@ public class RafflePreFilters {
 
     /**
      * 黑名单过滤器
-     * todo 解耦security和raffle，引入application，从application中获取用户信息，并传入
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,

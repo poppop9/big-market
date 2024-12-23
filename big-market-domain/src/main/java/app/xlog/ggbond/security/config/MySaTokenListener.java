@@ -1,12 +1,7 @@
 package app.xlog.ggbond.security.config;
 
-import app.xlog.ggbond.raffle.service.IRaffleArmory;
-import app.xlog.ggbond.security.repository.ISecurityRepo;
-import app.xlog.ggbond.security.service.ISecurityService;
-import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.listener.SaTokenListenerForSimple;
 import cn.dev33.satoken.stp.SaLoginModel;
-import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,17 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MySaTokenListener extends SaTokenListenerForSimple {
 
-    @Resource
-    private IRaffleArmory raffleArmory;
-    @Resource
-    private ISecurityRepo securityRepo;
-    @Resource
-    private ISecurityService securityService;
-
     /**
      * 每次登录时触发
-     * todo 当登录时，存储token，然后后期获取所有可用token，判断差值，然后清理权重对象
-     * todo 要定义事件中心，解耦raffle和security
      *
      * @param loginType  登录类型
      * @param loginId    userId

@@ -1,23 +1,24 @@
 package app.xlog.ggbond.persistent.repository;
 
+import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.persistent.po.raffle.Award;
 import app.xlog.ggbond.persistent.po.raffle.RafflePool;
-import app.xlog.ggbond.persistent.po.security.UserRaffleConfig;
-import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
-import app.xlog.ggbond.persistent.repository.jpa.*;
+import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
+import app.xlog.ggbond.persistent.repository.jpa.RafflePoolRepository;
+import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
-import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
 import jakarta.annotation.Resource;
 import org.redisson.api.RAtomicLong;
+import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Repository;
 
+import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 抽奖领域 - 抽奖的兵工厂仓库:
@@ -82,11 +83,11 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     @Override
     public void assembleAllAwardCountBystrategyId(Long strategyId) {
         findAwardsByStrategyId(strategyId).forEach(item -> {
-            String cacheKey = strategyId + "_" + item.getAwardId() + "_Count";
-            RAtomicLong rAtomicLong = redissonClient.getAtomicLong(cacheKey);
+            RAtomicLong rAtomicLong = redissonClient.getAtomicLong(GlobalConstant.getAwardCountCacheKey(strategyId, item.getAwardId()));
 
             if (!rAtomicLong.isExists()) {
                 rAtomicLong.set(item.getAwardCount());
+                rAtomicLong.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
             }
         });
     }
@@ -96,8 +97,9 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public void insertWeightRandom(Long strategyId, String dispatchParam, WeightRandom<Long> wr) {
-        String cacheKey = strategyId + "_" + dispatchParam + "_WeightRandom";
-        redissonClient.getBucket(cacheKey).set(wr);
+        RBucket<Object> bucket = redissonClient.getBucket(GlobalConstant.getWeightRandomCacheKey(strategyId, dispatchParam));
+        bucket.set(wr);
+        bucket.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
     }
 
 }

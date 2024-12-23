@@ -18,7 +18,7 @@ public class SecurityEvents {
      * 用户登录事件
      */
     @Getter
-    public static class UserLoginEvent extends ApplicationEvent {
+    public class UserLoginEvent extends ApplicationEvent {
         private final String username;
 
         public UserLoginEvent(Object source, String username) {
