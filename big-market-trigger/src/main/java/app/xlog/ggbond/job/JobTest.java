@@ -17,7 +17,7 @@ public class JobTest {
     int count = 0;
 
     @XxlJob("testJob")
-    public void execute() throws InterruptedException {
+    public void execute() {
         System.out.println("xxl-job test in thread: " + Thread.currentThread().getName());
         XxlJobHelper.log("xxl-job test in thread: " + Thread.currentThread().getName());
         // Thread.sleep(10000);  // 10s

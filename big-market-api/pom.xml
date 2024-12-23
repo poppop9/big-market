@@ -18,6 +18,7 @@
     </properties>
 
     <dependencies>
+        <!--++++++++++++++ 工程模块 ++++++++++++++-->
         <!--++++++++++++++ 日志，测试 ++++++++++++++-->
         <dependency>
             <groupId>junit</groupId>

@@ -21,15 +21,11 @@
         <!--++++++++++++++ 工程模块 ++++++++++++++-->
         <dependency>
             <groupId>app.xlog.ggbond</groupId>
-            <artifactId>big-market-app</artifactId>
+            <artifactId>big-market-api</artifactId>
         </dependency>
         <dependency>
             <groupId>app.xlog.ggbond</groupId>
             <artifactId>big-market-domain</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>app.xlog.ggbond</groupId>
-            <artifactId>big-market-api</artifactId>
         </dependency>
 
         <!--++++++++++++++ 日志，测试 ++++++++++++++-->

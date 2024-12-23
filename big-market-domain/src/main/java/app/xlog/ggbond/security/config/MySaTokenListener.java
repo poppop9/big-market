@@ -19,6 +19,7 @@ public class MySaTokenListener extends SaTokenListenerForSimple {
      * @param loginModel 登录设备
      */
     public void doLogin(String loginType, Object loginId, String tokenValue, SaLoginModel loginModel) {
+        System.out.println("---------- 自定义侦听器实现 doLogin");
     }
 
     /**
