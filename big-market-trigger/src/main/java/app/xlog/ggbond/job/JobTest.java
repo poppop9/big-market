@@ -24,7 +24,7 @@ public class JobTest {
         XxlJobHelper.handleSuccess();
     }
 
-    @Scheduled(fixedDelay = 1000)
+    // @Scheduled(fixedDelay = 1000)
     public void test() {
         // token 失效后大概20秒会搜不到
         List<String> strings = StpUtil.searchTokenValue("", 0, 1000, true);
