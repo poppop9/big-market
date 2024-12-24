@@ -6,6 +6,7 @@ import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
+import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
@@ -15,13 +16,17 @@ import cn.hutool.core.util.RandomUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RAtomicLong;
+import org.redisson.api.RMap;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 抽奖领域 - 抽奖调度仓库
@@ -47,22 +52,24 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public void removeAwardFromPools(Long strategyId, Long awardId) {
-        // 所有的权重对象集合
-        raffleArmoryRepo.findAllRafflePoolByStrategyId(strategyId).stream()
+        Map<String, WeightRandom<Long>> collect = raffleArmoryRepo.findAllRafflePoolByStrategyId(strategyId).stream()
                 .peek(item -> item.getAwardIds().remove(awardId))
-                .forEach(item -> {
-                    // 生成权重集合
-                    List<WeightRandom.WeightObj<Long>> weightObjs = item.getAwardIds().stream()
-                            .map(child -> {
-                                AwardBO award = raffleArmoryRepo.findAwardByAwardId(child);
-                                return new WeightRandom.WeightObj<>(child, award.getAwardRate());
-                            })
-                            .toList();
-                    WeightRandom<Long> WeightRandom = RandomUtil.weightRandom(weightObjs);
+                .collect(Collectors.toMap(
+                        RafflePoolBO::getRafflePoolName,
+                        item -> {
+                            // 生成权重集合
+                            List<WeightRandom.WeightObj<Long>> weightObjs = item.getAwardIds().stream()
+                                    .map(child -> {
+                                        AwardBO award = raffleArmoryRepo.findAwardByAwardId(child);
+                                        return new WeightRandom.WeightObj<>(child, award.getAwardRate());
+                                    })
+                                    .toList();
+                            return RandomUtil.weightRandom(weightObjs);
+                        }
+                ));
 
-                    // 将WeightRandom对象存入redis，方便后续抽奖调用
-                    raffleArmoryRepo.insertWeightRandom(strategyId, item.getRafflePoolName(), WeightRandom);
-                });
+        // 将WeightRandom对象存入redis，方便后续抽奖调用
+        raffleArmoryRepo.insertWeightRandom(strategyId, collect);
     }
 
     /**
@@ -83,22 +90,22 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public Boolean decreaseAwardCount(Long strategyId, Long awardId) {
-        RAtomicLong rAtomicLong = redissonClient.getAtomicLong(GlobalConstant.getAwardCountCacheKey(strategyId, awardId));
-        if (rAtomicLong.isExists()) {
-            long surplus = rAtomicLong.decrementAndGet();  // 返回扣减完成之后的值
+        RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.getAwardCountMapCacheKey(strategyId));
+        if (rMap.isExists()) {
+            Long surplus = rMap.compute(awardId, (k, v) -> v != null ? v - 1 : 0);
             if (surplus > 0) {
                 log.atInfo().log("抽奖领域 - 奖品 {} 库存扣减成功，剩余库存：{}", awardId, surplus);
                 return true;
             } else if (surplus == 0) {
                 log.atInfo().log("抽奖领域 - 奖品 {} 库存扣减完成，剩余库存：{}", awardId, surplus);
-                // 将该奖品从缓存中的所有抽奖池里移除
+                // 将该奖品从缓存中的抽奖池里移除
                 removeAwardFromPools(strategyId, awardId);
                 return true;
             }
         }
 
         // 一般来说装配好了奖品库存，不会走到这里
-        log.atInfo().log("抽奖领域 - 奖品 {} 库存扣减失败", awardId);
+        log.atWarn().log("抽奖领域 - 奖品 {} 库存扣减失败", awardId);
         return false;
     }
 

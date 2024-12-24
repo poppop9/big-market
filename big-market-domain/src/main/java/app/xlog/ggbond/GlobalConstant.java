@@ -21,7 +21,7 @@ public class GlobalConstant {
 
     // 抽奖领域 - 生成权重对象Map的缓存key
     public static String getWeightRandomMapCacheKey(Long strategyId) {
-        return strategyId + "_" + "_WeightRandomMap";
+        return strategyId + "_WeightRandomMap";
     }
 
     // 抽奖领域 - 生成库存的缓存key
@@ -36,7 +36,7 @@ public class GlobalConstant {
 
     // 抽奖领域 - 奖品库存队列
     public static String getAwardCountDecrQueue() {
-        return "awards_DecrQueue";
+        return "AwardCountDecrQueue";
     }
 
     // 抽奖领域 - 黑名单用户列表

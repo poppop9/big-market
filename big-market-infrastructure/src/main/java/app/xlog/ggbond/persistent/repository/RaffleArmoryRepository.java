@@ -119,7 +119,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
                 AwardBO::getAwardCount
         ));
 
-        RMap<Object, Object> rMap = redissonClient.getMap(GlobalConstant.getAwardCountMapCacheKey(strategyId));
+        RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.getAwardCountMapCacheKey(strategyId));
         if (rMap.isExists()) rMap.clear();
 
         rMap.putAll(collect);
