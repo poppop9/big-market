@@ -44,7 +44,7 @@ public class User {
     public enum UserRole {
         ADMIN(0),
         USER(1),
-        BLACKLIST(2);
+        BLACKLIST(2);  // 黑名单用户不根据活动区分，一黑则黑
 
         private final int value;
     }

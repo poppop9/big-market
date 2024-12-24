@@ -36,7 +36,7 @@ public class SaTokenPermissionConfig implements StpInterface {
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        // todo 这里也可以加缓存
+        // todo 这里也可以加缓存（暂时没有用到角色的场景，用到了再根据场景加）
         UserBO user = securityRepo.findByUserId(Long.valueOf(loginId.toString()));
         return List.of(user.getUserRole().name());
     }

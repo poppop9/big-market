@@ -13,14 +13,16 @@ import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
 import jakarta.annotation.Resource;
-import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBucket;
+import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 抽奖领域 - 抽奖的兵工厂仓库
@@ -47,6 +49,15 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     @Override
     public WeightRandom<Long> findWeightRandom(Long strategyId, String dispatchParam) {
         return (WeightRandom<Long>) redissonClient.getBucket(GlobalConstant.getWeightRandomCacheKey(strategyId, dispatchParam)).get();
+    }
+
+    /**
+     * 查询 - 权重对象 - 从 redis 中查询出指定的权重对象
+     */
+    @Override
+    public WeightRandom<Long> findWeightRandom2(Long strategyId, String dispatchParam) {
+        RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.getWeightRandomMapCacheKey(strategyId));
+        return rMap.get(dispatchParam);
     }
 
     /**
@@ -103,14 +114,25 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public void assembleAllAwardCountByStrategyId(Long strategyId) {
-        findAwardsByStrategyId(strategyId).forEach(item -> {
+        Map<Long, Long> collect = findAwardsByStrategyId(strategyId).stream().collect(Collectors.toMap(
+                AwardBO::getAwardId,
+                AwardBO::getAwardCount
+        ));
+
+        RMap<Object, Object> rMap = redissonClient.getMap(GlobalConstant.getAwardCountMapCacheKey(strategyId));
+        if (rMap.isExists()) rMap.clear();
+
+        rMap.putAll(collect);
+        rMap.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
+
+/*        findAwardsByStrategyId(strategyId).forEach(item -> {
             RAtomicLong rAtomicLong = redissonClient.getAtomicLong(GlobalConstant.getAwardCountCacheKey(strategyId, item.getAwardId()));
 
             if (!rAtomicLong.isExists()) {
                 rAtomicLong.set(item.getAwardCount());
                 rAtomicLong.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
             }
-        });
+        });*/
     }
 
     /**
@@ -120,7 +142,22 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     public void insertWeightRandom(Long strategyId, String dispatchParam, WeightRandom<Long> wr) {
         RBucket<Object> bucket = redissonClient.getBucket(GlobalConstant.getWeightRandomCacheKey(strategyId, dispatchParam));
         bucket.set(wr);
+
         bucket.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
+    }
+
+    /**
+     * 装配 - 权重对象 - 将权重对象Map插入到Redis中
+     */
+    @Override
+    public void insertWeightRandom(Long strategyId, Map<String, WeightRandom<Long>> wrMap) {
+        RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.getWeightRandomMapCacheKey(strategyId));
+        if (rMap.isExists()) {
+            rMap.clear();
+        }
+        rMap.putAll(wrMap);
+
+        rMap.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
     }
 
 }

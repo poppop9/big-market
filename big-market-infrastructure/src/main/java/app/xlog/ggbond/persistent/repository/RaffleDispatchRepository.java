@@ -5,7 +5,6 @@ import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
-import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
@@ -168,6 +167,15 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
         Arrays.stream(RaffleFilterContext.DispatchParam.values())
                 .map(item -> redissonClient.getBucket(GlobalConstant.getWeightRandomCacheKey(strategyId, item.name())))
                 .forEach(item -> item.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime)));
+    }
+
+    /**
+     * 权重对象 - 更新所有权重对象Map的过期时间
+     */
+    @Override
+    public void updateAllWeightRandomExpireTime2(Long strategyId) {
+        redissonClient.getMap(GlobalConstant.getWeightRandomMapCacheKey(strategyId))
+                .expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
     }
 
 }

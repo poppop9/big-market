@@ -54,7 +54,7 @@ public class SecurityRepo implements ISecurityRepo {
      */
     @Override
     public Boolean isBlacklistUser(Long userId) {
-        // 获取布隆过滤器  todo 黑名单用户是否要根据活动区分
+        // 获取布隆过滤器
         RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter(GlobalConstant.getBlacklistUserList());
         if (!bloomFilter.isExists()) {
             bloomFilter.tryInit(100000L, 0.03);

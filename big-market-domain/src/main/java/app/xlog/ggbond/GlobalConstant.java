@@ -19,18 +19,28 @@ public class GlobalConstant {
         return strategyId + "_" + dispatchParam + "_WeightRandom";
     }
 
-    // 抽奖领域 - 生成权重对象的缓存key
+    // 抽奖领域 - 生成权重对象Map的缓存key
+    public static String getWeightRandomMapCacheKey(Long strategyId) {
+        return strategyId + "_" + "_WeightRandomMap";
+    }
+
+    // 抽奖领域 - 生成库存的缓存key
     public static String getAwardCountCacheKey(Long strategyId, Long awardId) {
         return strategyId + "_" + awardId + "_Count";
     }
 
+    // 抽奖领域 - 生成库存Map的缓存key
+    public static String getAwardCountMapCacheKey(Long strategyId) {
+        return strategyId + "_AwardCountMap";
+    }
+
     // 抽奖领域 - 奖品库存队列
-    public static String getAwardCountDecrQueue(){
+    public static String getAwardCountDecrQueue() {
         return "awards_DecrQueue";
     }
 
     // 抽奖领域 - 黑名单用户列表
-    public static String getBlacklistUserList(){
+    public static String getBlacklistUserList() {
         return "BlacklistUserList";
     }
 

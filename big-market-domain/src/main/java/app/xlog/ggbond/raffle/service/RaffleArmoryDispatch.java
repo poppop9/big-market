@@ -1,6 +1,7 @@
 package app.xlog.ggbond.raffle.service;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
+import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.bo.UserBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
@@ -14,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 抽奖领域 - 及（装配，查询，调度）于一身的实现类
@@ -36,6 +39,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      * 装配 - 根据指定策略id，装配该策略所需的所有权重对象
      */
     @Override
+    @Deprecated
     public void assembleRaffleWeightRandomByStrategyId(Long strategyId) {
         // 所有的权重对象集合
         raffleArmoryRepo.findAllRafflePoolByStrategyId(strategyId)
@@ -55,10 +59,35 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     }
 
     /**
-     * 装配 - 装配所有奖品的库存
+     * 装配 - 根据指定策略id，装配该策略所需的所有权重对象Map
      */
     @Override
-    public void assembleAllAwardCountBystrategyId(Long strategyId) {
+    public void assembleRaffleWeightRandomByStrategyId2(Long strategyId) {
+        // 所有的权重对象集合
+        Map<String, WeightRandom<Long>> collect = raffleArmoryRepo.findAllRafflePoolByStrategyId(strategyId).stream()
+                .collect(Collectors.toMap(
+                        RafflePoolBO::getRafflePoolName,
+                        item -> {
+                            // 生成权重集合
+                            List<WeightRandom.WeightObj<Long>> weightObjs = item.getAwardIds().stream()
+                                    .map(child -> {
+                                        AwardBO award = raffleArmoryRepo.findAwardByAwardId(child);
+                                        return new WeightRandom.WeightObj<>(child, award.getAwardRate());
+                                    })
+                                    .toList();
+                            return RandomUtil.weightRandom(weightObjs);
+                        }
+                ));
+
+        // 将WeightRandom对象存入redis，方便后续抽奖调用
+        raffleArmoryRepo.insertWeightRandom(strategyId, collect);
+    }
+
+    /**
+     * 装配 - 装配所有奖品的库存Map
+     */
+    @Override
+    public void assembleAllAwardCountByStrategyId(Long strategyId) {
         raffleArmoryRepo.assembleAllAwardCountByStrategyId(strategyId);
     }
 
@@ -75,13 +104,12 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      */
     @Override
     public Long findAwardIdByDispatchParam(Long strategyId, RaffleFilterContext.DispatchParam dispatchParam) {
-        WeightRandom<Long> weightRandom = raffleArmoryRepo.findWeightRandom(strategyId, dispatchParam.toString());
+        WeightRandom<Long> weightRandom = raffleArmoryRepo.findWeightRandom2(strategyId, dispatchParam.toString());
         return weightRandom.next();
     }
 
     /**
      * 调度 - 根据策略id，抽取奖品
-     * todo 使用RMap代替一个一个权重对象
      */
     @Override
     public Long getAwardId(Long activityId, Long strategyId, UserBO userBO) {

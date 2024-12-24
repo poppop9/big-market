@@ -36,8 +36,8 @@ public class RaffleAfterFilters {
     public void updateExpireTimeFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
 
-        // 更新所有权重对象的过期时间
-        raffleDispatchRepo.updateAllWeightRandomExpireTime(context.getStrategyId());
+        // 更新所有权重对象Map的过期时间
+        raffleDispatchRepo.updateAllWeightRandomExpireTime2(context.getStrategyId());
         // 更新所有奖品库存的过期时间
         raffleDispatchRepo.updateAllAwardCountExpireTime(context.getStrategyId());
     }

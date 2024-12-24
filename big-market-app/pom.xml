@@ -27,10 +27,6 @@
             <groupId>app.xlog.ggbond</groupId>
             <artifactId>big-market-infrastructure</artifactId>
         </dependency>
-        <dependency>
-            <groupId>app.xlog.ggbond</groupId>
-            <artifactId>big-market-domain</artifactId>
-        </dependency>
 
         <!--++++++++++++++ 日志，测试 ++++++++++++++-->
         <dependency>

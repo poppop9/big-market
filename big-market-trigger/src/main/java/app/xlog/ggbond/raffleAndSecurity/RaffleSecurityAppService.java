@@ -94,10 +94,10 @@ public class RaffleSecurityAppService {
 
         Long strategyId = securityService.findStrategyIdByActivityIdAndUserId(Long.valueOf(activityId), userId);
 
-        // 装配该策略所需的所有权重对象
-        raffleArmory.assembleRaffleWeightRandomByStrategyId(strategyId);
-        // 装配该策略所需的所有奖品的库存
-        raffleArmory.assembleAllAwardCountBystrategyId(strategyId);
+        // 装配该策略所需的所有权重对象Map
+        raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);
+        // 装配该策略所需的所有奖品的库存Map
+        raffleArmory.assembleAllAwardCountByStrategyId(strategyId);
     }
 
 

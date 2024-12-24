@@ -35,4 +35,7 @@ public interface IRaffleDispatchRepo {
     // 权重对象 - 更新所有权重对象的过期时间
     void updateAllWeightRandomExpireTime(Long strategyId);
 
+    // 权重对象 - 更新所有权重对象Map的过期时间
+    void updateAllWeightRandomExpireTime2(Long strategyId);
+
 }

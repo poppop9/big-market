@@ -14,8 +14,12 @@ public interface IRaffleArmory {
 
     // 装配 - 根据指定策略id，装配该策略所需的所有权重对象
     void assembleRaffleWeightRandomByStrategyId(Long strategyId);
-    // 装配 - 装配所有奖品的库存
-    void assembleAllAwardCountBystrategyId(Long strategyId);
+
+    // 装配 - 根据指定策略id，装配该策略所需的所有权重对象Map
+    void assembleRaffleWeightRandomByStrategyId2(Long strategyId);
+
+    // 装配 - 装配所有奖品的库存Map
+    void assembleAllAwardCountByStrategyId(Long strategyId);
 
     // 查询 - 根据活动id，用户id，查询用户的所有奖品
     List<AwardBO> findAllAwards(Long activityId, Long userId);
