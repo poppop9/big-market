@@ -1,6 +1,5 @@
 package app.xlog.ggbond.infrastructure;
 
-import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
@@ -11,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.*;
 import org.redisson.api.listener.ListAddListener;
-import org.redisson.client.codec.StringCodec;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashMap;

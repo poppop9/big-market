@@ -1,0 +1,33 @@
+#file: noinspection SpringBootApplicationYaml
+
+# 数据库
+spring:
+  datasource:
+    driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
+    url: jdbc:shardingsphere:classpath:application-dev-shardingsphere-jdbc.yml
+  jpa:
+    open-in-view: false  # 避免内存泄漏
+    hibernate:
+      ddl-auto: validate
+      show-sql: true  # 在控制台显示sql语句
+      properties:
+        hibernate:
+          format_sql: true  # 格式化sql语句
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+# redis
+redis:
+  address: redis://localhost:6379
+  sdk:
+    config:
+      host: localhost
+      port: 6379
+      pool-size: 10
+      min-idle-size: 5
+      idle-timeout: 30000
+      connect-timeout: 5000
+      retry-attempts: 3
+      retry-interval: 1000
+      ping-interval: 60000
+      keep-alive: true

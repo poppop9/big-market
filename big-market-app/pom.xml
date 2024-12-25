@@ -108,7 +108,7 @@
                         </goals>
                         <configuration>
                             <image>
-                                <name>big-market:1.1.0</name>
+                                <name>big-market:1.2.0</name>
                                 <env>
                                     <BP_JVM_VERSION>17</BP_JVM_VERSION>
                                     <TZ>Asia/Shanghai</TZ>
@@ -119,7 +119,6 @@
                 </executions>
             </plugin>
         </plugins>
-        <!-- 用于install时，动态加载prod.yml文件 -->
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -138,13 +137,13 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <spring.profiles.active>dev</spring.profiles.active>
+                <spring.profiles.active>dev, dev-infrastructure, dev-secret-key</spring.profiles.active>
             </properties>
         </profile>
         <profile>
             <id>prod</id>
             <properties>
-                <spring.profiles.active>prod</spring.profiles.active>
+                <spring.profiles.active>prod, prod-infrastructure, prod-secret-key</spring.profiles.active>
             </properties>
         </profile>
     </profiles>
