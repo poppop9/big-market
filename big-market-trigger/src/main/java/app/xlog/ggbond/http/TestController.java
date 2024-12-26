@@ -4,6 +4,11 @@ import app.xlog.ggbond.recommend.IntelligentRecommendService;
 import cn.dev33.satoken.stp.StpUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,12 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 测试接口
  */
+@Validated
 @RestController
 @RequestMapping("/api/test")
 public class TestController {
 
     @Resource
     private IntelligentRecommendService intelligentRecommendService;
+    @Resource
+    @Lazy
+    private TestController testController;
 
     /**
      * 推荐领域 - 大模型回答
@@ -52,6 +61,21 @@ public class TestController {
                 System.out.println("Token 已过期: " + token);
             }
         }*/
+    }
+
+    /**
+     * Mess - 测试参数校验
+     */
+    @GetMapping("/v1/testParamCheck")
+    public void testParamCheck(@NotBlank(message = "var1 不能是无效文本") String var1,
+                               @NotNull(message = "var2 不能为 null") String var2) {
+        System.out.println("var1: " + var1);
+        System.out.println("var2: " + var2);
+        testController.test("");
+    }
+
+    void test(@NotBlank(message = "var3 不能是无效文本") String var3) {
+        System.out.println("var3: " + var3);
     }
 
 }

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,14 +35,12 @@ public class SecurityController implements ISecurityApiService {
      */
     @Override
     @GetMapping("/v1/doLogin")
-    public Response<JsonNode> doLogin(@RequestParam Long activityId, @RequestParam Long userId, @RequestParam String password) throws Exception {
+    public ResponseEntity<JsonNode> doLogin(@RequestParam Long activityId, @RequestParam Long userId, @RequestParam String password) throws Exception {
         raffleSecurityAppService.doLogin(userId, password);
 
-        return Response.<JsonNode>builder()
+        return ResponseEntity
                 .status(HttpStatus.OK)
-                .info("调用成功")
-                .data(objectMapper.valueToTree("用户 " + userId + " 登录成功"))
-                .build();
+                .body(objectMapper.valueToTree("用户 " + userId + " 登录成功"));
     }
 
 }

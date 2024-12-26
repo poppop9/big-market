@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,14 +32,12 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
      **/
     @Override
     @GetMapping("/v2/getAward")
-    public Response<JsonNode> getAward(@RequestParam Long activityId) {
+    public ResponseEntity<JsonNode> getAward(@RequestParam Long activityId) {
         Long awardId = raffleSecurityAppService.dispatchAwardIdByActivityIdAndCurrentUser(activityId);
 
-        return Response.<JsonNode>builder()
+        return ResponseEntity
                 .status(HttpStatus.OK)
-                .info("调用成功")
-                .data(objectMapper.valueToTree(awardId))
-                .build();
+                .body(objectMapper.valueToTree(awardId));
     }
 
 }

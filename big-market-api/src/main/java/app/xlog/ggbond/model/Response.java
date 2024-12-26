@@ -14,6 +14,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class Response<T> implements Serializable {
     private HttpStatus status;
-    private String info;
+    private String message;
     private T data;
 }
