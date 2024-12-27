@@ -1,5 +1,6 @@
 package app.xlog.ggbond.http;
 
+import app.xlog.ggbond.activity.OrderStateMachineEventCenter;
 import app.xlog.ggbond.recommend.IntelligentRecommendService;
 import cn.dev33.satoken.stp.StpUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,6 +27,8 @@ public class TestController {
     @Resource
     @Lazy
     private TestController testController;
+    @Resource
+    private OrderStateMachineEventCenter orderStateMachineEventCenter;
 
     /**
      * 推荐领域 - 大模型回答
@@ -76,6 +79,14 @@ public class TestController {
 
     void test(@NotBlank(message = "var3 不能是无效文本") String var3) {
         System.out.println("var3: " + var3);
+    }
+
+    /**
+     * 活动领域 - 测试状态机
+     */
+    @GetMapping("/v1/testStateMachine")
+    public void testStateMachine() {
+        orderStateMachineEventCenter.test();
     }
 
 }

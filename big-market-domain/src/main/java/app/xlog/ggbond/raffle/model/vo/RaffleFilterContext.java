@@ -6,6 +6,9 @@ import lombok.*;
 import java.util.Arrays;
 import java.util.Optional;
 
+/**
+ * 抽奖领域 - 抽奖过滤器上下文
+ */
 @Data
 @Builder
 @AllArgsConstructor
