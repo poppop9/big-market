@@ -10,62 +10,19 @@ logging:
     app.xlog.ggbond: INFO  # 设置包级别日志级别
     org.springframework: WARN  # 设置spring的日志级别
 
-spring:
-  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/big_market
-    driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
-    url: jdbc:shardingsphere:classpath:application-dev-shardingsphere-jdbc.yml
-  jpa:
-    open-in-view: false  # 避免内存泄漏
-    hibernate:
-      ddl-auto: validate
-      show-sql: true  # 在控制台显示sql语句
-      properties:
-        hibernate:
-          format_sql: true  # 格式化sql语句
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-
-# Redis
-redis:
-  address: redis://localhost:6379
-  sdk:
-    config:
-      host: localhost
-      port: 6379
-      pool-size: 10
-      min-idle-size: 5
-      idle-timeout: 30000
-      connect-timeout: 5000
-      retry-attempts: 3
-      retry-interval: 1000
-      ping-interval: 60000
-      keep-alive: true
-
 # Sa-Token
 sa-token:
   token-name: satoken  # token 名称（同时也是 cookie 名称）
-#  timeout: 2592000  # token 有效期（单位：秒） 默认30天，-1 代表永久有效
-  timeout: 30  # token 有效期（单位：秒） 默认30天，-1 代表永久有效
-  active-timeout: 15  # token 最低活跃频率（单位：秒），-1 代表永久活跃
+  timeout: 2592000  # token 有效期（单位：秒） 默认30天，-1 代表永久有效
+  active-timeout: 86400  # token 最低活跃频率（单位：秒），-1 代表永久活跃
   is-concurrent: true  # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
-  is-share: false  # 在多人登录同一账号时，是否共用一个 token （false 时每次登录新建一个 token）
+  is-share: true  # 在多人登录同一账号时，是否共用一个 token（因为有一个特殊的200匿名用户，很多人登录，有可能会产生很多token）
   token-style: uuid  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
   is-log: true  # 是否输出操作日志
 
 # liteFlow编排
 liteflow:
   rule-source: application-liteflow-raffleFilter.xml
-
-# GLM
-glm:
-  apiKey: a79a6e151dc42dd50142f25a409bca54.JzVqaCdjk1uXC62Z
-  modelName: glm-4-flash
-# GPT-API-free
-freeGPT:
-  apiKey: sk-e0ux4d6GmVrQZTnnWQTXrf5ZeWvqaATaf9oDzBfbTkDODWCQ
-  model: gpt-4o-mini
 
 # xxl-job
 xxl:
@@ -80,6 +37,5 @@ xxl:
       address: ""  # 该执行器的外部访问地址，如果为空，则该执行器只能被本地访问
       ip: ""  # 执行器的IP地址，为空则为本机ip
       port: 9999  # 执行器的端口，调度中心在调度任务时会访问该端口
-      thread: 20  # 设置最大线程数为 20
       logPath: /data/appLogs/xxl-job/jobHandler  # 执行器日志存储路径
       logRetentionDays: 30  # 执行器日志保存天数

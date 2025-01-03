@@ -85,6 +85,8 @@ public class TestController {
      */
     @GetMapping("/v2/testParamCheck")
     public void testParamCheck() {
+        String s = null;
+        s.contains("2");
         testService.test("", null);
         // testController.test("");
     }

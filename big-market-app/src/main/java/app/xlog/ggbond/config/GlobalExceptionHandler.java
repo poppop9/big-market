@@ -28,7 +28,6 @@ public class GlobalExceptionHandler {
     @Resource
     private ObjectMapper objectMapper;
 
-
     /**
      * 处理基本数据类型参数校验异常
      */
@@ -38,13 +37,13 @@ public class GlobalExceptionHandler {
 
         System.out.println(e.getClass().getName() + ": " + details + "。" + e.getMessage());
         Arrays.stream(e.getStackTrace()).forEach(stackTraceElement -> {
-            String moduleInfo = getModuleInfo(stackTraceElement);
             System.out.printf("\tat %s.%s(%s:%d) %s%n",
                     stackTraceElement.getClassName(),
                     stackTraceElement.getMethodName(),
                     stackTraceElement.getFileName(),
                     stackTraceElement.getLineNumber(),
-                    moduleInfo);
+                    stackTraceElement.isNativeMethod() ? "~[na:na]" : "~[classes/:na]"
+            );
         });
 
         return ResponseEntity
@@ -67,16 +66,6 @@ public class GlobalExceptionHandler {
                 ));
 
         return ResponseEntity.badRequest().body(errorMap);
-    }
-
-    private static String getModuleInfo(StackTraceElement element) {
-        if (element.isNativeMethod()) {
-            return "~[na:na]";
-        } else if (element.getFileName() == null) {
-            return "~[classes/:na]";
-        } else {
-            return "~[classes/:na]";
-        }
     }
 
 }

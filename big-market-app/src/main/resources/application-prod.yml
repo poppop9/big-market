@@ -10,29 +10,6 @@ logging:
     app.xlog.ggbond: INFO  # 设置包级别日志级别
     org.springframework: WARN  # 设置spring的日志级别
 
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.0.12:3306/big_market
-    username: root
-    password: 13433026660
-
-# Redis
-redis:
-  address: redis://192.168.0.12:6379
-  sdk:
-    config:
-      host: localhost
-      port: 6379
-      pool-size: 10
-      min-idle-size: 5
-      idle-timeout: 30000
-      connect-timeout: 5000
-      retry-attempts: 3
-      retry-interval: 1000
-      ping-interval: 60000
-      keep-alive: true
-
 # Sa-Token
 sa-token:
   token-name: satoken  # token 名称（同时也是 cookie 名称）
@@ -47,6 +24,18 @@ sa-token:
 liteflow:
   rule-source: application-liteflow-raffleFilter.xml
 
-# GLM
-glm:
-  apiKey: a79a6e151dc42dd50142f25a409bca54.JzVqaCdjk1uXC62Z
+# xxl-job
+xxl:
+  job:
+    admin:
+      addresses: http://172.17.0.1:9384/xxl-job-admin  # 调度中心的地址
+    # 调度中心的访问令牌，为空则不启用
+    accessToken: default_token
+    # 执行器配置
+    executor:
+      appName: big-market-executor  # 该执行器的名称
+      address: ""  # 该执行器的外部访问地址，如果为空，则该执行器只能被本地访问
+      ip: ""  # 执行器的IP地址，为空则为本机ip
+      port: 9999  # 执行器的端口，调度中心在调度任务时会访问该端口
+      logPath: /data/appLogs/xxl-job/jobHandler  # 执行器日志存储路径
+      logRetentionDays: 30  # 执行器日志保存天数
