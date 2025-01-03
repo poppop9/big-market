@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * 活动订单流水
+ * 活动单流水
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-// @Entity
+@Entity
 @Table(name = "ActivityOrderFlow", indexes = {
         // @Index(columnList = "userId")
 })
@@ -34,8 +34,11 @@ public class ActivityOrderFlow {
     private Long activityId;  // 活动id
     private Long strategyId;  // 策略id
     @Builder.Default
-    private Long activityOrderId = IdUtil.getSnowflakeNextId();  // 订单流水id
-    private LocalDateTime activityOrderExpireTime;  // 订单过期时间（永久有效为LocalDateTime.MAX）
+    private Long activityOrderId = IdUtil.getSnowflakeNextId();  // 活动单id
+    @Builder.Default
+    private LocalDateTime activityOrderEffectiveTime = LocalDateTime.MIN;  // 订单生效时间（立马生效为LocalDateTime.MIN）
+    @Builder.Default
+    private LocalDateTime activityOrderExpireTime = LocalDateTime.MAX;  // 订单过期时间（永久有效为LocalDateTime.MAX）
     private ActivityOrderType activityOrderType;  // 订单类型
     private ActivityOrderStatus activityOrderStatus;  // 订单状态
 
@@ -47,6 +50,7 @@ public class ActivityOrderFlow {
     }
 
     public enum ActivityOrderStatus {
+        INITIAL,  // 初始状态
         NOT_USED,  // 未使用
         USED,  // 已使用
         EXPIRED,  // 已失效

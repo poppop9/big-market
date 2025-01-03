@@ -4,7 +4,7 @@ import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.po.security.UserRaffleConfig;
 import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
-import app.xlog.ggbond.persistent.repository.jpa.ActivityRepository;
+import app.xlog.ggbond.persistent.repository.jpa.ActivityJpa;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
@@ -26,13 +26,13 @@ import java.util.stream.Stream;
  * 安全领域 - 安全仓储实现类
  */
 @Repository
-public class SecurityRepo implements ISecurityRepo {
+public class SecurityRepository implements ISecurityRepo {
 
     @Resource
     private RedissonClient redissonClient;
 
     @Resource
-    private ActivityRepository activityRepository;
+    private ActivityJpa activityJpa;
     @Resource
     private UserRepository userRepository;
     @Resource
@@ -100,7 +100,7 @@ public class SecurityRepo implements ISecurityRepo {
     public Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId) {
         UserRaffleConfig userConfig = userRaffleConfigRepository.findByUserIdAndActivityId(userId, activityId);
         return Optional.ofNullable(userConfig.getStrategyId())
-                .orElseGet(() -> activityRepository.findByActivityId(activityId).getDefaultStrategyId());
+                .orElseGet(() -> activityJpa.findByActivityId(activityId).getDefaultStrategyId());
     }
 
     /**

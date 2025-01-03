@@ -23,7 +23,6 @@ import java.util.List;
 })
 public class Activity {
     @Id
-    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Builder.Default
     private Long id = IdUtil.getSnowflakeNextId();  // todo 主键的雪花算法最好使用shardingSphere配置
     @Builder.Default

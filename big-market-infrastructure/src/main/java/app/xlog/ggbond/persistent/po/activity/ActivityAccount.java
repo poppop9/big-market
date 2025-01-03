@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-// @Entity
+@Entity
 @Table(name = "ActivityAccount", indexes = {
         // @Index(columnList = "userId")
 })

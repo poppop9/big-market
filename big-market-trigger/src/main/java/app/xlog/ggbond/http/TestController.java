@@ -1,12 +1,13 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.TestService;
-import app.xlog.ggbond.activity.OrderStateMachineEventCenter;
+import app.xlog.ggbond.activity.ActivityOrderEventCenter;
+import app.xlog.ggbond.activity.model.ActivityOrderContext;
+import app.xlog.ggbond.activity.model.ActivityOrderFlowBO;
 import app.xlog.ggbond.recommend.IntelligentRecommendService;
 import cn.dev33.satoken.stp.StpUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.context.annotation.Lazy;
@@ -14,6 +15,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 /**
  * 测试接口
@@ -29,7 +34,7 @@ public class TestController {
     @Lazy
     private TestController testController;
     @Resource
-    private OrderStateMachineEventCenter orderStateMachineEventCenter;
+    private ActivityOrderEventCenter activityOrderEventCenter;
     @Resource
     private TestService testService;
 
@@ -70,6 +75,26 @@ public class TestController {
     }
 
     /**
+     * 活动领域 - 测试状态机
+     */
+    @GetMapping("/v1/testStateMachine")
+    public void testStateMachine() {
+        activityOrderEventCenter.test();
+    }
+
+    /**
+     * 活动领域 - 测试创建活动单
+     */
+    @GetMapping("/v1/testCreateActivityOrder")
+    public void testCreateActivityOrder() {
+        boolean b = activityOrderEventCenter.publishCreateActivityOrderEvent(new ActivityOrderContext()
+                .setUserId(404L)
+                .setActivityOrderType(ActivityOrderFlowBO.ActivityOrderType.FREE_GIVEAWAY)
+        );
+    }
+
+
+    /**
      * Mess - 测试参数校验
      */
     @GetMapping("/v1/testParamCheck")
@@ -96,11 +121,17 @@ public class TestController {
     }
 
     /**
-     * 活动领域 - 测试状态机
+     * Mess - 测试时间戳
      */
-    @GetMapping("/v1/testStateMachine")
-    public void testStateMachine() {
-        orderStateMachineEventCenter.test();
+    @GetMapping("/v1/testTimestamp")
+    public void testTimestamp() {
+        long epochSecond = LocalDateTime.now()
+                .atZone(ZoneId.of("Asia/Shanghai"))
+                .toEpochSecond();
+        System.out.println(epochSecond);
+        System.out.println(LocalDateTime.of(1970, 1, 1, 0, 0, 0).atZone(ZoneId.of("UTC")).toEpochSecond());
+        System.out.println(LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneId.of("Asia/Shanghai")));
+        System.out.println(Double.valueOf(epochSecond));
     }
 
 }

@@ -30,7 +30,7 @@ public class JpaTest {
     private BeanSearcher beanSearcher;
 
     @Resource
-    private ActivityRepository activityRepository;
+    private ActivityJpa activityJPA;
     @Resource
     private StrategyRepository strategyRepository;
     @Resource
@@ -152,7 +152,7 @@ public class JpaTest {
      */
     @Test
     void test_activity() {
-        activityRepository.save(Activity.builder()
+        activityJPA.save(Activity.builder()
                 .activityId(10001L)
                 .defaultStrategyId(10001L)
                 .strategyIdList(new ArrayList<>(List.of(10001L)))
