@@ -12,14 +12,16 @@ import cn.zhxu.bs.operator.Contain;
 import cn.zhxu.bs.operator.Equal;
 import cn.zhxu.bs.util.MapUtils;
 import jakarta.annotation.Resource;
+import org.jeasy.random.EasyRandom;
+import org.jeasy.random.EasyRandomParameters;
+import org.jeasy.random.FieldPredicates;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 
 @SpringBootTest
 public class JpaTest {
@@ -39,6 +41,21 @@ public class JpaTest {
     private RafflePoolRepository rafflePoolRepository;
     @Resource
     private UserRaffleConfigRepository userRaffleConfigRepository;
+
+    @Test
+    void test_7843fgd() {
+        for (int i = 0; i < 10; i++) {
+            EasyRandomParameters parameters = new EasyRandomParameters()
+                    .dateRange(LocalDate.of(2020, 1, 1), LocalDate.of(2021, 1, 1))  // 日期范围
+                    .timeRange(LocalTime.MIN, LocalTime.MAX)  // 时间范围
+                    .stringLengthRange(5, 10)  // 字符串长度范围
+                    .collectionSizeRange(1, 10)  // 集合大小范围
+                    .randomize(FieldPredicates.named("userRole"), () -> User.UserRole.values()[new Random().nextInt(2)]);  // 自定义随机器
+
+            User user = new EasyRandom(parameters).nextObject(User.class);
+            userRepository.save(user);
+        }
+    }
 
     @Test
     void test_1() {
@@ -169,7 +186,7 @@ public class JpaTest {
                         .activityId(10001L)
                         .strategyId(10001L)
                         .build()
-                ));
+        ));
     }
 
     /**
@@ -286,12 +303,7 @@ public class JpaTest {
                         .password("404")
                         .userRole(User.UserRole.BLACKLIST)
                         .build(),
-                User.builder()
-                        .userId(111L)
-                        .userName("管理员")
-                        .password("111")
-                        .userRole(User.UserRole.ADMIN)
-                        .build(),
+                new EasyRandom().nextObject(User.class),
                 User.builder()
                         .userId(200L)
                         .userName("游客用户")

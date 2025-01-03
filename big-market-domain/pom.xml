@@ -18,6 +18,11 @@
     </properties>
 
     <dependencies>
+        <!--++++++++++++++ 工程模块 ++++++++++++++-->
+        <dependency>
+            <groupId>app.xlog.ggbond</groupId>
+            <artifactId>big-market-types</artifactId>
+        </dependency>
         <!--++++++++++++++ 日志，测试 ++++++++++++++-->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -34,6 +39,10 @@
             <artifactId>oapi-java-sdk</artifactId>
         </dependency>
         <!--++++++++++++++ 工具包 ++++++++++++++-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.alibaba.cola</groupId>
             <artifactId>cola-component-statemachine</artifactId>

@@ -5,6 +5,7 @@ import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +22,10 @@ import java.util.List;
         @Index(columnList = "activityId")
 })
 public class Activity {
-    // todo 主键的雪花算法最好使用shardingSphere配置
     @Id
     // @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Builder.Default
-    private Long id = IdUtil.getSnowflakeNextId();
+    private Long id = IdUtil.getSnowflakeNextId();  // todo 主键的雪花算法最好使用shardingSphere配置
     @Builder.Default
     @Column(updatable = false)
     private LocalDateTime createTime = LocalDateTime.now();

@@ -78,9 +78,6 @@ public class RedissonTest {
         RScoredSortedSet<Object> scoredSortedSet = redissonClient.getScoredSortedSet("products:electronics");
         scoredSortedSet.add(10.1, "iphone");
         scoredSortedSet.add(9.9, "huawei");
-
-        // 不知道是什么类型的数据
-        RLexSortedSet lexSortedSet = redissonClient.getLexSortedSet("products:electronics");
     }
 
     @Test

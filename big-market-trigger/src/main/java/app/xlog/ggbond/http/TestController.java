@@ -1,5 +1,6 @@
 package app.xlog.ggbond.http;
 
+import app.xlog.ggbond.TestService;
 import app.xlog.ggbond.activity.OrderStateMachineEventCenter;
 import app.xlog.ggbond.recommend.IntelligentRecommendService;
 import cn.dev33.satoken.stp.StpUtil;
@@ -29,6 +30,8 @@ public class TestController {
     private TestController testController;
     @Resource
     private OrderStateMachineEventCenter orderStateMachineEventCenter;
+    @Resource
+    private TestService testService;
 
     /**
      * 推荐领域 - 大模型回答
@@ -75,6 +78,15 @@ public class TestController {
         System.out.println("var1: " + var1);
         System.out.println("var2: " + var2);
         testController.test("");
+    }
+
+    /**
+     * Mess - 测试参数校验，内部方法
+     */
+    @GetMapping("/v2/testParamCheck")
+    public void testParamCheck() {
+        testService.test("", null);
+        // testController.test("");
     }
 
     void test(@NotBlank(message = "var3 不能是无效文本") String var3) {

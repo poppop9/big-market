@@ -1,13 +1,9 @@
 package app.xlog.ggbond.config;
 
-import app.xlog.ggbond.model.Response;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,33 +28,29 @@ public class GlobalExceptionHandler {
     @Resource
     private ObjectMapper objectMapper;
 
-    /**
-     * 处理基本数据类型参数校验异常
-     */
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<JsonNode> constrainViolationHandler(ConstraintViolationException e) {
-        log.error("参数校验异常 : {}", e.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(objectMapper.createObjectNode()
-                        .put("message", e.getMessage())
-                );
-    }
 
     /**
      * 处理基本数据类型参数校验异常
      */
     @ExceptionHandler(MethodValidationException.class)
     public ResponseEntity<JsonNode> constrainViolationHandler(MethodValidationException e) {
-        log.error("参数校验异常 : {}", e.getMessage());
+        String details = e.getAllValidationResults().stream().map(item -> item.getResolvableErrors().stream().findFirst().get().getDefaultMessage()).collect(Collectors.joining(", "));
+
+        System.out.println(e.getClass().getName() + ": " + details + "。" + e.getMessage());
+        Arrays.stream(e.getStackTrace()).forEach(stackTraceElement -> {
+            String moduleInfo = getModuleInfo(stackTraceElement);
+            System.out.printf("\tat %s.%s(%s:%d) %s%n",
+                    stackTraceElement.getClassName(),
+                    stackTraceElement.getMethodName(),
+                    stackTraceElement.getFileName(),
+                    stackTraceElement.getLineNumber(),
+                    moduleInfo);
+        });
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(objectMapper.createObjectNode()
-                        .put("message",
-                                e.getMessage() + " : " + e.getAllValidationResults().stream()
-                                        .map(item -> item.getResolvableErrors().stream().findFirst().get().getDefaultMessage())
-                                        .collect(Collectors.joining(", "))
-                        )
+                        .put("message", details + "。" + e.getMessage())
                 );
     }
 
@@ -74,6 +67,16 @@ public class GlobalExceptionHandler {
                 ));
 
         return ResponseEntity.badRequest().body(errorMap);
+    }
+
+    private static String getModuleInfo(StackTraceElement element) {
+        if (element.isNativeMethod()) {
+            return "~[na:na]";
+        } else if (element.getFileName() == null) {
+            return "~[classes/:na]";
+        } else {
+            return "~[classes/:na]";
+        }
     }
 
 }
