@@ -3,6 +3,7 @@ package app.xlog.ggbond.security.config;
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.dev33.satoken.stp.StpInterface;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.map.MapBuilder;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
@@ -36,9 +37,9 @@ public class SaTokenPermissionConfig implements StpInterface {
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        // todo 这里也可以加缓存（暂时没有用到角色的场景，用到了再根据场景加）
-        UserBO user = securityRepo.findByUserId(Long.valueOf(loginId.toString()));
-        return List.of(user.getUserRole().name());
+        return List.of(
+                StpUtil.getSession().get("role").toString()
+        );
     }
 
 }

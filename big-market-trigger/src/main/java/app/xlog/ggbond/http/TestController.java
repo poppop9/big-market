@@ -1,10 +1,13 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.TestService;
-import app.xlog.ggbond.activity.ActivityOrderEventCenter;
+import app.xlog.ggbond.activity.service.ActivityOrderEventCenter;
 import app.xlog.ggbond.activity.model.ActivityOrderContext;
 import app.xlog.ggbond.activity.model.ActivityOrderFlowBO;
 import app.xlog.ggbond.recommend.IntelligentRecommendService;
+import cn.dev33.satoken.SaManager;
+import cn.dev33.satoken.dao.SaTokenDao;
+import cn.dev33.satoken.dao.SaTokenDaoDefaultImpl;
 import cn.dev33.satoken.stp.StpUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 /**
  * 测试接口
@@ -62,6 +66,9 @@ public class TestController {
         System.out.println("token值 : " + StpUtil.getTokenValue());
         System.out.println("token冻结时间 : " + StpUtil.getTokenActiveTimeout());
         System.out.println("token超时时间 : " + StpUtil.getTokenTimeout());
+
+        List<String> strings = StpUtil.searchTokenValue("", 0, -1, true);
+        strings.forEach(System.out::println);
 
 /*        StpUtil.logout();
         StpUtil.getSession().logout();*/

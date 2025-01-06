@@ -7,14 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * JPA - 用户仓储
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserJpa extends JpaRepository<User, Long> {
 
     @Query("select u from User u where u.userId = ?1 and u.password = ?2")
     User findByUserIdAndPassword(Long userId, String password);

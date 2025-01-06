@@ -43,7 +43,6 @@ public class StateMachineConfig {
                             .setActivityOrderStatus(ActivityOrderFlowBO.ActivityOrderStatus.NOT_USED)
                     );
 
-
                     // 如果该活动单有效，则更新redis缓存
                 });
 

@@ -40,6 +40,7 @@ public class MySaTokenListener extends SaTokenListenerForSimple {
     /**
      * 每次注销 Session 时触发
      *
+     * - 只有手动注销时才触发，自动过期不会触发
      * @param id session的id
      */
     public void doLogoutSession(String id) {

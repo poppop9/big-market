@@ -113,4 +113,15 @@ public class SecurityService implements ISecurityService {
         securityRepo.insertBlacklistUserListToBloomFilter(userIds);
     }
 
+    /**
+     * 插入 - 将当前用户的角色信息放入session
+     */
+    @Override
+    public void insertPermissionIntoSession() {
+        StpUtil.getSession().set(
+                "role",
+                securityRepo.findByUserId(getLoginIdDefaultNull()).getUserRole().name()
+        );
+    }
+
 }

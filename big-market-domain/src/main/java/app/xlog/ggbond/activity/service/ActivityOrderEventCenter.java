@@ -1,4 +1,4 @@
-package app.xlog.ggbond.activity;
+package app.xlog.ggbond.activity.service;
 
 import app.xlog.ggbond.activity.config.StateMachineConfig;
 import app.xlog.ggbond.activity.model.ActivityOrderContext;
@@ -6,8 +6,6 @@ import app.xlog.ggbond.activity.model.ActivityOrderFlowBO;
 import com.alibaba.cola.statemachine.StateMachine;
 import com.alibaba.cola.statemachine.StateMachineFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**

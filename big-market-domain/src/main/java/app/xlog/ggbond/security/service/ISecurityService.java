@@ -38,4 +38,7 @@ public interface ISecurityService {
     // 插入 - 将黑名单用户放入布隆过滤器
     void insertBlacklistUserListToBloomFilter(List<Long> userIds);
 
+    // 插入 - 将当前用户的角色信息放入session
+    void insertPermissionIntoSession();
+
 }

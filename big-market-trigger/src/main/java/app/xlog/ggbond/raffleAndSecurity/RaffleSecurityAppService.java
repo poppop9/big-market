@@ -84,21 +84,22 @@ public class RaffleSecurityAppService {
      */
     public void doLogin(Long userId, String password) throws Exception {
         boolean isSuccess = securityService.doLogin(userId, password);
+        // 1. 判断是否登录成功
         if (!isSuccess) {
             throw new Exception("用户名或密码错误");
         }
 
+        // 2. 把activityId塞到session里，后面的操作都可以直接从这里取
         String activityId = SaHolder.getRequest().getParam("activityId");
-        // 只要登录了，我就把activityId塞到token session里，后面的操作都可以直接从这里取
-        StpUtil.getTokenSession().set("activityId", activityId);
+        StpUtil.getSession().set("activityId", activityId);
 
+        // 3. 装配
         Long strategyId = securityService.findStrategyIdByActivityIdAndUserId(Long.valueOf(activityId), userId);
+        raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
+        raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map
 
-        // 装配该策略所需的所有权重对象Map
-        raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);
-        // 装配该策略所需的所有奖品的库存Map
-        raffleArmory.assembleAllAwardCountByStrategyId(strategyId);
+        // 4. 将该用户的角色信息放入session
+        securityService.insertPermissionIntoSession();
     }
-
 
 }

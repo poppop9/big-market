@@ -23,8 +23,7 @@ public class RedissonConfig {
     public RedissonClient redissonClient() {
         Config config = new Config();
 
-        //设置redis的地址，这里是单机模式
-        config.useSingleServer()
+        config.useSingleServer()  // 单机模式
 //                .setPassword(redisPassword)
                 .setAddress(redisAddress)
                 .setConnectionPoolSize(64)  // 设置连接池的大小，默认为64

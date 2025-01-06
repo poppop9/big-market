@@ -7,7 +7,7 @@ import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
 import app.xlog.ggbond.persistent.repository.jpa.ActivityJpa;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
-import app.xlog.ggbond.persistent.repository.jpa.UserRepository;
+import app.xlog.ggbond.persistent.repository.jpa.UserJpa;
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.model.UserRaffleConfigBO;
 import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
@@ -34,7 +34,7 @@ public class SecurityRepository implements ISecurityRepo {
     @Resource
     private ActivityJpa activityJpa;
     @Resource
-    private UserRepository userRepository;
+    private UserJpa userJpa;
     @Resource
     private UserRaffleConfigRepository userRaffleConfigRepository;
     @Resource
@@ -45,7 +45,7 @@ public class SecurityRepository implements ISecurityRepo {
      */
     @Override
     public Boolean doLogin(Long userId, String password) {
-        User user = userRepository.findByUserIdAndPassword(userId, password);
+        User user = userJpa.findByUserIdAndPassword(userId, password);
         return user != null;
     }
 
@@ -79,7 +79,7 @@ public class SecurityRepository implements ISecurityRepo {
     @Override
     public UserBO findByUserId(Long userId) {
         return BeanUtil.copyProperties(
-                userRepository.findByUserId(userId), UserBO.class
+                userJpa.findByUserId(userId), UserBO.class
         );
     }
 
@@ -89,7 +89,7 @@ public class SecurityRepository implements ISecurityRepo {
     @Override
     public List<UserBO> queryAllBlacklistUser() {
         return BeanUtil.copyToList(
-                userRepository.findByUserRole(User.UserRole.BLACKLIST), UserBO.class
+                userJpa.findByUserRole(User.UserRole.BLACKLIST), UserBO.class
         );
     }
 

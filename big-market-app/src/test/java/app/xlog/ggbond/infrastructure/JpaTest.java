@@ -36,11 +36,16 @@ public class JpaTest {
     @Resource
     private AwardRepository awardRepository;
     @Resource
-    private UserRepository userRepository;
+    private UserJpa userJpa;
     @Resource
     private RafflePoolRepository rafflePoolRepository;
     @Resource
     private UserRaffleConfigRepository userRaffleConfigRepository;
+
+    @Test
+    void test_fjdslk2() {
+        List<String> strings = Collections.<String>emptyList();
+    }
 
     @Test
     void test_7843fgd() {
@@ -53,7 +58,7 @@ public class JpaTest {
                     .randomize(FieldPredicates.named("userRole"), () -> User.UserRole.values()[new Random().nextInt(2)]);  // 自定义随机器
 
             User user = new EasyRandom(parameters).nextObject(User.class);
-            userRepository.save(user);
+            userJpa.save(user);
         }
     }
 
@@ -102,7 +107,7 @@ public class JpaTest {
                         .build()
         ));*/
         long snowflakeNextId = IdUtil.getSnowflakeNextId();
-        userRepository.saveAll(List.of(
+        userJpa.saveAll(List.of(
                 User.builder()
                         .userId(snowflakeNextId)
                         .userName("普通用户2 - 测试")
@@ -296,7 +301,7 @@ public class JpaTest {
      */
     @Test
     void test_4(long snowflakeNextId) {
-        userRepository.saveAll(List.of(
+        userJpa.saveAll(List.of(
                 User.builder()
                         .userId(404L)
                         .userName("404 用户")
