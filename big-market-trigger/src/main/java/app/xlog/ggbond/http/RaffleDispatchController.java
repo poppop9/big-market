@@ -1,7 +1,7 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IRaffleDispatchApiService;
-import app.xlog.ggbond.model.Response;
+import app.xlog.ggbond.model.JsonResult;
 import app.xlog.ggbond.raffleAndSecurity.RaffleSecurityAppService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,10 +34,7 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
     @GetMapping("/v2/getAward")
     public ResponseEntity<JsonNode> getAward(@RequestParam Long activityId) {
         Long awardId = raffleSecurityAppService.dispatchAwardIdByActivityIdAndCurrentUser(activityId);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(objectMapper.valueToTree(awardId));
+        return JsonResult.ok("awardId", awardId);
     }
 
 }

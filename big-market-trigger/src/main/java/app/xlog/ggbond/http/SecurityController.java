@@ -1,7 +1,7 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.ISecurityApiService;
-import app.xlog.ggbond.model.Response;
+import app.xlog.ggbond.model.JsonResult;
 import app.xlog.ggbond.raffleAndSecurity.RaffleSecurityAppService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +29,7 @@ public class SecurityController implements ISecurityApiService {
 
     /**
      * 登录
+     *
      * @param activityId 这个参数用来鉴定是哪个活动的登录
      * @param userId     用户id
      * @param password   密码
@@ -37,10 +38,7 @@ public class SecurityController implements ISecurityApiService {
     @GetMapping("/v1/doLogin")
     public ResponseEntity<JsonNode> doLogin(@RequestParam Long activityId, @RequestParam Long userId, @RequestParam String password) throws Exception {
         raffleSecurityAppService.doLogin(userId, password);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(objectMapper.valueToTree("用户 " + userId + " 登录成功"));
+        return JsonResult.ok("用户 " + userId + " 登录成功");
     }
 
 }

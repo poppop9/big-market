@@ -1,6 +1,6 @@
 package app.xlog.ggbond;
 
-import app.xlog.ggbond.model.Response;
+import app.xlog.ggbond.model.JsonResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +15,6 @@ public interface IRaffleAssembleApiService {
     ResponseEntity<JsonNode> queryAwardList(Long strategyId);
 
     // 实时获取中奖奖品信息
-    Flux<Response<JsonNode>> getWinningAwardsInfo(@RequestParam Long activityId);
+    Flux<ResponseEntity<JsonNode>> getWinningAwardsInfo(@RequestParam Long activityId);
 
 }

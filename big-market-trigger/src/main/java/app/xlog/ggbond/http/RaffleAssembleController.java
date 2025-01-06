@@ -1,7 +1,7 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IRaffleAssembleApiService;
-import app.xlog.ggbond.model.Response;
+import app.xlog.ggbond.model.JsonResult;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffleAndSecurity.RaffleSecurityAppService;
 import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
@@ -37,18 +37,12 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
 
     /**
      * 查询对应的奖品列表
-     * todo 改成所有返回对象为ResponseEntity
-     **/
+     */
     @Override
     @GetMapping("/v2/queryAwardList")
     public ResponseEntity<JsonNode> queryAwardList(@RequestParam Long activityId) {
         List<AwardBO> awardBOs = raffleSecurityAppService.findAllAwardsByActivityIdAndCurrentUser(activityId);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(objectMapper.valueToTree(
-                        awardBOs
-                ));
+        return JsonResult.ok("awardBOs", awardBOs);
     }
 
     /**
@@ -56,21 +50,17 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
      */
     @Override
     @GetMapping(value = "/v1/getWinningAwardsInfo", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Response<JsonNode>> getWinningAwardsInfo(@RequestParam Long activityId) {
+    public Flux<ResponseEntity<JsonNode>> getWinningAwardsInfo(@RequestParam Long activityId) {
         List<UserRaffleHistoryBO> winningAwards = raffleSecurityAppService.findAllWinningAwards(activityId);
 
         return Flux.interval(Duration.ofSeconds(1))
                 .flatMap(sequence -> Mono
-                        .fromCallable(() -> Response.<JsonNode>builder()
-                                .status(HttpStatus.OK)
-                                .message("调用成功")
-                                .data(objectMapper.valueToTree(winningAwards))
-                                .build())
-                        .onErrorReturn(Response.<JsonNode>builder()
-                                .status(HttpStatus.OK)
-                                .message("调用成功")
-                                .data(objectMapper.valueToTree("奖品2"))
-                                .build())
+                        .fromCallable(() -> JsonResult
+                                .ok("winningAwards", winningAwards)
+                        )
+                        .onErrorReturn(JsonResult
+                                .ok("奖品2", null)
+                        )
                 );
     }
 
