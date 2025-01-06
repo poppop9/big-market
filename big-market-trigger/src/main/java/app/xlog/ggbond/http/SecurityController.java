@@ -1,13 +1,12 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.ISecurityApiService;
-import app.xlog.ggbond.model.JsonResult;
+import app.xlog.ggbond.ZakiResponse;
 import app.xlog.ggbond.raffleAndSecurity.RaffleSecurityAppService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 安全领域 - 用户权限接口
+ * 安全领域 - 用户权限
  */
 @Slf4j
 @RestController
@@ -23,13 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class SecurityController implements ISecurityApiService {
 
     @Resource
-    private ObjectMapper objectMapper;
-    @Resource
     private RaffleSecurityAppService raffleSecurityAppService;
 
     /**
      * 登录
-     *
      * @param activityId 这个参数用来鉴定是哪个活动的登录
      * @param userId     用户id
      * @param password   密码
@@ -38,7 +34,7 @@ public class SecurityController implements ISecurityApiService {
     @GetMapping("/v1/doLogin")
     public ResponseEntity<JsonNode> doLogin(@RequestParam Long activityId, @RequestParam Long userId, @RequestParam String password) throws Exception {
         raffleSecurityAppService.doLogin(userId, password);
-        return JsonResult.ok("用户 " + userId + " 登录成功");
+        return ZakiResponse.ok("用户 " + userId + " 登录成功");
     }
 
 }

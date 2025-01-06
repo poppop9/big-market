@@ -1,7 +1,7 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IRaffleAssembleApiService;
-import app.xlog.ggbond.model.JsonResult;
+import app.xlog.ggbond.ZakiResponse;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffleAndSecurity.RaffleSecurityAppService;
 import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +22,7 @@ import java.time.Duration;
 import java.util.List;
 
 /**
- * 抽奖领域 - 装配接口
+ * 抽奖领域 - 装配
  **/
 @Slf4j
 @RestController
@@ -42,7 +41,7 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
     @GetMapping("/v2/queryAwardList")
     public ResponseEntity<JsonNode> queryAwardList(@RequestParam Long activityId) {
         List<AwardBO> awardBOs = raffleSecurityAppService.findAllAwardsByActivityIdAndCurrentUser(activityId);
-        return JsonResult.ok("awardBOs", awardBOs);
+        return ZakiResponse.ok("awardBOs", awardBOs);
     }
 
     /**
@@ -55,10 +54,10 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
 
         return Flux.interval(Duration.ofSeconds(1))
                 .flatMap(sequence -> Mono
-                        .fromCallable(() -> JsonResult
+                        .fromCallable(() -> ZakiResponse
                                 .ok("winningAwards", winningAwards)
                         )
-                        .onErrorReturn(JsonResult
+                        .onErrorReturn(ZakiResponse
                                 .ok("奖品2", null)
                         )
                 );

@@ -33,9 +33,23 @@ services:
       - global-network
     ports:
       - 5173:5173
-#    environment:
-#      - API_HOST_URL=http://127.0.0.1:8091
-#      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  # kafka
+  kafka:
+    image: bitnami/kafka:3.9.0
+    container_name: kafka
+    restart: always
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_CFG_NODE_ID=0  # 节点 ID，单节点配置为 0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker  # 同时作为 controller 和 broker
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=BROKER  # 设置 broker 监听器名称
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER  # 设置 controller 监听器名称
+      - KAFKA_CFG_LISTENERS=BROKER://:9092,CONTROLLER://:9093  # 设置broker和controller监听器的端口
+      - KAFKA_CFG_ADVERTISED_LISTENERS=BROKER://localhost:9092,CONTROLLER://localhost:9093  # 广告监听器，确保外部可以访问 broker
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT  # 使用 PLAINTEXT 协议
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093  # 控制器选举设置，单机模式只需一个节点
+      - KAFKA_KRAFT_CLUSTER_ID=big-market-cluster  # 设置集群ID
 
 networks:
   big-market-network:

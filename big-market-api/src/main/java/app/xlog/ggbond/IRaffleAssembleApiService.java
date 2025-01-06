@@ -1,6 +1,5 @@
 package app.xlog.ggbond;
 
-import app.xlog.ggbond.model.JsonResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;

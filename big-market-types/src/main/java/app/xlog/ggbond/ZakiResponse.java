@@ -1,4 +1,4 @@
-package app.xlog.ggbond.model;
+package app.xlog.ggbond;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,19 +15,19 @@ import java.util.LinkedHashSet;
 import java.util.function.Consumer;
 
 /**
- * 自定义的http响应结果
+ * 自定义的 http 响应结果
  * <p>
  * - 使用示例
- * ----- 1. JsonResult.status(HttpStatus.BAD_GATEWAY).body("awardId", awardId, "awardName", awardName);
- * ----- 2. JsonResult.ok("awardId", awardId, "awardName", awardName);
- * ----- 3. 用于返回 message : JsonResult.ok("用户 " + userId + " 登录成功")
+ * ----- 1. ZakiResponse.status(HttpStatus.BAD_GATEWAY).body("awardId", awardId, "awardName", awardName);
+ * ----- 2. ZakiResponse.ok("awardId", awardId, "awardName", awardName);
+ * ----- 3. 用于返回 message : ZakiResponse.ok("用户 " + userId + " 登录成功")
  * </p>
  */
-public class JsonResult extends ResponseEntity<Object> {
+public class ZakiResponse extends ResponseEntity<Object> {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public JsonResult(HttpStatusCode status) {
+    public ZakiResponse(HttpStatusCode status) {
         super(status);
     }
 
