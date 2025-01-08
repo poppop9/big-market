@@ -31,8 +31,6 @@ public class KafkaService {
             else
                 log.info("消息发送成功：{}", result.getRecordMetadata());
         });
-
-
     }
 
     /**

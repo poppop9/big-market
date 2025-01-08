@@ -41,7 +41,7 @@ public class JobTest {
         System.out.println("-------------------");
     }
 
-    @Scheduled(initialDelay = 1000, fixedDelay = 100000)
+    // @Scheduled(initialDelay = 1000, fixedDelay = 100000)
     public void testKafka_1() {
         kafkaService.send("test-1", IdUtil.simpleUUID());
     }
