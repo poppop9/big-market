@@ -10,10 +10,40 @@ logging:
     app.xlog.ggbond: INFO  # 设置包级别日志级别
     org.springframework: WARN  # 设置spring的日志级别
 
-# Sa-Token
+spring:
+  kafka:
+    bootstrap-servers: kafka:9092  # kafka的地址
+    producer:  # 生产者配置
+      acks: 1  # 只有在主副本确认时，生产者才认为消息已成功发送
+      retries: 1   # 发送消息失败时，重试的次数
+      batch-size: 16384   # 生产者在发送批次之前可以积累的最大字节数
+      properties:
+        linger.ms: 0  # 生产者在发送批次之前等待更多消息的时间
+        buffer-memory: 33554432  # 生产者可以使用的缓冲区内存大小
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer  # 消息键的序列化器
+        value-serializer: org.apache.kafka.common.serialization.StringSerializer  # 消息值的序列化器
+    consumer:  # 消费者配置
+      properties:
+        group.id: consumer_group_1   # 消费组的id
+        # 偏移量
+        enable-auto-commit: true    # 自动提交偏移量
+        auto.commit.interval.ms: 1000  # 自动提交偏移量的时间间隔
+        auto-offset-reset: earliest  # 当没有初始偏移量时，消费者从最早的消息开始消费
+        # 心跳机制
+        heartbeat.interval.ms: 3000  # 消费者发送心跳的时间间隔
+        session.timeout.ms: 120000  # 消费者会话的超时时间
+        request.timeout.ms: 180000  # 消费者请求的超时时间
+        # poll
+        max-poll-records: 50   # 单次poll返回的最大消息数
+        max-poll-interval-ms: 5000   # 消费者在两次连续的poll之间可以等待的最大时间，消费者处理数据超过这个时间，会被认定为死亡
+        # 序列化
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer  # 消息键的反序列化器
+        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer  # 消息值的反序列化器
+
+# sa-token
 sa-token:
   token-name: satoken  # token 名称（同时也是 cookie 名称）
-#  timeout: 2592000  # token 有效期（单位：秒） 默认30天，-1 代表永久有效
+  timeout: 2592000  # token 有效期（单位：秒） 默认30天，-1 代表永久有效
   active-timeout: -1  # token 最低活跃频率（单位：秒），如果 token 超过此时间没有访问系统就会被冻结，默认-1 代表不限制，永不冻结
   is-concurrent: true  # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
   is-share: true  # 在多人登录同一账号时，是否共用一个 token （为 true 时所有登录共用一个 token, 为 false 时每次登录新建一个 token）

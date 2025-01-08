@@ -1,8 +1,12 @@
 package app.xlog.ggbond.job;
 
+import app.xlog.ggbond.activity.service.KafkaService;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.IdUtil;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +17,9 @@ import java.util.List;
  */
 @Component
 public class JobTest {
+
+    @Resource
+    private KafkaService kafkaService;
 
     int count = 0;
 
@@ -32,6 +39,11 @@ public class JobTest {
             System.out.println(count++ + " : " + item);
         });
         System.out.println("-------------------");
+    }
+
+    @Scheduled(initialDelay = 1000, fixedDelay = 100000)
+    public void testKafka_1() {
+        kafkaService.send("test-1", IdUtil.simpleUUID());
     }
 
 }

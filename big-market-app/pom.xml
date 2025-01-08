@@ -65,6 +65,10 @@
         </dependency>
         <!--++++++++++++++ 工具包 ++++++++++++++-->
         <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.xuxueli</groupId>
             <artifactId>xxl-job-core</artifactId>
         </dependency>

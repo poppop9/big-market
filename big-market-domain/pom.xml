@@ -40,6 +40,10 @@
         </dependency>
         <!--++++++++++++++ 工具包 ++++++++++++++-->
         <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba.cola</groupId>
             <artifactId>cola-component-statemachine</artifactId>
         </dependency>
