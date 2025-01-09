@@ -1,11 +1,13 @@
 package app.xlog.ggbond.config;
 
+import app.xlog.ggbond.BigMarketException;
+import app.xlog.ggbond.BigMarketRespCode;
+import app.xlog.ggbond.ZakiResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.method.MethodValidationException;
@@ -29,6 +31,25 @@ public class GlobalExceptionHandler {
     private ObjectMapper objectMapper;
 
     /**
+     * 处理自定义异常
+     */
+    @ExceptionHandler(BigMarketException.class)
+    public ResponseEntity<JsonNode> bigMarketExceptionHandler(BigMarketException e) {
+        log.error("业务错误码 :{} --->>> {}", e.getRespCode().getCode(), e.getRespCode().getMessage());
+        Arrays.stream(e.getStackTrace()).forEach(stackTraceElement -> {
+            System.out.printf("\tat %s.%s(%s:%d) %s%n",
+                    stackTraceElement.getClassName(),
+                    stackTraceElement.getMethodName(),
+                    stackTraceElement.getFileName(),
+                    stackTraceElement.getLineNumber(),
+                    stackTraceElement.isNativeMethod() ? "~[na:na]" : "~[classes/:na]"
+            );
+        });
+
+        return ZakiResponse.error(e.getRespCode(), e.getMessage());
+    }
+
+    /**
      * 处理基本数据类型参数校验异常
      */
     @ExceptionHandler(MethodValidationException.class)
@@ -46,11 +67,10 @@ public class GlobalExceptionHandler {
             );
         });
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(objectMapper.createObjectNode()
-                        .put("message", details + "。" + e.getMessage())
-                );
+        return ZakiResponse.error(
+                BigMarketRespCode.PARAMETER_VERIFICATION_FAILED,
+                details + " --->>> " + e.getMessage()
+        );
     }
 
     /**

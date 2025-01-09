@@ -6,24 +6,16 @@ import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffleAndSecurity.RaffleSecurityAppService;
 import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpServerResponse;
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.List;
 
 /**

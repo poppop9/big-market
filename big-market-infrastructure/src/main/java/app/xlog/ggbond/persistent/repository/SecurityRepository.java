@@ -55,7 +55,7 @@ public class SecurityRepository implements ISecurityRepo {
     @Override
     public Boolean isBlacklistUser(Long userId) {
         // 获取布隆过滤器
-        RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter(GlobalConstant.getBlacklistUserList());
+        RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter(GlobalConstant.RedisKey.getBlacklistUserList());
         if (!bloomFilter.isExists()) {
             bloomFilter.tryInit(100000L, 0.03);
         }
@@ -126,7 +126,7 @@ public class SecurityRepository implements ISecurityRepo {
      */
     @Override
     public void insertBlacklistUserListToBloomFilter(List<Long> userIds) {
-        RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter(GlobalConstant.getBlacklistUserList());
+        RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter(GlobalConstant.RedisKey.getBlacklistUserList());
         // 删除旧的布隆过滤器
         if (bloomFilter.isExists()) {
             bloomFilter.delete();

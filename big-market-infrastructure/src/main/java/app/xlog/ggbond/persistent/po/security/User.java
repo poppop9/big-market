@@ -1,14 +1,10 @@
 package app.xlog.ggbond.persistent.po.security;
 
-import app.xlog.ggbond.GlobalConstant;
-import app.xlog.ggbond.persistent.po.MapToJsonConverter;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * 用户

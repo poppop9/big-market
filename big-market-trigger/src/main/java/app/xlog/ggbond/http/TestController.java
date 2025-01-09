@@ -1,5 +1,7 @@
 package app.xlog.ggbond.http;
 
+import app.xlog.ggbond.BigMarketException;
+import app.xlog.ggbond.BigMarketRespCode;
 import app.xlog.ggbond.TestService;
 import app.xlog.ggbond.activity.service.ActivityOrderEventCenter;
 import app.xlog.ggbond.activity.model.ActivityOrderContext;
@@ -107,9 +109,14 @@ public class TestController {
     @GetMapping("/v1/testParamCheck")
     public void testParamCheck(@NotBlank(message = "var1 不能是无效文本") String var1,
                                @NotNull(message = "var2 不能为 null") String var2) {
-        System.out.println("var1: " + var1);
+        throw new BigMarketException(
+                BigMarketRespCode.PARAMETER_VERIFICATION_FAILED,
+                "lalala"
+        );
+
+/*        System.out.println("var1: " + var1);
         System.out.println("var2: " + var2);
-        testController.test("");
+        testController.test("");*/
     }
 
     /**

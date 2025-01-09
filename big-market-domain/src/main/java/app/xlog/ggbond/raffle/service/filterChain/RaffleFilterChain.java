@@ -25,6 +25,7 @@ public class RaffleFilterChain {
 
         log.atInfo().log("抽奖领域 - " + userId + " 过滤器链开始执行");
         LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("RaffleFilterChain", null, context);
+        Exception cause = liteflowResponse.getCause();  // todo
         log.atInfo().log("抽奖领域 - " + userId + " 过滤器链执行完毕");
 
         return liteflowResponse.getContextBean(RaffleFilterContext.class).getAwardId();

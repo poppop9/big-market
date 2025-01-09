@@ -14,18 +14,16 @@ import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
 import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RAtomicLong;
-import org.redisson.api.RMap;
-import org.redisson.api.RQueue;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.*;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -87,10 +85,13 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
 
     /**
      * 库存 - 更新奖品库存
+     *
+     * todo 这里会有并发问题
      */
     @Override
+    @SneakyThrows
     public Boolean decreaseAwardCount(Long strategyId, Long awardId) {
-        RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.getAwardCountMapCacheKey(strategyId));
+        RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getAwardCountMapCacheKey(strategyId));
         if (rMap.isExists()) {
             Long surplus = rMap.compute(awardId, (k, v) -> v != null ? v - 1 : 0);
             if (surplus > 0) {
@@ -105,7 +106,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
         }
 
         // 一般来说装配好了奖品库存，不会走到这里
-        log.atWarn().log("抽奖领域 - 奖品 {} 库存扣减失败", awardId);
+        log.atError().log("抽奖领域 - 奖品 {} 库存扣减失败", awardId);
         return false;
     }
 
@@ -114,7 +115,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public void addDecrAwardCountToQueue(DecrQueueVO decrQueueVO) {
-        RQueue<DecrQueueVO> rQueue = redissonClient.getQueue(GlobalConstant.getAwardCountDecrQueue());
+        RQueue<DecrQueueVO> rQueue = redissonClient.getQueue(GlobalConstant.RedisKey.getAwardCountDecrQueue());
         rQueue.add(decrQueueVO);
     }
 
@@ -123,7 +124,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public DecrQueueVO queryDecrAwardCountFromQueue() {
-        RQueue<DecrQueueVO> rQueue = redissonClient.getQueue(GlobalConstant.getAwardCountDecrQueue());
+        RQueue<DecrQueueVO> rQueue = redissonClient.getQueue(GlobalConstant.RedisKey.getAwardCountDecrQueue());
         return rQueue.poll();
     }
 
@@ -133,10 +134,10 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     @Override
     public void updateAllAwardCountExpireTime(Long strategyId) {
         raffleArmoryRepo.findAwardsByStrategyId(strategyId).forEach(item -> {
-            RAtomicLong rAtomicLong = redissonClient.getAtomicLong(GlobalConstant.getAwardCountCacheKey(strategyId, item.getAwardId()));
+            RAtomicLong rAtomicLong = redissonClient.getAtomicLong(GlobalConstant.RedisKey.getAwardCountCacheKey(strategyId, item.getAwardId()));
 
             if (rAtomicLong.isExists()) {
-                rAtomicLong.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
+                rAtomicLong.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
             }
         });
     }
@@ -172,8 +173,8 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     @Override
     public void updateAllWeightRandomExpireTime(Long strategyId) {
         Arrays.stream(RaffleFilterContext.DispatchParam.values())
-                .map(item -> redissonClient.getBucket(GlobalConstant.getWeightRandomCacheKey(strategyId, item.name())))
-                .forEach(item -> item.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime)));
+                .map(item -> redissonClient.getBucket(GlobalConstant.RedisKey.getWeightRandomCacheKey(strategyId, item.name())))
+                .forEach(item -> item.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime)));
     }
 
     /**
@@ -181,8 +182,8 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public void updateAllWeightRandomExpireTime2(Long strategyId) {
-        redissonClient.getMap(GlobalConstant.getWeightRandomMapCacheKey(strategyId))
-                .expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
+        redissonClient.getMap(GlobalConstant.RedisKey.getWeightRandomMapCacheKey(strategyId))
+                .expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
     }
 
 }

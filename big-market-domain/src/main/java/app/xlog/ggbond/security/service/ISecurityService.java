@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * 安全领域 - 安全服务接口
+ *
+ * todo 应用一启动，就要登录匿名用户200，将其抽奖信息装配到redis中（这样新用户登录进来由于没有购买数据，就要使用200用户）
  */
 public interface ISecurityService {
 

@@ -1,7 +1,14 @@
 package app.xlog.ggbond;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
- * 本项目的自定义异常
+ * 本项目异常
  */
-public class BigMarketException {
+@Data
+@AllArgsConstructor
+public class BigMarketException extends RuntimeException {
+    private BigMarketRespCode respCode;  // 业务级别的响应码
+    private String message;  // 异常信息
 }

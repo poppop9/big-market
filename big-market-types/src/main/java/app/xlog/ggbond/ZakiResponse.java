@@ -3,6 +3,8 @@ package app.xlog.ggbond;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
@@ -21,6 +23,7 @@ import java.util.function.Consumer;
  * ----- 1. ZakiResponse.status(HttpStatus.BAD_GATEWAY).body("awardId", awardId, "awardName", awardName);
  * ----- 2. ZakiResponse.ok("awardId", awardId, "awardName", awardName);
  * ----- 3. 用于返回 message : ZakiResponse.ok("用户 " + userId + " 登录成功")
+ * ----- 4. ZakiResponse.error(ZakiResponse.BigMarketRespCode.PARAMETER_VERIFICATION_FAILED, "错误信息")
  * </p>
  */
 public class ZakiResponse extends ResponseEntity<Object> {
@@ -131,7 +134,11 @@ public class ZakiResponse extends ResponseEntity<Object> {
         }
 
         public <T> ResponseEntity<T> body(T body) {
-            return null;
+            return new ResponseEntity<>(
+                    body,
+                    this.headers,
+                    this.statusCode
+            );
         }
 
         public ResponseEntity<JsonNode> body(Object... objects) {
@@ -142,12 +149,14 @@ public class ZakiResponse extends ResponseEntity<Object> {
                 dataNode.putPOJO(objects[i].toString(), objects[i + 1]);
             }
 
+            HttpStatus httpStatus = (HttpStatus) this.statusCode;
             return new ResponseEntity<>(
                     objectMapper.createObjectNode()
-                            .put("message", "ok")
+                            .put("code", httpStatus.value())
+                            .put("message", httpStatus.getReasonPhrase())
                             .putPOJO("data", dataNode),
                     this.headers,
-                    this.statusCode
+                    httpStatus
             );
         }
     }
@@ -162,15 +171,27 @@ public class ZakiResponse extends ResponseEntity<Object> {
 
         return ok().body(objectMapper
                 .createObjectNode()
-                .put("message", "ok")
+                .put("code", BigMarketRespCode.SUCCESS.getCode())
+                .put("message", BigMarketRespCode.SUCCESS.getMessage())
                 .putPOJO("data", dataNode)
         );
     }
 
-    public static ResponseEntity<JsonNode> ok(String message) {
+    public static ResponseEntity<JsonNode> ok(String dataMessage) {
         return ok().body(objectMapper
                 .createObjectNode()
-                .putPOJO("message", message)
+                .put("code", BigMarketRespCode.SUCCESS.getCode())
+                .put("message", BigMarketRespCode.SUCCESS.getMessage())
+                .putPOJO("data", dataMessage)
+        );
+    }
+
+    public static ResponseEntity<JsonNode> error(BigMarketRespCode respCode, String dataMessage) {
+        return status(HttpStatus.INTERNAL_SERVER_ERROR).body(objectMapper
+                .createObjectNode()
+                .put("code", respCode.getCode())
+                .put("message", respCode.getMessage())
+                .putPOJO("data", dataMessage)
         );
     }
 

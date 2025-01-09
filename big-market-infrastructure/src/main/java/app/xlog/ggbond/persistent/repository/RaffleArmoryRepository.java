@@ -48,7 +48,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public WeightRandom<Long> findWeightRandom(Long strategyId, String dispatchParam) {
-        return (WeightRandom<Long>) redissonClient.getBucket(GlobalConstant.getWeightRandomCacheKey(strategyId, dispatchParam)).get();
+        return (WeightRandom<Long>) redissonClient.getBucket(GlobalConstant.RedisKey.getWeightRandomCacheKey(strategyId, dispatchParam)).get();
     }
 
     /**
@@ -56,7 +56,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public WeightRandom<Long> findWeightRandom2(Long strategyId, String dispatchParam) {
-        RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.getWeightRandomMapCacheKey(strategyId));
+        RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getWeightRandomMapCacheKey(strategyId));
         return rMap.get(dispatchParam);
     }
 
@@ -66,7 +66,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     @Override
     public List<WeightRandom<Long>> findAllWeightRandomByStrategyId(Long strategyId) {
         return Arrays.stream(RaffleFilterContext.DispatchParam.values())
-                .map(item -> (WeightRandom<Long>) redissonClient.getBucket(GlobalConstant.getWeightRandomCacheKey(strategyId, item.name())).get())
+                .map(item -> (WeightRandom<Long>) redissonClient.getBucket(GlobalConstant.RedisKey.getWeightRandomCacheKey(strategyId, item.name())).get())
                 .toList();
     }
 
@@ -119,11 +119,11 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
                 AwardBO::getAwardCount
         ));
 
-        RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.getAwardCountMapCacheKey(strategyId));
+        RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getAwardCountMapCacheKey(strategyId));
         if (rMap.isExists()) rMap.clear();
 
         rMap.putAll(collect);
-        rMap.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
+        rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
 
 /*        findAwardsByStrategyId(strategyId).forEach(item -> {
             RAtomicLong rAtomicLong = redissonClient.getAtomicLong(GlobalConstant.getAwardCountCacheKey(strategyId, item.getAwardId()));
@@ -140,10 +140,10 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public void insertWeightRandom(Long strategyId, String dispatchParam, WeightRandom<Long> wr) {
-        RBucket<Object> bucket = redissonClient.getBucket(GlobalConstant.getWeightRandomCacheKey(strategyId, dispatchParam));
+        RBucket<Object> bucket = redissonClient.getBucket(GlobalConstant.RedisKey.getWeightRandomCacheKey(strategyId, dispatchParam));
         bucket.set(wr);
 
-        bucket.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
+        bucket.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
     }
 
     /**
@@ -151,13 +151,13 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public void insertWeightRandom(Long strategyId, Map<String, WeightRandom<Long>> wrMap) {
-        RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.getWeightRandomMapCacheKey(strategyId));
+        RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getWeightRandomMapCacheKey(strategyId));
         if (rMap.isExists()) {
             rMap.clear();
         }
         rMap.putAll(wrMap);
 
-        rMap.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
+        rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
     }
 
 }
