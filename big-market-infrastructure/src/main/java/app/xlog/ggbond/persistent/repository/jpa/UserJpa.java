@@ -25,4 +25,9 @@ public interface UserJpa extends JpaRepository<User, Long> {
     @Query("select u from User u where u.userRole = ?1")
     List<User> findByUserRole(User.UserRole userRole);
 
+    @Transactional
+    @Modifying
+    @Query("update User u set u.password = ?1 where u.userId = ?2")
+    int updatePasswordByUserId(String password, Long userId);
+
 }

@@ -13,8 +13,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class RedissonConfig {
-//    @Value("${SecretKey.redis.password}")
-//    private String redisPassword;
 
     @Value("${redis.address}")
     private String redisAddress;
@@ -22,9 +20,7 @@ public class RedissonConfig {
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
-
         config.useSingleServer()  // 单机模式
-//                .setPassword(redisPassword)
                 .setAddress(redisAddress)
                 .setConnectionPoolSize(64)  // 设置连接池的大小，默认为64
                 .setConnectionMinimumIdleSize(10)  // 设置连接池的最小空闲连接数，默认为10
@@ -34,7 +30,6 @@ public class RedissonConfig {
                 .setRetryInterval(1000)  // 设置连接重试的间隔时间（单位：毫秒），默认为1000
                 .setPingConnectionInterval(0)  // 设置定期检查连接是否可用的时间间隔（单位：毫秒），默认为0，表示不进行定期检查
                 .setKeepAlive(true);  // 设置是否保持长连接，默认为true
-
         config.setCodec(new JsonJacksonCodec());  // 设置Redisson存储数据的格式，这里使用Json，一定要配置，防止乱码
 
         return Redisson.create(config);

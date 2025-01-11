@@ -85,8 +85,6 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
 
     /**
      * 库存 - 更新奖品库存
-     *
-     * todo 这里会有并发问题
      */
     @Override
     @SneakyThrows
@@ -102,11 +100,15 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
                 // 将该奖品从缓存中的抽奖池里移除
                 removeAwardFromPools(strategyId, awardId);
                 return true;
+            } else {
+                // 这里如果并发高，会出现扣减为负数的情况，但是没关系，返回false，后续会重新调度
+                log.atError().log("抽奖领域 - 奖品 {} 库存扣减失败", awardId);
+                removeAwardFromPools(strategyId, awardId);  // 将该奖品从缓存中的抽奖池里移除
+                return false;
             }
         }
 
-        // 一般来说装配好了奖品库存，不会走到这里
-        log.atError().log("抽奖领域 - 奖品 {} 库存扣减失败", awardId);
+        log.atError().log("抽奖领域 - 奖品 {} 库存扣减失败，可能库存没有装配成功", awardId);
         return false;
     }
 

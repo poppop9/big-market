@@ -3,18 +3,17 @@ package app.xlog.ggbond.http;
 import app.xlog.ggbond.BigMarketException;
 import app.xlog.ggbond.BigMarketRespCode;
 import app.xlog.ggbond.TestService;
-import app.xlog.ggbond.activity.service.ActivityOrderEventCenter;
 import app.xlog.ggbond.activity.model.ActivityOrderContext;
 import app.xlog.ggbond.activity.model.ActivityOrderFlowBO;
+import app.xlog.ggbond.activity.service.ActivityOrderEventCenter;
 import app.xlog.ggbond.recommend.IntelligentRecommendService;
-import cn.dev33.satoken.SaManager;
-import cn.dev33.satoken.dao.SaTokenDao;
-import cn.dev33.satoken.dao.SaTokenDaoDefaultImpl;
 import cn.dev33.satoken.stp.StpUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,6 +42,8 @@ public class TestController {
     private ActivityOrderEventCenter activityOrderEventCenter;
     @Resource
     private TestService testService;
+    @Resource
+    private RedissonClient redissonClient;
 
     /**
      * 推荐领域 - 大模型回答
@@ -146,6 +147,22 @@ public class TestController {
         System.out.println(LocalDateTime.of(1970, 1, 1, 0, 0, 0).atZone(ZoneId.of("UTC")).toEpochSecond());
         System.out.println(LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneId.of("Asia/Shanghai")));
         System.out.println(Double.valueOf(epochSecond));
+    }
+
+    /**
+     * Mess - 测试分布式锁
+     */
+    @GetMapping("/v1/testDistributedLock")
+    public void testDistributedLock() {
+        RLock rlock = redissonClient.getLock("testDistributedLock");
+    }
+
+    /**
+     * Mess - 测试事务
+     */
+    @GetMapping("/v1/testTransaction")
+    public void testTransaction() {
+        testService.testTransaction();
     }
 
 }

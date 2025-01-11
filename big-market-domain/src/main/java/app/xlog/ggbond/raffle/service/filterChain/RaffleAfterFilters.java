@@ -6,6 +6,7 @@ import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.model.vo.RetryRouterException;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
+import app.xlog.ggbond.security.repository.ISecurityRepo;
 import com.yomahub.liteflow.annotation.LiteflowComponent;
 import com.yomahub.liteflow.annotation.LiteflowMethod;
 import com.yomahub.liteflow.core.NodeComponent;
@@ -25,6 +26,8 @@ public class RaffleAfterFilters {
     private IRaffleDispatchRepo raffleDispatchRepo;
     @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
+    @Resource
+    private ISecurityRepo securityRepo;
 
     /**
      * 更新过期时间过滤器 - 更新redis中的过期时间
@@ -79,7 +82,6 @@ public class RaffleAfterFilters {
     public void userRaffleTimeFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         Long userId = context.getUserBO().getUserId();
-
         log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖次数过滤器开始执行");
 
         // 如果是游客，就不要增加抽奖次数

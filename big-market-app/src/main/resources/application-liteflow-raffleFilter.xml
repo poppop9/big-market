@@ -15,7 +15,7 @@
                 AwardInventoryFilter,
                 UserRaffleTimeFilter,
                 UserRaffleFlowRecordFilter
-            ).retry(30, "app.xlog.ggbond.raffle.model.vo.RetryRouterException")
+            ).retry(3, "app.xlog.ggbond.raffle.model.vo.RetryRouterException")
         );
     </chain>
 </flow>

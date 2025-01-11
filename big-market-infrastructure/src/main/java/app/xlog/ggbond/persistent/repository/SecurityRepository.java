@@ -136,4 +136,12 @@ public class SecurityRepository implements ISecurityRepo {
         bloomFilter.add(userIds);
     }
 
+    /**
+     * 修改 - 修改用户密码
+     */
+    @Override
+    public void updatePassword(Long userId, String password) {
+        userJpa.updatePasswordByUserId(password, userId);
+    }
+
 }
