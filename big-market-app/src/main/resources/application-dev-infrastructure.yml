@@ -1,6 +1,5 @@
 #file: noinspection SpringBootApplicationYaml
 
-# 数据库
 spring:
   datasource:
     driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
@@ -16,7 +15,6 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
-# redis
 redis:
   address: redis://localhost:6379
   sdk:

@@ -15,7 +15,6 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
-# Redis
 redis:
   address: redis://172.17.0.1:6379
   sdk:

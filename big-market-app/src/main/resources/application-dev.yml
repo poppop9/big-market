@@ -57,7 +57,6 @@ spring:
       # manual_immediate：手动调用Acknowledgment.acknowledge()后立即提交，一般推荐使用这种
       # ack-mode: manual_immediate
 
-# sa-token
 sa-token:
   token-name: satoken  # token 名称（同时也是 cookie 名称）
   timeout: 2592000  # token 有效期（单位：秒） 默认30天，-1 代表永久有效
@@ -67,11 +66,9 @@ sa-token:
   token-style: uuid  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
   is-log: true  # 是否输出操作日志
 
-# liteFlow编排
 liteflow:
   rule-source: application-liteflow-raffleFilter.xml
 
-# xxl-job
 xxl:
   job:
     admin:
