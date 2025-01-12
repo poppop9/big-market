@@ -25,7 +25,7 @@ public class TestService {
     @Transactional
     public void testTransaction() {
         securityRepo.updatePassword(200L, "eeeddd");
-        throw new RetryRouterException("扣减库存失败，重新调度");
+        throw new RetryRouterException(BigMarketRespCode.DECREASE_AWARD_COUNT_FAILED, "扣减库存失败，重新调度");
     }
 
 }

@@ -12,7 +12,6 @@ public class GlobalConstant {
     public final static Long tokenExpireTime = 30 * 24 * 60 * 60 * 1000L;  // 单位是毫秒
 
     public static class RedisKey {
-
         public final static Long redisExpireTime = 3 * 24 * 60 * 60L;  // 抽奖领域 - redis过期时长 : 3天（单位是秒）
 
         // 抽奖领域 - 生成权重对象的缓存key
@@ -44,7 +43,13 @@ public class GlobalConstant {
         public static String getBlacklistUserList() {
             return "BlacklistUserList";
         }
+    }
 
+    public static class KafkaConstant {
+        public final static String groupId = "consumer_group_1";
+
+        // 抽奖领域 - 扣减奖品库存
+        public final static String DECR_AWARD_INVENTORY = "Raffle-DecrAwardInventory";
     }
 
 }

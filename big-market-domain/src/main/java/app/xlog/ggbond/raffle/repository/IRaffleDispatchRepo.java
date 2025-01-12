@@ -20,6 +20,9 @@ public interface IRaffleDispatchRepo {
     // 库存 - 将扣减信息写入队列
     void addDecrAwardCountToQueue(DecrQueueVO decrQueueVO);
 
+    // 库存 - 将扣减信息写入kafka
+    void addDecrAwardCountToMQ(DecrQueueVO decrQueueVO);
+
     // 库存 - 查询出队列中的一个扣减信息
     DecrQueueVO queryDecrAwardCountFromQueue();
 

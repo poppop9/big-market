@@ -13,15 +13,15 @@ logging:
 spring:
   kafka:
     bootstrap-servers: kafka:9092  # kafka的地址
-    producer:  # 生产者配置
+    producer: # 生产者配置
       acks: 1  # 只有在主副本确认时，生产者才认为消息已成功发送
       retries: 1   # 发送消息失败时，重试的次数
       batch-size: 16384   # 生产者在发送批次之前可以积累的最大字节数
+      key-serializer: org.springframework.kafka.support.serializer.JsonSerializer  # 消息键的序列化器
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer  # 消息值的序列化器
       properties:
         linger.ms: 0  # 生产者在发送批次之前等待更多消息的时间
         buffer-memory: 33554432  # 生产者可以使用的缓冲区内存大小
-        key-serializer: org.apache.kafka.common.serialization.StringSerializer  # 消息键的序列化器
-        value-serializer: org.apache.kafka.common.serialization.StringSerializer  # 消息值的序列化器
     consumer:  # 消费者配置
       properties:
         group.id: consumer_group_1   # 消费组的id
@@ -36,7 +36,7 @@ spring:
         # poll
         max-poll-records: 50   # 单次poll返回的最大消息数
         max-poll-interval-ms: 5000   # 消费者在两次连续的poll之间可以等待的最大时间，消费者处理数据超过这个时间，会被认定为死亡
-        # 序列化
+        # 反序列化
         key-deserializer: org.apache.kafka.common.serialization.StringDeserializer  # 消息键的反序列化器
         value-deserializer: org.apache.kafka.common.serialization.StringDeserializer  # 消息值的反序列化器
 

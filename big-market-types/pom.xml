@@ -20,6 +20,11 @@
     <dependencies>
         <!--++++++++++++++ 工具包 ++++++++++++++-->
         <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-core</artifactId>
+            <version>5.8.32</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>

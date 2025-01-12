@@ -1,4 +1,4 @@
-package app.xlog.ggbond.raffleAndSecurity;
+package app.xlog.ggbond.integrationService;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;

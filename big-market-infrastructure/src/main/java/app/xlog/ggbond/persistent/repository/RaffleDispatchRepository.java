@@ -1,6 +1,8 @@
 package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.GlobalConstant;
+import app.xlog.ggbond.MQMessage;
+import app.xlog.ggbond.mq.MQEventCenter;
 import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
 import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
@@ -23,7 +25,6 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +36,8 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
 
     @Resource
     private RedissonClient redissonClient;
+    @Resource
+    private MQEventCenter mqEventCenter;
 
     @Resource
     private AwardRepository awardRepository;
@@ -91,7 +94,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     public Boolean decreaseAwardCount(Long strategyId, Long awardId) {
         RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getAwardCountMapCacheKey(strategyId));
         if (rMap.isExists()) {
-            Long surplus = rMap.compute(awardId, (k, v) -> v != null ? v - 1 : 0);
+            Long surplus = rMap.compute(awardId, (k, v) -> (v != null && v > 0) ? (v - 1) : 0);
             if (surplus > 0) {
                 log.atInfo().log("抽奖领域 - 奖品 {} 库存扣减成功，剩余库存：{}", awardId, surplus);
                 return true;
@@ -119,6 +122,25 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     public void addDecrAwardCountToQueue(DecrQueueVO decrQueueVO) {
         RQueue<DecrQueueVO> rQueue = redissonClient.getQueue(GlobalConstant.RedisKey.getAwardCountDecrQueue());
         rQueue.add(decrQueueVO);
+    }
+
+    /**
+     * 库存 - 将扣减信息写入kafka
+     */
+    @Override
+    public void addDecrAwardCountToMQ(DecrQueueVO decrQueueVO) {
+        boolean isSuccess = mqEventCenter.sendMessage(
+                GlobalConstant.KafkaConstant.DECR_AWARD_INVENTORY,
+                MQMessage.<DecrQueueVO>builder()
+                        .data(decrQueueVO)
+                        .build()
+        );
+
+        if (isSuccess) {
+            log.debug("抽奖领域 - 将扣减信息写入kafka - 消息发送成功：{}", decrQueueVO);
+        } else {
+            log.error("抽奖领域 - 将扣减信息写入kafka - 消息发送失败：{}", decrQueueVO);
+        }
     }
 
     /**

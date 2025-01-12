@@ -22,11 +22,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Builder.Default
-    @Column(updatable = false)
-    private LocalDateTime createTime = LocalDateTime.now();
-    @Builder.Default
-    private LocalDateTime updateTime = LocalDateTime.now();
+    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
+    private LocalDateTime createTime;
+    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable = false, updatable = false)
+    private LocalDateTime updateTime;
 
     @Builder.Default
     private Long userId = IdUtil.getSnowflakeNextId();  // 用户id

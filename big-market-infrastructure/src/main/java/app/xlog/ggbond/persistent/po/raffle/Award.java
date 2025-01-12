@@ -1,10 +1,6 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
-import app.xlog.ggbond.raffle.utils.SpringContextUtil;
 import cn.hutool.core.util.IdUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,11 +30,10 @@ public class Award {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Builder.Default
-    @Column(updatable = false)
-    private LocalDateTime createTime = LocalDateTime.now();
-    @Builder.Default
-    private LocalDateTime updateTime = LocalDateTime.now();
+    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
+    private LocalDateTime createTime;
+    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable = false, updatable = false)
+    private LocalDateTime updateTime;
 
     private Long strategyId;  // 策略id
     @Column(unique = true)

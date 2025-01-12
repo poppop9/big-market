@@ -1,14 +1,12 @@
 package app.xlog.ggbond.raffle.model.vo;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
+@ToString
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Builder
 public class DecrQueueVO {
     private Long strategyId;
     private Long awardId;

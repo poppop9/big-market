@@ -3,7 +3,7 @@ package app.xlog.ggbond.http;
 import app.xlog.ggbond.IRaffleAssembleApiService;
 import app.xlog.ggbond.ZakiResponse;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
-import app.xlog.ggbond.raffleAndSecurity.RaffleSecurityAppService;
+import app.xlog.ggbond.integrationService.RaffleSecurityAppService;
 import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Resource;

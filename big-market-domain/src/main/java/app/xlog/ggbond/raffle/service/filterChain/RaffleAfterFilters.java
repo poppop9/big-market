@@ -1,5 +1,6 @@
 package app.xlog.ggbond.raffle.service.filterChain;
 
+import app.xlog.ggbond.BigMarketRespCode;
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
@@ -59,14 +60,13 @@ public class RaffleAfterFilters {
 
         // 调度扣减方法
         if (!raffleDispatchRepo.decreaseAwardCount(context.getStrategyId(), context.getAwardId())) {
-            throw new RetryRouterException("扣减库存失败，重新调度");
+            throw new RetryRouterException(BigMarketRespCode.DECREASE_AWARD_COUNT_FAILED, "扣减库存失败，重新调度");
         }
 
-        // 将扣减信息写入队列  todo 优化成把扣减信息写入kafka
-        raffleDispatchRepo.addDecrAwardCountToQueue(DecrQueueVO.builder()
+        // 将扣减信息写入队列
+        raffleDispatchRepo.addDecrAwardCountToMQ(DecrQueueVO.builder()
                 .strategyId(context.getStrategyId())
-                .awardId(context.getAwardId())
-                .build()
+                .awardId(context.getAwardId()).build()
         );
         log.atInfo().log("抽奖领域 - " + userId + " 奖品库存过滤器执行完毕");
     }

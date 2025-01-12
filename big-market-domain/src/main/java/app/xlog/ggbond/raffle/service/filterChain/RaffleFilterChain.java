@@ -1,6 +1,8 @@
 package app.xlog.ggbond.raffle.service.filterChain;
 
+import app.xlog.ggbond.BigMarketException;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
+import app.xlog.ggbond.raffle.model.vo.RetryRouterException;
 import com.yomahub.liteflow.core.FlowExecutor;
 import com.yomahub.liteflow.flow.LiteflowResponse;
 import jakarta.annotation.Resource;
@@ -29,7 +31,13 @@ public class RaffleFilterChain {
 
         log.atInfo().log("抽奖领域 - " + userId + " 过滤器链开始执行");
         LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("RaffleFilterChain", null, context);
-        if (!liteflowResponse.isSuccess()) throw liteflowResponse.getCause();
+        if (!liteflowResponse.isSuccess()) {
+            if (liteflowResponse.getCause() instanceof RetryRouterException cause) {
+                throw new BigMarketException(cause.getRespCode(), cause.getRespCode().getMessage());
+            } else {
+                throw liteflowResponse.getCause();
+            }
+        }
         log.atInfo().log("抽奖领域 - " + userId + " 过滤器链执行完毕");
 
         return liteflowResponse.getContextBean(RaffleFilterContext.class).getAwardId();

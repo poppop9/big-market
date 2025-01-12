@@ -24,12 +24,11 @@ public class UserPurchaseHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Builder.Default
-    @Column(updatable = false)
-    private LocalDateTime createTime = LocalDateTime.now();
-    @Builder.Default
-    private LocalDateTime updateTime = LocalDateTime.now();
-    
+    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
+    private LocalDateTime createTime;
+    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable = false, updatable = false)
+    private LocalDateTime updateTime;
+
     private Long userId;  // 用户id
     private String purchaseName;  // 购买的商品名称
 }

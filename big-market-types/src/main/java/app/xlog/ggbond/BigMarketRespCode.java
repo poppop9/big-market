@@ -14,7 +14,9 @@ public enum BigMarketRespCode {
     ERROR(500, "请求失败"),
     PARAMETER_VERIFICATION_FAILED(600, "参数校验失败"),
     // 活动领域
-    ACTIVITY_ORDER_INSUFFICIENT_INVENTORY(520, "活动单库存不足"),
+    ACTIVITY_ORDER_INSUFFICIENT_INVENTORY(510, "活动单库存不足"),
+    // 抽奖领域
+    DECREASE_AWARD_COUNT_FAILED(550, "扣减奖品库存失败，可能由于并发太高，或者奖品库存没有装配"),
     ;
 
     private final int code;

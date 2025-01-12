@@ -25,11 +25,10 @@ public class Activity {
     @Id
     @Builder.Default
     private Long id = IdUtil.getSnowflakeNextId();  // todo 主键的雪花算法最好使用shardingSphere配置
-    @Builder.Default
-    @Column(updatable = false)
-    private LocalDateTime createTime = LocalDateTime.now();
-    @Builder.Default
-    private LocalDateTime updateTime = LocalDateTime.now();
+    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
+    private LocalDateTime createTime;
+    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable = false, updatable = false)
+    private LocalDateTime updateTime;
 
     private Long activityId;  // 活动id
     private Long defaultStrategyId;  // 默认策略id（每个活动都会有一个默认的策略id）
