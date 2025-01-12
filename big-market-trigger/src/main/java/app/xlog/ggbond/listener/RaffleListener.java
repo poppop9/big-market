@@ -23,8 +23,6 @@ public class RaffleListener {
 
     /**
      * 消费扣减奖品库存消息
-     * <p>
-     * todo 未测试
      */
     @KafkaListener(topics = GlobalConstant.KafkaConstant.DECR_AWARD_INVENTORY,
             groupId = GlobalConstant.KafkaConstant.groupId)

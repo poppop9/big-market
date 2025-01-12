@@ -1,5 +1,6 @@
 package app.xlog.ggbond.persistent.po.activity;
 
+import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,15 +20,7 @@ import java.time.LocalDateTime;
 @Table(name = "ActivityAccount", indexes = {
         // @Index(columnList = "userId")
 })
-public class ActivityAccount {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime createTime;
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime updateTime;
-
+public class ActivityAccount extends ShardingTableBaseEntity {
     private Long userId;  // 用户id
     private Long activityId;  // 活动id
 }

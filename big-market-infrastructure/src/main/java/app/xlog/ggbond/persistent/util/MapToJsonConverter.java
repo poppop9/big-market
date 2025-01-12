@@ -1,4 +1,4 @@
-package app.xlog.ggbond.persistent.po;
+package app.xlog.ggbond.persistent.util;
 
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -8,7 +8,6 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Converter
 public class MapToJsonConverter implements AttributeConverter<LinkedHashMap<Long, Long>, String> {

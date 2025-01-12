@@ -1,4 +1,4 @@
-package app.xlog.ggbond.persistent.po;
+package app.xlog.ggbond.persistent.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

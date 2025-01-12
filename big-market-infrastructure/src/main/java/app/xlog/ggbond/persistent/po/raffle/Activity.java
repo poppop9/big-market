@@ -1,12 +1,11 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
-import app.xlog.ggbond.persistent.po.LongListToJsonConverter;
-import cn.hutool.core.util.IdUtil;
+import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
+import app.xlog.ggbond.persistent.po.SingleTableBaseEntity;
+import app.xlog.ggbond.persistent.util.LongListToJsonConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,15 +20,7 @@ import java.util.List;
 @Table(name = "Activity", indexes = {
         @Index(columnList = "activityId")
 })
-public class Activity {
-    @Id
-    @Builder.Default
-    private Long id = IdUtil.getSnowflakeNextId();  // todo 主键的雪花算法最好使用shardingSphere配置
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime createTime;
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime updateTime;
-
+public class Activity extends SingleTableBaseEntity {
     private Long activityId;  // 活动id
     private Long defaultStrategyId;  // 默认策略id（每个活动都会有一个默认的策略id）
     @Builder.Default

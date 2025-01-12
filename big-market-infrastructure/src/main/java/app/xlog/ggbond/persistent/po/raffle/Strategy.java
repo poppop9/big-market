@@ -1,5 +1,6 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
+import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,15 +24,7 @@ import java.time.LocalDateTime;
 @Table(name = "Strategy", indexes = {
         @Index(columnList = "activityId")
 })
-public class Strategy {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime createTime;
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime updateTime;
-
+public class Strategy extends ShardingTableBaseEntity {
     private Long activityId;  // 活动id
     @Column(unique = true)
     @Builder.Default

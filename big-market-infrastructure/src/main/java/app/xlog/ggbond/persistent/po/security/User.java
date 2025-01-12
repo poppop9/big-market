@@ -1,5 +1,6 @@
 package app.xlog.ggbond.persistent.po.security;
 
+import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,15 +19,7 @@ import java.time.LocalDateTime;
         @Index(columnList = "userRole"),
         @Index(columnList = "userId, password")
 })
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime createTime;
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime updateTime;
-
+public class User extends ShardingTableBaseEntity {
     @Builder.Default
     private Long userId = IdUtil.getSnowflakeNextId();  // 用户id
     private String userName;  // 用户名

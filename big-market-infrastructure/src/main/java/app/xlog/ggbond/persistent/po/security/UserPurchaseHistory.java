@@ -1,5 +1,6 @@
 package app.xlog.ggbond.persistent.po.security;
 
+import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,15 +21,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "UserPurchaseHistory")
-public class UserPurchaseHistory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime createTime;
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime updateTime;
-
+public class UserPurchaseHistory extends ShardingTableBaseEntity {
     private Long userId;  // 用户id
     private String purchaseName;  // 购买的商品名称
 }

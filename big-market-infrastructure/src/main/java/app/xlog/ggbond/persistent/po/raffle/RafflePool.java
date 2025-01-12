@@ -1,6 +1,7 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
-import app.xlog.ggbond.persistent.po.LongListToJsonConverter;
+import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
+import app.xlog.ggbond.persistent.util.LongListToJsonConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,15 +19,7 @@ import java.util.List;
 @Table(name = "RafflePool", indexes = {
         @Index(columnList = "strategyId")
 })
-public class RafflePool {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime createTime;
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime updateTime;
-
+public class RafflePool extends ShardingTableBaseEntity {
     private Long strategyId;  // 绑定的策略id
     @Column(columnDefinition = "TEXT")
     @Convert(converter = LongListToJsonConverter.class)
