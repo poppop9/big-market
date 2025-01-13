@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 public class Strategy extends ShardingTableBaseEntity {
     private Long activityId;  // 活动id
     @Column(unique = true)
-    @JpaDefaultValue(howToCreate = "cn.hutool.core.util.IdUtil.getSnowflakeNextId()")
-    private Long strategyId;  // 策略id，全局唯一（不同活动的策略id也不能重复）
+    @Builder.Default
+    private Long strategyId = IdUtil.getSnowflakeNextId();  // 策略id，全局唯一（不同活动的策略id也不能重复）
     private String strategyDesc;  // 策略描述
 }

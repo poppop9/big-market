@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
         @Index(columnList = "userId, password")
 })
 public class User extends ShardingTableBaseEntity {
-    @JpaDefaultValue(howToCreate = "cn.hutool.core.util.IdUtil.getSnowflakeNextId()")
+    @Builder.Default
     private Long userId = IdUtil.getSnowflakeNextId();  // 用户id
     private String userName;  // 用户名
     private String password;  // 密码

@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
-@EntityListeners(JpaDefaultValueListener.class) // 添加注解处理器
 public class SingleTableBaseEntity {
     @Id
     @GeneratedValue(generator = "SnowflakeIdGenerator")

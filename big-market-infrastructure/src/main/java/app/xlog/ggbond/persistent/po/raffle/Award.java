@@ -27,8 +27,8 @@ import java.time.LocalDateTime;
 })
 public class Award extends ShardingTableBaseEntity {
     private Long strategyId;  // 策略id
-    @JpaDefaultValue(howToCreate = "cn.hutool.core.util.IdUtil.getSnowflakeNextId()")
-    private Long awardId;  // 奖品id
+    @Builder.Default
+    private Long awardI = IdUtil.getSnowflakeNextId();  // 奖品id
     private String awardTitle;  // 奖品标题
     private String awardSubtitle;  // 奖品副标题
     private Long awardCount;  // 奖品库存

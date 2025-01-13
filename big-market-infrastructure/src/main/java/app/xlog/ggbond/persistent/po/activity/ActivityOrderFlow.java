@@ -28,14 +28,15 @@ public class ActivityOrderFlow extends ShardingTableBaseEntity {
     private Long userId;  // 用户id
     private Long activityId;  // 活动id
     private Long strategyId;  // 策略id
-    @JpaDefaultValue(howToCreate = "cn.hutool.core.util.IdUtil.getSnowflakeNextId()")
-    private Long activityOrderId;  // 活动单id
-    @JpaDefaultValue(howToCreate = "java.time.LocalDateTime.of(2000, 12, 31, 0, 0, 0)")
-    private LocalDateTime activityOrderEffectiveTime;  // 订单生效时间（立马生效为LocalDateTime.MIN）
-    @JpaDefaultValue(howToCreate = "java.time.LocalDateTime.of(9999, 12, 31, 0, 0, 0)")
-    private LocalDateTime activityOrderExpireTime;  // 订单过期时间（永久有效为LocalDateTime.MAX）
+    @Builder.Default
+    private Long activityOrderId = IdUtil.getSnowflakeNextId();  // 活动单id
+    @Builder.Default
+    private LocalDateTime activityOrderEffectiveTime = LocalDateTime.of(2000, 12, 31, 0, 0, 0);  // 订单生效时间（立马生效为LocalDateTime.MIN）
+    @Builder.Default
+    private LocalDateTime activityOrderExpireTime = LocalDateTime.of(9999, 12, 31, 0, 0, 0);  // 订单过期时间（永久有效为LocalDateTime.MAX）
     private ActivityOrderType activityOrderType;  // 订单类型
     private ActivityOrderStatus activityOrderStatus;  // 订单状态
+    private Long testField = 11L;  // 测试字段 todo
 
     public enum ActivityOrderType {
         SIGN_IN_TO_CLAIM,  // 签到领取

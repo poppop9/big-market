@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(JpaDefaultValueListener.class) // 添加注解处理器
 @MappedSuperclass
 public class ShardingTableBaseEntity {
     @Id

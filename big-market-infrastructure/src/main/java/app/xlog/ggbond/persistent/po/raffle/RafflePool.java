@@ -31,12 +31,12 @@ public class RafflePool extends ShardingTableBaseEntity {
     private String rafflePoolName;  // 抽奖池名称
     private String ruleDescription;  // 抽奖池描述
 
-    @JpaDefaultValue(howToCreate = "java.lang.Long.valueOf(-1L)")
-    private Long normalTimeStartValue;  // 普通次数抽奖池的起始值（比如No1stAnd2ndAwardPool，这里设定为0，表示抽奖大于等于0次时，才为No1stAnd2ndAwardPool）
-    @JpaDefaultValue(howToCreate = "java.lang.Long.valueOf(-1L)")
-    private Long normalTimeEndValue;  // 普通次数抽奖池的结束值（比如No1stAnd2ndAwardPool，这里设定为9，表示抽奖小于等于9次时，才为No1stAnd2ndAwardPool）
-    @JpaDefaultValue(howToCreate = "java.lang.Long.valueOf(-1L)")
-    private Long specialTimeValue;  // 特殊次数抽奖池的值（比如1stAnd2ndAwardPool，这里设定为50，表示抽奖第50次时，使用1stAnd2ndAwardPool）
+    @Builder.Default
+    private Long normalTimeStartValue = -1L;  // 普通次数抽奖池的起始值（比如No1stAnd2ndAwardPool，这里设定为0，表示抽奖大于等于0次时，才为No1stAnd2ndAwardPool）
+    @Builder.Default
+    private Long normalTimeEndValue= -1L;  // 普通次数抽奖池的结束值（比如No1stAnd2ndAwardPool，这里设定为9，表示抽奖小于等于9次时，才为No1stAnd2ndAwardPool）
+    @Builder.Default
+    private Long specialTimeValue= -1L;  // 特殊次数抽奖池的值（比如1stAnd2ndAwardPool，这里设定为50，表示抽奖第50次时，使用1stAnd2ndAwardPool）
 
     @AllArgsConstructor
     @Getter
