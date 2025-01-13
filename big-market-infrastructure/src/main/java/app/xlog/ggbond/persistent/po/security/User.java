@@ -1,6 +1,7 @@
 package app.xlog.ggbond.persistent.po.security;
 
 import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
+import app.xlog.ggbond.persistent.util.JpaDefaultValue;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
         @Index(columnList = "userId, password")
 })
 public class User extends ShardingTableBaseEntity {
-    @Builder.Default
+    @JpaDefaultValue(howToCreate = "cn.hutool.core.util.IdUtil.getSnowflakeNextId()")
     private Long userId = IdUtil.getSnowflakeNextId();  // 用户id
     private String userName;  // 用户名
     private String password;  // 密码

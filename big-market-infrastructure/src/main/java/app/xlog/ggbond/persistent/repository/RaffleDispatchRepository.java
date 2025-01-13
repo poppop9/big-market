@@ -4,9 +4,9 @@ import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.MQMessage;
 import app.xlog.ggbond.mq.MQEventCenter;
 import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
-import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
-import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
-import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
+import app.xlog.ggbond.persistent.repository.jpa.AwardJpa;
+import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigJpa;
+import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryJpa;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
@@ -40,13 +40,13 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     private MQEventCenter mqEventCenter;
 
     @Resource
-    private AwardRepository awardRepository;
+    private AwardJpa awardJpa;
     @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
     @Resource
-    private UserRaffleHistoryRepository userRaffleHistoryRepository;
+    private UserRaffleHistoryJpa userRaffleHistoryJpa;
     @Resource
-    private UserRaffleConfigRepository userRaffleConfigRepository;
+    private UserRaffleConfigJpa userRaffleConfigJpa;
 
     /**
      * 抽奖池 - 将该奖品从缓存中的所有抽奖池权重对象中移除
@@ -80,7 +80,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public void updateAwardCount(DecrQueueVO decrQueueVO) {
-        awardRepository.decrementAwardCountByStrategyIdAndAwardId(
+        awardJpa.decrementAwardCountByStrategyIdAndAwardId(
                 decrQueueVO.getStrategyId(),
                 decrQueueVO.getAwardId()
         );
@@ -171,10 +171,10 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public void addUserRaffleTimeByStrategyId(Long userId, Long strategyId) {
-        userRaffleConfigRepository.updateRaffleTimeByUserIdAndStrategyId(
+        userRaffleConfigJpa.updateRaffleTimeByUserIdAndStrategyId(
                 userId,
                 strategyId,
-                userRaffleConfigRepository.findByUserIdAndStrategyId(userId, strategyId).getRaffleTime() + 1
+                userRaffleConfigJpa.findByUserIdAndStrategyId(userId, strategyId).getRaffleTime() + 1
         );
     }
 
@@ -183,7 +183,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public void addUserRaffleFlowRecordFilter(Long userId, Long strategyId, Long awardId) {
-        userRaffleHistoryRepository.save(UserRaffleHistory.builder()
+        userRaffleHistoryJpa.save(UserRaffleHistory.builder()
                 .userId(userId)
                 .strategyId(strategyId)
                 .awardId(awardId)

@@ -8,13 +8,19 @@ import java.util.List;
 /**
  * 安全领域 - 安全服务接口
  *
- * todo 应用一启动，就要登录匿名用户200，将其抽奖信息装配到redis中（这样新用户登录进来由于没有购买数据，就要使用200用户）
+ * todo 应用一启动，就要登录匿名用户200，将其抽奖信息装配到redis中（这样如果一个没有购买数据的新用户登录进来，就可以使用200用户）
+ * todo 200用户的 TTL 是永久
+ * todo 不能用 200用户，这样每个用户的库存没法管理
+ *
+ * todo 去掉所有的 builder.default，改用 @PrePersist 和 @PreUpdate 未完善
+ * todo 索引未完善
+ * todo
+ * todo 造一些用户购买历史数据，测试ai生成速度
  */
 public interface ISecurityService {
 
     // 登录
     Boolean doLogin(Long userId, String password);
-
 
     // 查询 - 获取当前登录用户id
     Long getLoginIdDefaultNull();

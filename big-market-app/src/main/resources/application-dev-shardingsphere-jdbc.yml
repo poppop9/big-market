@@ -26,6 +26,7 @@ rules:
       keyGeneratorName: SNOWFLAKE
     # 分片自动表
     autoTables:
+      # 抽奖领域
       Strategy: # 策略
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: strategyId, shardingAlgorithmName: HASH_MOD_4 } }
@@ -35,6 +36,14 @@ rules:
       RafflePool: # 抽奖池
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: strategyId, shardingAlgorithmName: HASH_MOD_4 } }
+      # 活动领域
+      ActivityAccount: # 活动账户
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
+      ActivityOrderFlow: # 活动单流水
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
+      # 安全领域
       User: # 用户
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }

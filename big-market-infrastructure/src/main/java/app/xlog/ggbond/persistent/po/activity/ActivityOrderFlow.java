@@ -1,6 +1,8 @@
 package app.xlog.ggbond.persistent.po.activity;
 
 import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
+import app.xlog.ggbond.persistent.util.JpaDefaultValue;
+import app.xlog.ggbond.persistent.util.JpaDefaultValueListener;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+
 
 /**
  * 活动单流水
@@ -25,12 +28,12 @@ public class ActivityOrderFlow extends ShardingTableBaseEntity {
     private Long userId;  // 用户id
     private Long activityId;  // 活动id
     private Long strategyId;  // 策略id
-    @Builder.Default
-    private Long activityOrderId = IdUtil.getSnowflakeNextId();  // 活动单id
-    @Builder.Default
-    private LocalDateTime activityOrderEffectiveTime = LocalDateTime.MIN;  // 订单生效时间（立马生效为LocalDateTime.MIN）
-    @Builder.Default
-    private LocalDateTime activityOrderExpireTime = LocalDateTime.MAX;  // 订单过期时间（永久有效为LocalDateTime.MAX）
+    @JpaDefaultValue(howToCreate = "cn.hutool.core.util.IdUtil.getSnowflakeNextId()")
+    private Long activityOrderId;  // 活动单id
+    @JpaDefaultValue(howToCreate = "java.time.LocalDateTime.of(2000, 12, 31, 0, 0, 0)")
+    private LocalDateTime activityOrderEffectiveTime;  // 订单生效时间（立马生效为LocalDateTime.MIN）
+    @JpaDefaultValue(howToCreate = "java.time.LocalDateTime.of(9999, 12, 31, 0, 0, 0)")
+    private LocalDateTime activityOrderExpireTime;  // 订单过期时间（永久有效为LocalDateTime.MAX）
     private ActivityOrderType activityOrderType;  // 订单类型
     private ActivityOrderStatus activityOrderStatus;  // 订单状态
 
@@ -47,4 +50,5 @@ public class ActivityOrderFlow extends ShardingTableBaseEntity {
         USED,  // 已使用
         EXPIRED,  // 已失效
     }
+
 }

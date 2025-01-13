@@ -1,5 +1,6 @@
 package app.xlog.ggbond.persistent.po;
 
+import app.xlog.ggbond.persistent.util.JpaDefaultValueListener;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
+@EntityListeners(JpaDefaultValueListener.class) // 添加注解处理器
 public class SingleTableBaseEntity {
     @Id
     @GeneratedValue(generator = "SnowflakeIdGenerator")

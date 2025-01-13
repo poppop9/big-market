@@ -1,5 +1,6 @@
 package app.xlog.ggbond.infrastructure;
 
+import app.xlog.ggbond.persistent.po.activity.ActivityOrderFlow;
 import app.xlog.ggbond.persistent.po.raffle.*;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.po.security.UserRaffleConfig;
@@ -32,19 +33,29 @@ public class JpaTest {
     @Resource
     private ActivityJpa activityJPA;
     @Resource
-    private StrategyRepository strategyRepository;
+    private ActivityOrderFlowJpa activityOrderFlowJpa;
     @Resource
-    private AwardRepository awardRepository;
+    private StrategyJpa strategyJpa;
+    @Resource
+    private AwardJpa awardJpa;
     @Resource
     private UserJpa userJpa;
     @Resource
-    private RafflePoolRepository rafflePoolRepository;
+    private RafflePoolJpa rafflePoolJpa;
     @Resource
-    private UserRaffleConfigRepository userRaffleConfigRepository;
+    private UserRaffleConfigJpa userRaffleConfigJpa;
 
     @Test
     void test_fjdslk2() {
-        List<String> strings = Collections.<String>emptyList();
+        ActivityOrderFlow build = ActivityOrderFlow.builder()
+                .userId(10001L)
+                .activityId(10001L)
+                .strategyId(10001L)
+                .activityOrderId(11144L)
+                .activityOrderType(ActivityOrderFlow.ActivityOrderType.SIGN_IN_TO_CLAIM)
+                .activityOrderStatus(ActivityOrderFlow.ActivityOrderStatus.NOT_USED)
+                .build();
+        activityOrderFlowJpa.save(build);
     }
 
     @Test
@@ -64,18 +75,18 @@ public class JpaTest {
 
     @Test
     void test_1() {
-        awardRepository.findAll(Example.of(Award.builder()
+        awardJpa.findAll(Example.of(Award.builder()
                 .strategyId(10001L)
                 .awardTitle(null)
                 .build())
         ).forEach(System.out::println);
         System.out.println("====================================");
 
-        awardRepository.findByAwardTitleContainsAndAwardCountBetween(null, 10000L, 50000L)
+        awardJpa.findByAwardTitleContainsAndAwardCountBetween(null, 10000L, 50000L)
                 .forEach(System.out::println);
         System.out.println("====================================");
 
-        awardRepository.findByAwardCountBetween(10000L, 500000L)
+        awardJpa.findByAwardCountBetween(10000L, 500000L)
                 .forEach(System.out::println);
     }
 
@@ -170,7 +181,7 @@ public class JpaTest {
      */
     @Test
     void test_userRaffleConfig(long snowflakeNextId) {
-        userRaffleConfigRepository.saveAll(List.of(
+        userRaffleConfigJpa.saveAll(List.of(
                 UserRaffleConfig.builder()
                         .userId(404L)
                         .activityId(10001L)
@@ -199,7 +210,7 @@ public class JpaTest {
      */
     @Test
     void test_3() {
-        strategyRepository.saveAll(List.of(
+        strategyJpa.saveAll(List.of(
                 Strategy.builder()
                         .strategyId(10001L)
                         .strategyDesc("策略 1")
@@ -216,7 +227,7 @@ public class JpaTest {
      */
     @Test
     void test_99() {
-        awardRepository.saveAll(List.of(
+        awardJpa.saveAll(List.of(
                 Award.builder()
                         .strategyId(10001L)
                         .awardId(101L)
@@ -329,7 +340,7 @@ public class JpaTest {
      */
     @Test
     void test_5() {
-        rafflePoolRepository.saveAll(List.of(
+        rafflePoolJpa.saveAll(List.of(
                 RafflePool.builder()
                         .strategyId(10001L)
                         .awardIds(List.of(101L, 102L, 103L, 104L, 105L, 106L, 107L, 108L, 109L))

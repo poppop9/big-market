@@ -1,6 +1,7 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
 import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
+import app.xlog.ggbond.persistent.util.JpaDefaultValue;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "Award",indexes = {
+@Table(name = "Award", indexes = {
         @Index(columnList = "strategyId"),
         @Index(columnList = "awardId"),
         @Index(columnList = "awardCount"),
@@ -26,9 +27,8 @@ import java.time.LocalDateTime;
 })
 public class Award extends ShardingTableBaseEntity {
     private Long strategyId;  // 策略id
-    @Column(unique = true)
-    @Builder.Default
-    private Long awardId = IdUtil.getSnowflakeNextId();  // 奖品id
+    @JpaDefaultValue(howToCreate = "cn.hutool.core.util.IdUtil.getSnowflakeNextId()")
+    private Long awardId;  // 奖品id
     private String awardTitle;  // 奖品标题
     private String awardSubtitle;  // 奖品副标题
     private Long awardCount;  // 奖品库存

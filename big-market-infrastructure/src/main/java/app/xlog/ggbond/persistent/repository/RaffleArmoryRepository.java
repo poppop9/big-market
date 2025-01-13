@@ -3,9 +3,9 @@ package app.xlog.ggbond.persistent.repository;
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.persistent.po.raffle.Award;
 import app.xlog.ggbond.persistent.po.raffle.RafflePool;
-import app.xlog.ggbond.persistent.repository.jpa.AwardRepository;
-import app.xlog.ggbond.persistent.repository.jpa.RafflePoolRepository;
-import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
+import app.xlog.ggbond.persistent.repository.jpa.AwardJpa;
+import app.xlog.ggbond.persistent.repository.jpa.RafflePoolJpa;
+import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigJpa;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
@@ -37,11 +37,11 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     private RedissonClient redissonClient;
 
     @Resource
-    private RafflePoolRepository rafflePoolRepository;
+    private RafflePoolJpa rafflePoolJpa;
     @Resource
-    private AwardRepository awardRepository;
+    private AwardJpa awardJpa;
     @Resource
-    private UserRaffleConfigRepository userRaffleConfigRepository;
+    private UserRaffleConfigJpa userRaffleConfigJpa;
 
     /**
      * 查询 - 权重对象 - 从 redis 中查询出指定的权重对象
@@ -76,7 +76,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     @Override
     public List<AwardBO> findAwardsByStrategyId(Long strategyId) {
         return BeanUtil.copyToList(
-                awardRepository.findByStrategyId(strategyId), AwardBO.class
+                awardJpa.findByStrategyId(strategyId), AwardBO.class
         );
     }
 
@@ -85,7 +85,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public AwardBO findAwardByAwardId(Long awardId) {
-        Award award = awardRepository.findByAwardId(awardId);
+        Award award = awardJpa.findByAwardId(awardId);
         return BeanUtil.copyProperties(award, AwardBO.class);
     }
 
@@ -94,7 +94,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public List<RafflePoolBO> findAllRafflePoolByStrategyId(Long strategyId) {
-        List<RafflePool> allRafflePool = rafflePoolRepository.findByStrategyId(strategyId);
+        List<RafflePool> allRafflePool = rafflePoolJpa.findByStrategyId(strategyId);
         return BeanUtil.copyToList(allRafflePool, RafflePoolBO.class);
     }
 
@@ -103,9 +103,9 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public List<AwardBO> findAllAwards(Long activityId, Long userId) {
-        Long strategyId = userRaffleConfigRepository.findByUserIdAndActivityId(userId, activityId).getStrategyId();
+        Long strategyId = userRaffleConfigJpa.findByUserIdAndActivityId(userId, activityId).getStrategyId();
         return BeanUtil.copyToList(
-                awardRepository.findByStrategyId(strategyId), AwardBO.class
+                awardJpa.findByStrategyId(strategyId), AwardBO.class
         );
     }
 

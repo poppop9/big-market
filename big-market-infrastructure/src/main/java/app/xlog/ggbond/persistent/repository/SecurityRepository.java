@@ -5,8 +5,8 @@ import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.po.security.UserRaffleConfig;
 import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
 import app.xlog.ggbond.persistent.repository.jpa.ActivityJpa;
-import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigRepository;
-import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryRepository;
+import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigJpa;
+import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryJpa;
 import app.xlog.ggbond.persistent.repository.jpa.UserJpa;
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.model.UserRaffleConfigBO;
@@ -36,9 +36,9 @@ public class SecurityRepository implements ISecurityRepo {
     @Resource
     private UserJpa userJpa;
     @Resource
-    private UserRaffleConfigRepository userRaffleConfigRepository;
+    private UserRaffleConfigJpa userRaffleConfigJpa;
     @Resource
-    private UserRaffleHistoryRepository userRaffleHistoryRepository;
+    private UserRaffleHistoryJpa userRaffleHistoryJpa;
 
     /**
      * 登录
@@ -98,7 +98,7 @@ public class SecurityRepository implements ISecurityRepo {
      */
     @Override
     public Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId) {
-        UserRaffleConfig userConfig = userRaffleConfigRepository.findByUserIdAndActivityId(userId, activityId);
+        UserRaffleConfig userConfig = userRaffleConfigJpa.findByUserIdAndActivityId(userId, activityId);
         return Optional.ofNullable(userConfig.getStrategyId())
                 .orElseGet(() -> activityJpa.findByActivityId(activityId).getDefaultStrategyId());
     }
@@ -108,7 +108,7 @@ public class SecurityRepository implements ISecurityRepo {
      */
     @Override
     public List<UserRaffleHistoryBO> getWinningAwardsInfo(Long userId, Long strategyId) {
-        List<UserRaffleHistory> list = userRaffleHistoryRepository.findByUserIdAndStrategyIdOrderByCreateTimeAsc(userId, strategyId);
+        List<UserRaffleHistory> list = userRaffleHistoryJpa.findByUserIdAndStrategyIdOrderByCreateTimeAsc(userId, strategyId);
         return BeanUtil.copyToList(list, UserRaffleHistoryBO.class);
     }
 
@@ -117,7 +117,7 @@ public class SecurityRepository implements ISecurityRepo {
      */
     @Override
     public Long queryRaffleTimesByUserId(Long userId, Long strategyId) {
-        UserRaffleConfig userRaffleConfig = userRaffleConfigRepository.findByUserIdAndStrategyId(userId, strategyId);
+        UserRaffleConfig userRaffleConfig = userRaffleConfigJpa.findByUserIdAndStrategyId(userId, strategyId);
         return BeanUtil.copyProperties(userRaffleConfig, UserRaffleConfigBO.class).getRaffleTime();
     }
 

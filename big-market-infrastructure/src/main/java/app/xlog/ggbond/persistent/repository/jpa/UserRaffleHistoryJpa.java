@@ -11,7 +11,7 @@ import java.util.List;
  * JPA - 用户抽奖历史仓储
  */
 @Repository
-public interface UserRaffleHistoryRepository extends JpaRepository<UserRaffleHistory, Long> {
+public interface UserRaffleHistoryJpa extends JpaRepository<UserRaffleHistory, Long> {
 
     @Query("select u from UserRaffleHistory u where u.userId = ?1 and u.strategyId = ?2 order by u.createTime")
     List<UserRaffleHistory> findByUserIdAndStrategyIdOrderByCreateTimeAsc(Long userId, Long strategyId);

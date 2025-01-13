@@ -13,7 +13,7 @@ import java.util.List;
  * JPA - 奖品仓储
  */
 @Repository
-public interface AwardRepository extends JpaRepository<Award, Long> {
+public interface AwardJpa extends JpaRepository<Award, Long> {
 
     @Modifying
     @Transactional

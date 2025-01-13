@@ -1,7 +1,7 @@
 package app.xlog.ggbond.domain;
 
 import app.xlog.ggbond.persistent.po.raffle.Strategy;
-import app.xlog.ggbond.persistent.repository.jpa.StrategyRepository;
+import app.xlog.ggbond.persistent.repository.jpa.StrategyJpa;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,7 +25,7 @@ public class MessTest {
     @Resource
     private RedissonClient redissonClient;
     @Resource
-    private StrategyRepository strategyRepository;
+    private StrategyJpa strategyJpa;
 
     @Resource
     private IRaffleDispatchRepo raffleDispatchRepo;
@@ -36,7 +36,7 @@ public class MessTest {
     @Test
     public void testJsonToMap() throws JsonProcessingException {
         // 查出所有的strategy
-        List<Strategy> strategies = strategyRepository.findAll();
+        List<Strategy> strategies = strategyJpa.findAll();
 
         // 只需要strategie属性中的rule，rules是所有规则字符串的集合
 

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
  * JPA - 用户抽奖配置仓储
  */
 @Repository
-public interface UserRaffleConfigRepository extends JpaRepository<UserRaffleConfig, Long> {
+public interface UserRaffleConfigJpa extends JpaRepository<UserRaffleConfig, Long> {
 
     @Query("select u from UserRaffleConfig u where u.userId = ?1 and u.activityId = ?2")
     UserRaffleConfig findByUserIdAndActivityId(Long userId, Long activityId);

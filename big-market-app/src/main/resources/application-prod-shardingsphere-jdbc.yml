@@ -28,6 +28,7 @@ rules:
       keyGeneratorName: SNOWFLAKE
     # 分片自动表
     autoTables:
+      # 抽奖领域
       Strategy: # 策略
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: strategyId, shardingAlgorithmName: HASH_MOD_4 } }
@@ -37,19 +38,30 @@ rules:
       RafflePool: # 抽奖池
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: strategyId, shardingAlgorithmName: HASH_MOD_4 } }
+      # 活动领域
+      ActivityAccount: # 活动账户
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
+      ActivityOrderFlow: # 活动单流水
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
+      # 安全领域
       User: # 用户
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
-      UserPurchaseHistory: # 用户购买历史
+      UserRaffleConfig: # 用户抽奖配置
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
       UserRaffleHistory: # 用户抽奖历史
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
+      UserPurchaseHistory: # 用户购买历史
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
     # 绑定表
     bindingTables:
       - Strategy, Award, RafflePool
-      - User, UserPurchaseHistory, UserRaffleHistory
+      - User, UserRaffleConfig, UserPurchaseHistory, UserRaffleHistory
     # 定义分片算法策略
     shardingAlgorithms:
       HASH_MOD_2:
@@ -67,7 +79,7 @@ rules:
           worker-id: 2
   - !SINGLE
     tables:
-      - "*.*"  # 加载所有单表
+      - "*.*"  # 加载所有单表（Activity）
 
 # 通用的属性配置
 props:
