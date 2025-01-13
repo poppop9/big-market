@@ -1,6 +1,5 @@
 package app.xlog.ggbond.gpt;
 
-import app.xlog.ggbond.recommend.IntelligentRecommendService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhipu.oapi.ClientV4;
 import com.zhipu.oapi.Constants;

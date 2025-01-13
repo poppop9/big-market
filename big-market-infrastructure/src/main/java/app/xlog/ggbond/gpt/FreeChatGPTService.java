@@ -1,9 +1,7 @@
 package app.xlog.ggbond.gpt;
 
-import app.xlog.ggbond.recommend.IntelligentRecommendService;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import app.xlog.ggbond.recommend.AIService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import okhttp3.*;
@@ -15,11 +13,11 @@ import java.util.List;
 
 /**
  * 免费 gpt 服务
- *
+ * <p>
  * - https://github.com/chatanywhere/GPT_API_free
  */
 @Service
-public class FreeChatGPTService implements IntelligentRecommendService {
+public class FreeChatGPTService implements AIService {
 
     @Value("${freeGPT.model}")
     private String model;
@@ -39,13 +37,13 @@ public class FreeChatGPTService implements IntelligentRecommendService {
      * ----- https://api.chatanywhere.tech(国内中转，延时更低)，
      * ----- https://api.chatanywhere.org (国外使用)
      */
-    public String syncInvoke(String roleDesc, String question) throws JsonProcessingException {
+    @SneakyThrows
+    public String syncInvoke(String roleDesc, String question) {
         Request request = new Request.Builder()
                 .url("https://api.chatanywhere.tech/v1/chat/completions")
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + apiKey)
-                .post(RequestBody.create(
-                        objectMapper.writeValueAsString(objectMapper.createObjectNode()
+                .post(RequestBody.create(objectMapper.writeValueAsString(objectMapper.createObjectNode()
                                 .put("model", model)
                                 .putPOJO("messages", List.of(
                                         objectMapper.createObjectNode()
@@ -61,7 +59,6 @@ public class FreeChatGPTService implements IntelligentRecommendService {
 
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
             return objectMapper.readTree(response.body().string())
                     .get("choices")
                     .get(0)
