@@ -3,6 +3,7 @@ package app.xlog.ggbond.infrastructure;
 import app.xlog.ggbond.persistent.po.activity.ActivityOrderFlow;
 import app.xlog.ggbond.persistent.po.raffle.*;
 import app.xlog.ggbond.persistent.po.security.User;
+import app.xlog.ggbond.persistent.po.security.UserPurchaseHistory;
 import app.xlog.ggbond.persistent.po.security.UserRaffleConfig;
 import app.xlog.ggbond.persistent.repository.jpa.*;
 import cn.hutool.core.util.IdUtil;
@@ -20,9 +21,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SpringBootTest
 public class JpaTest {
@@ -34,6 +37,8 @@ public class JpaTest {
     private ActivityJpa activityJPA;
     @Resource
     private ActivityOrderFlowJpa activityOrderFlowJpa;
+    @Resource
+    private UserPurchaseHistoryJpa userPurchaseHistoryJpa;
     @Resource
     private StrategyJpa strategyJpa;
     @Resource
@@ -161,6 +166,7 @@ public class JpaTest {
         // === 安全领域 ===
         test_4(snowflakeNextId);
         test_userRaffleConfig(snowflakeNextId);
+        test_userPurchaseHistory();
     }
 
     /**
@@ -174,6 +180,50 @@ public class JpaTest {
                 .strategyIdList(new ArrayList<>(List.of(10001L)))
                 .build()
         );
+    }
+
+    /**
+     * 初始化用户购买历史
+     */
+    @Test
+    void test_userPurchaseHistory() {
+        List<UserPurchaseHistory> list = List.of(
+                UserPurchaseHistory.builder()
+                        .userId(200L)
+                        .purchaseName("芥末味夏威夷果")
+                        .purchaseCategory(UserPurchaseHistory.PurchaseCategory.FOOD)
+                        .purchasePrice(99.0).purchaseCount(1L).purchaseTimes(1L).isReturn(false)
+                        .build(),
+                UserPurchaseHistory.builder()
+                        .userId(200L)
+                        .purchaseName("曲奇饼干")
+                        .purchaseCategory(UserPurchaseHistory.PurchaseCategory.FOOD)
+                        .purchasePrice(20.0).purchaseCount(2L).purchaseTimes(2L).isReturn(false)
+                        .build(),
+                UserPurchaseHistory.builder()
+                        .userId(200L)
+                        .purchaseName("纯牛奶")
+                        .purchaseCategory(UserPurchaseHistory.PurchaseCategory.FOOD)
+                        .purchasePrice(30.0).purchaseCount(3L).purchaseTimes(3L).isReturn(false)
+                        .build(),
+                UserPurchaseHistory.builder()
+                        .userId(200L)
+                        .purchaseName("冰箱")
+                        .purchaseCategory(UserPurchaseHistory.PurchaseCategory.FOOD)
+                        .purchasePrice(9999.0).purchaseCount(1L).purchaseTimes(1L).isReturn(false)
+                        .build()
+        );
+        String collect = list.stream()
+                .map(UserPurchaseHistory::toString)
+                .collect(Collectors.joining("\n"))
+                .replace("UserPurchaseHistory", "");
+        for (Field field : UserPurchaseHistory.class.getDeclaredFields()) {
+            String chinese = UserPurchaseHistory.FieldName.getChinese(field.getName());
+            collect = collect.replace(field.getName(), chinese);
+        }
+        System.out.println(collect);
+
+        userPurchaseHistoryJpa.saveAll(list);
     }
 
     /**

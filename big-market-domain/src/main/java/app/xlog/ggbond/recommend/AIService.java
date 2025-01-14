@@ -1,7 +1,7 @@
 package app.xlog.ggbond.recommend;
 
 /**
- * 推荐领域 - 智能推荐服务
+ * 推荐领域 - AI 服务
  */
 public interface AIService {
 

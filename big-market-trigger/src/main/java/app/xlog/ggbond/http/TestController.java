@@ -7,6 +7,8 @@ import app.xlog.ggbond.activity.model.ActivityOrderContext;
 import app.xlog.ggbond.activity.model.ActivityOrderFlowBO;
 import app.xlog.ggbond.activity.service.ActivityOrderEventCenter;
 import app.xlog.ggbond.recommend.AIService;
+import app.xlog.ggbond.recommend.RecommendService;
+import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotBlank;
@@ -33,7 +35,9 @@ import java.util.List;
 public class TestController {
 
     @Resource
-    private AIService AIService;
+    private AIService aiService;
+    @Resource
+    private RecommendService recommendService;
     @Resource
     @Lazy
     private TestController testController;
@@ -49,13 +53,52 @@ public class TestController {
      */
     @RequestMapping("/v1/bigModelAnswer")
     public String bigModelAnswer() {
-        String answer = AIService.syncInvoke(
+        String answer = aiService.syncInvoke(
                 "你是一个推荐系统，根据用户的购买历史推荐最有可能的产品组合。",
                 """
                         Caused by: org.apache.shardingsphere.sharding.exception.metadata.DuplicateIndexException: Index 'IDXby462r777g4s8bki2waeghb0i' already exists.
                         """
         );
         return answer;
+    }
+
+    /**
+     * 推荐领域 - 测试生成 GPT 提示词
+     */
+    @GetMapping("/v1/testGenerateGptQuestion")
+    public void testGenerateGptQuestion() {
+        String question = recommendService.generateGptQuestionByUserPurchaseHistory(List.of(
+                UserPurchaseHistoryBO.builder()
+                        .userId(200L)
+                        .purchaseName("芥末味夏威夷果")
+                        .purchaseCategory(UserPurchaseHistoryBO.PurchaseCategory.FOOD)
+                        .purchasePrice(99.0).purchaseCount(1L).purchaseTimes(1L).isReturn(false)
+                        .build(),
+                UserPurchaseHistoryBO.builder()
+                        .userId(200L)
+                        .purchaseName("曲奇饼干")
+                        .purchaseCategory(UserPurchaseHistoryBO.PurchaseCategory.FOOD)
+                        .purchasePrice(20.0).purchaseCount(2L).purchaseTimes(2L).isReturn(false)
+                        .build(),
+                UserPurchaseHistoryBO.builder()
+                        .userId(200L)
+                        .purchaseName("纯牛奶")
+                        .purchaseCategory(UserPurchaseHistoryBO.PurchaseCategory.FOOD)
+                        .purchasePrice(30.0).purchaseCount(3L).purchaseTimes(3L).isReturn(false)
+                        .build(),
+                UserPurchaseHistoryBO.builder()
+                        .userId(200L)
+                        .purchaseName("冰箱")
+                        .purchaseCategory(UserPurchaseHistoryBO.PurchaseCategory.FOOD)
+                        .purchasePrice(9999.0).purchaseCount(1L).purchaseTimes(1L).isReturn(false)
+                        .build()
+        ));
+
+        String answer = aiService.syncInvoke(
+                "你是一个推荐系统，根据用户的购买历史推荐最能吸引该用户的商品。",
+                question
+        );
+        System.out.println(answer);
     }
 
     /**
@@ -101,7 +144,6 @@ public class TestController {
                 .setActivityOrderType(ActivityOrderFlowBO.ActivityOrderType.FREE_GIVEAWAY)
         );
     }
-
 
     /**
      * Mess - 测试参数校验
