@@ -5,7 +5,9 @@ import app.xlog.ggbond.BigMarketRespCode;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import app.xlog.ggbond.raffle.service.IRaffleDispatch;
+import app.xlog.ggbond.recommend.RecommendService;
 import app.xlog.ggbond.security.model.UserBO;
+import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import app.xlog.ggbond.security.service.ISecurityService;
 import cn.dev33.satoken.context.SaHolder;
@@ -21,7 +23,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class RaffleSecurityAppService {
+public class TriggerService {
 
     @Resource
     private IRaffleArmory raffleArmory;
@@ -29,6 +31,8 @@ public class RaffleSecurityAppService {
     private IRaffleDispatch raffleDispatch;
     @Resource
     private ISecurityService securityService;
+    @Resource
+    private RecommendService recommendService;
 
     /**
      * 抽奖领域 - 查询当前用户在指定活动下的所有奖品
@@ -88,15 +92,28 @@ public class RaffleSecurityAppService {
         }
 
         // 2. 把activityId塞到session里，后面的操作都可以直接从这里取
-        String activityId = SaHolder.getRequest().getParam("activityId");
+        long activityId = Long.parseLong(SaHolder.getRequest().getParam("activityId"));
         StpUtil.getSession().set("activityId", activityId);
 
-        // 3. 装配
-        Long strategyId = securityService.findStrategyIdByActivityIdAndUserId(Long.valueOf(activityId), userId);
+        // 3. 检查该用户是否有策略，如果没有则ai生成推荐商品
+        if (!securityService.existsByUserIdAndActivityId(activityId, userId)) {
+            // 查询用户购买历史，生成推荐奖品 todo 这里如果购买历史太多了怎么办，或者购买历史是0怎么办
+            List<UserPurchaseHistoryBO> userPurchaseHistoryBOList = securityService.findUserPurchaseHistory(securityService.getLoginIdDefaultNull());
+            List<AwardBO> noAwardIdAwardBOS = recommendService.recommendAwardByUserPurchaseHistory(
+                    "你是一个推荐系统，根据用户的购买历史推荐最能吸引该用户的商品。",
+                    userPurchaseHistoryBOList
+            );
+
+            // 插入数据库
+            raffleArmory.insertAwardList(userId, activityId, noAwardIdAwardBOS);
+        }
+
+        // 4. 装配
+        Long strategyId = securityService.findStrategyIdByActivityIdAndUserId(activityId, userId);
         raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
         raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map
 
-        // 4. 将该用户的角色信息放入session
+        // 5. 将该用户的角色信息放入session
         securityService.insertPermissionIntoSession();
     }
 

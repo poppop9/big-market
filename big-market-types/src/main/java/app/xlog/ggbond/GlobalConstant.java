@@ -1,5 +1,8 @@
 package app.xlog.ggbond;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * 全局常量
  */
@@ -50,6 +53,31 @@ public class GlobalConstant {
 
         // 抽奖领域 - 扣减奖品库存
         public final static String DECR_AWARD_INVENTORY = "Raffle-DecrAwardInventory";
+    }
+
+    // 抽奖，推荐领域 - 奖品级别
+    @Getter
+    @AllArgsConstructor
+    public enum AwardLevel {
+        LOW("0-50", null, 4d, 50L, 2),
+        MIDDLE("50-200", "抽奖 10 次后解锁", 3d, 10L, 6),
+        HIGH("200-2000", "抽奖 20 次后解锁", 1d, 1L, 9),
+        ;
+
+        private String priceRange;
+        private String awardSubtitle;
+        private Double awardRate;
+        private Long awardCount;
+        private int initAwardSort;
+
+        public static AwardLevel getNameByPriceRange(String priceRange) {
+            for (AwardLevel awardLevel : AwardLevel.values()) {
+                if (awardLevel.getPriceRange().equals(priceRange)) {
+                    return awardLevel;
+                }
+            }
+            return null;
+        }
     }
 
 }

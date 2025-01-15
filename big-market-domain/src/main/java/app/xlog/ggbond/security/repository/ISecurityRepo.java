@@ -1,6 +1,7 @@
 package app.xlog.ggbond.security.repository;
 
 import app.xlog.ggbond.security.model.UserBO;
+import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 
 import java.util.List;
@@ -12,6 +13,15 @@ public interface ISecurityRepo {
 
     // 登录
     Boolean doLogin(Long userId, String password);
+
+    // 插入 - 将黑名单用户放入布隆过滤器
+    void insertBlacklistUserListToBloomFilter(List<Long> userIds);
+
+    // 修改 - 修改用户密码
+    void updatePassword(Long userId, String password);
+
+    // 判断 - 检查该用户是否有策略
+    boolean existsByUserIdAndActivityId(Long activityId, Long userId);
 
     // 查询 - 判断用户是否为黑名单用户
     Boolean isBlacklistUser(Long userId);
@@ -31,10 +41,7 @@ public interface ISecurityRepo {
     // 查询 - 查询当前用户的抽奖次数
     Long queryRaffleTimesByUserId(Long userId, Long strategyId);
 
-    // 插入 - 将黑名单用户放入布隆过滤器
-    void insertBlacklistUserListToBloomFilter(List<Long> userIds);
-
-    // 修改 - 修改用户密码
-    void updatePassword(Long userId, String password);
+    // 查询 - 查询用户购买历史
+    List<UserPurchaseHistoryBO> findUserPurchaseHistory(Long userId);
 
 }

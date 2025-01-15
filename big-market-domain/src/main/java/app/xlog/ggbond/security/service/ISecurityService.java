@@ -1,6 +1,7 @@
 package app.xlog.ggbond.security.service;
 
 import app.xlog.ggbond.security.model.UserBO;
+import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 
 import java.util.List;
@@ -47,10 +48,16 @@ public interface ISecurityService {
     // 查询 - 根据活动id，用户id，查询用户的策略id
     Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId);
 
+    // 查询 - 查询用户购买历史
+    List<UserPurchaseHistoryBO> findUserPurchaseHistory(Long userId);
+
     // 插入 - 将黑名单用户放入布隆过滤器
     void insertBlacklistUserListToBloomFilter(List<Long> userIds);
 
     // 插入 - 将当前用户的角色信息放入session
     void insertPermissionIntoSession();
+
+    // 判断 - 检查该用户是否有策略
+    boolean existsByUserIdAndActivityId(Long activityId, Long userId);
 
 }

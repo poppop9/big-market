@@ -2,7 +2,7 @@ package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IRaffleDispatchApiService;
 import app.xlog.ggbond.ZakiResponse;
-import app.xlog.ggbond.integrationService.RaffleSecurityAppService;
+import app.xlog.ggbond.integrationService.TriggerService;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -21,15 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class RaffleDispatchController implements IRaffleDispatchApiService {
 
     @Resource
-    private RaffleSecurityAppService raffleSecurityAppService;
+    private TriggerService triggerService;
 
     /**
-     * 抽取奖品 todo 未完成
+     * 抽取奖品
      */
     @Override
     @GetMapping("/v2/getAward")
     public ResponseEntity<JsonNode> getAward(@RequestParam Long activityId) {
-        Long awardId = raffleSecurityAppService.dispatchAwardIdByActivityIdAndCurrentUser(activityId);
+        Long awardId = triggerService.dispatchAwardIdByActivityIdAndCurrentUser(activityId);
         return ZakiResponse.ok("awardId", awardId);
     }
 

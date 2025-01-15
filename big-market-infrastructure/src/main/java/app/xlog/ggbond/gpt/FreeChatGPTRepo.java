@@ -1,6 +1,6 @@
 package app.xlog.ggbond.gpt;
 
-import app.xlog.ggbond.recommend.AIService;
+import app.xlog.ggbond.recommend.AIRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
@@ -17,7 +17,7 @@ import java.util.List;
  * - https://github.com/chatanywhere/GPT_API_free
  */
 @Service
-public class FreeChatGPTService implements AIService {
+public class FreeChatGPTRepo implements AIRepo {
 
     @Value("${freeGPT.model}")
     private String model;

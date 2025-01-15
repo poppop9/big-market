@@ -3,7 +3,7 @@ package app.xlog.ggbond.http;
 import app.xlog.ggbond.IRaffleAssembleApiService;
 import app.xlog.ggbond.ZakiResponse;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
-import app.xlog.ggbond.integrationService.RaffleSecurityAppService;
+import app.xlog.ggbond.integrationService.TriggerService;
 import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Resource;
@@ -27,15 +27,15 @@ import java.util.List;
 public class RaffleAssembleController implements IRaffleAssembleApiService {
 
     @Resource
-    private RaffleSecurityAppService raffleSecurityAppService;
+    private TriggerService triggerService;
 
     /**
-     * 查询对应的奖品列表 todo 已完成
+     * 查询对应的奖品列表
      */
     @Override
     @GetMapping("/v2/queryAwardList")
     public ResponseEntity<JsonNode> queryAwardList(@RequestParam Long activityId) {
-        List<AwardBO> awardBOs = raffleSecurityAppService.findAllAwardsByActivityIdAndCurrentUser(activityId);
+        List<AwardBO> awardBOs = triggerService.findAllAwardsByActivityIdAndCurrentUser(activityId);
         return ZakiResponse.ok("awardBOs", awardBOs);
     }
 
@@ -46,7 +46,7 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
     @SneakyThrows
     @GetMapping(value = "/v1/getWinningAwardsInfo")
     public SseEmitter getWinningAwardsInfo(@RequestParam Long activityId) {
-        List<UserRaffleHistoryBO> winningAwards = raffleSecurityAppService.findAllWinningAwards(activityId);
+        List<UserRaffleHistoryBO> winningAwards = triggerService.findAllWinningAwards(activityId);
 
         // 创建一个 SseEmitter 对象，设置超时时间为10秒
         SseEmitter emitter = new SseEmitter(10_000L);

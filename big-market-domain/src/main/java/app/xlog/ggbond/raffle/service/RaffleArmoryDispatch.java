@@ -9,12 +9,14 @@ import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
 import app.xlog.ggbond.raffle.service.filterChain.RaffleFilterChain;
 import app.xlog.ggbond.security.service.ISecurityService;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -28,16 +30,9 @@ import java.util.stream.Collectors;
 public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
 
     @Resource
-    private ObjectMapper objectMapper;
-
-    @Resource
     private RaffleFilterChain raffleFilterChain;
     @Resource
-    private IRaffleDispatchRepo raffleDispatchRepo;
-    @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
-    @Resource
-    private ISecurityService securityService;
 
     /**
      * 装配 - 根据指定策略id，装配该策略所需的所有权重对象
@@ -99,6 +94,21 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     @Override
     public List<AwardBO> findAllAwards(Long activityId, Long userId) {
         return raffleArmoryRepo.findAllAwards(activityId, userId);
+    }
+
+    /**
+     * 插入 - 将该用户的所有奖品信息插入到数据库
+     */
+    @Override
+    @Transactional
+    public void insertAwardList(Long userId, long activityId, List<AwardBO> awardBOS) {
+        // 插入奖品表
+        List<AwardBO> awardList = raffleArmoryRepo.insertAwardList(awardBOS);
+
+        // 插入策略表
+
+        // 插入策略奖品表
+
     }
 
     /**

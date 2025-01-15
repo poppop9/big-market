@@ -6,7 +6,7 @@ import app.xlog.ggbond.TestService;
 import app.xlog.ggbond.activity.model.ActivityOrderContext;
 import app.xlog.ggbond.activity.model.ActivityOrderFlowBO;
 import app.xlog.ggbond.activity.service.ActivityOrderEventCenter;
-import app.xlog.ggbond.recommend.AIService;
+import app.xlog.ggbond.recommend.AIRepo;
 import app.xlog.ggbond.recommend.RecommendService;
 import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import cn.dev33.satoken.stp.StpUtil;
@@ -35,7 +35,7 @@ import java.util.List;
 public class TestController {
 
     @Resource
-    private AIService aiService;
+    private AIRepo aiRepo;
     @Resource
     private RecommendService recommendService;
     @Resource
@@ -53,7 +53,7 @@ public class TestController {
      */
     @RequestMapping("/v1/bigModelAnswer")
     public String bigModelAnswer() {
-        String answer = aiService.syncInvoke(
+        String answer = aiRepo.syncInvoke(
                 "你是一个推荐系统，根据用户的购买历史推荐最有可能的产品组合。",
                 """
                         Caused by: org.apache.shardingsphere.sharding.exception.metadata.DuplicateIndexException: Index 'IDXby462r777g4s8bki2waeghb0i' already exists.
@@ -67,7 +67,7 @@ public class TestController {
      */
     @GetMapping("/v1/testGenerateGptQuestion")
     public void testGenerateGptQuestion() {
-        String question = recommendService.generateGptQuestionByUserPurchaseHistory(List.of(
+/*        String question = recommendService.generateGptQuestionByUserPurchaseHistory(List.of(
                 UserPurchaseHistoryBO.builder()
                         .userId(200L)
                         .purchaseName("芥末味夏威夷果")
@@ -94,11 +94,11 @@ public class TestController {
                         .build()
         ));
 
-        String answer = aiService.syncInvoke(
+        String answer = aiRepo.syncInvoke(
                 "你是一个推荐系统，根据用户的购买历史推荐最能吸引该用户的商品。",
                 question
         );
-        System.out.println(answer);
+        System.out.println(answer);*/
     }
 
     /**

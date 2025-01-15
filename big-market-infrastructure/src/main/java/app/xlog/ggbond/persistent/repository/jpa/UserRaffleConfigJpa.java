@@ -24,4 +24,6 @@ public interface UserRaffleConfigJpa extends JpaRepository<UserRaffleConfig, Lon
     @Query("update UserRaffleConfig u set u.raffleTime = ?1 where u.userId = ?2 and u.strategyId = ?3")
     void updateRaffleTimeByUserIdAndStrategyId(Long raffleTime, Long userId, Long strategyId);
 
+    @Query("select (count(u) > 0) from UserRaffleConfig u where u.userId = ?1 and u.activityId = ?2")
+    boolean existsByUserIdAndActivityId(Long userId, Long activityId);
 }

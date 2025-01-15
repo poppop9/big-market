@@ -162,4 +162,13 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
         rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
     }
 
+    /**
+     * 插入 - 插入奖品
+     */
+    @Override
+    public List<AwardBO> insertAwardList(List<AwardBO> awardBOS) {
+        List<Award> awards = awardJpa.saveAll(BeanUtil.copyToList(awardBOS, Award.class));
+        return BeanUtil.copyToList(awards, AwardBO.class);
+    }
+
 }

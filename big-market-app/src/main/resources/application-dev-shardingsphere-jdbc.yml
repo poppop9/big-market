@@ -59,10 +59,6 @@ rules:
       UserPurchaseHistory: # 用户购买历史
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
-    # 绑定表
-    bindingTables:
-      - Strategy, StrategyAward, RafflePool
-      - User, UserRaffleConfig, UserPurchaseHistory, UserRaffleHistory
     # 定义分片算法策略
     shardingAlgorithms:
       HASH_MOD_2:

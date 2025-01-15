@@ -4,11 +4,9 @@ import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.po.security.UserRaffleConfig;
 import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
-import app.xlog.ggbond.persistent.repository.jpa.ActivityJpa;
-import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigJpa;
-import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryJpa;
-import app.xlog.ggbond.persistent.repository.jpa.UserJpa;
+import app.xlog.ggbond.persistent.repository.jpa.*;
 import app.xlog.ggbond.security.model.UserBO;
+import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import app.xlog.ggbond.security.model.UserRaffleConfigBO;
 import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import app.xlog.ggbond.security.repository.ISecurityRepo;
@@ -16,6 +14,7 @@ import cn.hutool.core.bean.BeanUtil;
 import jakarta.annotation.Resource;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,6 +38,8 @@ public class SecurityRepository implements ISecurityRepo {
     private UserRaffleConfigJpa userRaffleConfigJpa;
     @Resource
     private UserRaffleHistoryJpa userRaffleHistoryJpa;
+    @Autowired
+    private UserPurchaseHistoryJpa userPurchaseHistoryJpa;
 
     /**
      * 登录
@@ -47,6 +48,37 @@ public class SecurityRepository implements ISecurityRepo {
     public Boolean doLogin(Long userId, String password) {
         User user = userJpa.findByUserIdAndPassword(userId, password);
         return user != null;
+    }
+
+    /**
+     * 插入 - 将黑名单用户放入布隆过滤器
+     */
+    @Override
+    public void insertBlacklistUserListToBloomFilter(List<Long> userIds) {
+        RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter(GlobalConstant.RedisKey.getBlacklistUserList());
+        // 删除旧的布隆过滤器
+        if (bloomFilter.isExists()) {
+            bloomFilter.delete();
+        }
+
+        bloomFilter.tryInit(100000L, 0.03);
+        bloomFilter.add(userIds);
+    }
+
+    /**
+     * 修改 - 修改用户密码
+     */
+    @Override
+    public void updatePassword(Long userId, String password) {
+        userJpa.updatePasswordByUserId(password, userId);
+    }
+
+    /**
+     * 判断 - 检查该用户是否有策略
+     */
+    @Override
+    public boolean existsByUserIdAndActivityId(Long activityId, Long userId) {
+        return userRaffleConfigJpa.existsByUserIdAndActivityId(userId, activityId);
     }
 
     /**
@@ -99,7 +131,7 @@ public class SecurityRepository implements ISecurityRepo {
     @Override
     public Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId) {
         UserRaffleConfig userConfig = userRaffleConfigJpa.findByUserIdAndActivityId(userId, activityId);
-        return userConfig.getStrategyId();
+        return userConfig == null ? null : userConfig.getStrategyId();
     }
 
     /**
@@ -121,26 +153,14 @@ public class SecurityRepository implements ISecurityRepo {
     }
 
     /**
-     * 插入 - 将黑名单用户放入布隆过滤器
+     * 查询 - 查询用户购买历史
      */
     @Override
-    public void insertBlacklistUserListToBloomFilter(List<Long> userIds) {
-        RBloomFilter<Long> bloomFilter = redissonClient.getBloomFilter(GlobalConstant.RedisKey.getBlacklistUserList());
-        // 删除旧的布隆过滤器
-        if (bloomFilter.isExists()) {
-            bloomFilter.delete();
-        }
-
-        bloomFilter.tryInit(100000L, 0.03);
-        bloomFilter.add(userIds);
-    }
-
-    /**
-     * 修改 - 修改用户密码
-     */
-    @Override
-    public void updatePassword(Long userId, String password) {
-        userJpa.updatePasswordByUserId(password, userId);
+    public List<UserPurchaseHistoryBO> findUserPurchaseHistory(Long userId) {
+        return BeanUtil.copyToList(
+                userPurchaseHistoryJpa.findByUserIdOrderByCreateTimeDesc(userId),
+                UserPurchaseHistoryBO.class
+        );
     }
 
 }

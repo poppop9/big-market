@@ -2,7 +2,7 @@ package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.ISecurityApiService;
 import app.xlog.ggbond.ZakiResponse;
-import app.xlog.ggbond.integrationService.RaffleSecurityAppService;
+import app.xlog.ggbond.integrationService.TriggerService;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class SecurityController implements ISecurityApiService {
 
     @Resource
-    private RaffleSecurityAppService raffleSecurityAppService;
+    private TriggerService triggerService;
 
     /**
-     * 登录 todo 已完成
+     * 登录
      * @param activityId 这个参数用来鉴定是哪个活动的登录
      * @param userId     用户id
      * @param password   密码
@@ -32,7 +32,7 @@ public class SecurityController implements ISecurityApiService {
     @Override
     @GetMapping("/v1/doLogin")
     public ResponseEntity<JsonNode> doLogin(@RequestParam Long activityId, @RequestParam Long userId, @RequestParam String password) {
-        raffleSecurityAppService.doLogin(userId, password);
+        triggerService.doLogin(userId, password);
         return ZakiResponse.ok("用户 " + userId + " 登录成功");
     }
 

@@ -24,4 +24,7 @@ public interface IRaffleArmory {
     // 查询 - 根据活动id，用户id，查询用户的所有奖品
     List<AwardBO> findAllAwards(Long activityId, Long userId);
 
+    // 插入 - 将该用户的所有奖品信息插入到数据库
+    void insertAwardList(Long userId, long activityId, List<AwardBO> awardBOS);
+
 }

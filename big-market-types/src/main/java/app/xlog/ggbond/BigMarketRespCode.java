@@ -19,6 +19,8 @@ public enum BigMarketRespCode {
     DECREASE_AWARD_COUNT_FAILED(550, "扣减奖品库存失败，可能由于并发太高，或者奖品库存没有装配"),
     // 安全领域
     WRONG_USERNAME_OR_PASSWORD(580, "用户名或密码错误"),
+    // 推荐领域
+    AI_RESPONSE_ERROR(590, "AI 的回答格式错误"),
     ;
 
     private final int code;

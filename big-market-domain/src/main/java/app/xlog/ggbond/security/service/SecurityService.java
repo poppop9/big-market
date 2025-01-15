@@ -2,6 +2,7 @@ package app.xlog.ggbond.security.service;
 
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.security.model.UserBO;
+import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.dev33.satoken.stp.StpUtil;
@@ -106,6 +107,14 @@ public class SecurityService implements ISecurityService {
     }
 
     /**
+     * 查询 - 查询用户购买历史
+     */
+    @Override
+    public List<UserPurchaseHistoryBO> findUserPurchaseHistory(Long userId) {
+        return securityRepo.findUserPurchaseHistory(userId);
+    }
+
+    /**
      * 插入 - 将黑名单用户放入布隆过滤器
      */
     @Override
@@ -122,6 +131,14 @@ public class SecurityService implements ISecurityService {
                 "role",
                 securityRepo.findByUserId(getLoginIdDefaultNull()).getUserRole().name()
         );
+    }
+
+    /**
+     * 判断 - 检查该用户是否有策略
+     */
+    @Override
+    public boolean existsByUserIdAndActivityId(Long activityId, Long userId) {
+        return securityRepo.existsByUserIdAndActivityId(activityId, userId);
     }
 
 }

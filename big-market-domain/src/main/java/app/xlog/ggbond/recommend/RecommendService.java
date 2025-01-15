@@ -1,11 +1,18 @@
 package app.xlog.ggbond.recommend;
 
+import app.xlog.ggbond.BigMarketException;
+import app.xlog.ggbond.BigMarketRespCode;
+import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -14,10 +21,16 @@ import java.util.stream.Collectors;
 @Service
 public class RecommendService {
 
+    @Resource
+    private ObjectMapper objectMapper;
+
+    @Resource
+    private AIRepo aiRepo;
+
     /**
      * 跟据用户购买历史数据，生成合适的 gpt 问答
      */
-    public String generateGptQuestionByUserPurchaseHistory(List<UserPurchaseHistoryBO> userPurchaseHistoryBOList) {
+    private String generateGptQuestionByUserPurchaseHistory(List<UserPurchaseHistoryBO> userPurchaseHistoryBOList) {
         String data = userPurchaseHistoryBOList.stream()
                 .map(UserPurchaseHistoryBO::toString)
                 .collect(Collectors.joining("\n"))
@@ -47,9 +60,35 @@ public class RecommendService {
      * todo 未完成
      * todo 后续可以加一个 batch，然后更改 gpt 提示词
      */
-    public List<AwardBO> recommendAwardByUserPurchaseHistory(List<UserPurchaseHistoryBO> userPurchaseHistoryBOList) {
+    public List<AwardBO> recommendAwardByUserPurchaseHistory(String role,
+                                                             List<UserPurchaseHistoryBO> userPurchaseHistoryBOList) {
+        String question = generateGptQuestionByUserPurchaseHistory(userPurchaseHistoryBOList);
+        String answer = aiRepo.syncInvoke(role, question);
+        List<AwardBO> awardBOList = Arrays.stream(answer.split("\n"))
+                .flatMap(item -> {
+                    String[] split = item.split(":");
+                    if (split.length != 2) throw new BigMarketException(BigMarketRespCode.AI_RESPONSE_ERROR);
 
-        return null;
+                    GlobalConstant.AwardLevel awardLevel = GlobalConstant.AwardLevel.getNameByPriceRange(split[0].trim());
+                    if (awardLevel == null) throw new BigMarketException(BigMarketRespCode.AI_RESPONSE_ERROR);
+
+                    AtomicInteger initAwardSort = new AtomicInteger(awardLevel.getInitAwardSort());
+                    return Arrays.stream(split[1].trim()
+                                    .replace("[", "")
+                                    .replace("]", "")
+                                    .split(", ")
+                            )
+                            .map(child -> AwardBO.builder()
+                                    .awardTitle(child)
+                                    .awardSubtitle(awardLevel.getAwardSubtitle())
+                                    .awardRate(awardLevel.getAwardRate())
+                                    .awardCount(awardLevel.getAwardCount())
+                                    .awardSort(initAwardSort.getAndIncrement())
+                                    .build()
+                            );
+                })
+                .toList();
+        return awardBOList;
     }
 
 }

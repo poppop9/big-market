@@ -46,4 +46,7 @@ public interface IRaffleArmoryRepo {
     // 装配 - 权重对象 - 将权重对象Map插入到Redis中
     void insertWeightRandom(Long strategyId, Map<String, WeightRandom<Long>> wrMap);
 
+    // 插入 - 插入奖品
+    List<AwardBO> insertAwardList(List<AwardBO> awardBOS);
+
 }
