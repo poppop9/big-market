@@ -36,7 +36,6 @@ public class ActivityOrderFlow extends ShardingTableBaseEntity {
     private LocalDateTime activityOrderExpireTime = LocalDateTime.of(9999, 12, 31, 0, 0, 0);  // 订单过期时间（永久有效为LocalDateTime.MAX）
     private ActivityOrderType activityOrderType;  // 订单类型
     private ActivityOrderStatus activityOrderStatus;  // 订单状态
-    private Long testField = 11L;  // 测试字段 todo
 
     public enum ActivityOrderType {
         SIGN_IN_TO_CLAIM,  // 签到领取

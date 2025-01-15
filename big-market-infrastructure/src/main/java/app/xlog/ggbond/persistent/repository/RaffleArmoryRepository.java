@@ -3,8 +3,10 @@ package app.xlog.ggbond.persistent.repository;
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.persistent.po.raffle.Award;
 import app.xlog.ggbond.persistent.po.raffle.RafflePool;
+import app.xlog.ggbond.persistent.po.raffle.StrategyAward;
 import app.xlog.ggbond.persistent.repository.jpa.AwardJpa;
 import app.xlog.ggbond.persistent.repository.jpa.RafflePoolJpa;
+import app.xlog.ggbond.persistent.repository.jpa.StrategyAwardJpa;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigJpa;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
@@ -38,6 +40,8 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
 
     @Resource
     private RafflePoolJpa rafflePoolJpa;
+    @Resource
+    private StrategyAwardJpa strategyAwardJpa;
     @Resource
     private AwardJpa awardJpa;
     @Resource
@@ -75,9 +79,18 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      **/
     @Override
     public List<AwardBO> findAwardsByStrategyId(Long strategyId) {
-        return BeanUtil.copyToList(
-                awardJpa.findByStrategyId(strategyId), AwardBO.class
-        );
+        List<StrategyAward> strategyAwardList = strategyAwardJpa.findByStrategyIdOrderByAwardSortAsc(strategyId);
+        return strategyAwardList.stream()
+                .map(item -> {
+                    AwardBO awardBO = BeanUtil.copyProperties(
+                            awardJpa.findByAwardId(item.getAwardId()), AwardBO.class
+                    );
+                    awardBO.setAwardCount(item.getAwardCount());
+                    awardBO.setAwardSort(item.getAwardSort());
+                    awardBO.setAwardRate(item.getAwardRate());
+                    return awardBO;
+                })
+                .toList();
     }
 
     /**
@@ -104,9 +117,8 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     @Override
     public List<AwardBO> findAllAwards(Long activityId, Long userId) {
         Long strategyId = userRaffleConfigJpa.findByUserIdAndActivityId(userId, activityId).getStrategyId();
-        return BeanUtil.copyToList(
-                awardJpa.findByStrategyId(strategyId), AwardBO.class
-        );
+        List<AwardBO> awardBOS = findAwardsByStrategyId(strategyId);
+        return awardBOS;
     }
 
     /**
@@ -121,18 +133,8 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
 
         RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getAwardCountMapCacheKey(strategyId));
         if (rMap.isExists()) rMap.clear();
-
         rMap.putAll(collect);
         rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
-
-/*        findAwardsByStrategyId(strategyId).forEach(item -> {
-            RAtomicLong rAtomicLong = redissonClient.getAtomicLong(GlobalConstant.getAwardCountCacheKey(strategyId, item.getAwardId()));
-
-            if (!rAtomicLong.isExists()) {
-                rAtomicLong.set(item.getAwardCount());
-                rAtomicLong.expire(Duration.ofSeconds(GlobalConstant.redisExpireTime));
-            }
-        });*/
     }
 
     /**

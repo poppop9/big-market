@@ -42,6 +42,8 @@ public class JpaTest {
     @Resource
     private StrategyJpa strategyJpa;
     @Resource
+    private StrategyAwardJpa strategyAwardJpa;
+    @Resource
     private AwardJpa awardJpa;
     @Resource
     private UserJpa userJpa;
@@ -76,23 +78,6 @@ public class JpaTest {
             User user = new EasyRandom(parameters).nextObject(User.class);
             userJpa.save(user);
         }
-    }
-
-    @Test
-    void test_1() {
-        awardJpa.findAll(Example.of(Award.builder()
-                .strategyId(10001L)
-                .awardTitle(null)
-                .build())
-        ).forEach(System.out::println);
-        System.out.println("====================================");
-
-        awardJpa.findByAwardTitleContainsAndAwardCountBetween(null, 10000L, 50000L)
-                .forEach(System.out::println);
-        System.out.println("====================================");
-
-        awardJpa.findByAwardCountBetween(10000L, 500000L)
-                .forEach(System.out::println);
     }
 
     @Test
@@ -160,8 +145,9 @@ public class JpaTest {
 
         // === 抽奖领域 ===
         test_activity();
-        test_3();
-        test_99();
+        test_strategy();
+        test_strategyAward();
+        test_award();
         test_5();
         // === 安全领域 ===
         test_4(snowflakeNextId);
@@ -176,7 +162,7 @@ public class JpaTest {
     void test_activity() {
         activityJPA.save(Activity.builder()
                 .activityId(10001L)
-                .defaultStrategyId(10001L)
+                .activityName("测试活动")
                 .strategyIdList(new ArrayList<>(List.of(10001L)))
                 .build()
         );
@@ -259,16 +245,28 @@ public class JpaTest {
      * 初始化策略
      */
     @Test
-    void test_3() {
+    void test_strategy() {
         strategyJpa.saveAll(List.of(
-                Strategy.builder()
-                        .strategyId(10001L)
-                        .strategyDesc("策略 1")
-                        .build(),
-                Strategy.builder()
-                        .strategyId(IdUtil.getSnowflakeNextId())
-                        .strategyDesc("策略 2 - 测试")
-                        .build()
+                Strategy.builder().activityId(10001L).strategyId(10001L).strategyDesc("策略 1").build(),
+                Strategy.builder().activityId(10001L).strategyId(IdUtil.getSnowflakeNextId()).strategyDesc("策略 2 - 测试").build()
+        ));
+    }
+
+    /**
+     * 初始化策略·奖品中间表
+     */
+    @Test
+    void test_strategyAward() {
+        strategyAwardJpa.saveAll(List.of(
+                StrategyAward.builder().strategyId(10001L).awardId(101L).awardCount(8000L).awardRate(74.0).awardSort(1).build(),
+                StrategyAward.builder().strategyId(10001L).awardId(102L).awardCount(50L).awardRate(4.0).awardSort(2).build(),
+                StrategyAward.builder().strategyId(10001L).awardId(103L).awardCount(50L).awardRate(4.0).awardSort(3).build(),
+                StrategyAward.builder().strategyId(10001L).awardId(104L).awardCount(50L).awardRate(4.0).awardSort(4).build(),
+                StrategyAward.builder().strategyId(10001L).awardId(105L).awardCount(50L).awardRate(4.0).awardSort(5).build(),
+                StrategyAward.builder().strategyId(10001L).awardId(106L).awardCount(10L).awardRate(3.0).awardSort(6).build(),
+                StrategyAward.builder().strategyId(10001L).awardId(107L).awardCount(10L).awardRate(3.0).awardSort(7).build(),
+                StrategyAward.builder().strategyId(10001L).awardId(108L).awardCount(10L).awardRate(3.0).awardSort(8).build(),
+                StrategyAward.builder().strategyId(10001L).awardId(109L).awardCount(1L).awardRate(1.0).awardSort(9).build()
         ));
     }
 
@@ -276,84 +274,17 @@ public class JpaTest {
      * 初始化奖品
      */
     @Test
-    void test_99() {
+    void test_award() {
         awardJpa.saveAll(List.of(
-                Award.builder()
-                        .strategyId(10001L)
-                        .awardId(101L)
-                        .awardTitle("随机积分")
-                        .awardCount(80000L)
-                        .awardRate(74.0)
-                        .awardSort(1)
-                        .build(),
-                Award.builder()
-                        .strategyId(10001L)
-                        .awardId(102L)
-                        .awardTitle("淘宝优惠券")
-                        .awardCount(50000L)
-                        .awardRate(4.0)
-                        .awardSort(2)
-                        .build(),
-                Award.builder()
-                        .strategyId(10001L)
-                        .awardId(103L)
-                        .awardTitle("京东优惠券")
-                        .awardCount(50000L)
-                        .awardRate(4.0)
-                        .awardSort(3)
-                        .build(),
-                Award.builder()
-                        .strategyId(10001L)
-                        .awardId(104L)
-                        .awardTitle("1 天 VIP")
-                        .awardCount(50000L)
-                        .awardRate(4.0)
-                        .awardSort(4)
-                        .build(),
-                Award.builder()
-                        .strategyId(10001L)
-                        .awardId(105L)
-                        .awardTitle("高额随机积分")
-                        .awardCount(50000L)
-                        .awardRate(4.0)
-                        .awardSort(5)
-                        .build(),
-                Award.builder()
-                        .strategyId(10001L)
-                        .awardId(106L)
-                        .awardTitle("付费音乐 30 天免费听")
-                        .awardSubtitle("抽奖 10 次后解锁")
-                        .awardCount(10000L)
-                        .awardRate(3.0)
-                        .awardSort(6)
-                        .build(),
-                Award.builder()
-                        .strategyId(10001L)
-                        .awardId(107L)
-                        .awardTitle("付费电影 30 天免费看")
-                        .awardSubtitle("抽奖 10 次后解锁")
-                        .awardCount(10000L)
-                        .awardRate(3.0)
-                        .awardSort(7)
-                        .build(),
-                Award.builder()
-                        .strategyId(10001L)
-                        .awardId(108L)
-                        .awardTitle("付费小说 30 天免费看")
-                        .awardSubtitle("抽奖 10 次后解锁")
-                        .awardCount(10000L)
-                        .awardRate(3.0)
-                        .awardSort(8)
-                        .build(),
-                Award.builder()
-                        .strategyId(10001L)
-                        .awardId(109L)
-                        .awardTitle("iPhone 15 Pro Max")
-                        .awardSubtitle("抽奖 20 次后解锁")
-                        .awardCount(100L)
-                        .awardRate(1.0)
-                        .awardSort(9)
-                        .build()
+                Award.builder().awardId(101L).awardTitle("随机积分").build(),
+                Award.builder().awardId(102L).awardTitle("淘宝优惠券").build(),
+                Award.builder().awardId(103L).awardTitle("京东优惠券").build(),
+                Award.builder().awardId(104L).awardTitle("1 天 VIP").build(),
+                Award.builder().awardId(105L).awardTitle("高额随机积分").build(),
+                Award.builder().awardId(106L).awardTitle("付费音乐 30 天免费听").awardSubtitle("抽奖 10 次后解锁").build(),
+                Award.builder().awardId(107L).awardTitle("付费电影 30 天免费看").awardSubtitle("抽奖 10 次后解锁").build(),
+                Award.builder().awardId(108L).awardTitle("付费小说 30 天免费看").awardSubtitle("抽奖 10 次后解锁").build(),
+                Award.builder().awardId(109L).awardTitle("iPhone 15 Pro Max").awardSubtitle("抽奖 20 次后解锁").build()
         ));
     }
 

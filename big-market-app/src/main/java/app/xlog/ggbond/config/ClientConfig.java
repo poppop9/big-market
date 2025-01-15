@@ -9,10 +9,8 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class ClientConfig {
-
     @Bean
     public OkHttpClient okHttpClient() {
         return new OkHttpClient();
     }
-
 }

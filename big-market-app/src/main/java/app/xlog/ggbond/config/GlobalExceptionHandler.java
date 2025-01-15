@@ -35,7 +35,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BigMarketException.class)
     public ResponseEntity<JsonNode> bigMarketExceptionHandler(BigMarketException e) {
-        log.error("业务错误码 :{} --->>> {}", e.getRespCode().getCode(), e.getRespCode().getMessage());
+        log.error("业务错误码 :{} --->>> {}",
+                e.getRespCode().getCode(),
+                e.getMessage() != null ? e.getMessage() : e.getRespCode().getMessage()
+        );
         Arrays.stream(e.getStackTrace()).forEach(stackTraceElement -> {
             System.out.printf("\tat %s.%s(%s:%d) %s%n",
                     stackTraceElement.getClassName(),
@@ -46,7 +49,10 @@ public class GlobalExceptionHandler {
             );
         });
 
-        return ZakiResponse.error(e.getRespCode(), e.getMessage());
+        return ZakiResponse.error(
+                e.getRespCode(),
+                e.getMessage() != null ? e.getMessage() : e.getRespCode().getMessage()
+        );
     }
 
     /**

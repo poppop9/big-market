@@ -1,5 +1,7 @@
 package app.xlog.ggbond.integrationService;
 
+import app.xlog.ggbond.BigMarketException;
+import app.xlog.ggbond.BigMarketRespCode;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import app.xlog.ggbond.raffle.service.IRaffleDispatch;
@@ -35,7 +37,6 @@ public class RaffleSecurityAppService {
         // 自动获取当前用户
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
         List<AwardBO> awardBOs = raffleArmory.findAllAwards(activityId, user.getUserId());
-
         log.atDebug().log("查询了活动 {} ，用户 {} 的奖品列表", activityId, user.getUserId());
 
         return awardBOs;
@@ -52,7 +53,6 @@ public class RaffleSecurityAppService {
         Long strategyId = securityService.findStrategyIdByActivityIdAndUserId(activityId, userId);
 
         Long awardId = raffleDispatch.getAwardId(
-                activityId,
                 strategyId,
                 app.xlog.ggbond.raffle.model.bo.UserBO.builder()
                         .userId(userId)
@@ -61,8 +61,8 @@ public class RaffleSecurityAppService {
                         .build()
         );
 
-        log.atInfo().log(
-                "抽奖领域 - " + securityService.getLoginIdDefaultNull() + " 抽到 {} 活动的 {} 奖品", activityId, awardId
+        log.atInfo().log("抽奖领域 - " +
+                securityService.getLoginIdDefaultNull() + " 抽到 {} 活动的 {} 奖品", activityId, awardId
         );
 
         return awardId;
@@ -74,19 +74,17 @@ public class RaffleSecurityAppService {
     public List<UserRaffleHistoryBO> findAllWinningAwards(Long activityId) {
         // 自动获取当前用户
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
-        List<UserRaffleHistoryBO> winningAwards = securityService.findWinningAwardsInfo(activityId, user.getUserId());
-
-        return winningAwards;
+        return securityService.findWinningAwardsInfo(activityId, user.getUserId());
     }
 
     /**
      * 安全领域 - 登录
      */
-    public void doLogin(Long userId, String password) throws Exception {
+    public void doLogin(Long userId, String password) {
         boolean isSuccess = securityService.doLogin(userId, password);
         // 1. 判断是否登录成功
         if (!isSuccess) {
-            throw new Exception("用户名或密码错误");
+            throw new BigMarketException(BigMarketRespCode.WRONG_USERNAME_OR_PASSWORD);
         }
 
         // 2. 把activityId塞到session里，后面的操作都可以直接从这里取

@@ -25,7 +25,7 @@ import java.util.List;
 })
 public class Activity extends SingleTableBaseEntity {
     private Long activityId;  // 活动id
-    private Long defaultStrategyId;  // 默认策略id（每个活动都会有一个默认的策略id）
+    private String activityName;  // 活动名称
     @Column(columnDefinition = "TEXT")
     @Convert(converter = LongListToJsonConverter.class)
     @Builder.Default

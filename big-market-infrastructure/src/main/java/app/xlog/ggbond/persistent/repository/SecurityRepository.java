@@ -99,8 +99,7 @@ public class SecurityRepository implements ISecurityRepo {
     @Override
     public Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId) {
         UserRaffleConfig userConfig = userRaffleConfigJpa.findByUserIdAndActivityId(userId, activityId);
-        return Optional.ofNullable(userConfig.getStrategyId())
-                .orElseGet(() -> activityJpa.findByActivityId(activityId).getDefaultStrategyId());
+        return userConfig.getStrategyId();
     }
 
     /**

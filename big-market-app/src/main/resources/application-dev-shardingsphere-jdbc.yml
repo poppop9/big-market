@@ -30,9 +30,12 @@ rules:
       Strategy: # 策略
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: strategyId, shardingAlgorithmName: HASH_MOD_4 } }
-      Award: # 奖品
+      StrategyAward: # 策略奖品中间表
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: strategyId, shardingAlgorithmName: HASH_MOD_4 } }
+      Award: # 奖品
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: awardId, shardingAlgorithmName: HASH_MOD_4 } }
       RafflePool: # 抽奖池
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: strategyId, shardingAlgorithmName: HASH_MOD_4 } }
@@ -58,7 +61,7 @@ rules:
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
     # 绑定表
     bindingTables:
-      - Strategy, Award, RafflePool
+      - Strategy, StrategyAward, RafflePool
       - User, UserRaffleConfig, UserPurchaseHistory, UserRaffleHistory
     # 定义分片算法策略
     shardingAlgorithms:

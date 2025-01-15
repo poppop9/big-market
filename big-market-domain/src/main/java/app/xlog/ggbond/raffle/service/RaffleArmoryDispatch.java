@@ -7,6 +7,8 @@ import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
 import app.xlog.ggbond.raffle.service.filterChain.RaffleFilterChain;
+import app.xlog.ggbond.security.service.ISecurityService;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +36,8 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     private IRaffleDispatchRepo raffleDispatchRepo;
     @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
+    @Resource
+    private ISecurityService securityService;
 
     /**
      * 装配 - 根据指定策略id，装配该策略所需的所有权重对象
@@ -68,12 +72,10 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
                 .collect(Collectors.toMap(
                         RafflePoolBO::getRafflePoolName,
                         item -> {
+                            List<AwardBO> awardsByStrategyId = raffleArmoryRepo.findAwardsByStrategyId(item.getStrategyId());
                             // 生成权重集合
-                            List<WeightRandom.WeightObj<Long>> weightObjs = item.getAwardIds().stream()
-                                    .map(child -> {
-                                        AwardBO award = raffleArmoryRepo.findAwardByAwardId(child);
-                                        return new WeightRandom.WeightObj<>(child, award.getAwardRate());
-                                    })
+                            List<WeightRandom.WeightObj<Long>> weightObjs = awardsByStrategyId.stream()
+                                    .map(child -> new WeightRandom.WeightObj<>(child.getAwardId(), child.getAwardRate()))
                                     .toList();
                             return RandomUtil.weightRandom(weightObjs);
                         }
@@ -112,7 +114,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      * 调度 - 根据策略id，抽取奖品
      */
     @Override
-    public Long getAwardId(Long activityId, Long strategyId, UserBO userBO) {
+    public Long getAwardId(Long strategyId, UserBO userBO) {
         // 执行过滤器链
         return raffleFilterChain.executeFilterChain(RaffleFilterContext.builder()
                 .userBO(userBO)

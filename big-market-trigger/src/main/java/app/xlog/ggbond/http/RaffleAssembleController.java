@@ -30,7 +30,7 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
     private RaffleSecurityAppService raffleSecurityAppService;
 
     /**
-     * 查询对应的奖品列表
+     * 查询对应的奖品列表 todo 已完成
      */
     @Override
     @GetMapping("/v2/queryAwardList")

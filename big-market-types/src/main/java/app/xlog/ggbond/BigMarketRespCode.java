@@ -17,6 +17,8 @@ public enum BigMarketRespCode {
     ACTIVITY_ORDER_INSUFFICIENT_INVENTORY(510, "活动单库存不足"),
     // 抽奖领域
     DECREASE_AWARD_COUNT_FAILED(550, "扣减奖品库存失败，可能由于并发太高，或者奖品库存没有装配"),
+    // 安全领域
+    WRONG_USERNAME_OR_PASSWORD(580, "用户名或密码错误"),
     ;
 
     private final int code;

@@ -24,7 +24,7 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
     private RaffleSecurityAppService raffleSecurityAppService;
 
     /**
-     * 抽取奖品
+     * 抽取奖品 todo 未完成
      */
     @Override
     @GetMapping("/v2/getAward")

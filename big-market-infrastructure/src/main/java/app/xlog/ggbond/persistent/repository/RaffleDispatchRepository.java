@@ -5,6 +5,7 @@ import app.xlog.ggbond.MQMessage;
 import app.xlog.ggbond.mq.MQEventCenter;
 import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
 import app.xlog.ggbond.persistent.repository.jpa.AwardJpa;
+import app.xlog.ggbond.persistent.repository.jpa.StrategyAwardJpa;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigJpa;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryJpa;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
@@ -19,6 +20,7 @@ import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
@@ -47,6 +49,8 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     private UserRaffleHistoryJpa userRaffleHistoryJpa;
     @Resource
     private UserRaffleConfigJpa userRaffleConfigJpa;
+    @Autowired
+    private StrategyAwardJpa strategyAwardJpa;
 
     /**
      * 抽奖池 - 将该奖品从缓存中的所有抽奖池权重对象中移除
@@ -80,7 +84,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public void updateAwardCount(DecrQueueVO decrQueueVO) {
-        awardJpa.decrementAwardCountByStrategyIdAndAwardId(
+        strategyAwardJpa.decrementAwardCountByStrategyIdAndAwardId(
                 decrQueueVO.getStrategyId(),
                 decrQueueVO.getAwardId()
         );

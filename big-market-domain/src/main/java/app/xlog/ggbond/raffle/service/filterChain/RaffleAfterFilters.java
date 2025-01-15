@@ -25,10 +25,6 @@ public class RaffleAfterFilters {
 
     @Resource
     private IRaffleDispatchRepo raffleDispatchRepo;
-    @Resource
-    private IRaffleArmoryRepo raffleArmoryRepo;
-    @Resource
-    private ISecurityRepo securityRepo;
 
     /**
      * 更新过期时间过滤器 - 更新redis中的过期时间

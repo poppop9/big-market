@@ -31,6 +31,7 @@ public class FreeChatGPTService implements AIService {
 
     /**
      * GPT调用方法 - 同步调用
+     * <p>
      * - 请求限制：一天200次
      * - 余额查询：https://api.chatanywhere.tech/#/
      * - 请求路径：

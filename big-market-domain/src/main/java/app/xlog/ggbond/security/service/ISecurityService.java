@@ -15,7 +15,11 @@ import java.util.List;
  * todo 索引未完善
  * todo 造一些用户购买历史数据，测试ai生成速度
  * todo 奖品的库存不能在奖品表中，要跟用户绑定，这样就能解耦了（所有用户的最低级别奖品都是随机积分）
+ *     - 奖品的库存要放在策略奖品表中
+ *     - strategyId 也不能放在奖品表中（因为一个奖品可能会有多个策略使用）
+ *     - awardSort 也不能放在奖品表中
  * todo 奖品在前端的排序不能跟据原来的那个字段来了
+ * todo 过滤器链对于同一个用户来说，应该要加锁
  */
 public interface ISecurityService {
 

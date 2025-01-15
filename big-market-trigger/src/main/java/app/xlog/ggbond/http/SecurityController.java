@@ -24,14 +24,14 @@ public class SecurityController implements ISecurityApiService {
     private RaffleSecurityAppService raffleSecurityAppService;
 
     /**
-     * 登录
+     * 登录 todo 已完成
      * @param activityId 这个参数用来鉴定是哪个活动的登录
      * @param userId     用户id
      * @param password   密码
      */
     @Override
     @GetMapping("/v1/doLogin")
-    public ResponseEntity<JsonNode> doLogin(@RequestParam Long activityId, @RequestParam Long userId, @RequestParam String password) throws Exception {
+    public ResponseEntity<JsonNode> doLogin(@RequestParam Long activityId, @RequestParam Long userId, @RequestParam String password) {
         raffleSecurityAppService.doLogin(userId, password);
         return ZakiResponse.ok("用户 " + userId + " 登录成功");
     }

@@ -28,7 +28,6 @@ public class RaffleListener {
             groupId = GlobalConstant.KafkaConstant.groupId)
     public void consumeMessage(ConsumerRecord<String, MQMessage<DecrQueueVO>> record) {
         DecrQueueVO decrQueueVO = record.value().getData();
-        System.out.println(decrQueueVO);
         raffleDispatchRepo.updateAwardCount(decrQueueVO);
         log.info("抽奖领域 - 扣减数据库中 {} 策略 {} 奖品的库存成功", decrQueueVO.getStrategyId(), decrQueueVO.getAwardId());
     }

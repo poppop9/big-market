@@ -22,16 +22,11 @@ import java.time.LocalDateTime;
 @Table(name = "Award", indexes = {
         @Index(columnList = "strategyId"),
         @Index(columnList = "awardId"),
-        @Index(columnList = "awardCount"),
         @Index(columnList = "strategyId, awardId")
 })
 public class Award extends ShardingTableBaseEntity {
-    private Long strategyId;  // 策略id
     @Builder.Default
-    private Long awardId = IdUtil.getSnowflakeNextId();  // 奖品id
+    private Long awardId = IdUtil.getSnowflakeNextId();  // 奖品id todo 最好保证生成的一组奖品的id的hash取余都是一样的
     private String awardTitle;  // 奖品标题
     private String awardSubtitle;  // 奖品副标题
-    private Long awardCount;  // 奖品库存
-    private Double awardRate;  // 奖品被抽取到的概率，单位是%
-    private Integer awardSort;  // 奖品在前端的排序
 }
