@@ -53,6 +53,11 @@ public class JpaTest {
     private UserRaffleConfigJpa userRaffleConfigJpa;
 
     @Test
+    void test_9fuc8d() {
+
+    }
+
+    @Test
     void test_fjdslk2() {
         ActivityOrderFlow build = ActivityOrderFlow.builder()
                 .userId(10001L)

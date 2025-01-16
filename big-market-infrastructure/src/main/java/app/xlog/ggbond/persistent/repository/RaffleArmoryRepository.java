@@ -13,6 +13,7 @@ import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
 import jakarta.annotation.Resource;
+import org.redisson.api.RBitSet;
 import org.redisson.api.RBucket;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
@@ -254,6 +255,33 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
                 .rafflePoolType(RafflePool.RafflePoolType.SpecialRule).rafflePoolName("BlacklistPool")
                 .build()
         );
+    }
+
+    /**
+     * 判断 - 用户是否在抽奖中
+     */
+    @Override
+    public boolean isUserInRaffle(Long userId) {
+        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.userInRaffleBitSet);
+        return rBitSet.get(userId);
+    }
+
+    /**
+     * 修改 - 在BitSet中给用户加锁
+     */
+    @Override
+    public void lockUserInBitSet(Long userId) {
+        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.userInRaffleBitSet);
+        rBitSet.set(userId);
+    }
+
+    /**
+     * 修改 - 在BitSet中给用户解锁
+     */
+    @Override
+    public void unLockUserInBitSet(Long userId) {
+        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.userInRaffleBitSet);
+        rBitSet.clear(userId);
     }
 
 }

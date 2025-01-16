@@ -4,6 +4,7 @@
     <chain name="RaffleFilterChain">
         THEN(
             // 1. 前置过滤器链
+            ConcurrencySafetyLockFilter,
             IF(CheckProceed, BlacklistRaffleFilter),
             IF(CheckProceed, SpecialTimeMatchRafflePoolFilter),
             IF(CheckProceed, NormalTimeMatchRafflePoolFilter),
@@ -14,7 +15,8 @@
                 UpdateExpireTimeFilter,
                 AwardInventoryFilter,
                 UserRaffleTimeFilter,
-                UserRaffleFlowRecordFilter
+                UserRaffleFlowRecordFilter,
+                ConcurrencySafetyUnLockFilter
             ).retry(3, "app.xlog.ggbond.raffle.model.vo.RetryRouterException")
         );
     </chain>

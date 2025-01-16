@@ -14,11 +14,11 @@ import java.util.List;
  * todo 不能用 200用户，这样每个用户的库存没法管理
  *
  * todo 索引未完善
- * todo 造一些用户购买历史数据，测试ai生成速度
  * todo 所有用户的最低级别奖品都是随机积分
  * todo 过滤器链对于同一个用户来说，应该要加锁
  * todo 最好保证生成的一组奖品的id的hash取余都是一样的，这样就会路由到同一张表中
  * todo 目前这个抽奖池也不是动态的，最好做到以活动为单位，每个活动的抽奖池配置可以自定义
+ * todo 生成大规模的用户，和历史购买数据
  */
 public interface ISecurityService {
 

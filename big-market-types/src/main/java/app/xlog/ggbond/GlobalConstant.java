@@ -46,6 +46,9 @@ public class GlobalConstant {
         public static String getBlacklistUserList() {
             return "BlacklistUserList";
         }
+
+        // 抽奖领域 - 用户是否在抽奖中的bitmap
+        public static String userInRaffleBitSet = "UserInRaffleBitSet";
     }
 
     public static class KafkaConstant {

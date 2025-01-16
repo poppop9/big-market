@@ -1,5 +1,7 @@
 package app.xlog.ggbond.raffle.service.filterChain;
 
+import app.xlog.ggbond.BigMarketException;
+import app.xlog.ggbond.BigMarketRespCode;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.bo.UserBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
@@ -25,6 +27,24 @@ public class RafflePreFilters {
 
     @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
+
+    /**
+     * 并发安全加锁过滤器 todo 未测试
+     */
+    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
+            value = LiteFlowMethodEnum.PROCESS,
+            nodeId = "ConcurrencySafetyLockFilter",
+            nodeName = "并发安全加锁过滤器")
+    public void concurrencySafetyLockFilter(NodeComponent bindCmp) {
+        RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
+        UserBO userBO = context.getUserBO();
+
+        if (raffleArmoryRepo.isUserInRaffle(userBO.getUserId())) {
+            throw new BigMarketException(BigMarketRespCode.USER_IS_IN_RAFFLE, "您当前正在抽奖中，请稍后再试");
+        } else {
+            raffleArmoryRepo.lockUserInBitSet(userBO.getUserId());
+        }
+    }
 
     /**
      * 黑名单过滤器

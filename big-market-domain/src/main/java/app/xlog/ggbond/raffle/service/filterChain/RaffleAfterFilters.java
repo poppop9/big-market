@@ -1,7 +1,9 @@
 package app.xlog.ggbond.raffle.service.filterChain;
 
+import app.xlog.ggbond.BigMarketException;
 import app.xlog.ggbond.BigMarketRespCode;
 import app.xlog.ggbond.GlobalConstant;
+import app.xlog.ggbond.raffle.model.bo.UserBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.model.vo.RetryRouterException;
@@ -25,6 +27,8 @@ public class RaffleAfterFilters {
 
     @Resource
     private IRaffleDispatchRepo raffleDispatchRepo;
+    @Resource
+    private IRaffleArmoryRepo raffleArmoryRepo;
 
     /**
      * 更新过期时间过滤器 - 更新redis中的过期时间
@@ -110,6 +114,20 @@ public class RaffleAfterFilters {
 
         raffleDispatchRepo.addUserRaffleFlowRecordFilter(userId, context.getStrategyId(), context.getAwardId());
         log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器执行完毕");
+    }
+
+    /**
+     * 并发安全解锁过滤器
+     */
+    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
+            value = LiteFlowMethodEnum.PROCESS,
+            nodeId = "ConcurrencySafetyUnLockFilter",
+            nodeName = "并发安全解锁过滤器")
+    public void concurrencySafetyUnLockFilter(NodeComponent bindCmp) {
+        RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
+        UserBO userBO = context.getUserBO();
+
+        raffleArmoryRepo.unLockUserInBitSet(userBO.getUserId());
     }
 
 }

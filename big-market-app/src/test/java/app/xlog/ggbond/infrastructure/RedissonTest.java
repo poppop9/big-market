@@ -25,9 +25,31 @@ public class RedissonTest {
     @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
 
+    @Test
+    void test_dc9j() {
+        RBitSet bitSet = redissonClient.getBitSet("myBitmap");
+
+        // 设置指定位置的位
+        bitSet.set(0, true); // 设置第0位为1
+        bitSet.set(1, false); // 设置第1位为0
+        bitSet.set(2); // 设置第2位为1（简写）
+        bitSet.set(1879820345763684352L, true);
+
+        // 获取指定位置的位
+        boolean bit0 = bitSet.get(0); // 获取第0位，结果为 true
+        boolean bit1 = bitSet.get(1); // 获取第1位，结果为 false
+
+        // 批量设置位
+        bitSet.set(10, 15, true); // 将第10位到第14位设置为1
+
+        // 获取范围内的位
+        long cardinality = bitSet.cardinality(); // 获取所有置1的位的数量
+        long length = bitSet.length(); // 获取 Bitmap 的总长度（最后一位+1）
+    }
+
     /*
-    测试队列
-     */
+        测试队列
+         */
     @Test
     public void test_QueueListener() throws InterruptedException {
         RQueue<Object> rQueue = redissonClient.getQueue("Queue");
