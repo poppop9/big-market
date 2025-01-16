@@ -148,9 +148,9 @@ public class JpaTest {
         test_strategy();
         test_strategyAward();
         test_award();
-        test_5();
+        test_RafflePool();
         // === 安全领域 ===
-        test_4(snowflakeNextId);
+        test_user(snowflakeNextId);
         test_userRaffleConfig(snowflakeNextId);
         test_userPurchaseHistory();
     }
@@ -175,40 +175,30 @@ public class JpaTest {
     void test_userPurchaseHistory() {
         List<UserPurchaseHistory> list = List.of(
                 UserPurchaseHistory.builder()
-                        .userId(200L)
+                        .userId(111L)
                         .purchaseName("芥末味夏威夷果")
                         .purchaseCategory(UserPurchaseHistory.PurchaseCategory.FOOD)
                         .purchasePrice(99.0).purchaseCount(1L).purchaseTimes(1L).isReturn(false)
                         .build(),
                 UserPurchaseHistory.builder()
-                        .userId(200L)
+                        .userId(111L)
                         .purchaseName("曲奇饼干")
                         .purchaseCategory(UserPurchaseHistory.PurchaseCategory.FOOD)
                         .purchasePrice(20.0).purchaseCount(2L).purchaseTimes(2L).isReturn(false)
                         .build(),
                 UserPurchaseHistory.builder()
-                        .userId(200L)
+                        .userId(111L)
                         .purchaseName("纯牛奶")
                         .purchaseCategory(UserPurchaseHistory.PurchaseCategory.FOOD)
                         .purchasePrice(30.0).purchaseCount(3L).purchaseTimes(3L).isReturn(false)
                         .build(),
                 UserPurchaseHistory.builder()
-                        .userId(200L)
+                        .userId(111L)
                         .purchaseName("冰箱")
                         .purchaseCategory(UserPurchaseHistory.PurchaseCategory.FOOD)
                         .purchasePrice(9999.0).purchaseCount(1L).purchaseTimes(1L).isReturn(false)
                         .build()
         );
-        String collect = list.stream()
-                .map(UserPurchaseHistory::toString)
-                .collect(Collectors.joining("\n"))
-                .replace("UserPurchaseHistory", "");
-        for (Field field : UserPurchaseHistory.class.getDeclaredFields()) {
-            String chinese = UserPurchaseHistory.FieldName.getChinese(field.getName());
-            collect = collect.replace(field.getName(), chinese);
-        }
-        System.out.println(collect);
-
         userPurchaseHistoryJpa.saveAll(list);
     }
 
@@ -220,11 +210,6 @@ public class JpaTest {
         userRaffleConfigJpa.saveAll(List.of(
                 UserRaffleConfig.builder()
                         .userId(404L)
-                        .activityId(10001L)
-                        .strategyId(10001L)
-                        .build(),
-                UserRaffleConfig.builder()
-                        .userId(111L)
                         .activityId(10001L)
                         .strategyId(10001L)
                         .build(),
@@ -292,7 +277,7 @@ public class JpaTest {
      * 初始化用户
      */
     @Test
-    void test_4(long snowflakeNextId) {
+    void test_user(long snowflakeNextId) {
         userJpa.saveAll(List.of(
                 User.builder()
                         .userId(404L)
@@ -300,7 +285,6 @@ public class JpaTest {
                         .password("404")
                         .userRole(User.UserRole.BLACKLIST)
                         .build(),
-                new EasyRandom().nextObject(User.class),
                 User.builder()
                         .userId(200L)
                         .userName("游客用户")
@@ -308,11 +292,18 @@ public class JpaTest {
                         .userRole(User.UserRole.USER)
                         .build(),
                 User.builder()
+                        .userId(111L)
+                        .userName("普通用户1")
+                        .password("111")
+                        .userRole(User.UserRole.USER)
+                        .build(),
+                User.builder()
                         .userId(snowflakeNextId)
-                        .userName("普通用户2 - 测试")
+                        .userName("普通用户2")
                         .password("222")
                         .userRole(User.UserRole.USER)
-                        .build()
+                        .build(),
+                new EasyRandom().nextObject(User.class)
         ));
     }
 
@@ -320,7 +311,7 @@ public class JpaTest {
      * 初始化抽奖池规则
      */
     @Test
-    void test_5() {
+    void test_RafflePool() {
         rafflePoolJpa.saveAll(List.of(
                 RafflePool.builder()
                         .strategyId(10001L)

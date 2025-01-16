@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 })
 public class Award extends ShardingTableBaseEntity {
     @Builder.Default
-    private Long awardId = IdUtil.getSnowflakeNextId();  // 奖品id todo 最好保证生成的一组奖品的id的hash取余都是一样的
+    private Long awardId = IdUtil.getSnowflakeNextId();  // 奖品id
     private String awardTitle;  // 奖品标题
     private String awardSubtitle;  // 奖品副标题
 }

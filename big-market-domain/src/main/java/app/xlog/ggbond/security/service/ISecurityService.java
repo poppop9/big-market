@@ -15,12 +15,10 @@ import java.util.List;
  *
  * todo 索引未完善
  * todo 造一些用户购买历史数据，测试ai生成速度
- * todo 奖品的库存不能在奖品表中，要跟用户绑定，这样就能解耦了（所有用户的最低级别奖品都是随机积分）
- *     - 奖品的库存要放在策略奖品表中
- *     - strategyId 也不能放在奖品表中（因为一个奖品可能会有多个策略使用）
- *     - awardSort 也不能放在奖品表中
- * todo 奖品在前端的排序不能跟据原来的那个字段来了
+ * todo 所有用户的最低级别奖品都是随机积分
  * todo 过滤器链对于同一个用户来说，应该要加锁
+ * todo 最好保证生成的一组奖品的id的hash取余都是一样的，这样就会路由到同一张表中
+ * todo 目前这个抽奖池也不是动态的，最好做到以活动为单位，每个活动的抽奖池配置可以自定义
  */
 public interface ISecurityService {
 
@@ -56,6 +54,9 @@ public interface ISecurityService {
 
     // 插入 - 将当前用户的角色信息放入session
     void insertPermissionIntoSession();
+
+    // 插入 - 插入用户抽奖配置
+    void insertUserRaffleConfig(Long userId, long activityId, Long strategyId);
 
     // 判断 - 检查该用户是否有策略
     boolean existsByUserIdAndActivityId(Long activityId, Long userId);

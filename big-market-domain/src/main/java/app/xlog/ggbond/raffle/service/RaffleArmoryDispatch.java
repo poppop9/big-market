@@ -2,6 +2,7 @@ package app.xlog.ggbond.raffle.service;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
+import app.xlog.ggbond.raffle.model.bo.StrategyBO;
 import app.xlog.ggbond.raffle.model.bo.UserBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
@@ -11,6 +12,7 @@ import app.xlog.ggbond.security.service.ISecurityService;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
@@ -101,14 +103,22 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      */
     @Override
     @Transactional
-    public void insertAwardList(Long userId, long activityId, List<AwardBO> awardBOS) {
+    public StrategyBO insertAwardList(Long userId, long activityId, List<AwardBO> awardBOS) {
         // 插入奖品表
-        List<AwardBO> awardList = raffleArmoryRepo.insertAwardList(awardBOS);
+        awardBOS = awardBOS.stream().peek(item -> item.setAwardId(IdUtil.getSnowflakeNextId())).collect(Collectors.toList());
+        raffleArmoryRepo.insertAwardList(awardBOS);
 
         // 插入策略表
+        long strategyId = raffleArmoryRepo.insertStrategy(activityId);
 
         // 插入策略奖品表
+        awardBOS.add(AwardBO.randomPointsAward);
+        raffleArmoryRepo.insertStrategyAwardList(strategyId, awardBOS);
 
+        // 插入抽奖池
+        raffleArmoryRepo.insertRafflePoolList(strategyId, awardBOS);
+
+        return StrategyBO.builder().strategyId(strategyId).build();
     }
 
     /**

@@ -134,6 +134,14 @@ public class SecurityService implements ISecurityService {
     }
 
     /**
+     * 插入 - 插入用户抽奖配置
+     */
+    @Override
+    public void insertUserRaffleConfig(Long userId, long activityId, Long strategyId) {
+        securityRepo.insertUserRaffleConfig(userId, activityId, strategyId);
+    }
+
+    /**
      * 判断 - 检查该用户是否有策略
      */
     @Override

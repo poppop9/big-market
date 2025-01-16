@@ -66,6 +66,19 @@ public class SecurityRepository implements ISecurityRepo {
     }
 
     /**
+     * 插入 - 插入用户抽奖配置
+     */
+    @Override
+    public void insertUserRaffleConfig(Long userId, long activityId, Long strategyId) {
+        userRaffleConfigJpa.save(UserRaffleConfig.builder()
+                .userId(userId)
+                .activityId(activityId)
+                .strategyId(strategyId)
+                .build()
+        );
+    }
+
+    /**
      * 修改 - 修改用户密码
      */
     @Override

@@ -49,4 +49,13 @@ public interface IRaffleArmoryRepo {
     // 插入 - 插入奖品
     List<AwardBO> insertAwardList(List<AwardBO> awardBOS);
 
+    // 插入 - 插入策略
+    long insertStrategy(long activityId);
+
+    // 插入 - 插入策略奖品
+    void insertStrategyAwardList(long strategyId, List<AwardBO> awardBOS);
+
+    // 插入 - 插入抽奖池
+    void insertRafflePoolList(long strategyId, List<AwardBO> awardBOS);
+
 }

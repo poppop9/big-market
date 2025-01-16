@@ -19,4 +19,13 @@ public class AwardBO {
     private Double awardRate;  // 奖品被抽取到的概率，单位是%
     private Long awardCount;  // 奖品库存
     private Integer awardSort;  // 奖品在前端的排序
+
+    public final static AwardBO randomPointsAward = AwardBO.builder()
+            .awardId(101L)
+            .awardTitle("随机积分")
+            .awardRate(74.0)
+            .awardCount(8000L)
+            .awardSort(1)
+            .build();
+
 }

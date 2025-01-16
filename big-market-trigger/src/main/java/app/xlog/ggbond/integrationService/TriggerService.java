@@ -3,6 +3,7 @@ package app.xlog.ggbond.integrationService;
 import app.xlog.ggbond.BigMarketException;
 import app.xlog.ggbond.BigMarketRespCode;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
+import app.xlog.ggbond.raffle.model.bo.StrategyBO;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import app.xlog.ggbond.raffle.service.IRaffleDispatch;
 import app.xlog.ggbond.recommend.RecommendService;
@@ -105,7 +106,8 @@ public class TriggerService {
             );
 
             // 插入数据库
-            raffleArmory.insertAwardList(userId, activityId, noAwardIdAwardBOS);
+            StrategyBO strategyBO = raffleArmory.insertAwardList(userId, activityId, noAwardIdAwardBOS);
+            securityService.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
         }
 
         // 4. 装配

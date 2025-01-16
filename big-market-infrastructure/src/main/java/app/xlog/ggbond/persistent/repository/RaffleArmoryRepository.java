@@ -3,11 +3,9 @@ package app.xlog.ggbond.persistent.repository;
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.persistent.po.raffle.Award;
 import app.xlog.ggbond.persistent.po.raffle.RafflePool;
+import app.xlog.ggbond.persistent.po.raffle.Strategy;
 import app.xlog.ggbond.persistent.po.raffle.StrategyAward;
-import app.xlog.ggbond.persistent.repository.jpa.AwardJpa;
-import app.xlog.ggbond.persistent.repository.jpa.RafflePoolJpa;
-import app.xlog.ggbond.persistent.repository.jpa.StrategyAwardJpa;
-import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigJpa;
+import app.xlog.ggbond.persistent.repository.jpa.*;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
@@ -18,12 +16,11 @@ import jakarta.annotation.Resource;
 import org.redisson.api.RBucket;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +43,8 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     private AwardJpa awardJpa;
     @Resource
     private UserRaffleConfigJpa userRaffleConfigJpa;
+    @Autowired
+    private StrategyJpa strategyJpa;
 
     /**
      * 查询 - 权重对象 - 从 redis 中查询出指定的权重对象
@@ -169,6 +168,92 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     public List<AwardBO> insertAwardList(List<AwardBO> awardBOS) {
         List<Award> awards = awardJpa.saveAll(BeanUtil.copyToList(awardBOS, Award.class));
         return BeanUtil.copyToList(awards, AwardBO.class);
+    }
+
+    /**
+     * 插入 - 插入策略
+     */
+    @Override
+    public long insertStrategy(long activityId) {
+        Strategy strategy = strategyJpa.save(Strategy.builder().activityId(activityId).build());
+        return strategy.getStrategyId();
+    }
+
+    /**
+     * 插入 - 插入策略奖品
+     */
+    @Override
+    public void insertStrategyAwardList(long strategyId, List<AwardBO> awardBOS) {
+        List<StrategyAward> list = awardBOS.stream()
+                .map(item -> StrategyAward.builder()
+                        .strategyId(strategyId)
+                        .awardId(item.getAwardId())
+                        .awardCount(item.getAwardCount())
+                        .awardRate(item.getAwardRate())
+                        .awardSort(item.getAwardSort())
+                        .build()
+                )
+                .toList();
+        strategyAwardJpa.saveAll(list);
+    }
+
+    /**
+     * 插入 - 插入抽奖池
+     */
+    @Override
+    public void insertRafflePoolList(long strategyId, List<AwardBO> awardBOS) {
+        List<Map.Entry<Double, ArrayList<AwardBO>>> rateItemListMap = awardBOS.stream().collect(Collectors.toMap(
+                        AwardBO::getAwardRate,
+                        item -> new ArrayList<>(List.of(item)),  // 使用可变集合
+                        (o, n) -> {
+                            o.addAll(n);
+                            return o;
+                        }
+                ))
+                .entrySet()
+                .stream()
+                .sorted(Comparator.comparingDouble(Map.Entry::getKey))  // 从小到大排序
+                .toList();
+
+        // 生成五个抽奖池（所有奖品，没有1级别的奖品，没有1级别没有2级别，1级别2级别奖品，只有最低级奖品）
+        List<Long> allAwardPool = rateItemListMap.stream().flatMap(item -> item.getValue().stream()).map(AwardBO::getAwardId).toList();
+        rafflePoolJpa.save(RafflePool.builder()
+                .strategyId(strategyId).awardIds(allAwardPool)
+                .rafflePoolType(RafflePool.RafflePoolType.NormalTime).rafflePoolName("AllAwardPool")
+                .normalTimeStartValue(20L).normalTimeEndValue(Long.MAX_VALUE)
+                .build()
+        );
+
+        List<Long> no1stAwardPool = rateItemListMap.stream().skip(1).flatMap(item -> item.getValue().stream()).map(AwardBO::getAwardId).toList();
+        rafflePoolJpa.save(RafflePool.builder()
+                .strategyId(strategyId).awardIds(no1stAwardPool)
+                .rafflePoolType(RafflePool.RafflePoolType.NormalTime).rafflePoolName("No1stAwardPool")
+                .normalTimeStartValue(10L).normalTimeEndValue(19L)
+                .build()
+        );
+
+        List<Long> no1stAnd2ndAwardPool = rateItemListMap.stream().skip(2).flatMap(item -> item.getValue().stream()).map(AwardBO::getAwardId).toList();
+        rafflePoolJpa.save(RafflePool.builder()
+                .strategyId(strategyId).awardIds(no1stAnd2ndAwardPool)
+                .rafflePoolType(RafflePool.RafflePoolType.NormalTime).rafflePoolName("No1stAnd2ndAwardPool")
+                .normalTimeStartValue(0L).normalTimeEndValue(9L)
+                .build()
+        );
+
+        List<Long> istAnd2ndAwardPool = rateItemListMap.stream().limit(2).flatMap(item -> item.getValue().stream()).map(AwardBO::getAwardId).toList();
+        rafflePoolJpa.save(RafflePool.builder()
+                .strategyId(strategyId).awardIds(istAnd2ndAwardPool)
+                .rafflePoolType(RafflePool.RafflePoolType.SpecialTime).rafflePoolName("IstAnd2ndAwardPool")
+                .specialTimeValue(50L)
+                .build()
+        );
+
+        List<Long> blacklistPool = rateItemListMap.stream().skip(3).flatMap(item -> item.getValue().stream()).map(AwardBO::getAwardId).toList();
+        rafflePoolJpa.save(RafflePool.builder()
+                .strategyId(strategyId).awardIds(blacklistPool)
+                .rafflePoolType(RafflePool.RafflePoolType.SpecialRule).rafflePoolName("BlacklistPool")
+                .build()
+        );
     }
 
 }

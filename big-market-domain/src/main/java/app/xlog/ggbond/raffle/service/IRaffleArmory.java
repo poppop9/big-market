@@ -1,6 +1,7 @@
 package app.xlog.ggbond.raffle.service;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
+import app.xlog.ggbond.raffle.model.bo.StrategyBO;
 
 import java.util.List;
 
@@ -25,6 +26,6 @@ public interface IRaffleArmory {
     List<AwardBO> findAllAwards(Long activityId, Long userId);
 
     // 插入 - 将该用户的所有奖品信息插入到数据库
-    void insertAwardList(Long userId, long activityId, List<AwardBO> awardBOS);
+    StrategyBO insertAwardList(Long userId, long activityId, List<AwardBO> awardBOS);
 
 }
