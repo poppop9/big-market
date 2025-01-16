@@ -132,7 +132,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
         ));
 
         RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getAwardCountMapCacheKey(strategyId));
-        if (rMap.isExists()) rMap.clear();
+        if (rMap.isExists()) rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
         rMap.putAll(collect);
         rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
     }
@@ -155,7 +155,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     public void insertWeightRandom(Long strategyId, Map<String, WeightRandom<Long>> wrMap) {
         RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getWeightRandomMapCacheKey(strategyId));
         if (rMap.isExists()) {
-            rMap.clear();
+            rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
         }
         rMap.putAll(wrMap);
 
