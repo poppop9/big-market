@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -105,7 +106,14 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     @Transactional
     public StrategyBO insertAwardList(Long userId, long activityId, List<AwardBO> awardBOS) {
         // 插入奖品表
-        awardBOS = awardBOS.stream().peek(item -> item.setAwardId(IdUtil.getSnowflakeNextId())).collect(Collectors.toList());
+        int i = new Random().nextInt(4);
+        awardBOS = awardBOS.stream().peek(item -> {
+            long snowflakeNextId;
+            do {
+                snowflakeNextId = IdUtil.getSnowflakeNextId();
+            } while (snowflakeNextId % 4 != i);
+            item.setAwardId(snowflakeNextId);
+        }).collect(Collectors.toList());
         raffleArmoryRepo.insertAwardList(awardBOS);
 
         // 插入策略表

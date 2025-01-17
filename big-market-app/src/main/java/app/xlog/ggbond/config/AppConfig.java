@@ -1,25 +1,30 @@
 package app.xlog.ggbond.config;
 
-import app.xlog.ggbond.raffle.utils.SpringContextUtil;
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Resource;
-import org.springframework.context.ApplicationContext;
+import okhttp3.OkHttpClient;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class AppConfig {
 
-    @Resource
-    private ApplicationContext applicationContext;
-    @Resource
-    private SpringContextUtil springContextUtil;
-
-    @PostConstruct
-    public void init() {
-        springContextUtil.setApplicationContext(applicationContext);
+    /**
+     * 跨域配置
+     */
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(@NotNull CorsRegistry registry) {
+                registry.addMapping("/**")  // 应用到所有请求
+                        .allowedOrigins("http://localhost:5173")  // 允许的地址
+                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")  // 允许的http方法
+                        .allowedHeaders("authorization", "content-type");  // 允许一些特殊的请求头
+            }
+        };
     }
 
     /**
@@ -30,6 +35,14 @@ public class AppConfig {
         MethodValidationPostProcessor processor = new MethodValidationPostProcessor();
         processor.setAdaptConstraintViolations(true);
         return processor;
+    }
+
+    /**
+     * OKHttp 请求客户端配置
+     */
+    @Bean
+    public OkHttpClient okHttpClient() {
+        return new OkHttpClient();
     }
 
 }
