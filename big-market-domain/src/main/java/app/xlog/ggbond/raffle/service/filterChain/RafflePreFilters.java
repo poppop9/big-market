@@ -29,7 +29,7 @@ public class RafflePreFilters {
     private IRaffleArmoryRepo raffleArmoryRepo;
 
     /**
-     * 并发安全加锁过滤器 todo 未测试
+     * 并发安全加锁过滤器
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,

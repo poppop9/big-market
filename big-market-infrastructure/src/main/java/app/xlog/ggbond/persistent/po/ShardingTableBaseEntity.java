@@ -1,11 +1,7 @@
 package app.xlog.ggbond.persistent.po;
 
-import app.xlog.ggbond.persistent.util.JpaDefaultValueListener;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +10,8 @@ import java.time.LocalDateTime;
  */
 @Data
 @NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
 @MappedSuperclass
 public class ShardingTableBaseEntity {

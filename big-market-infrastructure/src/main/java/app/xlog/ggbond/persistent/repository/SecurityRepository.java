@@ -2,6 +2,7 @@ package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.persistent.po.security.User;
+import app.xlog.ggbond.persistent.po.security.UserPurchaseHistory;
 import app.xlog.ggbond.persistent.po.security.UserRaffleConfig;
 import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
 import app.xlog.ggbond.persistent.repository.jpa.*;
@@ -15,6 +16,7 @@ import jakarta.annotation.Resource;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -174,6 +176,23 @@ public class SecurityRepository implements ISecurityRepo {
                 userPurchaseHistoryJpa.findByUserIdOrderByCreateTimeDesc(userId),
                 UserPurchaseHistoryBO.class
         );
+    }
+
+    /**
+     * 查询 - 查询最近的购买历史
+     */
+    @Override
+    public List<UserPurchaseHistoryBO> findRecentPurchaseHistory() {
+        List<UserPurchaseHistory> userPurchaseHistoryList = userPurchaseHistoryJpa.findByOrderByCreateTimeDesc(PageRequest.of(0, 50));
+        return BeanUtil.copyToList(userPurchaseHistoryList, UserPurchaseHistoryBO.class);
+    }
+
+    /**
+     * 判断 - 判断用户是否有购买历史
+     */
+    @Override
+    public boolean existsUserPurchaseHistory(Long userId) {
+        return userPurchaseHistoryJpa.existsByUserId(userId);
     }
 
 }

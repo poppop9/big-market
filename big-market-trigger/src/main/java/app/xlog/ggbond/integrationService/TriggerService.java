@@ -98,16 +98,26 @@ public class TriggerService {
 
         // 3. 检查该用户是否有策略，如果没有则ai生成推荐商品
         if (!securityService.existsByUserIdAndActivityId(activityId, userId)) {
-            // 查询用户购买历史，生成推荐奖品 todo 这里如果购买历史太多了怎么办，或者购买历史是0怎么办
-            List<UserPurchaseHistoryBO> userPurchaseHistoryBOList = securityService.findUserPurchaseHistory(securityService.getLoginIdDefaultNull());
-            List<AwardBO> noAwardIdAwardBOS = recommendService.recommendAwardByUserPurchaseHistory(
-                    "你是一个推荐系统，根据用户的购买历史推荐最能吸引该用户的商品。",
-                    userPurchaseHistoryBOList
-            );
+            // 3.1 判断用户是否有购买历史
+            if (securityService.existsUserPurchaseHistory(userId)) {
+                // 查询用户购买历史，生成推荐奖品
+                List<UserPurchaseHistoryBO> userPurchaseHistoryBOList = securityService.findUserPurchaseHistory(securityService.getLoginIdDefaultNull());
+                List<AwardBO> noAwardIdAwardBOS = recommendService.recommendAwardByUserPurchaseHistory(
+                        "你是一个推荐系统，根据用户的购买历史推荐最能吸引该用户的商品。",
+                        userPurchaseHistoryBOList
+                );
 
-            // 插入数据库
-            StrategyBO strategyBO = raffleArmory.insertAwardList(userId, activityId, noAwardIdAwardBOS);
-            securityService.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
+                // 插入数据库
+                StrategyBO strategyBO = raffleArmory.insertAwardList(userId, activityId, noAwardIdAwardBOS);
+                securityService.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
+            } else {
+                // todo 无购买历史，从海量用户的购买历史中生成热销产品
+                List<UserPurchaseHistoryBO> recentPurchaseHistoryList = securityService.findRecentPurchaseHistory();
+                List<AwardBO> noAwardIdAwardBOS = recommendService.recommendHotSaleProductByRecentPurchaseHistory(
+                        "你是一个推荐系统，根据海量用户的最近的购买历史给该用户推荐最热销的商品。",
+                        recentPurchaseHistoryList
+                );
+            }
         }
 
         // 4. 装配

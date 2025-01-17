@@ -115,6 +115,14 @@ public class SecurityService implements ISecurityService {
     }
 
     /**
+     * 查询 - 查询最近的购买历史
+     */
+    @Override
+    public List<UserPurchaseHistoryBO> findRecentPurchaseHistory() {
+        return securityRepo.findRecentPurchaseHistory();
+    }
+
+    /**
      * 插入 - 将黑名单用户放入布隆过滤器
      */
     @Override
@@ -147,6 +155,14 @@ public class SecurityService implements ISecurityService {
     @Override
     public boolean existsByUserIdAndActivityId(Long activityId, Long userId) {
         return securityRepo.existsByUserIdAndActivityId(activityId, userId);
+    }
+
+    /**
+     * 判断 - 判断用户是否有购买历史
+     */
+    @Override
+    public boolean existsUserPurchaseHistory(Long userId) {
+        return securityRepo.existsUserPurchaseHistory(userId);
     }
 
 }

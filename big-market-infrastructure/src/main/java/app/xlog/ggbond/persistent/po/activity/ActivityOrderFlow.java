@@ -1,8 +1,6 @@
 package app.xlog.ggbond.persistent.po.activity;
 
 import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
-import app.xlog.ggbond.persistent.util.JpaDefaultValue;
-import app.xlog.ggbond.persistent.util.JpaDefaultValueListener;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

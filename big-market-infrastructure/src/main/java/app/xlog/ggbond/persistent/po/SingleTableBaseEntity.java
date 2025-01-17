@@ -1,11 +1,10 @@
 package app.xlog.ggbond.persistent.po;
 
-import app.xlog.ggbond.persistent.util.JpaDefaultValueListener;
+import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 
@@ -18,9 +17,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public class SingleTableBaseEntity {
     @Id
-    @GeneratedValue(generator = "SnowflakeIdGenerator")
-    @GenericGenerator(name = "SnowflakeIdGenerator", strategy = "app.xlog.ggbond.persistent.util.SnowflakeIdGenerator")
-    private Long id;
+    private Long id = IdUtil.getSnowflakeNextId();
     @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
     private LocalDateTime createTime;
     @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable = false, updatable = false)

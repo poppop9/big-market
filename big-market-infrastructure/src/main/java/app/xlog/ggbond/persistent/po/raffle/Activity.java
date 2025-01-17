@@ -1,16 +1,13 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
 import app.xlog.ggbond.persistent.po.SingleTableBaseEntity;
-import app.xlog.ggbond.persistent.util.JpaDefaultValue;
-import app.xlog.ggbond.persistent.util.LongListToJsonConverter;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 活动

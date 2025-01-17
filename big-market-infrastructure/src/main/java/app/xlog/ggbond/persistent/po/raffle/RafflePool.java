@@ -1,12 +1,10 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
 import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
-import app.xlog.ggbond.persistent.util.JpaDefaultValue;
 import app.xlog.ggbond.persistent.util.LongListToJsonConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**

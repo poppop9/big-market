@@ -56,11 +56,14 @@ public class RecommendService {
 
     /**
      * 跟据用户的购买历史，推荐合适的奖品
-     * <p>
-     * todo 后续可以加一个 batch，然后更改 gpt 提示词
      */
     public List<AwardBO> recommendAwardByUserPurchaseHistory(String role,
                                                              List<UserPurchaseHistoryBO> userPurchaseHistoryBOList) {
+        // 购买历史过多要截取
+        if (userPurchaseHistoryBOList.size() > 10) {
+            userPurchaseHistoryBOList = userPurchaseHistoryBOList.subList(0, 10);
+        }
+
         String question = generateGptQuestionByUserPurchaseHistory(userPurchaseHistoryBOList);
         String answer = aiRepo.syncInvoke(role, question);
         List<AwardBO> awardBOList = Arrays.stream(answer.split("\n"))
@@ -90,4 +93,13 @@ public class RecommendService {
         return awardBOList;
     }
 
+    /**
+     * 跟据海量用户最近的购买历史，推荐热销商品
+     * todo
+     */
+    public List<AwardBO> recommendHotSaleProductByRecentPurchaseHistory(String role, List<UserPurchaseHistoryBO> recentPurchaseHistoryList) {
+
+
+        return null;
+    }
 }

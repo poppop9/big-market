@@ -1,14 +1,11 @@
 package app.xlog.ggbond.persistent.po.security;
 
 import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
-import app.xlog.ggbond.persistent.util.JpaDefaultValue;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 /**
  * 用户抽奖配置

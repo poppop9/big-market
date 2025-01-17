@@ -105,25 +105,27 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     @Override
     @Transactional
     public StrategyBO insertAwardList(Long userId, long activityId, List<AwardBO> awardBOS) {
-        // 插入奖品表
-        int i = new Random().nextInt(4);
-        awardBOS = awardBOS.stream().peek(item -> {
-            long snowflakeNextId;
-            do {
-                snowflakeNextId = IdUtil.getSnowflakeNextId();
-            } while (snowflakeNextId % 4 != i);
-            item.setAwardId(snowflakeNextId);
-        }).collect(Collectors.toList());
-        raffleArmoryRepo.insertAwardList(awardBOS);
-
-        // 插入策略表
+        // 1. 插入策略表
         long strategyId = raffleArmoryRepo.insertStrategy(activityId);
 
-        // 插入策略奖品表
+        // 2. 插入奖品表
+        int i = new Random().nextInt(4);
+        awardBOS = awardBOS.stream()
+                .peek(item -> {
+                    long snowflakeNextId;
+                    do {
+                        snowflakeNextId = IdUtil.getSnowflakeNextId();
+                    } while (snowflakeNextId % 4 != i);
+                    item.setAwardId(snowflakeNextId);
+                })
+                .collect(Collectors.toList());
+        raffleArmoryRepo.insertAwardList(awardBOS);
+
+        // 3. 插入策略奖品表
         awardBOS.add(AwardBO.randomPointsAward);
         raffleArmoryRepo.insertStrategyAwardList(strategyId, awardBOS);
 
-        // 插入抽奖池
+        // 4. 插入抽奖池
         raffleArmoryRepo.insertRafflePoolList(strategyId, awardBOS);
 
         return StrategyBO.builder().strategyId(strategyId).build();

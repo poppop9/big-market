@@ -1,12 +1,9 @@
 package app.xlog.ggbond.persistent.po.security;
 
 import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
-import app.xlog.ggbond.persistent.util.JpaDefaultValue;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 /**
  * 用户
@@ -38,4 +35,5 @@ public class User extends ShardingTableBaseEntity {
 
         private final int value;
     }
+
 }

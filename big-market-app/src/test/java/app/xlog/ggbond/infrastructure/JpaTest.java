@@ -54,7 +54,10 @@ public class JpaTest {
 
     @Test
     void test_9fuc8d() {
-
+        userJpa.findByUserId(111L);
+        System.out.println("-------------------");
+        userJpa.updatePasswordByUserId("111", 111L);
+        System.out.println("-------------------");
     }
 
     @Test

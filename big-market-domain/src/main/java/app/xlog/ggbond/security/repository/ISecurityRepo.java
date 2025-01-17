@@ -47,4 +47,10 @@ public interface ISecurityRepo {
     // 查询 - 查询用户购买历史
     List<UserPurchaseHistoryBO> findUserPurchaseHistory(Long userId);
 
+    // 查询 - 查询最近的购买历史
+    List<UserPurchaseHistoryBO> findRecentPurchaseHistory();
+
+    // 判断 - 判断用户是否有购买历史
+    boolean existsUserPurchaseHistory(Long userId);
+
 }

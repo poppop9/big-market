@@ -15,6 +15,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,14 @@ public class MessTest {
     private IRaffleDispatchRepo raffleDispatchRepo;
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Test
+    void test_8dhjcv() {
+        ArrayList<Integer> integers = new ArrayList<>(List.of(1, 2, 3));
+        List<Integer> integers1 = integers.subList(0, 1);
+        System.out.println(integers);
+        System.out.println(integers1);
+    }
 
     // 测试数据库中的json数据类型，怎么映射到java的map集合上
     @Test
