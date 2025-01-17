@@ -23,7 +23,8 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "Strategy", indexes = {
-        @Index(columnList = "activityId")
+        @Index(columnList = "activityId"),
+        @Index(columnList = "strategyId"),
 })
 public class Strategy extends ShardingTableBaseEntity {
     private Long activityId;  // 活动id

@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "UserRaffleConfig", indexes = {
+        @Index(columnList = "userId"),
+        @Index(columnList = "strategyId"),
         @Index(columnList = "userId, activityId"),
         @Index(columnList = "userId, strategyId")
 })

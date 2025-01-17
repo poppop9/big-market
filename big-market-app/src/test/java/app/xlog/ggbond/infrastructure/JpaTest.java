@@ -168,7 +168,6 @@ public class JpaTest {
         activityJPA.save(Activity.builder()
                 .activityId(10001L)
                 .activityName("测试活动")
-                .strategyIdList(new ArrayList<>(List.of(10001L)))
                 .build()
         );
     }

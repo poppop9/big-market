@@ -20,9 +20,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "Award", indexes = {
-        @Index(columnList = "strategyId"),
         @Index(columnList = "awardId"),
-        @Index(columnList = "strategyId, awardId")
 })
 public class Award extends ShardingTableBaseEntity {
     @Builder.Default

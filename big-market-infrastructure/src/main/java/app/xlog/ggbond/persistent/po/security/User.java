@@ -18,7 +18,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "User", indexes = {
         @Index(columnList = "userRole"),
-        @Index(columnList = "userId, password")
+        @Index(columnList = "userId"),
+        @Index(columnList = "userId, password"),
 })
 public class User extends ShardingTableBaseEntity {
     @Builder.Default

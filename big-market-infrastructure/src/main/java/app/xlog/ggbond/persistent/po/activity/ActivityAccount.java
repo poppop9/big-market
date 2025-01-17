@@ -18,7 +18,8 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "ActivityAccount", indexes = {
-        // @Index(columnList = "userId")
+        @Index(columnList = "userId"),
+        @Index(columnList = "activityId")
 })
 public class ActivityAccount extends ShardingTableBaseEntity {
     private Long userId;  // 用户id

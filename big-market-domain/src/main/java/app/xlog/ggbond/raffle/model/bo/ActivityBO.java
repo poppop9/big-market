@@ -11,5 +11,4 @@ import java.util.List;
 public class ActivityBO {
     private Long activityId;  // 活动id
     private String activityName;  // 活动名称
-    private List<Long> strategyIdList;  // 该活动下的所有的策略id
 }

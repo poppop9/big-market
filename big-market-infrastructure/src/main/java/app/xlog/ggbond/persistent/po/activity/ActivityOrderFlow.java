@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "ActivityOrderFlow", indexes = {
-        // @Index(columnList = "userId")
+        @Index(columnList = "userId")
 })
 public class ActivityOrderFlow extends ShardingTableBaseEntity {
     private Long userId;  // 用户id

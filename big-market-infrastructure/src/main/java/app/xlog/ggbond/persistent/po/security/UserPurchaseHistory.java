@@ -17,7 +17,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "UserPurchaseHistory")
+@Table(name = "UserPurchaseHistory", indexes = {
+        @Index(columnList = "userId"),
+})
 public class UserPurchaseHistory extends ShardingTableBaseEntity {
     private Long userId;  // 用户id
     private String purchaseName;  // 商品名称

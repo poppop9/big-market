@@ -26,8 +26,4 @@ import java.util.List;
 public class Activity extends SingleTableBaseEntity {
     private Long activityId;  // 活动id
     private String activityName;  // 活动名称
-    @Column(columnDefinition = "TEXT")
-    @Convert(converter = LongListToJsonConverter.class)
-    @Builder.Default
-    private List<Long> strategyIdList = Collections.emptyList();  // 该活动下的所有的策略id（不同活动的策略id也不能重复）
 }

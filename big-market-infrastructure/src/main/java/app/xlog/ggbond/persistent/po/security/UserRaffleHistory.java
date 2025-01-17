@@ -21,7 +21,8 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "UserRaffleHistory", indexes = {
-        @Index(columnList = "userId, strategyId")
+        @Index(columnList = "userId"),
+        @Index(columnList = "userId, strategyId"),
 })
 public class UserRaffleHistory  extends ShardingTableBaseEntity {
     private Long userId;  // 用户id
