@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 抽奖领域 + 安全领域 - 应用服务
@@ -98,26 +99,27 @@ public class TriggerService {
 
         // 3. 检查该用户是否有策略，如果没有则ai生成推荐商品
         if (!securityService.existsByUserIdAndActivityId(activityId, userId)) {
+            List<AwardBO> noAwardIdAwardBOS;
             // 3.1 判断用户是否有购买历史
             if (securityService.existsUserPurchaseHistory(userId)) {
-                // 查询用户购买历史，生成推荐奖品
+                // 3.1.1 查询用户购买历史，生成推荐奖品
                 List<UserPurchaseHistoryBO> userPurchaseHistoryBOList = securityService.findUserPurchaseHistory(securityService.getLoginIdDefaultNull());
-                List<AwardBO> noAwardIdAwardBOS = recommendService.recommendAwardByUserPurchaseHistory(
+                noAwardIdAwardBOS = recommendService.recommendAwardByUserPurchaseHistory(
                         "你是一个推荐系统，根据用户的购买历史推荐最能吸引该用户的商品。",
                         userPurchaseHistoryBOList
                 );
-
-                // 插入数据库
-                StrategyBO strategyBO = raffleArmory.insertAwardList(userId, activityId, noAwardIdAwardBOS);
-                securityService.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
             } else {
-                // todo 无购买历史，从海量用户的购买历史中生成热销产品
+                // 3.1.2 无购买历史，从海量用户的购买历史中生成热销产品
                 List<UserPurchaseHistoryBO> recentPurchaseHistoryList = securityService.findRecentPurchaseHistory();
-                List<AwardBO> noAwardIdAwardBOS = recommendService.recommendHotSaleProductByRecentPurchaseHistory(
-                        "你是一个推荐系统，根据海量用户的最近的购买历史给该用户推荐最热销的商品。",
+                noAwardIdAwardBOS = recommendService.recommendHotSaleProductByRecentPurchaseHistory(
+                        "你是一个推荐系统，根据海量用户的购买历史，推算出近期用户喜好，给某个用户推荐商品。",
                         recentPurchaseHistoryList
                 );
             }
+
+            // 3.2 插入数据库
+            StrategyBO strategyBO = raffleArmory.insertAwardList(userId, activityId, noAwardIdAwardBOS);
+            securityService.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
         }
 
         // 4. 装配
