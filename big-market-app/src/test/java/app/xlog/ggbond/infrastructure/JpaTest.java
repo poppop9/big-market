@@ -1,7 +1,6 @@
 package app.xlog.ggbond.infrastructure;
 
 import app.xlog.ggbond.persistent.po.activity.Activity;
-import app.xlog.ggbond.persistent.po.activity.ActivityOrderFlow;
 import app.xlog.ggbond.persistent.po.raffle.*;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.po.security.UserPurchaseHistory;
@@ -34,7 +33,7 @@ public class JpaTest {
     @Resource
     private ActivityJpa activityJPA;
     @Resource
-    private ActivityOrderFlowJpa activityOrderFlowJpa;
+    private ActivityOrderJpa activityOrderJpa;
     @Resource
     private UserPurchaseHistoryJpa userPurchaseHistoryJpa;
     @Resource
@@ -56,19 +55,6 @@ public class JpaTest {
         System.out.println("-------------------");
         userJpa.updatePasswordByUserId("111", 111L);
         System.out.println("-------------------");
-    }
-
-    @Test
-    void test_fjdslk2() {
-        ActivityOrderFlow build = ActivityOrderFlow.builder()
-                .userId(10001L)
-                .activityId(10001L)
-                .strategyId(10001L)
-                .activityOrderId(11144L)
-                .activityOrderType(ActivityOrderFlow.ActivityOrderType.SIGN_IN_TO_CLAIM)
-                .activityOrderStatus(ActivityOrderFlow.ActivityOrderStatus.NOT_USED)
-                .build();
-        activityOrderFlowJpa.save(build);
     }
 
     @Test

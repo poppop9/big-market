@@ -19,12 +19,10 @@ import lombok.*;
         @Index(columnList = "userId, password"),
 })
 public class User extends ShardingTableBaseEntity {
-    @Builder.Default
-    private Long userId = IdUtil.getSnowflakeNextId();  // 用户id
+    private @Builder.Default Long userId = IdUtil.getSnowflakeNextId();  // 用户id
     private String userName;  // 用户名
     private String password;  // 密码
-    @Enumerated(EnumType.STRING)
-    private UserRole userRole;  // 用户的角色
+    private @Enumerated(EnumType.STRING) UserRole userRole;  // 用户的角色
 
     @Getter
     @AllArgsConstructor
@@ -35,5 +33,4 @@ public class User extends ShardingTableBaseEntity {
 
         private final int value;
     }
-
 }

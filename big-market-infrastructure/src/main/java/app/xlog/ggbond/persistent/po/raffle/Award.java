@@ -20,8 +20,7 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "awardId"),
 })
 public class Award extends ShardingTableBaseEntity {
-    @Builder.Default
-    private Long awardId = IdUtil.getSnowflakeNextId();  // 奖品id
+    private @Builder.Default Long awardId = IdUtil.getSnowflakeNextId();  // 奖品id
     private String awardTitle;  // 奖品标题
     private String awardSubtitle;  // 奖品副标题
 }

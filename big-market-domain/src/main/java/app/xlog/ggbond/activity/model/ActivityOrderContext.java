@@ -21,5 +21,5 @@ public class ActivityOrderContext {
     private Long activityOrderId;  // 活动单id
     private LocalDateTime activityOrderEffectiveTime;  // 订单生效时间（立马生效为LocalDateTime.MIN）
     private LocalDateTime activityOrderExpireTime;  // 订单过期时间
-    private ActivityOrderFlowBO.ActivityOrderType activityOrderType;  // 订单类型
+    private ActivityOrderBO.ActivityOrderType activityOrderType;  // 订单类型
 }

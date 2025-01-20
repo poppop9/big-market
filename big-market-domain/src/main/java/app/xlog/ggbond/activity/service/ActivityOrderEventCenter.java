@@ -2,7 +2,7 @@ package app.xlog.ggbond.activity.service;
 
 import app.xlog.ggbond.activity.config.StateMachineConfig;
 import app.xlog.ggbond.activity.model.ActivityOrderContext;
-import app.xlog.ggbond.activity.model.ActivityOrderFlowBO;
+import app.xlog.ggbond.activity.model.ActivityOrderBO;
 import com.alibaba.cola.statemachine.StateMachine;
 import com.alibaba.cola.statemachine.StateMachineFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +19,13 @@ public class ActivityOrderEventCenter {
      * 发布事件 - 创建活动单
      */
     public boolean publishCreateActivityOrderEvent(ActivityOrderContext activityOrderContext) {
-        ActivityOrderFlowBO.ActivityOrderStatus activityOrderStatus = StateMachineFactory.<ActivityOrderFlowBO.ActivityOrderStatus, ActivityOrderFlowBO.ActivityOrderEvents, ActivityOrderContext>get(StateMachineConfig.ACTIVITY_ORDER_MACHINE_ID)
+        ActivityOrderBO.ActivityOrderStatus activityOrderStatus = StateMachineFactory.<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvents, ActivityOrderContext>get(StateMachineConfig.ACTIVITY_ORDER_MACHINE_ID)
                 .fireEvent(
-                        ActivityOrderFlowBO.ActivityOrderStatus.INITIAL,
-                        ActivityOrderFlowBO.ActivityOrderEvents.CreateActivityOrder,
+                        ActivityOrderBO.ActivityOrderStatus.INITIAL,
+                        ActivityOrderBO.ActivityOrderEvents.CreateActivityOrder,
                         activityOrderContext
                 );
-        if (activityOrderStatus == ActivityOrderFlowBO.ActivityOrderStatus.NOT_USED) {
+        if (activityOrderStatus == ActivityOrderBO.ActivityOrderStatus.NOT_USED) {
             log.debug("活动单创建成功 {}", activityOrderContext);
             return true;
         } else {
@@ -38,7 +38,7 @@ public class ActivityOrderEventCenter {
      * 测试 - 测试方法
      */
     public void test() {
-        StateMachine<ActivityOrderFlowBO.ActivityOrderStatus, ActivityOrderFlowBO.ActivityOrderEvents, ActivityOrderContext> stateMachine = StateMachineFactory.<ActivityOrderFlowBO.ActivityOrderStatus, ActivityOrderFlowBO.ActivityOrderEvents, ActivityOrderContext>get(StateMachineConfig.ACTIVITY_ORDER_MACHINE_ID);
+        StateMachine<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvents, ActivityOrderContext> stateMachine = StateMachineFactory.<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvents, ActivityOrderContext>get(StateMachineConfig.ACTIVITY_ORDER_MACHINE_ID);
         String s = stateMachine.generatePlantUML();
         System.out.println(s);
     }

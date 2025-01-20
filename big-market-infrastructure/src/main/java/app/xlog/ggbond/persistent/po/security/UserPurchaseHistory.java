@@ -27,8 +27,7 @@ public class UserPurchaseHistory extends ShardingTableBaseEntity {
     private double purchasePrice;  // 商品价格
     private Long purchaseCount;  // 购买数量
     private Long purchaseTimes;  // 此次是第几次购买
-    @Builder.Default
-    private boolean isReturn = false;  // 是否退货
+    private @Builder.Default boolean isReturn = false;  // 是否退货
 
     /**
      * 商品类型

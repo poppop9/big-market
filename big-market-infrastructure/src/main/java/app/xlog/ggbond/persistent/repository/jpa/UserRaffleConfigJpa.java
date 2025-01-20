@@ -23,8 +23,8 @@ public interface UserRaffleConfigJpa extends JpaRepository<UserRaffleConfig, Lon
     @Modifying
     @Query("UPDATE UserRaffleConfig u " +
             "SET u.raffleTime = u.raffleTime + 1 " +
-            "WHERE u.userId = :strategyId " +
-            "AND u.strategyId = :awardId")
+            "WHERE u.userId = :userId " +
+            "AND u.strategyId = :strategyId")
     void updateRaffleTimeByUserIdAndStrategyId(Long userId, Long strategyId);
 
     @Query("select (count(u) > 0) from UserRaffleConfig u where u.userId = ?1 and u.activityId = ?2")

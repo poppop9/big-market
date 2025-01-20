@@ -1,6 +1,5 @@
 package app.xlog.ggbond.activity.model;
 
-import cn.hutool.core.util.IdUtil;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Accessors(chain = true)
-public class ActivityOrderFlowBO {
+public class ActivityOrderBO {
     private Long userId;  // 用户id
     private Long activityId;  // 活动id
     private Long strategyId;  // 策略id

@@ -5,6 +5,7 @@
         THEN(
             // 1. 前置过滤器链
             ConcurrencySafetyLockFilter,
+            DataPreparationFilter,
             IF(CheckProceed, BlacklistRaffleFilter),
             IF(CheckProceed, SpecialTimeMatchRafflePoolFilter),
             IF(CheckProceed, NormalTimeMatchRafflePoolFilter),

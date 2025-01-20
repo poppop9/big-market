@@ -4,11 +4,10 @@ import app.xlog.ggbond.BigMarketException;
 import app.xlog.ggbond.BigMarketRespCode;
 import app.xlog.ggbond.TestService;
 import app.xlog.ggbond.activity.model.ActivityOrderContext;
-import app.xlog.ggbond.activity.model.ActivityOrderFlowBO;
+import app.xlog.ggbond.activity.model.ActivityOrderBO;
 import app.xlog.ggbond.activity.service.ActivityOrderEventCenter;
 import app.xlog.ggbond.recommend.AIRepo;
 import app.xlog.ggbond.recommend.RecommendService;
-import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotBlank;
@@ -141,7 +140,7 @@ public class TestController {
     public void testCreateActivityOrder() {
         boolean b = activityOrderEventCenter.publishCreateActivityOrderEvent(new ActivityOrderContext()
                 .setUserId(404L)
-                .setActivityOrderType(ActivityOrderFlowBO.ActivityOrderType.FREE_GIVEAWAY)
+                .setActivityOrderType(ActivityOrderBO.ActivityOrderType.FREE_GIVEAWAY)
         );
     }
 
