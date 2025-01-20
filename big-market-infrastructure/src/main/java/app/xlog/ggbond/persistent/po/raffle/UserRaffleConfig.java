@@ -1,4 +1,4 @@
-package app.xlog.ggbond.persistent.po.security;
+package app.xlog.ggbond.persistent.po.raffle;
 
 import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
 import jakarta.persistence.*;

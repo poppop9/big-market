@@ -1,4 +1,4 @@
-package app.xlog.ggbond.persistent.po.raffle;
+package app.xlog.ggbond.persistent.po.activity;
 
 import app.xlog.ggbond.persistent.po.SingleTableBaseEntity;
 import jakarta.persistence.Entity;

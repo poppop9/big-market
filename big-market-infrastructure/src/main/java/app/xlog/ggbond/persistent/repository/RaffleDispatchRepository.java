@@ -3,7 +3,7 @@ package app.xlog.ggbond.persistent.repository;
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.MQMessage;
 import app.xlog.ggbond.mq.MQEventCenter;
-import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
+import app.xlog.ggbond.persistent.po.raffle.UserRaffleHistory;
 import app.xlog.ggbond.persistent.repository.jpa.AwardJpa;
 import app.xlog.ggbond.persistent.repository.jpa.StrategyAwardJpa;
 import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigJpa;

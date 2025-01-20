@@ -1,4 +1,4 @@
-package app.xlog.ggbond.security.model;
+package app.xlog.ggbond.raffle.model.bo;
 
 import lombok.Data;
 

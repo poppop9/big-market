@@ -2,7 +2,7 @@ package app.xlog.ggbond.raffle.repository;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
-import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
+import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import cn.hutool.core.lang.WeightRandom;
 
 import java.util.List;
@@ -66,4 +66,16 @@ public interface IRaffleArmoryRepo {
 
     // 修改 - 在BitSet中给用户解锁
     void unLockUserInBitSet(Long userId);
+
+    // 查询 - 跟据活动id，用户id，查询用户的策略id
+    Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId);
+
+    // 查询 - 根据用户id，策略id，查询用户的抽奖历史
+    List<UserRaffleHistoryBO> getWinningAwardsInfo(Long userId, Long strategyId);
+
+    // 查询 - 查询用户的抽奖次数
+    Long queryRaffleTimesByUserId(Long userId, Long strategyId);
+
+    // 插入 - 插入用户抽奖配置
+    void insertUserRaffleConfig(Long userId, long activityId, Long strategyId);
 }

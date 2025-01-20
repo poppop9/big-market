@@ -1,8 +1,6 @@
-package app.xlog.ggbond.raffle.model.bo;
+package app.xlog.ggbond.activity.model;
 
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * 活动

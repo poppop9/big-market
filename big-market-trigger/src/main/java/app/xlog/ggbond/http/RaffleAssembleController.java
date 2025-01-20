@@ -4,7 +4,7 @@ import app.xlog.ggbond.IRaffleAssembleApiService;
 import app.xlog.ggbond.ZakiResponse;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.integrationService.TriggerService;
-import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
+import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;

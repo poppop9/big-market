@@ -3,7 +3,6 @@ package app.xlog.ggbond.security.service;
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
-import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
@@ -81,32 +80,6 @@ public class SecurityService implements ISecurityService {
     }
 
     /**
-     * 查询 - 查询用户的抽奖次数
-     */
-    @Override
-    public Long queryRaffleTimesByUserId(Long userId, Long strategyId) {
-        return securityRepo.queryRaffleTimesByUserId(userId, strategyId);
-    }
-
-    /**
-     * 查询 - 查询用户某个活动的中奖奖品信息
-     */
-    @Override
-    public List<UserRaffleHistoryBO> findWinningAwardsInfo(Long activityId, Long userId) {
-        // 跟据活动id，用户id，查询用户的策略id
-        Long strategyId = securityRepo.findStrategyIdByActivityIdAndUserId(activityId, userId);
-        return securityRepo.getWinningAwardsInfo(userId, strategyId);
-    }
-
-    /**
-     * 查询 - 根据活动id，用户id，查询用户的策略id
-     */
-    @Override
-    public Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId) {
-        return securityRepo.findStrategyIdByActivityIdAndUserId(activityId, userId);
-    }
-
-    /**
      * 查询 - 查询用户购买历史
      */
     @Override
@@ -139,14 +112,6 @@ public class SecurityService implements ISecurityService {
                 "role",
                 securityRepo.findByUserId(getLoginIdDefaultNull()).getUserRole().name()
         );
-    }
-
-    /**
-     * 插入 - 插入用户抽奖配置
-     */
-    @Override
-    public void insertUserRaffleConfig(Long userId, long activityId, Long strategyId) {
-        securityRepo.insertUserRaffleConfig(userId, activityId, strategyId);
     }
 
     /**

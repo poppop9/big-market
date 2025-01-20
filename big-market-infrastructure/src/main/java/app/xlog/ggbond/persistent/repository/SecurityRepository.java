@@ -3,13 +3,12 @@ package app.xlog.ggbond.persistent.repository;
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.po.security.UserPurchaseHistory;
-import app.xlog.ggbond.persistent.po.security.UserRaffleConfig;
-import app.xlog.ggbond.persistent.po.security.UserRaffleHistory;
-import app.xlog.ggbond.persistent.repository.jpa.*;
+import app.xlog.ggbond.persistent.repository.jpa.ActivityJpa;
+import app.xlog.ggbond.persistent.repository.jpa.UserJpa;
+import app.xlog.ggbond.persistent.repository.jpa.UserPurchaseHistoryJpa;
+import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigJpa;
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
-import app.xlog.ggbond.security.model.UserRaffleConfigBO;
-import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
 import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.hutool.core.bean.BeanUtil;
 import jakarta.annotation.Resource;
@@ -20,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -39,8 +37,6 @@ public class SecurityRepository implements ISecurityRepo {
     @Resource
     private UserRaffleConfigJpa userRaffleConfigJpa;
     @Resource
-    private UserRaffleHistoryJpa userRaffleHistoryJpa;
-    @Autowired
     private UserPurchaseHistoryJpa userPurchaseHistoryJpa;
 
     /**
@@ -65,19 +61,6 @@ public class SecurityRepository implements ISecurityRepo {
 
         bloomFilter.tryInit(100000L, 0.03);
         bloomFilter.add(userIds);
-    }
-
-    /**
-     * 插入 - 插入用户抽奖配置
-     */
-    @Override
-    public void insertUserRaffleConfig(Long userId, long activityId, Long strategyId) {
-        userRaffleConfigJpa.save(UserRaffleConfig.builder()
-                .userId(userId)
-                .activityId(activityId)
-                .strategyId(strategyId)
-                .build()
-        );
     }
 
     /**
@@ -138,33 +121,6 @@ public class SecurityRepository implements ISecurityRepo {
         return BeanUtil.copyToList(
                 userJpa.findByUserRole(User.UserRole.BLACKLIST), UserBO.class
         );
-    }
-
-    /**
-     * 查询 - 跟据活动id，用户id，查询用户的策略id
-     */
-    @Override
-    public Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId) {
-        UserRaffleConfig userConfig = userRaffleConfigJpa.findByUserIdAndActivityId(userId, activityId);
-        return userConfig == null ? null : userConfig.getStrategyId();
-    }
-
-    /**
-     * 查询 - 根据用户id，策略id，查询用户的抽奖历史
-     */
-    @Override
-    public List<UserRaffleHistoryBO> getWinningAwardsInfo(Long userId, Long strategyId) {
-        List<UserRaffleHistory> list = userRaffleHistoryJpa.findByUserIdAndStrategyIdOrderByCreateTimeAsc(userId, strategyId);
-        return BeanUtil.copyToList(list, UserRaffleHistoryBO.class);
-    }
-
-    /**
-     * 查询 - 查询当前用户的抽奖次数
-     */
-    @Override
-    public Long queryRaffleTimesByUserId(Long userId, Long strategyId) {
-        UserRaffleConfig userRaffleConfig = userRaffleConfigJpa.findByUserIdAndStrategyId(userId, strategyId);
-        return BeanUtil.copyProperties(userRaffleConfig, UserRaffleConfigBO.class).getRaffleTime();
     }
 
     /**

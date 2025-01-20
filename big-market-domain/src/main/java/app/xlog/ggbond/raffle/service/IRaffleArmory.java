@@ -2,6 +2,7 @@ package app.xlog.ggbond.raffle.service;
 
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.StrategyBO;
+import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 
 import java.util.List;
 
@@ -12,9 +13,6 @@ import java.util.List;
  * - 2.作为外部查询抽奖信息的接口
  */
 public interface IRaffleArmory {
-
-    // 装配 - 根据指定策略id，装配该策略所需的所有权重对象
-    void assembleRaffleWeightRandomByStrategyId(Long strategyId);
 
     // 装配 - 根据指定策略id，装配该策略所需的所有权重对象Map
     void assembleRaffleWeightRandomByStrategyId2(Long strategyId);
@@ -28,4 +26,15 @@ public interface IRaffleArmory {
     // 插入 - 将该用户的所有奖品信息插入到数据库
     StrategyBO insertAwardList(Long userId, long activityId, List<AwardBO> awardBOS);
 
+    // 查询 - 查询用户某个活动的中奖奖品信息
+    List<UserRaffleHistoryBO> findWinningAwardsInfo(Long activityId, Long userId);
+
+    // 查询 - 跟据活动id，用户id，查询用户的策略id
+    Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId);
+
+    // 查询 - 查询用户的抽奖次数
+    Long queryRaffleTimesByUserId(Long userId, Long strategyId);
+
+    // 插入 - 插入用户抽奖配置
+    void insertUserRaffleConfig(Long userId, long activityId, Long strategyId);
 }

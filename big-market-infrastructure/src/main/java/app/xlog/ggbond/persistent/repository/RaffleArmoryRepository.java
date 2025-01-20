@@ -1,13 +1,12 @@
 package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.GlobalConstant;
-import app.xlog.ggbond.persistent.po.raffle.Award;
-import app.xlog.ggbond.persistent.po.raffle.RafflePool;
-import app.xlog.ggbond.persistent.po.raffle.Strategy;
-import app.xlog.ggbond.persistent.po.raffle.StrategyAward;
+import app.xlog.ggbond.persistent.po.raffle.*;
 import app.xlog.ggbond.persistent.repository.jpa.*;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
+import app.xlog.ggbond.raffle.model.bo.UserRaffleConfigBO;
+import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import cn.hutool.core.bean.BeanUtil;
@@ -17,7 +16,6 @@ import org.redisson.api.RBitSet;
 import org.redisson.api.RBucket;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
@@ -44,7 +42,9 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     private AwardJpa awardJpa;
     @Resource
     private UserRaffleConfigJpa userRaffleConfigJpa;
-    @Autowired
+    @Resource
+    private UserRaffleHistoryJpa userRaffleHistoryJpa;
+    @Resource
     private StrategyJpa strategyJpa;
 
     /**
@@ -282,6 +282,46 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     public void unLockUserInBitSet(Long userId) {
         RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.userInRaffleBitSet);
         rBitSet.clear(userId);
+    }
+
+    /**
+     * 查询 - 跟据活动id，用户id，查询用户的策略id
+     */
+    @Override
+    public Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId) {
+        UserRaffleConfig userConfig = userRaffleConfigJpa.findByUserIdAndActivityId(userId, activityId);
+        return userConfig == null ? null : userConfig.getStrategyId();
+    }
+
+    /**
+     * 查询 - 根据用户id，策略id，查询用户的抽奖历史
+     */
+    @Override
+    public List<UserRaffleHistoryBO> getWinningAwardsInfo(Long userId, Long strategyId) {
+        List<UserRaffleHistory> list = userRaffleHistoryJpa.findByUserIdAndStrategyIdOrderByCreateTimeAsc(userId, strategyId);
+        return BeanUtil.copyToList(list, UserRaffleHistoryBO.class);
+    }
+
+    /**
+     * 查询 - 查询当前用户的抽奖次数
+     */
+    @Override
+    public Long queryRaffleTimesByUserId(Long userId, Long strategyId) {
+        UserRaffleConfig userRaffleConfig = userRaffleConfigJpa.findByUserIdAndStrategyId(userId, strategyId);
+        return BeanUtil.copyProperties(userRaffleConfig, UserRaffleConfigBO.class).getRaffleTime();
+    }
+
+    /**
+     * 插入 - 插入用户抽奖配置
+     */
+    @Override
+    public void insertUserRaffleConfig(Long userId, long activityId, Long strategyId) {
+        userRaffleConfigJpa.save(UserRaffleConfig.builder()
+                .userId(userId)
+                .activityId(activityId)
+                .strategyId(strategyId)
+                .build()
+        );
     }
 
 }

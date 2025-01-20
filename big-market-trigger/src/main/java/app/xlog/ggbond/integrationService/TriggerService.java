@@ -9,7 +9,7 @@ import app.xlog.ggbond.raffle.service.IRaffleDispatch;
 import app.xlog.ggbond.recommend.RecommendService;
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
-import app.xlog.ggbond.security.model.UserRaffleHistoryBO;
+import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import app.xlog.ggbond.security.service.ISecurityService;
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.stp.StpUtil;
@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 抽奖领域 + 安全领域 - 应用服务
@@ -56,14 +55,14 @@ public class TriggerService {
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
         Long userId = user.getUserId();
         // 跟据活动id，用户id，查询用户的策略id
-        Long strategyId = securityService.findStrategyIdByActivityIdAndUserId(activityId, userId);
+        Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
 
         Long awardId = raffleDispatch.getAwardId(
                 strategyId,
                 app.xlog.ggbond.raffle.model.bo.UserBO.builder()
                         .userId(userId)
                         .isBlacklistUser(securityService.isBlacklistUser(userId))
-                        .raffleTime(securityService.queryRaffleTimesByUserId(userId, strategyId))
+                        .raffleTime(raffleArmory.queryRaffleTimesByUserId(userId, strategyId))
                         .build()
         );
 
@@ -80,7 +79,7 @@ public class TriggerService {
     public List<UserRaffleHistoryBO> findAllWinningAwards(Long activityId) {
         // 自动获取当前用户
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
-        return securityService.findWinningAwardsInfo(activityId, user.getUserId());
+        return raffleArmory.findWinningAwardsInfo(activityId, user.getUserId());
     }
 
     /**
@@ -119,11 +118,11 @@ public class TriggerService {
 
             // 3.2 插入数据库
             StrategyBO strategyBO = raffleArmory.insertAwardList(userId, activityId, noAwardIdAwardBOS);
-            securityService.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
+            raffleArmory.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
         }
 
         // 4. 装配
-        Long strategyId = securityService.findStrategyIdByActivityIdAndUserId(activityId, userId);
+        Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
         raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
         raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map
 

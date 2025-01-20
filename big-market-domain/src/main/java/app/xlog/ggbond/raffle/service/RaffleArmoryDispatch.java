@@ -1,20 +1,12 @@
 package app.xlog.ggbond.raffle.service;
 
-import app.xlog.ggbond.raffle.model.bo.AwardBO;
-import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
-import app.xlog.ggbond.raffle.model.bo.StrategyBO;
-import app.xlog.ggbond.raffle.model.bo.UserBO;
+import app.xlog.ggbond.raffle.model.bo.*;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
-import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
 import app.xlog.ggbond.raffle.service.filterChain.RaffleFilterChain;
-import app.xlog.ggbond.security.service.ISecurityService;
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,29 +28,6 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     private RaffleFilterChain raffleFilterChain;
     @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
-
-    /**
-     * 装配 - 根据指定策略id，装配该策略所需的所有权重对象
-     */
-    @Override
-    @Deprecated
-    public void assembleRaffleWeightRandomByStrategyId(Long strategyId) {
-        // 所有的权重对象集合
-        raffleArmoryRepo.findAllRafflePoolByStrategyId(strategyId)
-                .forEach(item -> {
-                    // 生成权重集合
-                    List<WeightRandom.WeightObj<Long>> weightObjs = item.getAwardIds().stream()
-                            .map(child -> {
-                                AwardBO award = raffleArmoryRepo.findAwardByAwardId(child);
-                                return new WeightRandom.WeightObj<>(child, award.getAwardRate());
-                            })
-                            .toList();
-                    WeightRandom<Long> weightRandom = RandomUtil.weightRandom(weightObjs);
-
-                    // 将WeightRandom对象存入redis，方便后续抽奖调用
-                    raffleArmoryRepo.insertWeightRandom(strategyId, item.getRafflePoolName(), weightRandom);
-                });
-    }
 
     /**
      * 装配 - 根据指定策略id，装配该策略所需的所有权重对象Map
@@ -129,6 +98,40 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
         raffleArmoryRepo.insertRafflePoolList(strategyId, awardBOS);
 
         return StrategyBO.builder().strategyId(strategyId).build();
+    }
+
+    /**
+     * 查询 - 查询用户某个活动的中奖奖品信息
+     */
+    @Override
+    public List<UserRaffleHistoryBO> findWinningAwardsInfo(Long activityId, Long userId) {
+        // 跟据活动id，用户id，查询用户的策略id
+        Long strategyId = raffleArmoryRepo.findStrategyIdByActivityIdAndUserId(activityId, userId);
+        return raffleArmoryRepo.getWinningAwardsInfo(userId, strategyId);
+    }
+
+    /**
+     * 查询 - 根据活动id，用户id，查询用户的策略id
+     */
+    @Override
+    public Long findStrategyIdByActivityIdAndUserId(Long activityId, Long userId) {
+        return raffleArmoryRepo.findStrategyIdByActivityIdAndUserId(activityId, userId);
+    }
+
+    /**
+     * 查询 - 查询用户的抽奖次数
+     */
+    @Override
+    public Long queryRaffleTimesByUserId(Long userId, Long strategyId) {
+        return raffleArmoryRepo.queryRaffleTimesByUserId(userId, strategyId);
+    }
+
+    /**
+     * 插入 - 插入用户抽奖配置
+     */
+    @Override
+    public void insertUserRaffleConfig(Long userId, long activityId, Long strategyId) {
+        raffleArmoryRepo.insertUserRaffleConfig(userId, activityId, strategyId);
     }
 
     /**
