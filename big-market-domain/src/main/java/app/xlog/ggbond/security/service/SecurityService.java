@@ -45,7 +45,7 @@ public class SecurityService implements ISecurityService {
         return Optional.ofNullable(StpUtil.getLoginIdDefaultNull())
                 .map(Object::toString)
                 .map(Long::valueOf)
-                .orElse(GlobalConstant.tourist);
+                .orElse(null);
     }
 
     /**

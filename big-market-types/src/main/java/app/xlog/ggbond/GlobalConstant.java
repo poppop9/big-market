@@ -8,9 +8,6 @@ import lombok.Getter;
  */
 public class GlobalConstant {
 
-    // 安全领域 - 游客id
-    public final static Long tourist = 200L;
-
     public static class RedisKey {
         public final static Long redisExpireTime = 3 * 24 * 60 * 60L;  // 抽奖领域 - redis过期时长 : 3天（单位是秒）
 

@@ -47,6 +47,21 @@ public class RafflePreFilters {
     }
 
     /**
+     * 数据准备过滤器
+     */
+    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
+            value = LiteFlowMethodEnum.PROCESS,
+            nodeId = "DataPreparationFilter",
+            nodeName = "数据准备过滤器")
+    public void dataPreparationFilter(NodeComponent bindCmp) {
+        RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
+        UserBO userBO = context.getUserBO();
+
+        Long raffleTimes = raffleArmoryRepo.queryRaffleTimesByUserId(userBO.getUserId(), context.getStrategyId());
+        userBO.setRaffleTime(raffleTimes);
+    }
+
+    /**
      * 黑名单过滤器
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,

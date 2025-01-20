@@ -73,7 +73,6 @@ public class RaffleAfterFilters {
 
     /**
      * 用户抽奖次数过滤器
-     * - 不能延迟处理，因为用户可能马上要进行第二次抽奖，这就会导致数据不一致
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
@@ -82,14 +81,8 @@ public class RaffleAfterFilters {
     public void userRaffleTimeFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         Long userId = context.getUserBO().getUserId();
+
         log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖次数过滤器开始执行");
-
-        // 如果是游客，就不要增加抽奖次数
-        if (GlobalConstant.tourist.equals(userId)) {
-            log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖次数过滤器执行完毕");
-            return;
-        }
-
         raffleDispatchRepo.addUserRaffleTimeByStrategyId(userId, context.getStrategyId());
         log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖次数过滤器执行完毕");
     }
@@ -104,14 +97,8 @@ public class RaffleAfterFilters {
     public void userRaffleFlowRecordFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         Long userId = context.getUserBO().getUserId();
+
         log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器开始执行");
-
-        // 如果是游客，就不要增加抽奖流水记录
-        if (GlobalConstant.tourist.equals(userId)) {
-            log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器执行完毕");
-            return;
-        }
-
         raffleDispatchRepo.addUserRaffleFlowRecordFilter(userId, context.getStrategyId(), context.getAwardId());
         log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器执行完毕");
     }

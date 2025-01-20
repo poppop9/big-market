@@ -62,7 +62,6 @@ public class TriggerService {
                 app.xlog.ggbond.raffle.model.bo.UserBO.builder()
                         .userId(userId)
                         .isBlacklistUser(securityService.isBlacklistUser(userId))
-                        .raffleTime(raffleArmory.queryRaffleTimesByUserId(userId, strategyId))
                         .build()
         );
 

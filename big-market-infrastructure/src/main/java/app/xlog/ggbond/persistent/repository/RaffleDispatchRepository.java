@@ -172,13 +172,13 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
 
     /**
      * 抽奖次数 - 给用户的指定策略增加抽奖次数
+     * todo 未测试
      */
     @Override
     public void addUserRaffleTimeByStrategyId(Long userId, Long strategyId) {
         userRaffleConfigJpa.updateRaffleTimeByUserIdAndStrategyId(
                 userId,
-                strategyId,
-                userRaffleConfigJpa.findByUserIdAndStrategyId(userId, strategyId).getRaffleTime() + 1
+                strategyId
         );
     }
 
