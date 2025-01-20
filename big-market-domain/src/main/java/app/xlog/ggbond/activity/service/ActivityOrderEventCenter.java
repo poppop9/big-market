@@ -1,8 +1,8 @@
 package app.xlog.ggbond.activity.service;
 
 import app.xlog.ggbond.activity.config.StateMachineConfig;
-import app.xlog.ggbond.activity.model.ActivityOrderContext;
-import app.xlog.ggbond.activity.model.ActivityOrderBO;
+import app.xlog.ggbond.activity.model.vo.ActivityOrderStatusContext;
+import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
 import com.alibaba.cola.statemachine.StateMachine;
 import com.alibaba.cola.statemachine.StateMachineFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -18,18 +18,18 @@ public class ActivityOrderEventCenter {
     /**
      * 发布事件 - 创建活动单
      */
-    public boolean publishCreateActivityOrderEvent(ActivityOrderContext activityOrderContext) {
-        ActivityOrderBO.ActivityOrderStatus activityOrderStatus = StateMachineFactory.<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvents, ActivityOrderContext>get(StateMachineConfig.ACTIVITY_ORDER_MACHINE_ID)
+    public boolean publishCreateActivityOrderEvent(ActivityOrderStatusContext activityOrderStatusContext) {
+        ActivityOrderBO.ActivityOrderStatus activityOrderStatus = StateMachineFactory.<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvents, ActivityOrderStatusContext>get(StateMachineConfig.ACTIVITY_ORDER_MACHINE_ID)
                 .fireEvent(
                         ActivityOrderBO.ActivityOrderStatus.INITIAL,
                         ActivityOrderBO.ActivityOrderEvents.CreateActivityOrder,
-                        activityOrderContext
+                        activityOrderStatusContext
                 );
-        if (activityOrderStatus == ActivityOrderBO.ActivityOrderStatus.NOT_USED) {
-            log.debug("活动单创建成功 {}", activityOrderContext);
+        if (activityOrderStatus == ActivityOrderBO.ActivityOrderStatus.EFFECTIVE) {
+            log.debug("活动单创建成功 {}", activityOrderStatusContext);
             return true;
         } else {
-            log.error("活动单创建失败 {}", activityOrderContext);
+            log.error("活动单创建失败 {}", activityOrderStatusContext);
             return false;
         }
     }
@@ -38,7 +38,7 @@ public class ActivityOrderEventCenter {
      * 测试 - 测试方法
      */
     public void test() {
-        StateMachine<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvents, ActivityOrderContext> stateMachine = StateMachineFactory.<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvents, ActivityOrderContext>get(StateMachineConfig.ACTIVITY_ORDER_MACHINE_ID);
+        StateMachine<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvents, ActivityOrderStatusContext> stateMachine = StateMachineFactory.get(StateMachineConfig.ACTIVITY_ORDER_MACHINE_ID);
         String s = stateMachine.generatePlantUML();
         System.out.println(s);
     }

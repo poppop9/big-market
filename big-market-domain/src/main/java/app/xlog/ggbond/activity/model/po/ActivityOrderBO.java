@@ -1,11 +1,8 @@
-package app.xlog.ggbond.persistent.po.activity;
+package app.xlog.ggbond.activity.model.po;
 
-import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
 import cn.hutool.core.util.IdUtil;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 
@@ -16,11 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "ActivityOrder", indexes = {
-        // @Index(columnList = "userId")
-})
-public class ActivityOrder extends ShardingTableBaseEntity {
+@Accessors(chain = true)
+public class ActivityOrderBO {
     private Long userId;  // 用户id
     private Long activityId;  // 活动id
     private @Builder.Default Long activityOrderId = IdUtil.getSnowflakeNextId();  // 活动单id
@@ -29,6 +23,10 @@ public class ActivityOrder extends ShardingTableBaseEntity {
     private @Builder.Default LocalDateTime activityOrderExpireTime = LocalDateTime.of(9999, 12, 31, 0, 0, 0);  // 订单过期时间（永久有效为LocalDateTime.MAX）
     private ActivityOrderStatus activityOrderStatus;  // 订单状态
 
+    /**
+     * 活动单状态
+     */
+    @Getter
     @AllArgsConstructor
     public enum ActivityOrderStatus {
         INITIAL("初始状态"),
@@ -37,5 +35,20 @@ public class ActivityOrder extends ShardingTableBaseEntity {
         EXPIRED("已过期");
 
         private final String message;
+    }
+
+    /**
+     * 活动单事件
+     */
+    @Getter
+    @AllArgsConstructor
+    public enum ActivityOrderEvents {
+        CreateActivityOrder(201, "创建活动订单"),
+        PAYING(102, "支付确认"),
+        PAY_SUCCESS(200, "支付成功"),
+        PAY_FAIL(402, "支付失败");
+
+        private final int code;
+        private final String info;
     }
 }

@@ -27,6 +27,5 @@ public class UserRaffleConfig extends ShardingTableBaseEntity {
     private Long userId;  // 用户id
     private Long activityId;  // 活动id
     private Long strategyId;  // 用户在哪个策略下抽奖的（如果为null，默认为Activity中的defaultStrategyId）
-    @Builder.Default
-    private Long raffleTime = 0L;  // 抽奖次数
+    private @Builder.Default Long raffleTime = 0L;  // 抽奖次数
 }

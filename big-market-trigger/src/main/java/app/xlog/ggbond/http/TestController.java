@@ -3,8 +3,7 @@ package app.xlog.ggbond.http;
 import app.xlog.ggbond.BigMarketException;
 import app.xlog.ggbond.BigMarketRespCode;
 import app.xlog.ggbond.TestService;
-import app.xlog.ggbond.activity.model.ActivityOrderContext;
-import app.xlog.ggbond.activity.model.ActivityOrderBO;
+import app.xlog.ggbond.activity.model.vo.ActivityOrderStatusContext;
 import app.xlog.ggbond.activity.service.ActivityOrderEventCenter;
 import app.xlog.ggbond.recommend.AIRepo;
 import app.xlog.ggbond.recommend.RecommendService;
@@ -138,9 +137,8 @@ public class TestController {
      */
     @GetMapping("/v1/testCreateActivityOrder")
     public void testCreateActivityOrder() {
-        boolean b = activityOrderEventCenter.publishCreateActivityOrderEvent(new ActivityOrderContext()
+        boolean b = activityOrderEventCenter.publishCreateActivityOrderEvent(new ActivityOrderStatusContext()
                 .setUserId(404L)
-                .setActivityOrderType(ActivityOrderBO.ActivityOrderType.FREE_GIVEAWAY)
         );
     }
 

@@ -1,6 +1,7 @@
 package app.xlog.ggbond.infrastructure;
 
 import app.xlog.ggbond.persistent.po.activity.Activity;
+import app.xlog.ggbond.persistent.po.activity.ActivityOrderTypeConfig;
 import app.xlog.ggbond.persistent.po.raffle.*;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.po.security.UserPurchaseHistory;
@@ -18,6 +19,7 @@ import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
@@ -48,6 +50,8 @@ public class JpaTest {
     private RafflePoolJpa rafflePoolJpa;
     @Resource
     private UserRaffleConfigJpa userRaffleConfigJpa;
+    @Autowired
+    private ActivityOrderTypeJpa activityOrderTypeJpa;
 
     @Test
     void test_9fuc8d() {
@@ -135,16 +139,35 @@ public class JpaTest {
     void initAllData() {
         long snowflakeNextId = IdUtil.getSnowflakeNextId();
 
-        // === 抽奖领域 ===
+        // 活动领域
         test_activity();
+        test_ActivityOrderType();
+        // 抽奖领域
         test_strategy();
         test_strategyAward();
         test_award();
         test_RafflePool();
-        // === 安全领域 ===
-        test_user(snowflakeNextId);
         test_userRaffleConfig(snowflakeNextId);
+        // 安全领域
+        test_user(snowflakeNextId);
         test_userPurchaseHistory();
+    }
+
+    /**
+     * 初始化活动单类型
+     */
+    @Test
+    void test_ActivityOrderType() {
+        activityOrderTypeJpa.saveAll(List.of(
+                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(IdUtil.getSnowflakeNextId())
+                        .activityOrderTypeName("SIGN_IN_TO_CLAIM").raffleCount(1L).build(),
+                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(IdUtil.getSnowflakeNextId())
+                        .activityOrderTypeName("FREE_GIVEAWAY").raffleCount(1L).build(),
+                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(IdUtil.getSnowflakeNextId())
+                        .activityOrderTypeName("PAID_PURCHASE").raffleCount(1L).build(),
+                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(IdUtil.getSnowflakeNextId())
+                        .activityOrderTypeName("REDEEM_TO_OBTAIN").raffleCount(1L).build()
+        ));
     }
 
     /**

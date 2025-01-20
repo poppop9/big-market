@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * JPA - 策略·奖品中间表
+ * JPA - 策略·奖品中间表仓储
  */
 @Repository
 public interface StrategyAwardJpa extends JpaRepository<StrategyAward, Long> {

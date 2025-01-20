@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * JPA - 活动单流水仓储
+ * JPA - 活动单仓储
  */
 @Repository
 public interface ActivityOrderJpa extends JpaRepository<ActivityOrder, Long> {

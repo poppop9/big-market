@@ -1,6 +1,6 @@
 package app.xlog.ggbond.activity.repository;
 
-import app.xlog.ggbond.activity.model.ActivityOrderBO;
+import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
 
 /**
  * 活动领域 - 活动仓储

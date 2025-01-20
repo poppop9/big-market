@@ -1,6 +1,6 @@
 package app.xlog.ggbond.persistent.repository;
 
-import app.xlog.ggbond.activity.model.ActivityOrderBO;
+import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
 import app.xlog.ggbond.persistent.po.activity.ActivityOrder;
 import app.xlog.ggbond.persistent.repository.jpa.ActivityOrderJpa;

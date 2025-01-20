@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <flow>
-    <!-- 抽奖领域 - 抽奖过滤器链 -->
+    <!-- 抽奖领域 - 抽奖 -->
     <chain name="RaffleFilterChain">
         THEN(
             // 1. 前置过滤器链
@@ -19,6 +19,27 @@
                 UserRaffleFlowRecordFilter,
                 ConcurrencySafetyUnLockFilter
             ).retry(3, "app.xlog.ggbond.raffle.model.vo.RetryRouterException")
+        );
+    </chain>
+
+    <!-- 活动领域 - 创建活动单 -->
+    <chain name="CreateActivityOrderChain">
+        THEN(
+            SWITCH(ActivityOrderTypeRouter).TO(
+                IF(SignInToClaimJudge, CreateActivityOrderSuccess, CreateActivityOrderFail),
+                IF(FreeGiveawayJudge, CreateActivityOrderSuccess, CreateActivityOrderFail)
+            )
+        );
+    </chain>
+    <chain name="CreateActivityOrderSuccess">
+        THEN(
+            CreateActivityOrderWorkstation,
+            IncreaseAvailableRaffleTimeWorkstation
+        );
+    </chain>
+    <chain name="CreateActivityOrderFail">
+        THEN(
+            HandleFailedCreateActivityOrderWorkstation
         );
     </chain>
 </flow>

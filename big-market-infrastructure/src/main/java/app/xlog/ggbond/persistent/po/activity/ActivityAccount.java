@@ -24,4 +24,5 @@ import java.time.LocalDateTime;
 public class ActivityAccount extends ShardingTableBaseEntity {
     private Long userId;  // 用户id
     private Long activityId;  // 活动id
+    private Long availableRaffleCount;  // 可用的抽奖次数
 }
