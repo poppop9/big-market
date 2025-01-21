@@ -2,6 +2,7 @@ package app.xlog.ggbond.persistent.po.activity;
 
 import app.xlog.ggbond.persistent.po.SingleTableBaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,11 +18,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "ActivityOrderType", indexes = {
-        // @Index(columnList = "activityId")
+        @Index(columnList = "activityId"),
+        @Index(columnList = "activityOrderTypeId"),
+        @Index(columnList = "activityOrderTypeName"),
 })
 public class ActivityOrderTypeConfig extends SingleTableBaseEntity {
     private Long activityId;  // 活动id
     private Long activityOrderTypeId;  // 活动单类型id
-    private String activityOrderTypeName;  // 活动单类型名称
+    private ActivityOrderType.ActivityOrderTypeName activityOrderTypeName;  // 活动单类型名称
     private Long raffleCount; // 该类型的活动单能给予的抽奖次数
 }

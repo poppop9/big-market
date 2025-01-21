@@ -3,8 +3,8 @@ package app.xlog.ggbond.http;
 import app.xlog.ggbond.BigMarketException;
 import app.xlog.ggbond.BigMarketRespCode;
 import app.xlog.ggbond.TestService;
-import app.xlog.ggbond.activity.model.vo.ActivityOrderStatusContext;
-import app.xlog.ggbond.activity.service.ActivityOrderEventCenter;
+import app.xlog.ggbond.activity.model.vo.AOContext;
+import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
 import app.xlog.ggbond.recommend.AIRepo;
 import app.xlog.ggbond.recommend.RecommendService;
 import cn.dev33.satoken.stp.StpUtil;
@@ -40,7 +40,7 @@ public class TestController {
     @Lazy
     private TestController testController;
     @Resource
-    private ActivityOrderEventCenter activityOrderEventCenter;
+    private AOEventCenter AOEventCenter;
     @Resource
     private TestService testService;
     @Resource
@@ -129,7 +129,7 @@ public class TestController {
      */
     @GetMapping("/v1/testStateMachine")
     public void testStateMachine() {
-        activityOrderEventCenter.test();
+        AOEventCenter.test();
     }
 
     /**
@@ -137,8 +137,9 @@ public class TestController {
      */
     @GetMapping("/v1/testCreateActivityOrder")
     public void testCreateActivityOrder() {
-        boolean b = activityOrderEventCenter.publishCreateActivityOrderEvent(new ActivityOrderStatusContext()
-                .setUserId(404L)
+        AOEventCenter.publishCreateActivityOrderEvent(AOContext.builder()
+                .userId(404L)
+                .build()
         );
     }
 

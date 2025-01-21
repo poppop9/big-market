@@ -23,23 +23,17 @@
     </chain>
 
     <!-- 活动领域 - 创建活动单 -->
-    <chain name="CreateActivityOrderChain">
+    <chain name="CreateActivityOrderWhenChain">
         THEN(
             SWITCH(ActivityOrderTypeRouter).TO(
-                IF(SignInToClaimJudge, CreateActivityOrderSuccess, CreateActivityOrderFail),
-                IF(FreeGiveawayJudge, CreateActivityOrderSuccess, CreateActivityOrderFail)
+                SIGN_IN_TO_CLAIM,
+                FREE_GIVEAWAY
             )
         );
     </chain>
-    <chain name="CreateActivityOrderSuccess">
+    <chain name="CreateActivityOrderPerformChain">
         THEN(
-            CreateActivityOrderWorkstation,
-            IncreaseAvailableRaffleTimeWorkstation
-        );
-    </chain>
-    <chain name="CreateActivityOrderFail">
-        THEN(
-            HandleFailedCreateActivityOrderWorkstation
+            CreateActivityOrderWorkstation, IncreaseAvailableRaffleTimeWorkstation
         );
     </chain>
 </flow>
