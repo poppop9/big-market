@@ -39,12 +39,14 @@ public class AOWhenPipeline {
 
         // 1. 从上下文中拿出活动id，查询该活动id的所有规则
         List<ActivityOrderTypeConfigBO> configList = activityRepo.findActivityOrderTypeConfigByActivityId(context.getActivityId());
-        Optional<ActivityOrderTypeConfigBO> nodeId = configList.stream()
+        ActivityOrderTypeConfigBO nodeId = configList.stream()
                 .filter(item -> item.getActivityOrderTypeName().equals(context.getActivityOrderType().getActivityOrderTypeName()))
-                .findFirst();
+                .findFirst()
+                .get();
+        context.setRaffleCount(nodeId.getRaffleCount());
 
         // 2. 判断传入的规则是否在所有规则中，如果没有则报错，如果有则返回对应工位的nodeId
-        return nodeId.get().getActivityOrderTypeName().toString();
+        return nodeId.getActivityOrderTypeName().toString();
     }
 
     /**
@@ -59,6 +61,7 @@ public class AOWhenPipeline {
         // todo
         // 判断今天是否有领取记录，如果没有，则满足条件
 
+        context.setIsConditionMet(true);
     }
 
     /**
@@ -72,6 +75,7 @@ public class AOWhenPipeline {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         // todo
+        context.setIsConditionMet(true);
     }
 
 }

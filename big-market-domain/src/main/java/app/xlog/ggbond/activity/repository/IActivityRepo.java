@@ -15,4 +15,10 @@ public interface IActivityRepo {
 
     // 查询 - 根据活动id查询活动单类型配置
     List<ActivityOrderTypeConfigBO> findActivityOrderTypeConfigByActivityId(Long activityId);
+
+    // 更新 - 增加可用抽奖次数
+    void increaseAvailableRaffleTime(Long userId, Long activityId, Long raffleCount);
+
+    // 新增 - 初始化活动账户
+    void initActivityAccount(Long userId, long activityId);
 }

@@ -40,7 +40,9 @@ public class AOStateMachineConfig {
         /*
           外部 - 创建订单：初始状态 -> 有效状态
          */
-        builder.externalTransition().from(ActivityOrderBO.ActivityOrderStatus.INITIAL).to(ActivityOrderBO.ActivityOrderStatus.EFFECTIVE)
+        builder.externalTransition()
+                .from(ActivityOrderBO.ActivityOrderStatus.INITIAL)
+                .to(ActivityOrderBO.ActivityOrderStatus.EFFECTIVE)
                 .on(ActivityOrderBO.ActivityOrderEvents.CreateActivityOrder)
                 .when(context -> {
                     // 执行活动单条件判断链

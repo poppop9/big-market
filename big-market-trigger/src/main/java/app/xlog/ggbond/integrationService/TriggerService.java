@@ -2,6 +2,10 @@ package app.xlog.ggbond.integrationService;
 
 import app.xlog.ggbond.BigMarketException;
 import app.xlog.ggbond.BigMarketRespCode;
+import app.xlog.ggbond.activity.model.po.ActivityOrderTypeBO;
+import app.xlog.ggbond.activity.model.vo.AOContext;
+import app.xlog.ggbond.activity.service.IActivityService;
+import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.StrategyBO;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
@@ -20,12 +24,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * 抽奖领域 + 安全领域 - 应用服务
+ * 组合应用服务
  */
 @Slf4j
 @Service
 public class TriggerService {
 
+    @Resource
+    private IActivityService activityService;
     @Resource
     private IRaffleArmory raffleArmory;
     @Resource
@@ -34,6 +40,8 @@ public class TriggerService {
     private ISecurityService securityService;
     @Resource
     private RecommendService recommendService;
+    @Resource
+    private AOEventCenter aoEventCenter;
 
     /**
      * 抽奖领域 - 查询当前用户在指定活动下的所有奖品
@@ -120,13 +128,31 @@ public class TriggerService {
             raffleArmory.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
         }
 
-        // 4. 装配
+        // 4. 初始化一个活动账户 todo 未测试
+        activityService.initActivityAccount(userId, activityId);
+
+        // 5. 装配
         Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
         raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
         raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map
 
-        // 5. 将该用户的角色信息放入session
+        // 6. 将该用户的角色信息放入session
         securityService.insertPermissionIntoSession();
+    }
+
+    /**
+     * 活动领域 - 充值活动单
+     */
+    public void rechargeActivityOrder(Long activityId, String activityOrderTypeName) {
+        aoEventCenter.publishCreateActivityOrderEvent(AOContext.builder()
+                .userId(securityService.getLoginIdDefaultNull())
+                .activityId(activityId)
+                .activityOrderType(ActivityOrderTypeBO.builder()
+                        .activityOrderTypeName(ActivityOrderTypeBO.ActivityOrderTypeName.valueOf(activityOrderTypeName))
+                        .build()
+                )
+                .build()
+        );
     }
 
 }

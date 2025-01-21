@@ -1,6 +1,8 @@
 package app.xlog.ggbond.infrastructure;
 
+import app.xlog.ggbond.activity.model.po.ActivityOrderTypeBO;
 import app.xlog.ggbond.persistent.po.activity.Activity;
+import app.xlog.ggbond.persistent.po.activity.ActivityOrderType;
 import app.xlog.ggbond.persistent.po.activity.ActivityOrderTypeConfig;
 import app.xlog.ggbond.persistent.po.raffle.*;
 import app.xlog.ggbond.persistent.po.security.User;
@@ -35,8 +37,6 @@ public class JpaTest {
     @Resource
     private ActivityJpa activityJPA;
     @Resource
-    private ActivityOrderJpa activityOrderJpa;
-    @Resource
     private UserPurchaseHistoryJpa userPurchaseHistoryJpa;
     @Resource
     private StrategyJpa strategyJpa;
@@ -50,8 +50,10 @@ public class JpaTest {
     private RafflePoolJpa rafflePoolJpa;
     @Resource
     private UserRaffleConfigJpa userRaffleConfigJpa;
-    @Autowired
+    @Resource
     private ActivityOrderTypeJpa activityOrderTypeJpa;
+    @Resource
+    private ActivityOrderTypeConfigJpa activityOrderTypeConfigJpa;
 
     @Test
     void test_9fuc8d() {
@@ -141,7 +143,7 @@ public class JpaTest {
 
         // 活动领域
         test_activity();
-        test_ActivityOrderType();
+        test_ActivityOrderTypeAndActivityOrderTypeConfig();
         // 抽奖领域
         test_strategy();
         test_strategyAward();
@@ -154,19 +156,23 @@ public class JpaTest {
     }
 
     /**
-     * 初始化活动单类型
+     * 初始化活动单类型，活动单类型配置
      */
     @Test
-    void test_ActivityOrderType() {
+    void test_ActivityOrderTypeAndActivityOrderTypeConfig() {
+        ActivityOrderType build1 = ActivityOrderType.builder().activityOrderTypeId(IdUtil.getSnowflakeNextId()).activityOrderTypeName(ActivityOrderType.ActivityOrderTypeName.SIGN_IN_TO_CLAIM).build();
+        ActivityOrderType build2 = ActivityOrderType.builder().activityOrderTypeId(IdUtil.getSnowflakeNextId()).activityOrderTypeName(ActivityOrderType.ActivityOrderTypeName.FREE_GIVEAWAY).build();
+        ActivityOrderType build3 = ActivityOrderType.builder().activityOrderTypeId(IdUtil.getSnowflakeNextId()).activityOrderTypeName(ActivityOrderType.ActivityOrderTypeName.PAID_PURCHASE).build();
+        ActivityOrderType build4 = ActivityOrderType.builder().activityOrderTypeId(IdUtil.getSnowflakeNextId()).activityOrderTypeName(ActivityOrderType.ActivityOrderTypeName.REDEEM_TO_OBTAIN).build();
+
         activityOrderTypeJpa.saveAll(List.of(
-                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(IdUtil.getSnowflakeNextId())
-                        .activityOrderTypeName("SIGN_IN_TO_CLAIM").raffleCount(1L).build(),
-                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(IdUtil.getSnowflakeNextId())
-                        .activityOrderTypeName("FREE_GIVEAWAY").raffleCount(1L).build(),
-                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(IdUtil.getSnowflakeNextId())
-                        .activityOrderTypeName("PAID_PURCHASE").raffleCount(1L).build(),
-                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(IdUtil.getSnowflakeNextId())
-                        .activityOrderTypeName("REDEEM_TO_OBTAIN").raffleCount(1L).build()
+                build1, build2, build3, build4
+        ));
+        activityOrderTypeConfigJpa.saveAll(List.of(
+                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build1.getActivityOrderTypeId()).activityOrderTypeName(build1.getActivityOrderTypeName()).raffleCount(1L).build(),
+                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build2.getActivityOrderTypeId()).activityOrderTypeName(build2.getActivityOrderTypeName()).raffleCount(2L).build(),
+                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build3.getActivityOrderTypeId()).activityOrderTypeName(build3.getActivityOrderTypeName()).raffleCount(1L).build(),
+                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build4.getActivityOrderTypeId()).activityOrderTypeName(build4.getActivityOrderTypeName()).raffleCount(1L).build()
         ));
     }
 

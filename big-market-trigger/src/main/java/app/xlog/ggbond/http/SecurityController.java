@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 安全领域 - 用户权限
+ * 安全领域
  */
 @Slf4j
 @RestController
@@ -25,6 +25,7 @@ public class SecurityController implements ISecurityApiService {
 
     /**
      * 登录
+     *
      * @param activityId 这个参数用来鉴定是哪个活动的登录
      * @param userId     用户id
      * @param password   密码

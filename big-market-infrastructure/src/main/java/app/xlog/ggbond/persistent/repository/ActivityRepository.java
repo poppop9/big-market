@@ -3,8 +3,10 @@ package app.xlog.ggbond.persistent.repository;
 import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.po.ActivityOrderTypeConfigBO;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
+import app.xlog.ggbond.persistent.po.activity.ActivityAccount;
 import app.xlog.ggbond.persistent.po.activity.ActivityOrder;
 import app.xlog.ggbond.persistent.po.activity.ActivityOrderTypeConfig;
+import app.xlog.ggbond.persistent.repository.jpa.ActivityAccountJpa;
 import app.xlog.ggbond.persistent.repository.jpa.ActivityOrderJpa;
 import app.xlog.ggbond.persistent.repository.jpa.ActivityOrderTypeConfigJpa;
 import cn.hutool.core.bean.BeanUtil;
@@ -24,6 +26,8 @@ public class ActivityRepository implements IActivityRepo {
     private ActivityOrderJpa activityOrderJPA;
     @Resource
     private ActivityOrderTypeConfigJpa activityOrderTypeConfigJpa;
+    @Autowired
+    private ActivityAccountJpa activityAccountJpa;
 
     /**
      * 插入 - 插入活动单流水
@@ -42,6 +46,24 @@ public class ActivityRepository implements IActivityRepo {
     public List<ActivityOrderTypeConfigBO> findActivityOrderTypeConfigByActivityId(Long activityId) {
         List<ActivityOrderTypeConfig> byActivityId = activityOrderTypeConfigJpa.findByActivityId(activityId);
         return BeanUtil.copyToList(byActivityId, ActivityOrderTypeConfigBO.class);
+    }
+
+    /**
+     * 更新 - 增加可用抽奖次数
+     */
+    @Override
+    public void increaseAvailableRaffleTime(Long userId, Long activityId, Long raffleCount) {
+        activityAccountJpa.updateAvailableRaffleCountByUserIdAndActivityId(raffleCount, userId, activityId);
+    }
+
+    /**
+     * 新增 - 初始化活动账户
+     */
+    @Override
+    public void initActivityAccount(Long userId, long activityId) {
+        activityAccountJpa.save(new ActivityAccount(
+                userId, activityId, 0L
+        ));
     }
 
 }

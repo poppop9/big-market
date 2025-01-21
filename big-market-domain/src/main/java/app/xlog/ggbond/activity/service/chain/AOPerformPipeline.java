@@ -36,10 +36,9 @@ public class AOPerformPipeline {
                 .userId(context.getUserId())
                 .activityId(context.getActivityId())
                 .activityOrderTypeId(context.getActivityOrderType().getActivityOrderTypeId())
-
+                .activityOrderStatus(ActivityOrderBO.ActivityOrderStatus.EFFECTIVE)
                 .build()
         );
-
     }
 
     /**
@@ -50,6 +49,11 @@ public class AOPerformPipeline {
             nodeId = "IncreaseAvailableRaffleTimeWorkstation",
             nodeName = "增加可用抽奖次数工位")
     public void increaseAvailableRaffleTimeWorkstation(NodeComponent bindCmp) {
+        AOContext context = bindCmp.getContextBean(AOContext.class);
+
+        activityRepo.increaseAvailableRaffleTime(
+                context.getUserId(), context.getActivityId(), context.getRaffleCount()
+        );
     }
 
 }

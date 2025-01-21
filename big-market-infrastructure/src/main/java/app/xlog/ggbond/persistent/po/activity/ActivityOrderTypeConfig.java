@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "ActivityOrderType", indexes = {
+@Table(name = "ActivityOrderTypeConfig", indexes = {
         @Index(columnList = "activityId"),
         @Index(columnList = "activityOrderTypeId"),
         @Index(columnList = "activityOrderTypeName"),

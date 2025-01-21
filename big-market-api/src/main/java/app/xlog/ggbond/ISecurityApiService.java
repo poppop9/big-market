@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.ResponseEntity;
 
 /**
- * 安全领域 - 用户权限api
+ * 安全领域 api
  */
 public interface ISecurityApiService {
 
