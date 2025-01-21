@@ -37,7 +37,7 @@ rules:
       ActivityAccount: # 活动账户
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
-      ActivityOrderFlow: # 活动单流水
+      ActivityOrder: # 活动单
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
       # 抽奖领域

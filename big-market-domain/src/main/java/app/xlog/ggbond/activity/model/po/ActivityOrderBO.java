@@ -19,6 +19,7 @@ public class ActivityOrderBO {
     private Long activityId;  // 活动id
     private @Builder.Default Long activityOrderId = IdUtil.getSnowflakeNextId();  // 活动单id
     private Long activityOrderTypeId;  // 活动单类型id
+    private ActivityOrderTypeBO.ActivityOrderTypeName activityOrderTypeName;  // 活动单类型名称
     private @Builder.Default LocalDateTime activityOrderEffectiveTime = LocalDateTime.of(2000, 12, 31, 0, 0, 0);  // 订单生效时间（立马生效为LocalDateTime.MIN）
     private @Builder.Default LocalDateTime activityOrderExpireTime = LocalDateTime.of(9999, 12, 31, 0, 0, 0);  // 订单过期时间（永久有效为LocalDateTime.MAX）
     private ActivityOrderStatus activityOrderStatus;  // 订单状态

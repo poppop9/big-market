@@ -128,7 +128,7 @@ public class TriggerService {
             raffleArmory.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
         }
 
-        // 4. 初始化一个活动账户 todo 未测试
+        // 4. 如果该用户没有活动账户，则初始化一个活动账
         activityService.initActivityAccount(userId, activityId);
 
         // 5. 装配

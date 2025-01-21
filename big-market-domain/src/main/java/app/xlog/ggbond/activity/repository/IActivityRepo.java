@@ -21,4 +21,8 @@ public interface IActivityRepo {
 
     // 新增 - 初始化活动账户
     void initActivityAccount(Long userId, long activityId);
+
+    // 判断 - 判断今天是否已签到领取AO
+    boolean existSignInToClaimAOToday(Long userId, Long activityId);
+
 }

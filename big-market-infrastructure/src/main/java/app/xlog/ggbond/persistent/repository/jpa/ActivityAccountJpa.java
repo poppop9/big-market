@@ -19,4 +19,6 @@ public interface ActivityAccountJpa extends JpaRepository<ActivityAccount, Long>
             "AND a.activityId = :activityId")
     void updateAvailableRaffleCountByUserIdAndActivityId(Long availableRaffleCount, Long userId, Long activityId);
 
+    @Query("select (count(a) > 0) from ActivityAccount a where a.userId = ?1 and a.activityId = ?2")
+    boolean existsByUserIdAndActivityId(Long userId, Long activityId);
 }

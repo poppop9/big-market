@@ -5,6 +5,7 @@ import app.xlog.ggbond.activity.model.po.ActivityOrderTypeConfigBO;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
 import app.xlog.ggbond.persistent.po.activity.ActivityAccount;
 import app.xlog.ggbond.persistent.po.activity.ActivityOrder;
+import app.xlog.ggbond.persistent.po.activity.ActivityOrderType;
 import app.xlog.ggbond.persistent.po.activity.ActivityOrderTypeConfig;
 import app.xlog.ggbond.persistent.repository.jpa.ActivityAccountJpa;
 import app.xlog.ggbond.persistent.repository.jpa.ActivityOrderJpa;
@@ -61,9 +62,23 @@ public class ActivityRepository implements IActivityRepo {
      */
     @Override
     public void initActivityAccount(Long userId, long activityId) {
-        activityAccountJpa.save(new ActivityAccount(
-                userId, activityId, 0L
-        ));
+        if (!activityAccountJpa.existsByUserIdAndActivityId(userId, activityId)) {
+            activityAccountJpa.save(new ActivityAccount(
+                    userId, activityId, 0L
+            ));
+        }
+    }
+
+    /**
+     * 判断 - 判断今天是否已签到领取AO
+     */
+    @Override
+    public boolean existSignInToClaimAOToday(Long userId, Long activityId) {
+        return activityOrderJPA.existsByUserIdAndActivityIdAndActivityOrderTypeName(
+                userId,
+                activityId,
+                ActivityOrderType.ActivityOrderTypeName.SIGN_IN_TO_CLAIM
+        );
     }
 
 }

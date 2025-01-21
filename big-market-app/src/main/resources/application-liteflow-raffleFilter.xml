@@ -27,13 +27,15 @@
         THEN(
             SWITCH(ActivityOrderTypeRouter).TO(
                 SIGN_IN_TO_CLAIM,
-                FREE_GIVEAWAY
+                FREE_GIVEAWAY,
+                PAID_PURCHASE
             )
         );
     </chain>
     <chain name="CreateActivityOrderPerformChain">
         THEN(
-            CreateActivityOrderWorkstation, IncreaseAvailableRaffleTimeWorkstation
+            CreateActivityOrderWorkstation,
+            IncreaseAvailableRaffleTimeWorkstation
         );
     </chain>
 </flow>

@@ -36,6 +36,7 @@ public class AOPerformPipeline {
                 .userId(context.getUserId())
                 .activityId(context.getActivityId())
                 .activityOrderTypeId(context.getActivityOrderType().getActivityOrderTypeId())
+                .activityOrderTypeName(context.getActivityOrderType().getActivityOrderTypeName())
                 .activityOrderStatus(ActivityOrderBO.ActivityOrderStatus.EFFECTIVE)
                 .build()
         );
