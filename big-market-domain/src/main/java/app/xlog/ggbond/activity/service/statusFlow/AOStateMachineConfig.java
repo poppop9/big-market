@@ -1,18 +1,14 @@
 package app.xlog.ggbond.activity.service.statusFlow;
 
-import app.xlog.ggbond.BigMarketException;
 import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
-import app.xlog.ggbond.raffle.model.vo.RetryRouterException;
-import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.cola.statemachine.StateMachine;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilder;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilderFactory;
 import com.yomahub.liteflow.core.FlowExecutor;
 import com.yomahub.liteflow.flow.LiteflowResponse;
 import jakarta.annotation.Resource;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,25 +30,39 @@ public class AOStateMachineConfig {
     private IActivityRepo activityRepo;
 
     @Bean
-    public StateMachine<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvents, AOContext> stateMachine() {
-        StateMachineBuilder<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvents, AOContext> builder = StateMachineBuilderFactory.create();
+    public StateMachine<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext> stateMachine() {
+        StateMachineBuilder<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext> builder = StateMachineBuilderFactory.create();
 
         /*
-          外部 - 创建订单：初始状态 -> 有效状态
+          外部 - 创建待支付的活动单 : 初始状态 -> 待支付状态
          */
         builder.externalTransition()
                 .from(ActivityOrderBO.ActivityOrderStatus.INITIAL)
+                .to(ActivityOrderBO.ActivityOrderStatus.PENDING_PAYMENT)
+                .on(ActivityOrderBO.ActivityOrderEvent.INITIAL_TO_PENDING_PAYMENT)
+                .when(context -> true)
+                .perform((S1, S2, E, C) -> {
+                    // 执行活动单生成链
+                    LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("INITIAL_TO_PENDING_PAYMENT", null, C);
+                    if (!liteflowResponse.isSuccess()) throw (RuntimeException) liteflowResponse.getCause();
+                });
+
+        /*
+          外部 - 待支付活动单转有效活动单 : 待支付状态 -> 有效状态 todo
+         */
+        builder.externalTransition()
+                .from(ActivityOrderBO.ActivityOrderStatus.PENDING_PAYMENT)
                 .to(ActivityOrderBO.ActivityOrderStatus.EFFECTIVE)
-                .on(ActivityOrderBO.ActivityOrderEvents.CreateActivityOrder)
+                .on(ActivityOrderBO.ActivityOrderEvent.PENDING_PAYMENT_TO_EFFECTIVE)
                 .when(context -> {
                     // 执行活动单条件判断链
-                    LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("CreateActivityOrderWhenChain", null, context);
+                    LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("WHEN_PENDING_PAYMENT_TO_EFFECTIVE", null, context);
                     context = liteflowResponse.getContextBean(AOContext.class);
                     return context.getIsConditionMet();
                 })
                 .perform((S1, S2, E, C) -> {
                     // 执行活动单生成链
-                    LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("CreateActivityOrderPerformChain", null, C);
+                    LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("PENDING_PAYMENT_TO_EFFECTIVE", null, C);
                     if (!liteflowResponse.isSuccess()) throw (RuntimeException) liteflowResponse.getCause();
                 });
 

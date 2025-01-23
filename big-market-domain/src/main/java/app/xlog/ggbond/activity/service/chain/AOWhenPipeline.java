@@ -41,6 +41,8 @@ public class AOWhenPipeline {
                 .filter(item -> item.getActivityOrderTypeName().equals(context.getActivityOrderType().getActivityOrderTypeName()))
                 .findFirst()
                 .get();
+
+        // 2. 并准备好下一个工位所需的数据
         context.setRaffleCount(nodeId.getRaffleCount());
         context.setActivityOrderType(ActivityOrderTypeBO.builder()
                 .activityOrderTypeId(nodeId.getActivityOrderTypeId())
@@ -48,7 +50,7 @@ public class AOWhenPipeline {
                 .build()
         );
 
-        // 2. 判断传入的规则是否在所有规则中，如果没有则报错，如果有则返回对应工位的nodeId
+        // 3. 判断传入的规则是否在所有规则中，如果没有则报错，如果有则返回对应工位的nodeId
         return nodeId.getActivityOrderTypeName().toString();
     }
 

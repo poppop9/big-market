@@ -2,6 +2,7 @@ package app.xlog.ggbond.integrationService;
 
 import app.xlog.ggbond.BigMarketException;
 import app.xlog.ggbond.BigMarketRespCode;
+import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.po.ActivityOrderTypeBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.service.IActivityService;
@@ -141,10 +142,10 @@ public class TriggerService {
     }
 
     /**
-     * 活动领域 - 充值活动单
+     * 活动领域 - 充值待支付活动单
      */
-    public void rechargeActivityOrder(Long activityId, String activityOrderTypeName) {
-        aoEventCenter.publishCreateActivityOrderEvent(AOContext.builder()
+    public ActivityOrderBO rechargePendingPaymentAO(Long activityId, String activityOrderTypeName) {
+        ActivityOrderBO activityOrderBO = aoEventCenter.publishInitialToPendingPaymentEvent(AOContext.builder()
                 .userId(securityService.getLoginIdDefaultNull())
                 .activityId(activityId)
                 .activityOrderType(ActivityOrderTypeBO.builder()
@@ -153,6 +154,7 @@ public class TriggerService {
                 )
                 .build()
         );
+        return activityOrderBO;
     }
 
 }

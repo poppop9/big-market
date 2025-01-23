@@ -77,4 +77,7 @@ public class GlobalConstant {
         }
     }
 
+    // 活动领域 - 待支付活动单的过期时间
+    public final static Long activityOrderExpireTime = 10 * 60L;  // 10分钟（单位是秒）
+
 }

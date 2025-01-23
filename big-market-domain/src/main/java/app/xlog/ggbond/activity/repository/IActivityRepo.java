@@ -11,7 +11,7 @@ import java.util.List;
 public interface IActivityRepo {
 
     // 插入 - 插入活动单流水
-    void saveActivityOrder(ActivityOrderBO activityOrderBO);
+    ActivityOrderBO saveActivityOrder(ActivityOrderBO activityOrderBO);
 
     // 查询 - 根据活动id查询活动单类型配置
     List<ActivityOrderTypeConfigBO> findActivityOrderTypeConfigByActivityId(Long activityId);

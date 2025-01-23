@@ -4,6 +4,7 @@ import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import com.alibaba.cola.statemachine.StateMachine;
 import com.alibaba.cola.statemachine.StateMachineFactory;
+import com.alibaba.cola.statemachine.Transition;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -15,13 +16,28 @@ import org.springframework.stereotype.Component;
 public class AOEventCenter {
 
     /**
-     * 发布事件 - 创建活动单
+     * 发布事件 - 创建待支付活动单
+     * todo 未测试发布事件是阻塞还是非阻塞
      */
-    public void publishCreateActivityOrderEvent(AOContext AOContext) {
-        StateMachineFactory.<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvents, AOContext>get(AOStateMachineConfig.ACTIVITY_ORDER_MACHINE_ID)
+    public ActivityOrderBO publishInitialToPendingPaymentEvent(AOContext aoContext) {
+        StateMachine<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext> stateMachine = StateMachineFactory.get(AOStateMachineConfig.ACTIVITY_ORDER_MACHINE_ID);
+        stateMachine.fireEvent(
+                ActivityOrderBO.ActivityOrderStatus.INITIAL,
+                ActivityOrderBO.ActivityOrderEvent.INITIAL_TO_PENDING_PAYMENT,
+                aoContext
+        );
+
+        return aoContext.getActivityOrderBO();
+    }
+
+    /**
+     * 发布事件 - 待支付活动单转有效活动单
+     */
+    public void publishPendingPaymentToEffectiveEvent(AOContext AOContext) {
+        StateMachineFactory.<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext>get(AOStateMachineConfig.ACTIVITY_ORDER_MACHINE_ID)
                 .fireEvent(
-                        ActivityOrderBO.ActivityOrderStatus.INITIAL,
-                        ActivityOrderBO.ActivityOrderEvents.CreateActivityOrder,
+                        ActivityOrderBO.ActivityOrderStatus.PENDING_PAYMENT,
+                        ActivityOrderBO.ActivityOrderEvent.PENDING_PAYMENT_TO_EFFECTIVE,
                         AOContext
                 );
     }
@@ -30,7 +46,7 @@ public class AOEventCenter {
      * 测试 - 测试方法
      */
     public void test() {
-        StateMachine<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvents, AOContext> stateMachine = StateMachineFactory.get(AOStateMachineConfig.ACTIVITY_ORDER_MACHINE_ID);
+        StateMachine<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext> stateMachine = StateMachineFactory.get(AOStateMachineConfig.ACTIVITY_ORDER_MACHINE_ID);
         String s = stateMachine.generatePlantUML();
         System.out.println(s);
     }

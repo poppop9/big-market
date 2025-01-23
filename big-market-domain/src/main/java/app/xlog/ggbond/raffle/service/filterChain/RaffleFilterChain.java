@@ -30,7 +30,7 @@ public class RaffleFilterChain {
         Long userId = context.getUserBO().getUserId();
 
         log.atInfo().log("抽奖领域 - " + userId + " 过滤器链开始执行");
-        LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("RaffleFilterChain", null, context);
+        LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("RAFFLE_FILTER_CHAIN", null, context);
         if (!liteflowResponse.isSuccess()) {
             if (liteflowResponse.getCause() instanceof RetryRouterException cause) {
                 throw new BigMarketException(cause.getRespCode(), cause.getRespCode().getMessage());

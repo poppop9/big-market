@@ -137,7 +137,7 @@ public class TestController {
      */
     @GetMapping("/v1/testCreateActivityOrder")
     public void testCreateActivityOrder() {
-        AOEventCenter.publishCreateActivityOrderEvent(AOContext.builder()
+        AOEventCenter.publishInitialToPendingPaymentEvent(AOContext.builder()
                 .userId(404L)
                 .build()
         );

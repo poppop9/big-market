@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <flow>
     <!-- 抽奖领域 - 抽奖 -->
-    <chain name="RaffleFilterChain">
+    <chain name="RAFFLE_FILTER_CHAIN">
         THEN(
             // 1. 前置过滤器链
             ConcurrencySafetyLockFilter,
@@ -23,19 +23,24 @@
     </chain>
 
     <!-- 活动领域 - 创建活动单 -->
-    <chain name="CreateActivityOrderWhenChain">
+    <chain name="INITIAL_TO_PENDING_PAYMENT">
+        THEN(
+            InitialToPendingPaymentWorkstation
+        );
+    </chain>
+    <chain name="PENDING_PAYMENT_TO_EFFECTIVE">
+        THEN(
+            PendingPaymentToEffectiveWorkstation,
+            IncreaseAvailableRaffleTimeWorkstation
+        );
+    </chain>
+    <chain name="WHEN_PENDING_PAYMENT_TO_EFFECTIVE">
         THEN(
             SWITCH(ActivityOrderTypeRouter).TO(
                 SIGN_IN_TO_CLAIM,
                 FREE_GIVEAWAY,
                 PAID_PURCHASE
             )
-        );
-    </chain>
-    <chain name="CreateActivityOrderPerformChain">
-        THEN(
-            CreateActivityOrderWorkstation,
-            IncreaseAvailableRaffleTimeWorkstation
         );
     </chain>
 </flow>

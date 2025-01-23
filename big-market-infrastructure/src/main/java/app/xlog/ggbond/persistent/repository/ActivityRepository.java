@@ -34,10 +34,11 @@ public class ActivityRepository implements IActivityRepo {
      * 插入 - 插入活动单流水
      */
     @Override
-    public void saveActivityOrder(ActivityOrderBO activityOrderBO) {
-        activityOrderJPA.save(
+    public ActivityOrderBO saveActivityOrder(ActivityOrderBO activityOrderBO) {
+        ActivityOrder activityOrder = activityOrderJPA.save(
                 BeanUtil.copyProperties(activityOrderBO, ActivityOrder.class)
         );
+        return BeanUtil.copyProperties(activityOrder, ActivityOrderBO.class);
     }
 
     /**

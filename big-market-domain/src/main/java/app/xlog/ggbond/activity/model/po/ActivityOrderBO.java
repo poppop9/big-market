@@ -30,12 +30,15 @@ public class ActivityOrderBO {
     @Getter
     @AllArgsConstructor
     public enum ActivityOrderStatus {
-        INITIAL("初始状态"),
-        EFFECTIVE("有效"),
-        USED("已使用"),
-        EXPIRED("已过期");
+        INITIAL("初始状态", "初始状态"),
+        PENDING_PAYMENT("待支付", "创建活动单之后 --->>> 转为待支付"),
+        EFFECTIVE("有效", "待支付的活动单，支付成功之后 --->>> 转为有效"),
+        USED("已使用", "有效的活动单，使用之后 --->>> 转为已使用"),
+        EXPIRED("已过期", "有效的活动单，过期时间到了之后 --->>> 转为已过期"),
+        CLOSED("已关闭", "待支付的活动单，过期时间到了之后 --->>> 转为已关闭");
 
-        private final String message;
+        private final String code;
+        private final String info;
     }
 
     /**
@@ -43,11 +46,10 @@ public class ActivityOrderBO {
      */
     @Getter
     @AllArgsConstructor
-    public enum ActivityOrderEvents {
-        CreateActivityOrder("创建活动订单"),
-        PAYING( "支付确认"),
-        PAY_SUCCESS( "支付成功"),
-        PAY_FAIL( "支付失败");
+    public enum ActivityOrderEvent {
+        INITIAL_TO_PENDING_PAYMENT("初始状态 --->>> 待支付状态"),
+        PENDING_PAYMENT_TO_EFFECTIVE("待支付状态 --->>> 有效状态"),
+        PAY_FAIL("支付失败");
 
         private final String message;
     }
