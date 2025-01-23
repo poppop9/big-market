@@ -65,21 +65,10 @@ public class AOWhenPipeline {
     public void signInToClaimJudge(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
         // 判断今天是否有领取记录，如果没有，则满足条件
-        context.setIsConditionMet(
-                !activityRepo.existSignInToClaimAOToday(context.getUserId(), context.getActivityId())
-        );
-    }
-
-    /**
-     * 免费赠送裁判 - 判断是否满足免费赠送的条件
-     */
-    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
-            value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "FREE_GIVEAWAY",
-            nodeName = "免费赠送裁判")
-    public void freeGiveawayJudge(NodeComponent bindCmp) {
-        AOContext context = bindCmp.getContextBean(AOContext.class);
-        context.setIsConditionMet(true);
+        boolean isSignIn = activityRepo.existSignInToClaimAOToday(context.getUserId(), context.getActivityId());
+        if (isSignIn)
+            log.atInfo().log("活动领域 - 用户 {} 在活动 {} 中，今天已签到领取过", context.getUserId(), context.getActivityId());
+        context.setIsConditionMet(!isSignIn);
     }
 
     /**
@@ -92,7 +81,7 @@ public class AOWhenPipeline {
     public void paidPurchaseJudge(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
-        // todo 判断用户是否已经付款
+        // todo 查看传入的上下文信息，判断用户的余额是否充足
         context.setIsConditionMet(true);
     }
 
@@ -106,7 +95,7 @@ public class AOWhenPipeline {
     public void redeemToObtainJudge(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
-        // todo 暂时没有该功能
+        // todo 看兑换码是否有效
         context.setIsConditionMet(true);
     }
 

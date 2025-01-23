@@ -142,19 +142,25 @@ public class TriggerService {
     }
 
     /**
-     * 活动领域 - 充值待支付活动单
+     * 活动领域 - 充值活动单
      */
-    public ActivityOrderBO rechargePendingPaymentAO(Long activityId, String activityOrderTypeName) {
-        ActivityOrderBO activityOrderBO = aoEventCenter.publishInitialToPendingPaymentEvent(AOContext.builder()
+    public AOContext rechargeAO(AOContext aoContext) {
+        // 初始状态 --->>> 待支付状态
+        aoContext = aoEventCenter.publishInitialToPendingPaymentEvent(AOContext.builder()
                 .userId(securityService.getLoginIdDefaultNull())
-                .activityId(activityId)
+                .activityId(aoContext.getActivityId())
                 .activityOrderType(ActivityOrderTypeBO.builder()
-                        .activityOrderTypeName(ActivityOrderTypeBO.ActivityOrderTypeName.valueOf(activityOrderTypeName))
+                        .activityOrderTypeName(aoContext.getActivityOrderType().getActivityOrderTypeName())
                         .build()
                 )
                 .build()
         );
-        return activityOrderBO;
+
+        // 待支付状态 --->>> 有效状态
+        aoContext = aoEventCenter.publishPendingPaymentToEffectiveEvent(aoContext);
+
+
+        return aoContext;
     }
 
 }

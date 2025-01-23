@@ -55,13 +55,19 @@ public class AOStateMachineConfig {
                 .to(ActivityOrderBO.ActivityOrderStatus.EFFECTIVE)
                 .on(ActivityOrderBO.ActivityOrderEvent.PENDING_PAYMENT_TO_EFFECTIVE)
                 .when(context -> {
-                    // 执行活动单条件判断链
+                    // 执行待支付状态 -> 有效状态条件判断链
                     LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("WHEN_PENDING_PAYMENT_TO_EFFECTIVE", null, context);
+
+                    if (!liteflowResponse.isSuccess()) throw (RuntimeException) liteflowResponse.getCause();
                     context = liteflowResponse.getContextBean(AOContext.class);
-                    return context.getIsConditionMet();
+                    Boolean isConditionMet = context.getIsConditionMet();
+
+                    if (!isConditionMet)
+                        log.atInfo().log("活动领域 - 用户 {} WHEN_PENDING_PAYMENT_TO_EFFECTIVE 规则链不满足条件", context.getUserId());
+                    return isConditionMet;
                 })
                 .perform((S1, S2, E, C) -> {
-                    // 执行活动单生成链
+                    // 执行待支付状态 -> 有效状态活动单生成链
                     LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("PENDING_PAYMENT_TO_EFFECTIVE", null, C);
                     if (!liteflowResponse.isSuccess()) throw (RuntimeException) liteflowResponse.getCause();
                 });

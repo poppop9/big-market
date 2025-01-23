@@ -161,16 +161,14 @@ public class JpaTest {
     @Test
     void test_ActivityOrderTypeAndActivityOrderTypeConfig() {
         ActivityOrderType build1 = ActivityOrderType.builder().activityOrderTypeId(IdUtil.getSnowflakeNextId()).activityOrderTypeName(ActivityOrderType.ActivityOrderTypeName.SIGN_IN_TO_CLAIM).build();
-        ActivityOrderType build2 = ActivityOrderType.builder().activityOrderTypeId(IdUtil.getSnowflakeNextId()).activityOrderTypeName(ActivityOrderType.ActivityOrderTypeName.FREE_GIVEAWAY).build();
         ActivityOrderType build3 = ActivityOrderType.builder().activityOrderTypeId(IdUtil.getSnowflakeNextId()).activityOrderTypeName(ActivityOrderType.ActivityOrderTypeName.PAID_PURCHASE).build();
         ActivityOrderType build4 = ActivityOrderType.builder().activityOrderTypeId(IdUtil.getSnowflakeNextId()).activityOrderTypeName(ActivityOrderType.ActivityOrderTypeName.REDEEM_TO_OBTAIN).build();
 
         activityOrderTypeJpa.saveAll(List.of(
-                build1, build2, build3, build4
+                build1, build3, build4
         ));
         activityOrderTypeConfigJpa.saveAll(List.of(
                 ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build1.getActivityOrderTypeId()).activityOrderTypeName(build1.getActivityOrderTypeName()).raffleCount(1L).build(),
-                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build2.getActivityOrderTypeId()).activityOrderTypeName(build2.getActivityOrderTypeName()).raffleCount(2L).build(),
                 ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build3.getActivityOrderTypeId()).activityOrderTypeName(build3.getActivityOrderTypeName()).raffleCount(1L).build(),
                 ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build4.getActivityOrderTypeId()).activityOrderTypeName(build4.getActivityOrderTypeName()).raffleCount(1L).build()
         ));

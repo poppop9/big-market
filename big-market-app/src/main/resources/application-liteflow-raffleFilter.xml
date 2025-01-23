@@ -38,8 +38,8 @@
         THEN(
             SWITCH(ActivityOrderTypeRouter).TO(
                 SIGN_IN_TO_CLAIM,
-                FREE_GIVEAWAY,
-                PAID_PURCHASE
+                PAID_PURCHASE,
+                REDEEM_TO_OBTAIN
             )
         );
     </chain>

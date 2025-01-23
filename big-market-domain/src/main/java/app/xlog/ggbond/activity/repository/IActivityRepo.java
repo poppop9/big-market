@@ -25,4 +25,6 @@ public interface IActivityRepo {
     // 判断 - 判断今天是否已签到领取AO
     boolean existSignInToClaimAOToday(Long userId, Long activityId);
 
+    // 更新 - 更新活动单状态
+    void updateActivityOrderStatus(Long activityOrderId, ActivityOrderBO.ActivityOrderStatus activityOrderStatus);
 }

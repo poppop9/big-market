@@ -57,7 +57,10 @@ public class AOPerformPipeline {
     public void pendingPaymentToEffectiveWorkstation(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
-        // 跟据上下文中的activityOrderTypeName，raffleCount创建活动单
+        activityRepo.updateActivityOrderStatus(
+                context.getActivityOrderBO().getActivityOrderId(),
+                ActivityOrderBO.ActivityOrderStatus.EFFECTIVE
+        );
     }
 
     /**

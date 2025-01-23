@@ -15,6 +15,9 @@ import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -65,7 +68,7 @@ public class ActivityRepository implements IActivityRepo {
     public void initActivityAccount(Long userId, long activityId) {
         if (!activityAccountJpa.existsByUserIdAndActivityId(userId, activityId)) {
             activityAccountJpa.save(new ActivityAccount(
-                    userId, activityId, 0L
+                    userId, activityId, 0L, 100d
             ));
         }
     }
@@ -75,10 +78,23 @@ public class ActivityRepository implements IActivityRepo {
      */
     @Override
     public boolean existSignInToClaimAOToday(Long userId, Long activityId) {
-        return activityOrderJPA.existsByUserIdAndActivityIdAndActivityOrderTypeName(
+        return activityOrderJPA.existsByUserIdAndActivityIdAndActivityOrderTypeNameAndActivityOrderStatusAndCreateTimeBetween(
                 userId,
                 activityId,
-                ActivityOrderType.ActivityOrderTypeName.SIGN_IN_TO_CLAIM
+                ActivityOrderType.ActivityOrderTypeName.SIGN_IN_TO_CLAIM,
+                ActivityOrder.ActivityOrderStatus.EFFECTIVE,
+                LocalDateTime.of(LocalDate.now(), LocalTime.MIN), LocalDateTime.of(LocalDate.now(), LocalTime.MAX)
+        );
+    }
+
+    /**
+     * 更新 - 更新活动单状态
+     */
+    @Override
+    public void updateActivityOrderStatus(Long activityOrderId, ActivityOrderBO.ActivityOrderStatus activityOrderStatus) {
+        ActivityOrder.ActivityOrderStatus activityOrderStatus1 = ActivityOrder.ActivityOrderStatus.valueOf(activityOrderStatus.name());
+        activityOrderJPA.updateActivityOrderStatusByActivityOrderId(
+                activityOrderStatus1, activityOrderId
         );
     }
 

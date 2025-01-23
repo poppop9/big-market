@@ -17,9 +17,8 @@ public class AOEventCenter {
 
     /**
      * 发布事件 - 创建待支付活动单
-     * todo 未测试发布事件是阻塞还是非阻塞
      */
-    public ActivityOrderBO publishInitialToPendingPaymentEvent(AOContext aoContext) {
+    public AOContext publishInitialToPendingPaymentEvent(AOContext aoContext) {
         StateMachine<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext> stateMachine = StateMachineFactory.get(AOStateMachineConfig.ACTIVITY_ORDER_MACHINE_ID);
         stateMachine.fireEvent(
                 ActivityOrderBO.ActivityOrderStatus.INITIAL,
@@ -27,19 +26,20 @@ public class AOEventCenter {
                 aoContext
         );
 
-        return aoContext.getActivityOrderBO();
+        return aoContext;
     }
 
     /**
      * 发布事件 - 待支付活动单转有效活动单
      */
-    public void publishPendingPaymentToEffectiveEvent(AOContext AOContext) {
+    public AOContext publishPendingPaymentToEffectiveEvent(AOContext aoContext) {
         StateMachineFactory.<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext>get(AOStateMachineConfig.ACTIVITY_ORDER_MACHINE_ID)
                 .fireEvent(
                         ActivityOrderBO.ActivityOrderStatus.PENDING_PAYMENT,
                         ActivityOrderBO.ActivityOrderEvent.PENDING_PAYMENT_TO_EFFECTIVE,
-                        AOContext
+                        aoContext
                 );
+        return aoContext;
     }
 
     /**

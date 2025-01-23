@@ -23,6 +23,10 @@
             <groupId>app.xlog.ggbond</groupId>
             <artifactId>big-market-types</artifactId>
         </dependency>
+        <dependency>
+            <groupId>app.xlog.ggbond</groupId>
+            <artifactId>big-market-domain</artifactId>
+        </dependency>
         <!--++++++++++++++ 日志，测试 ++++++++++++++-->
         <dependency>
             <groupId>junit</groupId>

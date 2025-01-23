@@ -3,15 +3,13 @@ package app.xlog.ggbond.http;
 import app.xlog.ggbond.IActivityApiService;
 import app.xlog.ggbond.ZakiResponse;
 import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
+import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.integrationService.TriggerService;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 活动领域
@@ -25,16 +23,12 @@ public class ActivityController implements IActivityApiService {
     private TriggerService triggerService;
 
     /**
-     * 活动领域 - 充值待支付活动单
-     *
-     * @param activityId            活动id
-     * @param activityOrderTypeName 活动单类型名称
+     * 活动领域 - 充值活动单
      */
-    @PostMapping("/v1/rechargePendingPaymentAO")
-    public ResponseEntity<JsonNode> rechargePendingPaymentAO(@RequestParam Long activityId,
-                                                             @RequestParam String activityOrderTypeName) {
-        ActivityOrderBO activityOrderBO = triggerService.rechargePendingPaymentAO(activityId, activityOrderTypeName);
-        return ZakiResponse.ok("activityOrderBO", activityOrderBO);
+    @PostMapping("/v1/rechargeAO")
+    public ResponseEntity<JsonNode> rechargeAO(@RequestBody AOContext aoContext) {
+        aoContext = triggerService.rechargeAO(aoContext);
+        return ZakiResponse.ok("activityOrderBO", aoContext.getActivityOrderBO());
     }
 
 }
