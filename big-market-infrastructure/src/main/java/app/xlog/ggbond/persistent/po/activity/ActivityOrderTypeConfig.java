@@ -26,5 +26,5 @@ public class ActivityOrderTypeConfig extends SingleTableBaseEntity {
     private Long activityId;  // 活动id
     private Long activityOrderTypeId;  // 活动单类型id
     private ActivityOrderType.ActivityOrderTypeName activityOrderTypeName;  // 活动单类型名称
-    private Long raffleCount; // 该类型的活动单能给予的抽奖次数
+    private Long raffleCount; // 该类型的活动单能给予的抽奖次数（-1表示，抽奖次数不固定）
 }

@@ -169,8 +169,8 @@ public class JpaTest {
         ));
         activityOrderTypeConfigJpa.saveAll(List.of(
                 ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build1.getActivityOrderTypeId()).activityOrderTypeName(build1.getActivityOrderTypeName()).raffleCount(1L).build(),
-                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build3.getActivityOrderTypeId()).activityOrderTypeName(build3.getActivityOrderTypeName()).raffleCount(1L).build(),
-                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build4.getActivityOrderTypeId()).activityOrderTypeName(build4.getActivityOrderTypeName()).raffleCount(1L).build()
+                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build3.getActivityOrderTypeId()).activityOrderTypeName(build3.getActivityOrderTypeName()).raffleCount(-1L).build(),
+                ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build4.getActivityOrderTypeId()).activityOrderTypeName(build4.getActivityOrderTypeName()).raffleCount(-1L).build()
         ));
     }
 

@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * 抽奖领域 - 抽奖领域任务
+ * 抽奖领域 - 定时任务
  */
 @Slf4j
 @Component
@@ -24,7 +24,7 @@ public class RaffleJob {
      * 已废弃（已被kafka代替） - 扣减队列信息，更新数据库中的奖品库存
      */
     @Deprecated
-    @XxlJob("updateAwardCount")
+    @XxlJob("update_award_count")
     public void updateAwardCount() {
         DecrQueueVO decrQueueVO = raffleDispatchRepo.queryDecrAwardCountFromQueue();
         if (decrQueueVO != null) {

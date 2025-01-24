@@ -25,7 +25,8 @@
     <!-- 活动领域 - 创建活动单 -->
     <chain name="INITIAL_TO_PENDING_PAYMENT">
         THEN(
-            InitialToPendingPaymentWorkstation
+            InitialToPendingPaymentWorkstation,
+            CheckExpirePendingPaymentAOWorkstation
         );
     </chain>
     <chain name="PENDING_PAYMENT_TO_EFFECTIVE">
