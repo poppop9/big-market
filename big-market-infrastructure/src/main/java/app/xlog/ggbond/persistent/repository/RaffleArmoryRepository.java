@@ -132,9 +132,9 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
         ));
 
         RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getAwardCountMapCacheKey(strategyId));
-        if (rMap.isExists()) rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
+        if (rMap.isExists()) rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
         rMap.putAll(collect);
-        rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
+        rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
     }
 
     /**
@@ -145,7 +145,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
         RBucket<Object> bucket = redissonClient.getBucket(GlobalConstant.RedisKey.getWeightRandomCacheKey(strategyId, dispatchParam));
         bucket.set(wr);
 
-        bucket.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
+        bucket.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
     }
 
     /**
@@ -155,11 +155,11 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     public void insertWeightRandom(Long strategyId, Map<String, WeightRandom<Long>> wrMap) {
         RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getWeightRandomMapCacheKey(strategyId));
         if (rMap.isExists()) {
-            rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
+            rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
         }
         rMap.putAll(wrMap);
 
-        rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
+        rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
     }
 
     /**
@@ -262,7 +262,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public boolean isUserInRaffle(Long userId) {
-        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.userInRaffleBitSet);
+        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_RAFFLE_BIT_SET);
         return rBitSet.get(userId);
     }
 
@@ -271,7 +271,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public void lockUserInBitSet(Long userId) {
-        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.userInRaffleBitSet);
+        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_RAFFLE_BIT_SET);
         rBitSet.set(userId);
     }
 
@@ -280,7 +280,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public void unLockUserInBitSet(Long userId) {
-        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.userInRaffleBitSet);
+        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_RAFFLE_BIT_SET);
         rBitSet.clear(userId);
     }
 

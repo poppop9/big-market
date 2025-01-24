@@ -9,7 +9,20 @@ import lombok.Getter;
 public class GlobalConstant {
 
     public static class RedisKey {
-        public final static Long redisExpireTime = 3 * 24 * 60 * 60L;  // 抽奖领域 - redis过期时长 : 3天（单位是秒）
+        public final static Long REDIS_EXPIRE_TIME = 3 * 24 * 60 * 60L;  // 抽奖领域 - redis过期时长 : 3天（单位是秒）
+
+        // 抽奖领域 - 奖品库存扣减队列
+        public static String AWARD_COUNT_DECR_QUEUE = "AwardCountDecrQueue";
+
+        // 抽奖领域 - 黑名单用户列表
+        public static String BLACKLIST_USER_LIST = "BlacklistUserList";
+
+        // 抽奖领域 - 用户是否在抽奖中的bitmap
+        public static String USER_IN_RAFFLE_BIT_SET = "UserInRaffleBitSet";
+
+        // 抽奖领域 - 检查过期待支付活动单队列
+        public static String CHECK_EXPIRE_PENDING_PAYMENT_AO_QUEUE = "CheckExpirePendingPaymentAOQueue";
+        public static Long PENDING_PAYMENT_AO_EXPIRE_TIME = 10 * 60L;  // 待支付活动单过期时间 : 10分钟（单位是秒）
 
         // 抽奖领域 - 生成权重对象的缓存key
         public static String getWeightRandomCacheKey(Long strategyId, String dispatchParam) {
@@ -30,23 +43,10 @@ public class GlobalConstant {
         public static String getAwardCountMapCacheKey(Long strategyId) {
             return strategyId + "_AwardCountMap";
         }
-
-        // 抽奖领域 - 奖品库存队列
-        public static String getAwardCountDecrQueue() {
-            return "AwardCountDecrQueue";
-        }
-
-        // 抽奖领域 - 黑名单用户列表
-        public static String getBlacklistUserList() {
-            return "BlacklistUserList";
-        }
-
-        // 抽奖领域 - 用户是否在抽奖中的bitmap
-        public static String userInRaffleBitSet = "UserInRaffleBitSet";
     }
 
     public static class KafkaConstant {
-        public final static String groupId = "consumer_group_1";
+        public final static String GROUP_ID = "consumer_group_1";
 
         // 抽奖领域 - 扣减奖品库存
         public final static String DECR_AWARD_INVENTORY = "Raffle-DecrAwardInventory";
@@ -61,11 +61,11 @@ public class GlobalConstant {
         HIGH("200-2000", "抽奖 20 次后解锁", 1d, 1L, 9),
         ;
 
-        private String priceRange;
-        private String awardSubtitle;
-        private Double awardRate;
-        private Long awardCount;
-        private int initAwardSort;
+        private final String priceRange;
+        private final String awardSubtitle;
+        private final Double awardRate;
+        private final Long awardCount;
+        private final int initAwardSort;
 
         public static AwardLevel getNameByPriceRange(String priceRange) {
             for (AwardLevel awardLevel : AwardLevel.values()) {
@@ -78,6 +78,6 @@ public class GlobalConstant {
     }
 
     // 活动领域 - 待支付活动单的过期时间
-    public final static Long activityOrderExpireTime = 10 * 60L;  // 10分钟（单位是秒）
+    public final static Long ACTIVITY_ORDER_EXPIRE_TIME = 10 * 60L;  // 10分钟（单位是秒）
 
 }

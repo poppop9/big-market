@@ -124,7 +124,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public void addDecrAwardCountToQueue(DecrQueueVO decrQueueVO) {
-        RQueue<DecrQueueVO> rQueue = redissonClient.getQueue(GlobalConstant.RedisKey.getAwardCountDecrQueue());
+        RQueue<DecrQueueVO> rQueue = redissonClient.getQueue(GlobalConstant.RedisKey.AWARD_COUNT_DECR_QUEUE);
         rQueue.add(decrQueueVO);
     }
 
@@ -152,7 +152,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public DecrQueueVO queryDecrAwardCountFromQueue() {
-        RQueue<DecrQueueVO> rQueue = redissonClient.getQueue(GlobalConstant.RedisKey.getAwardCountDecrQueue());
+        RQueue<DecrQueueVO> rQueue = redissonClient.getQueue(GlobalConstant.RedisKey.AWARD_COUNT_DECR_QUEUE);
         return rQueue.poll();
     }
 
@@ -165,7 +165,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
             RAtomicLong rAtomicLong = redissonClient.getAtomicLong(GlobalConstant.RedisKey.getAwardCountCacheKey(strategyId, item.getAwardId()));
 
             if (rAtomicLong.isExists()) {
-                rAtomicLong.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
+                rAtomicLong.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
             }
         });
     }
@@ -201,7 +201,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     public void updateAllWeightRandomExpireTime(Long strategyId) {
         Arrays.stream(RaffleFilterContext.DispatchParam.values())
                 .map(item -> redissonClient.getBucket(GlobalConstant.RedisKey.getWeightRandomCacheKey(strategyId, item.name())))
-                .forEach(item -> item.expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime)));
+                .forEach(item -> item.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME)));
     }
 
     /**
@@ -210,7 +210,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     @Override
     public void updateAllWeightRandomExpireTime2(Long strategyId) {
         redissonClient.getMap(GlobalConstant.RedisKey.getWeightRandomMapCacheKey(strategyId))
-                .expire(Duration.ofSeconds(GlobalConstant.RedisKey.redisExpireTime));
+                .expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
     }
 
 }

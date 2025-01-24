@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * JPA - 活动单仓储
@@ -25,4 +26,13 @@ public interface ActivityOrderJpa extends JpaRepository<ActivityOrder, Long> {
     @Modifying
     @Query("update ActivityOrder a set a.activityOrderStatus = ?1 where a.activityOrderId = ?2")
     int updateActivityOrderStatusByActivityOrderId(ActivityOrder.ActivityOrderStatus activityOrderStatus, Long activityOrderId);
+
+    @Query("""
+            select a from ActivityOrder a
+            where a.activityId = ?1 and a.userId = ?2 and a.activityOrderStatus = ?3
+            order by a.createTime""")
+    List<ActivityOrder> findByActivityIdAndUserIdAndActivityOrderStatusOrderByCreateTimeAsc(Long activityId, Long userId, ActivityOrder.ActivityOrderStatus activityOrderStatus);
+
+    @Query("select a from ActivityOrder a where a.activityOrderId = ?1")
+    ActivityOrder findByActivityOrderId(Long activityOrderId);
 }

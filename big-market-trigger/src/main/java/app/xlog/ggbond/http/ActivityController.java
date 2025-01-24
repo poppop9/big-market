@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 活动领域
  */
@@ -29,6 +31,15 @@ public class ActivityController implements IActivityApiService {
     public ResponseEntity<JsonNode> rechargeAO(@RequestBody AOContext aoContext) {
         aoContext = triggerService.rechargeAO(aoContext);
         return ZakiResponse.ok("activityOrderBO", aoContext.getActivityOrderBO());
+    }
+
+    /**
+     * 活动领域 - 查询所有待支付的活动单
+     */
+    @GetMapping("/v1/findAllPendingPaymentAO")
+    public ResponseEntity<JsonNode> findAllPendingPaymentAO(@RequestParam Long activityId) {
+        List<ActivityOrderBO> activityOrderBOList = triggerService.findAllPendingPaymentAO(activityId);
+        return ZakiResponse.ok("activityOrderBOList", activityOrderBOList);
     }
 
 }

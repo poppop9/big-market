@@ -1,5 +1,7 @@
 package app.xlog.ggbond.activity.service.chain;
 
+import app.xlog.ggbond.BigMarketException;
+import app.xlog.ggbond.BigMarketRespCode;
 import app.xlog.ggbond.activity.model.po.ActivityOrderTypeBO;
 import app.xlog.ggbond.activity.model.po.ActivityOrderTypeConfigBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
@@ -12,8 +14,10 @@ import com.yomahub.liteflow.enums.LiteFlowMethodEnum;
 import com.yomahub.liteflow.enums.NodeTypeEnum;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 活动单条件判断的流水线
@@ -21,6 +25,9 @@ import java.util.List;
 @Slf4j
 @LiteflowComponent
 public class AOWhenPipeline {
+
+    @Resource
+    private ThreadPoolTaskScheduler myScheduledThreadPool;
 
     @Resource
     private IActivityRepo activityRepo;
@@ -43,7 +50,7 @@ public class AOWhenPipeline {
                 .get();
 
         // 2. 并准备好下一个工位所需的数据
-        context.setRaffleCount(nodeId.getRaffleCount());
+        if (nodeId.getRaffleCount() != -1L) context.setRaffleCount(nodeId.getRaffleCount());
         context.setActivityOrderType(ActivityOrderTypeBO.builder()
                 .activityOrderTypeId(nodeId.getActivityOrderTypeId())
                 .activityOrderTypeName(nodeId.getActivityOrderTypeName())
@@ -56,7 +63,6 @@ public class AOWhenPipeline {
 
     /**
      * 签到领取裁判 - 判断是否满足签到领取的条件
-     * todo 未测试
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
@@ -66,9 +72,8 @@ public class AOWhenPipeline {
         AOContext context = bindCmp.getContextBean(AOContext.class);
         // 判断今天是否有领取记录，如果没有，则满足条件
         boolean isSignIn = activityRepo.existSignInToClaimAOToday(context.getUserId(), context.getActivityId());
-        if (isSignIn)
-            log.atInfo().log("活动领域 - 用户 {} 在活动 {} 中，今天已签到领取过", context.getUserId(), context.getActivityId());
         context.setIsConditionMet(!isSignIn);
+        if (isSignIn) throw new BigMarketException(BigMarketRespCode.ACTIVITY_SIGN_IN_TO_CLAIM_AO_EXIST);
     }
 
     /**
@@ -95,8 +100,27 @@ public class AOWhenPipeline {
     public void redeemToObtainJudge(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
-        // todo 看兑换码是否有效
-        context.setIsConditionMet(true);
+        // 判断兑换码是否有效
+        boolean isExist = activityRepo.existRedeemCode(
+                context.getActivityId(), context.getRedeemCode()
+        );
+        context.setIsConditionMet(isExist);
+        if (isExist) {
+            Long raffleCount = activityRepo.findActivityRedeemCodeByRedeemCode(context.getRedeemCode()).getRaffleCount();
+            context.setRaffleCount(raffleCount);
+            // 异步更新兑换码的使用状态
+            CompletableFuture.runAsync(
+                    () -> {
+                        activityRepo.updateActivityRedeemCodeIsUsed(
+                                context.getUserId(),
+                                context.getRedeemCode()
+                        );
+                    },
+                    myScheduledThreadPool
+            );
+        } else {
+            throw new BigMarketException(BigMarketRespCode.ACTIVITY_REDEEM_CODE_ERROR);
+        }
     }
 
 }

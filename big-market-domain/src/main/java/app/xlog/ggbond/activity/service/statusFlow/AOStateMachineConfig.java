@@ -48,7 +48,7 @@ public class AOStateMachineConfig {
                 });
 
         /*
-          外部 - 待支付活动单转有效活动单 : 待支付状态 -> 有效状态 todo
+          外部 - 待支付活动单转有效活动单 : 待支付状态 -> 有效状态
          */
         builder.externalTransition()
                 .from(ActivityOrderBO.ActivityOrderStatus.PENDING_PAYMENT)
