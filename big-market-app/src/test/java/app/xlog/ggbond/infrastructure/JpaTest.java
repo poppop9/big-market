@@ -1,13 +1,11 @@
 package app.xlog.ggbond.infrastructure;
 
-import app.xlog.ggbond.activity.model.po.ActivityOrderTypeBO;
 import app.xlog.ggbond.persistent.po.activity.Activity;
 import app.xlog.ggbond.persistent.po.activity.ActivityOrderType;
 import app.xlog.ggbond.persistent.po.activity.ActivityOrderTypeConfig;
 import app.xlog.ggbond.persistent.po.raffle.*;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.po.security.UserPurchaseHistory;
-import app.xlog.ggbond.persistent.po.raffle.UserRaffleConfig;
 import app.xlog.ggbond.persistent.repository.jpa.*;
 import cn.hutool.core.util.IdUtil;
 import cn.zhxu.bs.BeanSearcher;
@@ -21,12 +19,14 @@ import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @SpringBootTest
 public class JpaTest {

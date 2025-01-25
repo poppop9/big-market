@@ -199,4 +199,17 @@ public class ActivityRepository implements IActivityRepo {
         );
     }
 
+    /**
+     * 更新 - 更新活动单状态、活动单类型id和总抽奖次数
+     */
+    @Override
+    public void updateActivityOrderStatusAndAOTypeIdAndTotalRaffleCount(Long activityOrderId, ActivityOrderBO.ActivityOrderStatus activityOrderStatus, Long activityOrderTypeId, Long raffleCount) {
+        activityOrderJPA.updateActivityOrderStatusAndActivityOrderTypeIdAndTotalRaffleCountByActivityOrderId(
+                ActivityOrder.ActivityOrderStatus.valueOf(activityOrderStatus.name()),
+                activityOrderTypeId,
+                raffleCount,
+                activityOrderId
+        );
+    }
+
 }

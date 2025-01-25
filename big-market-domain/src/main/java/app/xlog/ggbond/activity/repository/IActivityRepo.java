@@ -51,4 +51,6 @@ public interface IActivityRepo {
     // 更新 - 更新活动单状态和活动单类型id
     void updateActivityOrderStatusAndAOTypeId(Long activityOrderId, ActivityOrderBO.ActivityOrderStatus activityOrderStatus, Long activityOrderTypeId);
 
+    // 更新 - 更新活动单状态、活动单类型id和总抽奖次数
+    void updateActivityOrderStatusAndAOTypeIdAndTotalRaffleCount(Long activityOrderId, ActivityOrderBO.ActivityOrderStatus activityOrderStatus, Long activityOrderTypeId, Long raffleCount);
 }

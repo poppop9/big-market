@@ -50,7 +50,10 @@ public class PendingPaymentToEffectivePipeline {
                 .get();
 
         // 2. 并准备好下一个工位所需的数据
-        if (nodeId.getRaffleCount() != -1L) context.setRaffleCount(nodeId.getRaffleCount());
+        if (nodeId.getRaffleCount() != -1L) {
+            context.setRaffleCount(nodeId.getRaffleCount());
+            context.getActivityOrderBO().setTotalRaffleCount(nodeId.getRaffleCount());
+        }
         context.setActivityOrderType(ActivityOrderTypeBO.builder()
                 .activityOrderTypeId(nodeId.getActivityOrderTypeId())
                 .activityOrderTypeName(nodeId.getActivityOrderTypeName())
@@ -110,6 +113,7 @@ public class PendingPaymentToEffectivePipeline {
         if (isExist) {
             Long raffleCount = activityRepo.findActivityRedeemCodeByRedeemCode(context.getRedeemCode()).getRaffleCount();
             context.setRaffleCount(raffleCount);
+            context.getActivityOrderBO().setTotalRaffleCount(raffleCount);
             // 异步更新兑换码的使用状态
             CompletableFuture.runAsync(() -> {
                 activityRepo.updateActivityRedeemCodeIsUsed(
@@ -132,10 +136,11 @@ public class PendingPaymentToEffectivePipeline {
     public void pendingPaymentToEffectiveWorkstation(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
-        activityRepo.updateActivityOrderStatusAndAOTypeId(
+        activityRepo.updateActivityOrderStatusAndAOTypeIdAndTotalRaffleCount(
                 context.getActivityOrderBO().getActivityOrderId(),
                 ActivityOrderBO.ActivityOrderStatus.EFFECTIVE,
-                context.getActivityOrderType().getActivityOrderTypeId()
+                context.getActivityOrderType().getActivityOrderTypeId(),
+                context.getRaffleCount()
         );
     }
 
@@ -153,4 +158,5 @@ public class PendingPaymentToEffectivePipeline {
                 context.getUserId(), context.getActivityId(), context.getRaffleCount()
         );
     }
+
 }

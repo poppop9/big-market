@@ -42,4 +42,13 @@ public class ActivityController implements IActivityApiService {
         return ZakiResponse.ok("activityOrderBOList", activityOrderBOList);
     }
 
+    /**
+     * 活动领域 - 支付待支付的活动单
+     */
+    @PatchMapping("/v1/payPendingPaymentAO")
+    public ResponseEntity<JsonNode> payPendingPaymentAO(@RequestBody AOContext aoContext) {
+        aoContext = triggerService.payPendingPaymentAO(aoContext);
+        return ZakiResponse.ok("activityOrderBO", aoContext.getActivityOrderBO());
+    }
+
 }

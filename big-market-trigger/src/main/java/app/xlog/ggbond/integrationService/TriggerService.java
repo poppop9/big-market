@@ -164,4 +164,11 @@ public class TriggerService {
         return activityService.findAllPendingPaymentAO(activityId, userId);
     }
 
+    /**
+     * 活动领域 - 支付待支付的活动单
+     */
+    public AOContext payPendingPaymentAO(AOContext aoContext) {
+        return aoEventCenter.publishPendingPaymentToEffectiveEvent(aoContext);
+    }
+
 }
