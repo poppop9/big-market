@@ -35,4 +35,11 @@ public interface ActivityOrderJpa extends JpaRepository<ActivityOrder, Long> {
 
     @Query("select a from ActivityOrder a where a.activityOrderId = ?1")
     ActivityOrder findByActivityOrderId(Long activityOrderId);
+
+    @Transactional
+    @Modifying
+    @Query("""
+            update ActivityOrder a set a.activityOrderStatus = ?1, a.activityOrderTypeId = ?2
+            where a.activityOrderId = ?3""")
+    int updateActivityOrderStatusAndActivityOrderTypeIdByActivityOrderId(ActivityOrder.ActivityOrderStatus activityOrderStatus, Long activityOrderTypeId, Long activityOrderId);
 }

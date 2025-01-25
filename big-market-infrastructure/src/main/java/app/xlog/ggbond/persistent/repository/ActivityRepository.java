@@ -187,4 +187,16 @@ public class ActivityRepository implements IActivityRepo {
         activityRedeemCodeJpa.updateUserIdAndIsUsedByRedeemCode(userId, true, redeemCode);
     }
 
+    /**
+     * 更新 - 更新活动单状态和活动单类型id
+     */
+    @Override
+    public void updateActivityOrderStatusAndAOTypeId(Long activityOrderId, ActivityOrderBO.ActivityOrderStatus activityOrderStatus, Long activityOrderTypeId) {
+        activityOrderJPA.updateActivityOrderStatusAndActivityOrderTypeIdByActivityOrderId(
+                ActivityOrder.ActivityOrderStatus.valueOf(activityOrderStatus.name()),
+                activityOrderTypeId,
+                activityOrderId
+        );
+    }
+
 }

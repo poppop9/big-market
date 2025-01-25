@@ -47,4 +47,8 @@ public interface IActivityRepo {
 
     // 更新 - 更新兑换码使用状态
     void updateActivityRedeemCodeIsUsed(Long userId, String redeemCode);
+
+    // 更新 - 更新活动单状态和活动单类型id
+    void updateActivityOrderStatusAndAOTypeId(Long activityOrderId, ActivityOrderBO.ActivityOrderStatus activityOrderStatus, Long activityOrderTypeId);
+
 }

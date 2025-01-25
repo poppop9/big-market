@@ -16,17 +16,17 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
 
 /**
- * 活动单最终生成的流水线
+ * 初始状态 -> 待支付状态流水线
  */
 @Slf4j
 @LiteflowComponent
-public class AOPerformPipeline {
+public class InitialToPendingPaymentPipeline {
 
     @Resource
     private IActivityRepo activityRepo;
 
     /**
-     * 初始状态 -> 待支付状态 : 初始状态转为待支付状态工位
+     * perform - 初始状态转为待支付状态工位
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
@@ -48,7 +48,7 @@ public class AOPerformPipeline {
     }
 
     /**
-     * 初始状态 -> 待支付状态 : 检查过期的待支付活动单工位
+     * perform - 检查过期的待支付活动单工位
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
@@ -62,37 +62,6 @@ public class AOPerformPipeline {
                 .activityOrderId(context.getActivityOrderBO().getActivityOrderId())
                 .activityOrderExpireTime(context.getActivityOrderBO().getActivityOrderExpireTime())
                 .build()
-        );
-    }
-
-    /**
-     * 待支付状态 -> 有效状态 : 待支付状态转为有效状态工位
-     */
-    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
-            value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "PendingPaymentToEffectiveWorkstation",
-            nodeName = "待支付状态转为有效状态工位")
-    public void pendingPaymentToEffectiveWorkstation(NodeComponent bindCmp) {
-        AOContext context = bindCmp.getContextBean(AOContext.class);
-
-        activityRepo.updateActivityOrderStatus(
-                context.getActivityOrderBO().getActivityOrderId(),
-                ActivityOrderBO.ActivityOrderStatus.EFFECTIVE
-        );
-    }
-
-    /**
-     * 待支付状态 -> 有效状态 : 增加可用抽奖次数工位
-     */
-    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
-            value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "IncreaseAvailableRaffleTimeWorkstation",
-            nodeName = "增加可用抽奖次数工位")
-    public void increaseAvailableRaffleTimeWorkstation(NodeComponent bindCmp) {
-        AOContext context = bindCmp.getContextBean(AOContext.class);
-
-        activityRepo.increaseAvailableRaffleTime(
-                context.getUserId(), context.getActivityId(), context.getRaffleCount()
         );
     }
 

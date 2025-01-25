@@ -2,11 +2,11 @@ package app.xlog.ggbond.activity.service.chain;
 
 import app.xlog.ggbond.BigMarketException;
 import app.xlog.ggbond.BigMarketRespCode;
+import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.po.ActivityOrderTypeBO;
 import app.xlog.ggbond.activity.model.po.ActivityOrderTypeConfigBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
-import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
 import com.yomahub.liteflow.annotation.LiteflowComponent;
 import com.yomahub.liteflow.annotation.LiteflowMethod;
 import com.yomahub.liteflow.core.NodeComponent;
@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * 活动单条件判断的流水线
+ * 待支付状态 -> 有效状态流水线
  */
 @Slf4j
 @LiteflowComponent
-public class AOWhenPipeline {
+public class PendingPaymentToEffectivePipeline {
 
     @Resource
     private ThreadPoolTaskScheduler myScheduledThreadPool;
@@ -33,7 +33,7 @@ public class AOWhenPipeline {
     private IActivityRepo activityRepo;
 
     /**
-     * 活动单类型路由器 - 跟据活动单类型路由到相应的判断条件去
+     * when - 活动单类型路由器 - 跟据活动单类型路由到相应的判断条件去
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.SWITCH,
             value = LiteFlowMethodEnum.PROCESS_SWITCH,
@@ -58,11 +58,13 @@ public class AOWhenPipeline {
         );
 
         // 3. 判断传入的规则是否在所有规则中，如果没有则报错，如果有则返回对应工位的nodeId
+        context.getActivityOrderType().setActivityOrderTypeId(nodeId.getActivityOrderTypeId());
+        context.getActivityOrderBO().setActivityOrderTypeId(nodeId.getActivityOrderTypeId());
         return nodeId.getActivityOrderTypeName().toString();
     }
 
     /**
-     * 签到领取裁判 - 判断是否满足签到领取的条件
+     * when - 签到领取裁判 - 判断是否满足签到领取的条件
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
@@ -77,7 +79,7 @@ public class AOWhenPipeline {
     }
 
     /**
-     * 付费购买裁判 - 判断是否满足付费购买的条件
+     * when - 付费购买裁判 - 判断是否满足付费购买的条件
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
@@ -91,7 +93,7 @@ public class AOWhenPipeline {
     }
 
     /**
-     * 兑换获取裁判 - 判断是否满足兑换获取的条件
+     * when - 兑换获取裁判 - 判断是否满足兑换获取的条件
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
@@ -109,18 +111,46 @@ public class AOWhenPipeline {
             Long raffleCount = activityRepo.findActivityRedeemCodeByRedeemCode(context.getRedeemCode()).getRaffleCount();
             context.setRaffleCount(raffleCount);
             // 异步更新兑换码的使用状态
-            CompletableFuture.runAsync(
-                    () -> {
-                        activityRepo.updateActivityRedeemCodeIsUsed(
-                                context.getUserId(),
-                                context.getRedeemCode()
-                        );
-                    },
-                    myScheduledThreadPool
-            );
+            CompletableFuture.runAsync(() -> {
+                activityRepo.updateActivityRedeemCodeIsUsed(
+                        context.getUserId(),
+                        context.getRedeemCode()
+                );
+            }, myScheduledThreadPool);
         } else {
             throw new BigMarketException(BigMarketRespCode.ACTIVITY_REDEEM_CODE_ERROR);
         }
     }
 
+    /**
+     * perform - 待支付状态转为有效状态工位
+     */
+    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
+            value = LiteFlowMethodEnum.PROCESS,
+            nodeId = "PendingPaymentToEffectiveWorkstation",
+            nodeName = "待支付状态转为有效状态工位")
+    public void pendingPaymentToEffectiveWorkstation(NodeComponent bindCmp) {
+        AOContext context = bindCmp.getContextBean(AOContext.class);
+
+        activityRepo.updateActivityOrderStatusAndAOTypeId(
+                context.getActivityOrderBO().getActivityOrderId(),
+                ActivityOrderBO.ActivityOrderStatus.EFFECTIVE,
+                context.getActivityOrderType().getActivityOrderTypeId()
+        );
+    }
+
+    /**
+     * perform - 增加可用抽奖次数工位
+     */
+    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
+            value = LiteFlowMethodEnum.PROCESS,
+            nodeId = "IncreaseAvailableRaffleTimeWorkstation",
+            nodeName = "增加可用抽奖次数工位")
+    public void increaseAvailableRaffleTimeWorkstation(NodeComponent bindCmp) {
+        AOContext context = bindCmp.getContextBean(AOContext.class);
+
+        activityRepo.increaseAvailableRaffleTime(
+                context.getUserId(), context.getActivityId(), context.getRaffleCount()
+        );
+    }
 }
