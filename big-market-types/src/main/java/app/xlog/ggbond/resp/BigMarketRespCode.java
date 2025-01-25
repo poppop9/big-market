@@ -22,6 +22,7 @@ public enum BigMarketRespCode {
     // 抽奖领域
     DECREASE_AWARD_COUNT_FAILED(400, "扣减奖品库存失败，可能由于并发太高，或者奖品库存没有装配"),
     USER_IS_IN_RAFFLE(401, "该用户已经在抽奖中"),
+    RAFFLE_CONFIG_ARMORY_ERROR(402, "抽奖相关配置装配失败"),
     // 安全领域
     WRONG_USERNAME_OR_PASSWORD(700, "用户名或密码错误"),
     // 推荐领域

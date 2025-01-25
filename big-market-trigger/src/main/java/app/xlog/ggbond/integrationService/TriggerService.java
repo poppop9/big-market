@@ -1,6 +1,7 @@
 package app.xlog.ggbond.integrationService;
 
 import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
@@ -18,10 +19,13 @@ import app.xlog.ggbond.security.service.ISecurityService;
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 组合应用服务
@@ -29,6 +33,9 @@ import java.util.List;
 @Slf4j
 @Service
 public class TriggerService {
+
+    @Resource
+    private ThreadPoolTaskScheduler myScheduledThreadPool;
 
     @Resource
     private IActivityService activityService;
@@ -71,12 +78,15 @@ public class TriggerService {
                 .userId(userId)
                 .build()
         );
-        Long awardId = raffleDispatch.getAwardId(
-                strategyId,
-                app.xlog.ggbond.raffle.model.bo.UserBO.builder()
+        Long awardId = raffleDispatch.getAwardId(RaffleFilterContext.builder()
+                .strategyId(strategyId)
+                .userBO(app.xlog.ggbond.raffle.model.bo.UserBO.builder()
                         .userId(userId)
                         .isBlacklistUser(securityService.isBlacklistUser(userId))
                         .build()
+                )
+                .saSession(StpUtil.getSession())
+                .build()
         );
 
         log.atInfo().log("抽奖领域 - " +
@@ -98,6 +108,7 @@ public class TriggerService {
     /**
      * 安全领域 - 登录
      */
+    @SneakyThrows
     public void doLogin(Long userId, String password) {
         boolean isSuccess = securityService.doLogin(userId, password);
         // 1. 判断是否登录成功
@@ -109,41 +120,46 @@ public class TriggerService {
         long activityId = Long.parseLong(SaHolder.getRequest().getParam("activityId"));
         StpUtil.getSession().set("activityId", activityId);
 
-        // 3. 检查该用户是否有策略，如果没有则ai生成推荐商品
-        if (!securityService.existsByUserIdAndActivityId(activityId, userId)) {
-            List<AwardBO> noAwardIdAwardBOS;
-            // 3.1 判断用户是否有购买历史
-            if (securityService.existsUserPurchaseHistory(userId)) {
-                // 3.1.1 查询用户购买历史，生成推荐奖品
-                List<UserPurchaseHistoryBO> userPurchaseHistoryBOList = securityService.findUserPurchaseHistory(securityService.getLoginIdDefaultNull());
-                noAwardIdAwardBOS = recommendService.recommendAwardByUserPurchaseHistory(
-                        "你是一个推荐系统，根据用户的购买历史推荐最能吸引该用户的商品。",
-                        userPurchaseHistoryBOList
-                );
-            } else {
-                // 3.1.2 无购买历史，从海量用户的购买历史中生成热销产品
-                List<UserPurchaseHistoryBO> recentPurchaseHistoryList = securityService.findRecentPurchaseHistory();
-                noAwardIdAwardBOS = recommendService.recommendHotSaleProductByRecentPurchaseHistory(
-                        "你是一个推荐系统，根据海量用户的购买历史，推算出近期用户喜好，给某个用户推荐商品。",
-                        recentPurchaseHistoryList
-                );
+        // 3. 将该用户的角色信息放入session
+        securityService.insertPermissionIntoSession();
+
+        CompletableFuture<Boolean> doLoginCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            // 4. 检查该用户是否有策略，如果没有则ai生成推荐商品
+            if (!securityService.existsByUserIdAndActivityId(activityId, userId)) {
+                List<AwardBO> noAwardIdAwardBOS;
+                // 4.1 判断用户是否有购买历史
+                if (securityService.existsUserPurchaseHistory(userId)) {
+                    // 4.1.1 查询用户购买历史，生成推荐奖品
+                    List<UserPurchaseHistoryBO> userPurchaseHistoryBOList = securityService.findUserPurchaseHistory(userId);
+                    noAwardIdAwardBOS = recommendService.recommendAwardByUserPurchaseHistory(
+                            "你是一个推荐系统，根据用户的购买历史推荐最能吸引该用户的商品。",
+                            userPurchaseHistoryBOList
+                    );
+                } else {
+                    // 4.1.2 无购买历史，从海量用户的购买历史中生成热销产品
+                    List<UserPurchaseHistoryBO> recentPurchaseHistoryList = securityService.findRecentPurchaseHistory();
+                    noAwardIdAwardBOS = recommendService.recommendHotSaleProductByRecentPurchaseHistory(
+                            "你是一个推荐系统，根据海量用户的购买历史，推算出近期用户喜好，给某个用户推荐商品。",
+                            recentPurchaseHistoryList
+                    );
+                }
+
+                // 4.2 插入数据库
+                StrategyBO strategyBO = raffleArmory.insertAwardList(userId, activityId, noAwardIdAwardBOS);
+                raffleArmory.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
             }
 
-            // 3.2 插入数据库
-            StrategyBO strategyBO = raffleArmory.insertAwardList(userId, activityId, noAwardIdAwardBOS);
-            raffleArmory.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
-        }
+            // 5. 如果该用户没有活动账户，则初始化一个活动账户
+            activityService.initActivityAccount(userId, activityId);
 
-        // 4. 如果该用户没有活动账户，则初始化一个活动账
-        activityService.initActivityAccount(userId, activityId);
+            // 6. 装配
+            Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
+            raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
+            raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map
 
-        // 5. 装配
-        Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
-        raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
-        raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map
-
-        // 6. 将该用户的角色信息放入session
-        securityService.insertPermissionIntoSession();
+            return true;
+        }, myScheduledThreadPool);
+        StpUtil.getSession().set("doLoginCompletableFuture", doLoginCompletableFuture);
     }
 
     /**

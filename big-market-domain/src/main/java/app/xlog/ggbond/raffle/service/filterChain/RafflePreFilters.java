@@ -6,16 +6,19 @@ import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.bo.UserBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
+import cn.dev33.satoken.session.SaSession;
 import com.yomahub.liteflow.annotation.LiteflowComponent;
 import com.yomahub.liteflow.annotation.LiteflowMethod;
 import com.yomahub.liteflow.core.NodeComponent;
 import com.yomahub.liteflow.enums.LiteFlowMethodEnum;
 import com.yomahub.liteflow.enums.NodeTypeEnum;
 import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -27,6 +30,28 @@ public class RafflePreFilters {
 
     @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
+
+    /**
+     * 抽奖资格验证过滤器 - 判断登录后为抽奖做准备的各种异步操作是否完成
+     * todo 未测试
+     */
+    @SneakyThrows
+    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
+            value = LiteFlowMethodEnum.PROCESS,
+            nodeId = "RaffleQualificationFilter",
+            nodeName = "抽奖资格验证过滤器")
+    public void raffleQualificationFilter(NodeComponent bindCmp) {
+        RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
+        UserBO userBO = context.getUserBO();
+
+        SaSession saSession = context.getSaSession();
+        CompletableFuture<Boolean> doLoginCompletableFuture = (CompletableFuture<Boolean>) saSession.get("doLoginCompletableFuture");
+        if (doLoginCompletableFuture.get()) {
+            log.atDebug().log("抽奖领域 - " + userBO.getUserId() + " 抽奖资格验证过滤器放行");
+        } else {
+            throw new BigMarketException(BigMarketRespCode.RAFFLE_CONFIG_ARMORY_ERROR);
+        }
+    }
 
     /**
      * 并发安全加锁过滤器

@@ -147,13 +147,10 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      * 调度 - 根据策略id，抽取奖品
      */
     @Override
-    public Long getAwardId(Long strategyId, UserBO userBO) {
+    public Long getAwardId(RaffleFilterContext context) {
         // 执行过滤器链
-        return raffleFilterChain.executeFilterChain(RaffleFilterContext.builder()
-                .userBO(userBO)
-                .strategyId(strategyId)
-                .middleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS)
-                .build()
+        return raffleFilterChain.executeFilterChain(
+                context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS)
         );
     }
 

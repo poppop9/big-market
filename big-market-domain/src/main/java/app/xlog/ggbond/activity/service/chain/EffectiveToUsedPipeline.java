@@ -69,7 +69,6 @@ public class EffectiveToUsedPipeline {
 
     /**
      * perform - 更新活动单的抽奖次数和状态工位 - 更新活动单已使用的抽奖次数
-     * todo 未测试
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
