@@ -1,4 +1,4 @@
-package app.xlog.ggbond;
+package app.xlog.ggbond.resp;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +17,8 @@ public enum BigMarketRespCode {
     ACTIVITY_ORDER_INSUFFICIENT_INVENTORY(300, "活动单库存不足"),
     ACTIVITY_SIGN_IN_TO_CLAIM_AO_EXIST(301, "今天已签到领取过"),
     ACTIVITY_REDEEM_CODE_ERROR(302, "活动兑换码错误或已被使用"),
+    NOT_EFFECTIVE_ACTIVITY_ORDER(303, "没有有效的活动单"),
+    ACTIVITY_ORDER_IS_USED(304, "该活动单的可用抽奖次数已满，重新调度"),
     // 抽奖领域
     DECREASE_AWARD_COUNT_FAILED(400, "扣减奖品库存失败，可能由于并发太高，或者奖品库存没有装配"),
     USER_IS_IN_RAFFLE(401, "该用户已经在抽奖中"),

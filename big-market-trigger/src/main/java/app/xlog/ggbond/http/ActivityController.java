@@ -1,7 +1,7 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IActivityApiService;
-import app.xlog.ggbond.ZakiResponse;
+import app.xlog.ggbond.resp.ZakiResponse;
 import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.integrationService.TriggerService;

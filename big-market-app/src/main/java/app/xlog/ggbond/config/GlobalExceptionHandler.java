@@ -1,8 +1,8 @@
 package app.xlog.ggbond.config;
 
-import app.xlog.ggbond.BigMarketException;
-import app.xlog.ggbond.BigMarketRespCode;
-import app.xlog.ggbond.ZakiResponse;
+import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.resp.BigMarketRespCode;
+import app.xlog.ggbond.resp.ZakiResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;

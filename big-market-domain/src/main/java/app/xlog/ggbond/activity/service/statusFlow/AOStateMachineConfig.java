@@ -57,8 +57,8 @@ public class AOStateMachineConfig {
                 .when(context -> {
                     // 执行待支付状态 -> 有效状态条件判断链
                     LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("WHEN_PENDING_PAYMENT_TO_EFFECTIVE", null, context);
-
                     if (!liteflowResponse.isSuccess()) throw (RuntimeException) liteflowResponse.getCause();
+
                     context = liteflowResponse.getContextBean(AOContext.class);
                     Boolean isConditionMet = context.getIsConditionMet();
 
@@ -69,6 +69,31 @@ public class AOStateMachineConfig {
                 .perform((S1, S2, E, C) -> {
                     // 执行待支付状态 -> 有效状态活动单生成链
                     LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("PENDING_PAYMENT_TO_EFFECTIVE", null, C);
+                    if (!liteflowResponse.isSuccess()) throw (RuntimeException) liteflowResponse.getCause();
+                });
+
+        /*
+          外部 - 有效活动单转已使用活动单 : 有效状态 -> 已使用状态
+         */
+        builder.externalTransition()
+                .from(ActivityOrderBO.ActivityOrderStatus.EFFECTIVE)
+                .to(ActivityOrderBO.ActivityOrderStatus.USED)
+                .on(ActivityOrderBO.ActivityOrderEvent.EFFECTIVE_TO_USED)
+                .when(context -> {
+                    // 执行有效状态 -> 已使用状态条件判断链
+                    LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("WHEN_EFFECTIVE_TO_USED", null, context);
+                    if (!liteflowResponse.isSuccess()) throw (RuntimeException) liteflowResponse.getCause();
+
+                    context = liteflowResponse.getContextBean(AOContext.class);
+                    Boolean isConditionMet = context.getIsConditionMet();
+
+                    if (!isConditionMet)
+                        log.atInfo().log("活动领域 - 用户 {} WHEN_EFFECTIVE_TO_USED 规则链不满足条件", context.getUserId());
+                    return isConditionMet;
+                })
+                .perform((S1, S2, E, C) -> {
+                    // 执行有效状态 -> 已使用状态活动单生成链
+                    LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("EFFECTIVE_TO_USED", null, C);
                     if (!liteflowResponse.isSuccess()) throw (RuntimeException) liteflowResponse.getCause();
                 });
 

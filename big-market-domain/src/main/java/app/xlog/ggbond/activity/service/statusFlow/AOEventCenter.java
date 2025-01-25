@@ -43,6 +43,19 @@ public class AOEventCenter {
     }
 
     /**
+     * 发布事件 - 有效活动单转已使用活动单
+     */
+    public AOContext publishEffectiveToUsedEvent(AOContext aoContext) {
+        StateMachineFactory.<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext>get(AOStateMachineConfig.ACTIVITY_ORDER_MACHINE_ID)
+                .fireEvent(
+                        ActivityOrderBO.ActivityOrderStatus.EFFECTIVE,
+                        ActivityOrderBO.ActivityOrderEvent.EFFECTIVE_TO_USED,
+                        aoContext
+                );
+        return aoContext;
+    }
+
+    /**
      * 测试 - 测试方法
      */
     public void test() {

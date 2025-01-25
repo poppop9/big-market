@@ -18,30 +18,7 @@
                 UserRaffleTimeFilter,
                 UserRaffleFlowRecordFilter,
                 ConcurrencySafetyUnLockFilter
-            ).retry(3, "app.xlog.ggbond.raffle.model.vo.RetryRouterException")
-        );
-    </chain>
-
-    <!-- 活动领域 - 创建活动单 -->
-    <chain name="INITIAL_TO_PENDING_PAYMENT">
-        THEN(
-            InitialToPendingPaymentWorkstation,
-            CheckExpirePendingPaymentAOWorkstation
-        );
-    </chain>
-    <chain name="PENDING_PAYMENT_TO_EFFECTIVE">
-        THEN(
-            PendingPaymentToEffectiveWorkstation,
-            IncreaseAvailableRaffleTimeWorkstation
-        );
-    </chain>
-    <chain name="WHEN_PENDING_PAYMENT_TO_EFFECTIVE">
-        THEN(
-            SWITCH(ActivityOrderTypeRouter).TO(
-                SIGN_IN_TO_CLAIM,
-                PAID_PURCHASE,
-                REDEEM_TO_OBTAIN
-            )
+            ).retry(30, "app.xlog.ggbond.exception.RetryRouterException")
         );
     </chain>
 </flow>

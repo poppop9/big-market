@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * JPA - 活动单仓储
@@ -48,5 +49,17 @@ public interface ActivityOrderJpa extends JpaRepository<ActivityOrder, Long> {
     @Query("""
             update ActivityOrder a set a.activityOrderStatus = ?1, a.activityOrderTypeId = ?2, a.totalRaffleCount = ?3
             where a.activityOrderId = ?4""")
-    int updateActivityOrderStatusAndActivityOrderTypeIdAndTotalRaffleCountByActivityOrderId(ActivityOrder.ActivityOrderStatus activityOrderStatus, Long activityOrderTypeId, Long totalRaffleCount, Long activityOrderId);
+    void updateActivityOrderStatusAndActivityOrderTypeIdAndTotalRaffleCountByActivityOrderId(ActivityOrder.ActivityOrderStatus activityOrderStatus, Long activityOrderTypeId, Long totalRaffleCount, Long activityOrderId);
+
+    @Query("select a from ActivityOrder a where a.activityId = ?1 and a.userId = ?2 and a.activityOrderStatus = ?3")
+    List<ActivityOrder> findByActivityIdAndUserIdAndActivityOrderStatus(Long activityId, Long userId, ActivityOrder.ActivityOrderStatus activityOrderStatus);
+
+    Optional<ActivityOrder> findFirstByActivityIdAndUserIdAndActivityOrderStatusOrderByCreateTimeAsc(Long activityId, Long userId, ActivityOrder.ActivityOrderStatus activityOrderStatus);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE ActivityOrder a " +
+            "SET a.usedRaffleCount = a.usedRaffleCount + 1 " +
+            "WHERE a.activityOrderId = :activityOrderId")
+    void updateUsedRaffleCountByActivityOrderId(Long activityOrderId);
 }

@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -210,6 +211,56 @@ public class ActivityRepository implements IActivityRepo {
                 raffleCount,
                 activityOrderId
         );
+    }
+
+    /**
+     * 更新 - 更新过期的活动单状态
+     */
+    @Override
+    public void updateExpiredAOStatus(Long activityId, Long userId) {
+        List<ActivityOrder> activityOrderList = activityOrderJPA.findByActivityIdAndUserIdAndActivityOrderStatus(
+                activityId, userId, ActivityOrder.ActivityOrderStatus.EFFECTIVE
+        );
+        activityOrderList.stream()
+                .filter(item -> item
+                        .getActivityOrderExpireTime()
+                        .isBefore(LocalDateTime.now())
+                )
+                .forEach(item ->
+                        activityOrderJPA.updateActivityOrderStatusByActivityOrderId(
+                                ActivityOrder.ActivityOrderStatus.EXPIRED,
+                                item.getActivityOrderId()
+                        )
+                );
+    }
+
+    /**
+     * 查询 - 查询有效的活动单
+     */
+    @Override
+    public Optional<ActivityOrderBO> findEffectiveActivityOrder(Long activityId, Long userId) {
+        Optional<ActivityOrder> activityOrder = activityOrderJPA.findFirstByActivityIdAndUserIdAndActivityOrderStatusOrderByCreateTimeAsc(
+                activityId, userId, ActivityOrder.ActivityOrderStatus.EFFECTIVE
+        );
+        return activityOrder.map(item -> BeanUtil.copyProperties(item, ActivityOrderBO.class));
+    }
+
+    /**
+     * 查询 - 根据活动单id查询活动单
+     */
+    @Override
+    public ActivityOrderBO findActivityOrderByActivityOrderId(Long activityOrderId) {
+        ActivityOrder activityOrder = activityOrderJPA.findByActivityOrderId(activityOrderId);
+        return BeanUtil.copyProperties(activityOrder, ActivityOrderBO.class);
+    }
+
+    /**
+     * 更新 - 增加活动单已使用的抽奖次数
+     */
+    @Override
+    public Long increaseAOUsedRaffleCount(Long activityOrderId) {
+        activityOrderJPA.updateUsedRaffleCountByActivityOrderId(activityOrderId);
+        return activityOrderJPA.findByActivityOrderId(activityOrderId).getUsedRaffleCount();
     }
 
 }

@@ -6,6 +6,7 @@ import app.xlog.ggbond.activity.model.po.ActivityRedeemCodeBO;
 import app.xlog.ggbond.activity.model.vo.QueueItemVO;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 活动领域 - 活动仓储
@@ -53,4 +54,16 @@ public interface IActivityRepo {
 
     // 更新 - 更新活动单状态、活动单类型id和总抽奖次数
     void updateActivityOrderStatusAndAOTypeIdAndTotalRaffleCount(Long activityOrderId, ActivityOrderBO.ActivityOrderStatus activityOrderStatus, Long activityOrderTypeId, Long raffleCount);
+
+    // 更新 - 更新过期的活动单状态
+    void updateExpiredAOStatus(Long activityId, Long userId);
+
+    // 查询 - 查询有效的活动单
+    Optional<ActivityOrderBO> findEffectiveActivityOrder(Long activityId, Long userId);
+
+    // 查询 - 根据活动单id查询活动单
+    ActivityOrderBO findActivityOrderByActivityOrderId(Long activityOrderId);
+
+    // 更新 - 增加活动单已使用的抽奖次数
+    Long increaseAOUsedRaffleCount(Long activityOrderId);
 }

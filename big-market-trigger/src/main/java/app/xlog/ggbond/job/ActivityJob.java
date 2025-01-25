@@ -29,12 +29,12 @@ public class ActivityJob {
     public void checkExpirePendingPaymentAOQueue() {
         RQueue<QueueItemVO> rQueue = redissonClient.getQueue(GlobalConstant.RedisKey.CHECK_EXPIRE_PENDING_PAYMENT_AO_QUEUE);
         // 如果该元素目前的状态还是待支付状态，则将其修改为已关闭
-        rQueue.forEach(item -> {
+        QueueItemVO item;
+        while ((item = rQueue.poll()) != null) {
+            // 处理 item
             Long activityOrderId = item.getActivityOrderId();
             activityService.checkExpirePendingPaymentAO(activityOrderId);
-
-            rQueue.remove(item);
-        });
+        }
     }
 
 }

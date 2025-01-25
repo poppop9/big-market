@@ -1,7 +1,7 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.ISecurityApiService;
-import app.xlog.ggbond.ZakiResponse;
+import app.xlog.ggbond.resp.ZakiResponse;
 import app.xlog.ggbond.integrationService.TriggerService;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Resource;

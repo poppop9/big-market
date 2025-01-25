@@ -1,7 +1,7 @@
 package app.xlog.ggbond.activity.service.chain;
 
-import app.xlog.ggbond.BigMarketException;
-import app.xlog.ggbond.BigMarketRespCode;
+import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.po.ActivityOrderTypeBO;
 import app.xlog.ggbond.activity.model.po.ActivityOrderTypeConfigBO;

@@ -1,7 +1,7 @@
 package app.xlog.ggbond.http;
 
-import app.xlog.ggbond.BigMarketException;
-import app.xlog.ggbond.BigMarketRespCode;
+import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.TestService;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;

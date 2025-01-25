@@ -1,10 +1,8 @@
-package app.xlog.ggbond;
+package app.xlog.ggbond.resp;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;

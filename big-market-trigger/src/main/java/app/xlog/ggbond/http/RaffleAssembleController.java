@@ -1,7 +1,7 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IRaffleAssembleApiService;
-import app.xlog.ggbond.ZakiResponse;
+import app.xlog.ggbond.resp.ZakiResponse;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.integrationService.TriggerService;
 import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;

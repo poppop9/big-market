@@ -67,7 +67,7 @@ sa-token:
   is-log: true  # 是否输出操作日志
 
 liteflow:
-  rule-source: application-liteflow-raffleFilter.xml
+  rule-source: application-liteflow-raffle.xml, application-liteflow-activity.xml
 
 xxl:
   job:

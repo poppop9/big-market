@@ -1,9 +1,8 @@
 package app.xlog.ggbond.integrationService;
 
-import app.xlog.ggbond.BigMarketException;
-import app.xlog.ggbond.BigMarketRespCode;
+import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
-import app.xlog.ggbond.activity.model.po.ActivityOrderTypeBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.service.IActivityService;
 import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
@@ -60,12 +59,18 @@ public class TriggerService {
      * 抽奖领域 - 根据活动id和当前用户，抽取一个奖品id
      */
     public Long dispatchAwardIdByActivityIdAndCurrentUser(Long activityId) {
-        // 自动获取当前用户
+        // 获取当前用户
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
         Long userId = user.getUserId();
         // 跟据活动id，用户id，查询用户的策略id
         Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
 
+        // 这里不用判断是否成功，如果失败会报错
+        aoEventCenter.publishEffectiveToUsedEvent(AOContext.builder()
+                .activityId(activityId)
+                .userId(userId)
+                .build()
+        );
         Long awardId = raffleDispatch.getAwardId(
                 strategyId,
                 app.xlog.ggbond.raffle.model.bo.UserBO.builder()

@@ -20,7 +20,7 @@ public class ActivityOrderBO {
     private @Builder.Default Long activityOrderId = IdUtil.getSnowflakeNextId();  // 活动单id
     private Long activityOrderTypeId;  // 活动单类型id
     private ActivityOrderTypeBO.ActivityOrderTypeName activityOrderTypeName;  // 活动单类型名称
-    private Long usedRaffleCount; // 该活动单已使用的抽奖次数
+    private @Builder.Default Long usedRaffleCount = 0L; // 该活动单已使用的抽奖次数
     private Long totalRaffleCount;  // 该活动单购买拥有的总抽奖次数
     private @Builder.Default LocalDateTime activityOrderEffectiveTime = LocalDateTime.of(2000, 12, 31, 0, 0, 0);  // 订单生效时间（立马生效为LocalDateTime.MIN）
     private @Builder.Default LocalDateTime activityOrderExpireTime = LocalDateTime.of(9999, 12, 31, 0, 0, 0);  // 订单过期时间（永久有效为LocalDateTime.MAX）
@@ -32,7 +32,7 @@ public class ActivityOrderBO {
     @Getter
     @AllArgsConstructor
     public enum ActivityOrderStatus {
-        INITIAL("初始状态", "初始状态"),
+        INITIAL("初始", "初始"),
         PENDING_PAYMENT("待支付", "创建活动单之后 --->>> 转为待支付"),
         EFFECTIVE("有效", "待支付的活动单，支付成功之后 --->>> 转为有效"),
         USED("已使用", "有效的活动单，使用之后 --->>> 转为已使用"),
@@ -51,6 +51,7 @@ public class ActivityOrderBO {
     public enum ActivityOrderEvent {
         INITIAL_TO_PENDING_PAYMENT("初始状态 --->>> 待支付状态"),
         PENDING_PAYMENT_TO_EFFECTIVE("待支付状态 --->>> 有效状态"),
+        EFFECTIVE_TO_USED("有效状态 --->>> 已使用状态"),
         PAY_FAIL("支付失败");
 
         private final String message;
