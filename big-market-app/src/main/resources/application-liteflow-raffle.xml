@@ -4,6 +4,7 @@
     <chain name="RAFFLE_FILTER_CHAIN">
         THEN(
             // 1. 前置过滤器链
+            RaffleQualificationFilter,
             ConcurrencySafetyLockFilter,
             DataPreparationFilter,
             IF(CheckProceed, BlacklistRaffleFilter),

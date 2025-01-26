@@ -3,11 +3,13 @@ package app.xlog.ggbond.raffle.service;
 import app.xlog.ggbond.raffle.model.bo.*;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
-import app.xlog.ggbond.raffle.service.filterChain.RaffleFilterChain;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
+import com.yomahub.liteflow.core.FlowExecutor;
+import com.yomahub.liteflow.flow.LiteflowResponse;
 import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,7 @@ import java.util.stream.Collectors;
 public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
 
     @Resource
-    private RaffleFilterChain raffleFilterChain;
+    private FlowExecutor flowExecutor;
     @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
 
@@ -147,11 +149,18 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      * 调度 - 根据策略id，抽取奖品
      */
     @Override
+    @Transactional
+    @SneakyThrows
     public Long getAwardId(RaffleFilterContext context) {
-        // 执行过滤器链
-        return raffleFilterChain.executeFilterChain(
-                context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS)
-        );
+        context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS);
+        Long userId = context.getUserBO().getUserId();
+
+        log.atInfo().log("抽奖领域 - " + userId + " 过滤器链开始执行");
+        LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("RAFFLE_FILTER_CHAIN", null, context);
+        if (!liteflowResponse.isSuccess()) throw liteflowResponse.getCause();
+        log.atInfo().log("抽奖领域 - " + userId + " 过滤器链执行完毕");
+
+        return liteflowResponse.getContextBean(RaffleFilterContext.class).getAwardId();
     }
 
 }

@@ -18,15 +18,10 @@ import java.util.Optional;
 @Repository
 public interface ActivityOrderJpa extends JpaRepository<ActivityOrder, Long> {
 
-    @Query("""
-            select (count(a) > 0) from ActivityOrder a
-            where a.userId = ?1 and a.activityId = ?2 and a.activityOrderTypeName = ?3 and a.activityOrderStatus = ?4 and a.createTime between ?5 and ?6""")
-    boolean existsByUserIdAndActivityIdAndActivityOrderTypeNameAndActivityOrderStatusAndCreateTimeBetween(Long userId, Long activityId, ActivityOrderType.ActivityOrderTypeName activityOrderTypeName, ActivityOrder.ActivityOrderStatus activityOrderStatus, LocalDateTime createTimeStart, LocalDateTime createTimeEnd);
-
     @Transactional
     @Modifying
     @Query("update ActivityOrder a set a.activityOrderStatus = ?1 where a.activityOrderId = ?2")
-    int updateActivityOrderStatusByActivityOrderId(ActivityOrder.ActivityOrderStatus activityOrderStatus, Long activityOrderId);
+    void updateActivityOrderStatusByActivityOrderId(ActivityOrder.ActivityOrderStatus activityOrderStatus, Long activityOrderId);
 
     @Query("""
             select a from ActivityOrder a
@@ -42,7 +37,7 @@ public interface ActivityOrderJpa extends JpaRepository<ActivityOrder, Long> {
     @Query("""
             update ActivityOrder a set a.activityOrderStatus = ?1, a.activityOrderTypeId = ?2
             where a.activityOrderId = ?3""")
-    int updateActivityOrderStatusAndActivityOrderTypeIdByActivityOrderId(ActivityOrder.ActivityOrderStatus activityOrderStatus, Long activityOrderTypeId, Long activityOrderId);
+    void updateActivityOrderStatusAndActivityOrderTypeIdByActivityOrderId(ActivityOrder.ActivityOrderStatus activityOrderStatus, Long activityOrderTypeId, Long activityOrderId);
 
     @Transactional
     @Modifying
@@ -62,4 +57,9 @@ public interface ActivityOrderJpa extends JpaRepository<ActivityOrder, Long> {
             "SET a.usedRaffleCount = a.usedRaffleCount + 1 " +
             "WHERE a.activityOrderId = :activityOrderId")
     void updateUsedRaffleCountByActivityOrderId(Long activityOrderId);
+
+    @Query("""
+            select (count(a) > 0) from ActivityOrder a
+            where a.userId = ?1 and a.activityId = ?2 and a.activityOrderTypeName = ?3 and a.createTime between ?4 and ?5""")
+    boolean existsByUserIdAndActivityIdAndActivityOrderTypeNameAndCreateTimeBetween(Long userId, Long activityId, ActivityOrderType.ActivityOrderTypeName activityOrderTypeName, LocalDateTime createTimeStart, LocalDateTime createTimeEnd);
 }

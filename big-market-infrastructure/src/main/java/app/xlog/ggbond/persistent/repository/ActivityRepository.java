@@ -91,11 +91,10 @@ public class ActivityRepository implements IActivityRepo {
      */
     @Override
     public boolean existSignInToClaimAOToday(Long userId, Long activityId) {
-        return activityOrderJPA.existsByUserIdAndActivityIdAndActivityOrderTypeNameAndActivityOrderStatusAndCreateTimeBetween(
+        return activityOrderJPA.existsByUserIdAndActivityIdAndActivityOrderTypeNameAndCreateTimeBetween(
                 userId,
                 activityId,
                 ActivityOrderType.ActivityOrderTypeName.SIGN_IN_TO_CLAIM,
-                ActivityOrder.ActivityOrderStatus.EFFECTIVE,
                 LocalDateTime.of(LocalDate.now(), LocalTime.MIN), LocalDateTime.of(LocalDate.now(), LocalTime.MAX)
         );
     }

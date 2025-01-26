@@ -33,7 +33,6 @@ public class RafflePreFilters {
 
     /**
      * 抽奖资格验证过滤器 - 判断登录后为抽奖做准备的各种异步操作是否完成
-     * todo 未测试
      */
     @SneakyThrows
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
