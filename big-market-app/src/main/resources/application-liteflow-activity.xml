@@ -30,8 +30,12 @@
     </chain>
     <chain name="EFFECTIVE_TO_USED">
         THEN(
-            UpdateAOUsedRaffleCountAndStatusWorkstation,
-            UpdateUserAvailableRaffleCountWorkstation
-        ).retry(300, "app.xlog.ggbond.exception.RetryRouterException");
+            PRE(ConcurrencySafetyLockWorkstation),
+            THEN(
+                UpdateAOUsedRaffleCountAndStatusWorkstation,
+                UpdateUserAvailableRaffleCountWorkstation
+            ).retry(300, "app.xlog.ggbond.exception.RetryRouterException"),
+            FINALLY(ConcurrencySafetyUnLockWorkstation)
+        );
     </chain>
 </flow>

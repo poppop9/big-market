@@ -13,6 +13,7 @@ import app.xlog.ggbond.persistent.repository.jpa.ActivityOrderTypeConfigJpa;
 import app.xlog.ggbond.persistent.repository.jpa.ActivityRedeemCodeJpa;
 import cn.hutool.core.bean.BeanUtil;
 import jakarta.annotation.Resource;
+import org.redisson.api.RBitSet;
 import org.redisson.api.RDelayedQueue;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
@@ -271,6 +272,33 @@ public class ActivityRepository implements IActivityRepo {
         activityAccountJpa.updateAvailableRaffleCountByActivityIdAndUserId(
                 activityId, userId
         );
+    }
+
+    /**
+     * 判断 - 判断用户是否在消费活动单
+     */
+    @Override
+    public boolean isUserInConsumeAO(Long userId) {
+        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_CONSUME_AO);
+        return rBitSet.get(userId);
+    }
+
+    /**
+     * 修改 - 在BitSet中给用户加锁
+     */
+    @Override
+    public void lockUserInConsumeAO(Long userId) {
+        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_CONSUME_AO);
+        rBitSet.set(userId);
+    }
+
+    /**
+     * 修改 - 在BitSet中给用户解锁
+     */
+    @Override
+    public void unLockUserInBitSet(Long userId) {
+        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_CONSUME_AO);
+        rBitSet.clear(userId);
     }
 
 }

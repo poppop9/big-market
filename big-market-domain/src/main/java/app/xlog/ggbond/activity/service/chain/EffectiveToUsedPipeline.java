@@ -1,6 +1,8 @@
 package app.xlog.ggbond.activity.service.chain;
 
 import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.raffle.model.bo.UserBO;
+import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.exception.RetryRouterException;
 import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
@@ -18,6 +20,7 @@ import java.util.Optional;
 
 /**
  * 有效状态 -> 已使用状态流水线
+ * <p>
  * todo 这个流水线要加位图并发安全
  */
 @Slf4j
@@ -69,6 +72,23 @@ public class EffectiveToUsedPipeline {
     }
 
     /**
+     * perform - 并发安全加锁工位
+     */
+    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
+            value = LiteFlowMethodEnum.PROCESS,
+            nodeId = "ConcurrencySafetyLockWorkstation",
+            nodeName = "并发安全加锁工位")
+    public void concurrencySafetyLockWorkstation(NodeComponent bindCmp) {
+        AOContext context = bindCmp.getContextBean(AOContext.class);
+
+        if (activityRepo.isUserInConsumeAO(context.getUserId())) {
+            throw new BigMarketException(BigMarketRespCode.USER_IS_IN_CONSUME_AO, "您当前正在消费活动单，请稍后再试");
+        } else {
+            activityRepo.lockUserInConsumeAO(context.getUserId());
+        }
+    }
+
+    /**
      * perform - 更新活动单的抽奖次数和状态工位 - 更新活动单已使用的抽奖次数
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
@@ -117,6 +137,19 @@ public class EffectiveToUsedPipeline {
         activityRepo.decreaseUserAvailableRaffleCount(
                 context.getActivityId(), context.getUserId()
         );
+    }
+
+    /**
+     * perform - 并发安全解锁工位
+     */
+    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
+            value = LiteFlowMethodEnum.PROCESS,
+            nodeId = "ConcurrencySafetyUnLockWorkstation",
+            nodeName = "并发安全解锁工位")
+    public void concurrencySafetyUnLockWorkstation(NodeComponent bindCmp) {
+        AOContext context = bindCmp.getContextBean(AOContext.class);
+
+        activityRepo.unLockUserInBitSet(context.getUserId());
     }
 
 }

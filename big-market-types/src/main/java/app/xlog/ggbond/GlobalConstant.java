@@ -20,6 +20,9 @@ public class GlobalConstant {
         // 抽奖领域 - 用户是否在抽奖中的bitmap
         public static String USER_IN_RAFFLE_BIT_SET = "UserInRaffleBitSet";
 
+        // 活动领域 - 用户是否在抽奖中的bitmap
+        public static String USER_IN_CONSUME_AO = "USER_IN_CONSUME_AO";
+
         // 抽奖领域 - 检查过期待支付活动单队列
         public static String CHECK_EXPIRE_PENDING_PAYMENT_AO_QUEUE = "CheckExpirePendingPaymentAOQueue";
         public static Long PENDING_PAYMENT_AO_EXPIRE_TIME = 10 * 60L;  // 待支付活动单过期时间 : 10分钟（单位是秒）

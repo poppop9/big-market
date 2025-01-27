@@ -70,4 +70,12 @@ public interface IActivityRepo {
     // 更新 - 扣减用户可用抽奖次数
     void decreaseUserAvailableRaffleCount(Long activityId, Long userId);
 
+    // 判断 - 判断用户是否在消费活动单
+    boolean isUserInConsumeAO(Long userId);
+
+    // 修改 - 在BitSet中给用户加锁
+    void lockUserInConsumeAO(Long userId);
+
+    // 修改 - 在BitSet中给用户解锁
+    void unLockUserInBitSet(Long userId);
 }
