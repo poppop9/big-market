@@ -12,11 +12,10 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 状态机配置
- * <p>
- * - 配置不同状态下对不同事件的响应
  */
 @Slf4j
 @Configuration
@@ -26,8 +25,6 @@ public class AOStateMachineConfig {
 
     @Resource
     private FlowExecutor flowExecutor;
-    @Resource
-    private IActivityRepo activityRepo;
 
     @Bean
     public StateMachine<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext> stateMachine() {

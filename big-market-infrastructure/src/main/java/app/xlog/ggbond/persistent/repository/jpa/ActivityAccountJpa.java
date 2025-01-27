@@ -21,4 +21,12 @@ public interface ActivityAccountJpa extends JpaRepository<ActivityAccount, Long>
 
     @Query("select (count(a) > 0) from ActivityAccount a where a.userId = ?1 and a.activityId = ?2")
     boolean existsByUserIdAndActivityId(Long userId, Long activityId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE ActivityAccount a " +
+            "SET a.availableRaffleCount = a.availableRaffleCount - 1 " +
+            "WHERE a.activityId = :activityId " +
+            "AND a.userId = :userId")
+    void updateAvailableRaffleCountByActivityIdAndUserId(Long activityId, Long userId);
 }

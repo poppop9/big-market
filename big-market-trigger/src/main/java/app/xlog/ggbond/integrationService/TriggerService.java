@@ -23,6 +23,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -65,6 +66,7 @@ public class TriggerService {
     /**
      * 抽奖领域 - 根据活动id和当前用户，抽取一个奖品id
      */
+    @Transactional
     public Long dispatchAwardIdByActivityIdAndCurrentUser(Long activityId) {
         // 获取当前用户
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());

@@ -18,6 +18,7 @@ import java.util.Optional;
 
 /**
  * 有效状态 -> 已使用状态流水线
+ * todo 这个流水线要加位图并发安全
  */
 @Slf4j
 @LiteflowComponent
@@ -101,6 +102,21 @@ public class EffectiveToUsedPipeline {
                 );
             }
         }
+    }
+
+    /**
+     * perform - 更新用户的可用抽奖次数工位
+     */
+    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
+            value = LiteFlowMethodEnum.PROCESS,
+            nodeId = "UpdateUserAvailableRaffleCountWorkstation",
+            nodeName = "更新用户的可用抽奖次数工位")
+    public void updateUserAvailableRaffleCountWorkstation(NodeComponent bindCmp) {
+        AOContext context = bindCmp.getContextBean(AOContext.class);
+
+        activityRepo.decreaseUserAvailableRaffleCount(
+                context.getActivityId(), context.getUserId()
+        );
     }
 
 }

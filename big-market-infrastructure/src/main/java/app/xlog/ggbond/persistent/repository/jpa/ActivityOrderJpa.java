@@ -60,6 +60,6 @@ public interface ActivityOrderJpa extends JpaRepository<ActivityOrder, Long> {
 
     @Query("""
             select (count(a) > 0) from ActivityOrder a
-            where a.userId = ?1 and a.activityId = ?2 and a.activityOrderTypeName = ?3 and a.createTime between ?4 and ?5""")
-    boolean existsByUserIdAndActivityIdAndActivityOrderTypeNameAndCreateTimeBetween(Long userId, Long activityId, ActivityOrderType.ActivityOrderTypeName activityOrderTypeName, LocalDateTime createTimeStart, LocalDateTime createTimeEnd);
+            where a.userId = ?1 and a.activityId = ?2 and a.activityOrderTypeName = ?3 and a.activityOrderStatus = ?4 and a.createTime between ?5 and ?6""")
+    boolean existsByUserIdAndActivityIdAndActivityOrderTypeNameAndActivityOrderStatusAndCreateTimeBetween(Long userId, Long activityId, ActivityOrderType.ActivityOrderTypeName activityOrderTypeName, ActivityOrder.ActivityOrderStatus activityOrderStatus, LocalDateTime createTimeStart, LocalDateTime createTimeEnd);
 }

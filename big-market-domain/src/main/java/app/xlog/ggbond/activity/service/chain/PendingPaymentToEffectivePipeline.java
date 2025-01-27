@@ -115,12 +115,9 @@ public class PendingPaymentToEffectivePipeline {
             context.setRaffleCount(raffleCount);
             context.getActivityOrderBO().setTotalRaffleCount(raffleCount);
             // 异步更新兑换码的使用状态
-            CompletableFuture.runAsync(() -> {
-                activityRepo.updateActivityRedeemCodeIsUsed(
-                        context.getUserId(),
-                        context.getRedeemCode()
-                );
-            }, myScheduledThreadPool);
+            activityRepo.updateActivityRedeemCodeIsUsed(
+                    context.getUserId(), context.getRedeemCode()
+            );
         } else {
             throw new BigMarketException(BigMarketRespCode.ACTIVITY_REDEEM_CODE_ERROR);
         }

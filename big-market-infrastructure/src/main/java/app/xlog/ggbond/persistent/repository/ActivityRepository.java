@@ -16,7 +16,6 @@ import jakarta.annotation.Resource;
 import org.redisson.api.RDelayedQueue;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
@@ -91,10 +90,11 @@ public class ActivityRepository implements IActivityRepo {
      */
     @Override
     public boolean existSignInToClaimAOToday(Long userId, Long activityId) {
-        return activityOrderJPA.existsByUserIdAndActivityIdAndActivityOrderTypeNameAndCreateTimeBetween(
+        return activityOrderJPA.existsByUserIdAndActivityIdAndActivityOrderTypeNameAndActivityOrderStatusAndCreateTimeBetween(
                 userId,
                 activityId,
                 ActivityOrderType.ActivityOrderTypeName.SIGN_IN_TO_CLAIM,
+                ActivityOrder.ActivityOrderStatus.EFFECTIVE,
                 LocalDateTime.of(LocalDate.now(), LocalTime.MIN), LocalDateTime.of(LocalDate.now(), LocalTime.MAX)
         );
     }
@@ -258,8 +258,19 @@ public class ActivityRepository implements IActivityRepo {
      */
     @Override
     public Long increaseAOUsedRaffleCount(Long activityOrderId) {
+        Long usedRaffleCount = activityOrderJPA.findByActivityOrderId(activityOrderId).getUsedRaffleCount();
         activityOrderJPA.updateUsedRaffleCountByActivityOrderId(activityOrderId);
-        return activityOrderJPA.findByActivityOrderId(activityOrderId).getUsedRaffleCount();
+        return usedRaffleCount + 1L;
+    }
+
+    /**
+     * 更新 - 减少用户可用抽奖次数
+     */
+    @Override
+    public void decreaseUserAvailableRaffleCount(Long activityId, Long userId) {
+        activityAccountJpa.updateAvailableRaffleCountByActivityIdAndUserId(
+                activityId, userId
+        );
     }
 
 }

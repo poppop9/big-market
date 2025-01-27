@@ -66,4 +66,8 @@ public interface IActivityRepo {
 
     // 更新 - 增加活动单已使用的抽奖次数
     Long increaseAOUsedRaffleCount(Long activityOrderId);
+
+    // 更新 - 扣减用户可用抽奖次数
+    void decreaseUserAvailableRaffleCount(Long activityId, Long userId);
+
 }

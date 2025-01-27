@@ -98,6 +98,8 @@ public class RaffleAfterFilters {
         log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器开始执行");
         raffleDispatchRepo.addUserRaffleFlowRecordFilter(userId, context.getStrategyId(), context.getAwardId());
         log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器执行完毕");
+
+        throw new RuntimeException("ceshi异常");
     }
 
     /**
