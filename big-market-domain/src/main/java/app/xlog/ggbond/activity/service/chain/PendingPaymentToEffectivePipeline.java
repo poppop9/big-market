@@ -128,9 +128,9 @@ public class PendingPaymentToEffectivePipeline {
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "PendingPaymentToEffectiveWorkstation",
+            nodeId = "PendingPaymentToEffectiveWorker",
             nodeName = "待支付状态转为有效状态工位")
-    public void pendingPaymentToEffectiveWorkstation(NodeComponent bindCmp) {
+    public void pendingPaymentToEffectiveWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         activityRepo.updateActivityOrderStatusAndAOTypeIdAndTotalRaffleCount(
@@ -146,9 +146,9 @@ public class PendingPaymentToEffectivePipeline {
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "IncreaseAvailableRaffleTimeWorkstation",
+            nodeId = "IncreaseAvailableRaffleTimeWorker",
             nodeName = "增加可用抽奖次数工位")
-    public void increaseAvailableRaffleTimeWorkstation(NodeComponent bindCmp) {
+    public void increaseAvailableRaffleTimeWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         activityRepo.increaseAvailableRaffleTime(

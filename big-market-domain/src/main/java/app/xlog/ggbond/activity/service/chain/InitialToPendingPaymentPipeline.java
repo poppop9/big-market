@@ -30,9 +30,9 @@ public class InitialToPendingPaymentPipeline {
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "InitialToPendingPaymentWorkstation",
+            nodeId = "InitialToPendingPaymentWorker",
             nodeName = "初始状态转为待支付状态工位")
-    public void createPendingPaymentWorkstation(NodeComponent bindCmp) {
+    public void createPendingPaymentWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         ActivityOrderBO activityOrderBO = activityRepo.saveActivityOrder(ActivityOrderBO.builder()
@@ -52,9 +52,9 @@ public class InitialToPendingPaymentPipeline {
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "CheckExpirePendingPaymentAOWorkstation",
+            nodeId = "CheckExpirePendingPaymentAOWorker",
             nodeName = "检查过期的待支付活动单工位")
-    public void checkPendingPaymentAOExpireWorkstation(NodeComponent bindCmp) {
+    public void checkPendingPaymentAOExpireWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         // 将该活动单加入redis延迟队列，之后在指定时间后取出，判断是否关闭该活动单

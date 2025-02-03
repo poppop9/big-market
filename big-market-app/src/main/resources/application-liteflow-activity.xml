@@ -3,8 +3,8 @@
     <!-- 活动领域 - 创建活动单 -->
     <chain name="INITIAL_TO_PENDING_PAYMENT">
         THEN(
-            InitialToPendingPaymentWorkstation,
-            CheckExpirePendingPaymentAOWorkstation
+            InitialToPendingPaymentWorker,
+            CheckExpirePendingPaymentAOWorker
         );
     </chain>
     <chain name="WHEN_PENDING_PAYMENT_TO_EFFECTIVE">
@@ -18,24 +18,24 @@
     </chain>
     <chain name="PENDING_PAYMENT_TO_EFFECTIVE">
         THEN(
-            PendingPaymentToEffectiveWorkstation,
-            IncreaseAvailableRaffleTimeWorkstation
+            PendingPaymentToEffectiveWorker,
+            IncreaseAvailableRaffleTimeWorker
         );
     </chain>
     <chain name="WHEN_EFFECTIVE_TO_USED">
         THEN(
-            UpdateExpiredAOStatusWorkstation,
-            CheckEffectiveAOWorkstation
+            UpdateExpiredAOStatusWorker,
+            CheckEffectiveAOWorker
         );
     </chain>
     <chain name="EFFECTIVE_TO_USED">
         THEN(
-            PRE(ConcurrencySafetyLockWorkstation),
+            PRE(ConcurrencySafetyLockWorker),
             THEN(
-                UpdateAOUsedRaffleCountAndStatusWorkstation,
-                UpdateUserAvailableRaffleCountWorkstation
+                UpdateAOUsedRaffleCountAndStatusWorker,
+                UpdateUserAvailableRaffleCountWorker
             ).retry(300, "app.xlog.ggbond.exception.RetryRouterException"),
-            FINALLY(ConcurrencySafetyUnLockWorkstation)
+            FINALLY(ConcurrencySafetyUnLockWorker)
         );
     </chain>
 </flow>

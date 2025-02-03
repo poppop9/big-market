@@ -33,9 +33,9 @@ public class EffectiveToUsedPipeline {
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "UpdateExpiredAOStatusWorkstation",
+            nodeId = "UpdateExpiredAOStatusWorker",
             nodeName = "更新过期活动单状态工位")
-    public void updateExpiredAOStatusWorkstation(NodeComponent bindCmp) {
+    public void updateExpiredAOStatusWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         activityRepo.updateExpiredAOStatus(
@@ -49,9 +49,9 @@ public class EffectiveToUsedPipeline {
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "CheckEffectiveAOWorkstation",
+            nodeId = "CheckEffectiveAOWorker",
             nodeName = "检查有效活动单工位")
-    public void checkEffectiveAOWorkstation(NodeComponent bindCmp) {
+    public void checkEffectiveAOWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         Optional<ActivityOrderBO> effectiveActivityOrder = activityRepo.findEffectiveActivityOrder(
@@ -74,9 +74,9 @@ public class EffectiveToUsedPipeline {
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "ConcurrencySafetyLockWorkstation",
+            nodeId = "ConcurrencySafetyLockWorker",
             nodeName = "并发安全加锁工位")
-    public void concurrencySafetyLockWorkstation(NodeComponent bindCmp) {
+    public void concurrencySafetyLockWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         if (activityRepo.isUserInConsumeAO(context.getUserId())) {
@@ -91,9 +91,9 @@ public class EffectiveToUsedPipeline {
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "UpdateAOUsedRaffleCountAndStatusWorkstation",
+            nodeId = "UpdateAOUsedRaffleCountAndStatusWorker",
             nodeName = "更新活动单的抽奖次数和状态工位")
-    public void updateAOUsedRaffleCountAndStatusWorkstation(NodeComponent bindCmp) {
+    public void updateAOUsedRaffleCountAndStatusWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         // 查出这一单的活动单对象，判断是否已经达到最大抽奖次数
@@ -127,9 +127,9 @@ public class EffectiveToUsedPipeline {
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "UpdateUserAvailableRaffleCountWorkstation",
+            nodeId = "UpdateUserAvailableRaffleCountWorker",
             nodeName = "更新用户的可用抽奖次数工位")
-    public void updateUserAvailableRaffleCountWorkstation(NodeComponent bindCmp) {
+    public void updateUserAvailableRaffleCountWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         activityRepo.decreaseUserAvailableRaffleCount(
@@ -142,9 +142,9 @@ public class EffectiveToUsedPipeline {
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "ConcurrencySafetyUnLockWorkstation",
+            nodeId = "ConcurrencySafetyUnLockWorker",
             nodeName = "并发安全解锁工位")
-    public void concurrencySafetyUnLockWorkstation(NodeComponent bindCmp) {
+    public void concurrencySafetyUnLockWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         activityRepo.unLockUserInBitSet(context.getUserId());
