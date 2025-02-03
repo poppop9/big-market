@@ -86,4 +86,7 @@ public class GlobalConstant {
     // 活动领域 - 待支付活动单的过期时间
     public final static Long ACTIVITY_ORDER_EXPIRE_TIME = 10 * 60L;  // 10分钟（单位是秒）
 
+    // 奖品发放领域 - 扫描多久之前的中奖记录
+    public final static Long SCAN_AWARD_ISSUANCE_TASK_TIME = 10 * 60L;  // 10分钟（单位是秒）
+
 }

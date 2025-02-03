@@ -8,8 +8,12 @@ import app.xlog.ggbond.mq.MQEventCenter;
 import app.xlog.ggbond.persistent.po.awardIssuance.AwardIssuanceTask;
 import app.xlog.ggbond.persistent.repository.jpa.AwardIssuanceTaskJpa;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
+import cn.hutool.core.bean.BeanUtil;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 奖品发放领域 - 奖品发放仓储实现类
@@ -55,6 +59,19 @@ public class AwardIssuanceRepository implements IAwardIssuanceRepo {
     @Override
     public void updateAwardIssuanceTaskStatus(Long awardIssuanceId, boolean isIssued) {
         awardIssuanceTaskJpa.updateIsIssuedByAwardIssuanceId(isIssued, awardIssuanceId);
+    }
+
+    /**
+     * 奖品发放领域 - 查询所有指定时间内，未发放奖品的记录
+     */
+    @Override
+    public List<AwardIssuanceTaskBO> findAwardIssuanceTaskByIsIssuedAndCreateTimeBefore(boolean isIssued, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        List<AwardIssuanceTask> awardIssuanceTaskList = awardIssuanceTaskJpa.findByIsIssuedAndCreateTimeBetween(
+                isIssued,
+                startDateTime,
+                endDateTime
+        );
+        return BeanUtil.copyToList(awardIssuanceTaskList, AwardIssuanceTaskBO.class);
     }
 
 }

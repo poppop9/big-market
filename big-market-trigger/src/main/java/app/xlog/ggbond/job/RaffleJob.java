@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * 抽奖领域 - 定时任务
+ * 抽奖领域 - 任务
  */
 @Slf4j
 @Component

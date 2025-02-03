@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * 全局 - 项目初始化任务
+ * 全局 - 任务
  */
 @Slf4j
 @Component

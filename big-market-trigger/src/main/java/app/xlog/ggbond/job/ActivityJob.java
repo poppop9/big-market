@@ -11,7 +11,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 /**
- * 活动领域 - 定时任务
+ * 活动领域 - 任务
  */
 @Slf4j
 @Component

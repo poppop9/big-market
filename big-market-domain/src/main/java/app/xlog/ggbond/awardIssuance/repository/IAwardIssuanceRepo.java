@@ -6,6 +6,7 @@ import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import cn.hutool.core.lang.WeightRandom;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -22,5 +23,8 @@ public interface IAwardIssuanceRepo {
 
     // 更新 - 更新奖品发放任务状态
     void updateAwardIssuanceTaskStatus(Long awardIssuanceId, boolean isIssued);
+
+    // 查询 - 查询所有指定时间内，未发放奖品的记录
+    List<AwardIssuanceTaskBO> findAwardIssuanceTaskByIsIssuedAndCreateTimeBefore(boolean isIssued, LocalDateTime startDateTime, LocalDateTime endDateTime);
 
 }

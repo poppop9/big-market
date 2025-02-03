@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * 测试定时任务
+ * 测试任务
  */
 @Component
 public class JobTest {

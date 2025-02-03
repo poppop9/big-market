@@ -16,4 +16,7 @@ public interface IAwardIssuanceService {
     // 奖品发放领域 - 更新奖品发放任务状态
     void updateAwardIssuanceTaskStatus(Long awardIssuanceId, boolean isIssued);
 
+    // 奖品发放领域 - 扫描task表，补偿未发放奖品的用户
+    void scanAndCompensateNotIssuanceAward(Long scanAwardIssuanceTaskTime);
+
 }
