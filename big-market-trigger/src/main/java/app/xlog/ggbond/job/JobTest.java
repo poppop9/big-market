@@ -2,7 +2,7 @@ package app.xlog.ggbond.job;
 
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.activity.model.vo.QueueItemVO;
-import app.xlog.ggbond.activity.service.KafkaService;
+import app.xlog.ggbond.activity.service.KafkaTestService;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.IdUtil;
 import com.xxl.job.core.context.XxlJobHelper;
@@ -22,7 +22,7 @@ import java.util.List;
 public class JobTest {
 
     @Resource
-    private KafkaService kafkaService;
+    private KafkaTestService kafkaTestService;
     @Resource
     private RedissonClient redissonClient;
 
@@ -48,7 +48,7 @@ public class JobTest {
 
     // @Scheduled(initialDelay = 1000, fixedDelay = 100000)
     public void testKafka_1() {
-        kafkaService.send("test-1", IdUtil.simpleUUID());
+        kafkaTestService.send("test-1", IdUtil.simpleUUID());
     }
 
     // @Scheduled(initialDelay = 1000, fixedDelay = 1000)

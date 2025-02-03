@@ -151,7 +151,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     @Override
     @Transactional
     @SneakyThrows
-    public Long getAwardId(RaffleFilterContext context) {
+    public RaffleFilterContext raffle(RaffleFilterContext context) {
         context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS);
         Long userId = context.getUserBO().getUserId();
 
@@ -160,7 +160,7 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
         if (!liteflowResponse.isSuccess()) throw liteflowResponse.getCause();
         log.atInfo().log("抽奖领域 - " + userId + " 过滤器链执行完毕");
 
-        return liteflowResponse.getContextBean(RaffleFilterContext.class).getAwardId();
+        return liteflowResponse.getContextBean(RaffleFilterContext.class);
     }
 
 }

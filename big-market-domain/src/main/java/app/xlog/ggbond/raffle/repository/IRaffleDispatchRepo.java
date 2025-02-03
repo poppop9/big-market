@@ -33,7 +33,7 @@ public interface IRaffleDispatchRepo {
     void addUserRaffleTimeByStrategyId(Long userId, Long strategyId);
 
     // 用户抽奖历史 - 添加用户抽奖流水记录
-    void addUserRaffleFlowRecordFilter(Long userId, Long strategyId, Long awardId);
+    Long addUserRaffleFlowRecordFilter(Long userId, Long strategyId, Long awardId);
 
     // 权重对象 - 更新所有权重对象的过期时间
     void updateAllWeightRandomExpireTime(Long strategyId);

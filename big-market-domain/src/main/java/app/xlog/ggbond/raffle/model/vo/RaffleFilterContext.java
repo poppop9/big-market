@@ -27,6 +27,7 @@ public class RaffleFilterContext {
     // 过滤结果出参
     private RaffleFilterContext.DispatchParam dispatchParam;
     private Long awardId;
+    private Long userRaffleHistoryId;  // 用户抽奖历史id
 
     // 每一个过滤器的返回值
     @Getter

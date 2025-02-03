@@ -17,4 +17,5 @@ public interface IActivityService {
 
     // 判断 - 检查过期的待支付活动单
     void checkExpirePendingPaymentAO(Long activityOrderId);
+
 }

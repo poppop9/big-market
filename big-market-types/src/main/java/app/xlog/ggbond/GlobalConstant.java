@@ -53,6 +53,9 @@ public class GlobalConstant {
 
         // 抽奖领域 - 扣减奖品库存
         public final static String DECR_AWARD_INVENTORY = "Raffle-DecrAwardInventory";
+
+        // 奖品发放领域 - 发放奖品任务
+        public final static String AWARD_ISSUANCE_TASK = "AwardIssuance-AwardIssuanceTask";
     }
 
     // 抽奖，推荐领域 - 奖品级别

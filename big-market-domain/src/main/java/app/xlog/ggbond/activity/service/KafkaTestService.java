@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
-public class KafkaService {
+public class KafkaTestService {
 
     @Resource
     private KafkaTemplate<String, Object> kafkaTemplate;

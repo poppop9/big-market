@@ -185,13 +185,14 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      * 用户抽奖历史 - 添加用户抽奖流水记录
      */
     @Override
-    public void addUserRaffleFlowRecordFilter(Long userId, Long strategyId, Long awardId) {
-        userRaffleHistoryJpa.save(UserRaffleHistory.builder()
+    public Long addUserRaffleFlowRecordFilter(Long userId, Long strategyId, Long awardId) {
+        UserRaffleHistory userRaffleHistory = userRaffleHistoryJpa.save(UserRaffleHistory.builder()
                 .userId(userId)
                 .strategyId(strategyId)
                 .awardId(awardId)
                 .build()
         );
+        return userRaffleHistory.getId();
     }
 
     /**

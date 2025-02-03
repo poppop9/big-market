@@ -1,5 +1,7 @@
 package app.xlog.ggbond.integrationService;
 
+import app.xlog.ggbond.awardIssuance.model.AwardIssuanceTaskBO;
+import app.xlog.ggbond.awardIssuance.service.IAwardIssuanceService;
 import app.xlog.ggbond.exception.BigMarketException;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.resp.BigMarketRespCode;
@@ -39,13 +41,15 @@ public class TriggerService {
     private ThreadPoolTaskScheduler myScheduledThreadPool;
 
     @Resource
+    private ISecurityService securityService;
+    @Resource
     private IActivityService activityService;
     @Resource
     private IRaffleArmory raffleArmory;
     @Resource
     private IRaffleDispatch raffleDispatch;
     @Resource
-    private ISecurityService securityService;
+    private IAwardIssuanceService awardIssuanceService;
     @Resource
     private RecommendService recommendService;
     @Resource
@@ -68,19 +72,22 @@ public class TriggerService {
      */
     @Transactional
     public Long dispatchAwardIdByActivityIdAndCurrentUser(Long activityId) {
-        // 获取当前用户
+        // 1. 获取当前用户
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
         Long userId = user.getUserId();
-        // 跟据活动id，用户id，查询用户的策略id
+
+        // 2. 跟据活动id，用户id，查询用户的策略id
         Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
 
-        // 这里不用判断是否成功，如果失败会报错
+        // 3. 发布事件，消费活动单
         aoEventCenter.publishEffectiveToUsedEvent(AOContext.builder()
                 .activityId(activityId)
                 .userId(userId)
                 .build()
         );
-        Long awardId = raffleDispatch.getAwardId(RaffleFilterContext.builder()
+
+        // 4. 抽奖
+        RaffleFilterContext context = raffleDispatch.raffle(RaffleFilterContext.builder()
                 .strategyId(strategyId)
                 .userBO(app.xlog.ggbond.raffle.model.bo.UserBO.builder()
                         .userId(userId)
@@ -90,12 +97,26 @@ public class TriggerService {
                 .saSession(StpUtil.getSession())
                 .build()
         );
-
         log.atInfo().log("抽奖领域 - " +
-                securityService.getLoginIdDefaultNull() + " 抽到 {} 活动的 {} 奖品", activityId, awardId
+                securityService.getLoginIdDefaultNull() + " 抽到 {} 活动的 {} 奖品", activityId, context.getAwardId()
         );
 
-        return awardId;
+        // todo 5. 写入发奖的task表
+        awardIssuanceService.insertAwardIssuanceTask(AwardIssuanceTaskBO.builder()
+                .userId(userId)
+                .userRaffleHistoryId(context.getUserRaffleHistoryId())
+                .isIssued(false)
+                .build()
+        );
+
+        // todo 6. 发送发奖的mq消息，并更新task表状态
+        awardIssuanceService.sendAwardIssuanceToMQ(AwardIssuanceTaskBO.builder()
+                .userId(userId)
+                .userRaffleHistoryId(context.getUserRaffleHistoryId())
+                .build()
+        );
+
+        return context.getAwardId();
     }
 
     /**

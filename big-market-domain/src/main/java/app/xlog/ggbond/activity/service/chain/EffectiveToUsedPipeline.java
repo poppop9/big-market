@@ -20,8 +20,6 @@ import java.util.Optional;
 
 /**
  * 有效状态 -> 已使用状态流水线
- * <p>
- * todo 这个流水线要加位图并发安全
  */
 @Slf4j
 @LiteflowComponent

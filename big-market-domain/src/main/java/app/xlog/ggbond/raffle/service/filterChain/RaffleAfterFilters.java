@@ -1,5 +1,7 @@
 package app.xlog.ggbond.raffle.service.filterChain;
 
+import app.xlog.ggbond.awardIssuance.model.AwardIssuanceTaskBO;
+import app.xlog.ggbond.awardIssuance.service.IAwardIssuanceService;
 import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.raffle.model.bo.UserBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
@@ -96,10 +98,9 @@ public class RaffleAfterFilters {
         Long userId = context.getUserBO().getUserId();
 
         log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器开始执行");
-        raffleDispatchRepo.addUserRaffleFlowRecordFilter(userId, context.getStrategyId(), context.getAwardId());
+        Long userRaffleHistoryId = raffleDispatchRepo.addUserRaffleFlowRecordFilter(userId, context.getStrategyId(), context.getAwardId());
+        context.setUserRaffleHistoryId(userRaffleHistoryId);
         log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器执行完毕");
-
-        throw new RuntimeException("ceshi异常");
     }
 
     /**
