@@ -8,7 +8,7 @@ import app.xlog.ggbond.awardIssuance.model.AwardIssuanceTaskBO;
 public interface IAwardIssuanceService {
 
     // 奖品发放领域 - 写入task记录
-    void insertAwardIssuanceTask(AwardIssuanceTaskBO awardIssuanceTaskBO);
+    long insertAwardIssuanceTask(AwardIssuanceTaskBO awardIssuanceTaskBO);
 
     // 奖品发放领域 - 发送奖品发放任务消息
     void sendAwardIssuanceToMQ(AwardIssuanceTaskBO awardIssuanceTaskBO);

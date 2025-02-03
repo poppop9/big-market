@@ -15,7 +15,7 @@ import java.util.Map;
 public interface IAwardIssuanceRepo {
 
     // 新增 - 写入task记录
-    void insertAwardIssuanceTask(AwardIssuanceTaskBO awardIssuanceTaskBO);
+    long insertAwardIssuanceTask(AwardIssuanceTaskBO awardIssuanceTaskBO);
 
     // 新增 - 发送奖品发放任务
     void sendAwardIssuanceToMQ(AwardIssuanceTaskBO awardIssuanceTaskBO);

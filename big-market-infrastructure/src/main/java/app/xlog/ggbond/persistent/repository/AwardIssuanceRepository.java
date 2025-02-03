@@ -26,13 +26,14 @@ public class AwardIssuanceRepository implements IAwardIssuanceRepo {
      * 奖品发放领域 - 写入task记录
      */
     @Override
-    public void insertAwardIssuanceTask(AwardIssuanceTaskBO awardIssuanceTaskBO) {
-        awardIssuanceTaskJpa.save(AwardIssuanceTask.builder()
-                        .userId(awardIssuanceTaskBO.getUserId())
-                        .userRaffleHistoryId(awardIssuanceTaskBO.getUserRaffleHistoryId())
-                        .isIssued(false)
-                        .build()
+    public long insertAwardIssuanceTask(AwardIssuanceTaskBO awardIssuanceTaskBO) {
+        AwardIssuanceTask awardIssuanceTask = awardIssuanceTaskJpa.save(AwardIssuanceTask.builder()
+                .userId(awardIssuanceTaskBO.getUserId())
+                .userRaffleHistoryId(awardIssuanceTaskBO.getUserRaffleHistoryId())
+                .isIssued(false)
+                .build()
         );
+        return awardIssuanceTask.getAwardIssuanceId();
     }
 
     /**

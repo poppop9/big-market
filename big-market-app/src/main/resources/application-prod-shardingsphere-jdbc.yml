@@ -61,6 +61,10 @@ rules:
       UserRaffleHistory: # 用户抽奖历史
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
+      # 奖品发放领域
+      AwardIssuanceTask: # 奖品发放任务
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD_4 } }
     # 定义分片算法策略
     shardingAlgorithms:
       HASH_MOD_2:

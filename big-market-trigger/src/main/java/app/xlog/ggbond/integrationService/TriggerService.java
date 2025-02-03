@@ -97,20 +97,19 @@ public class TriggerService {
                 .saSession(StpUtil.getSession())
                 .build()
         );
-        log.atInfo().log("抽奖领域 - " +
-                securityService.getLoginIdDefaultNull() + " 抽到 {} 活动的 {} 奖品", activityId, context.getAwardId()
-        );
+        log.atInfo().log("抽奖领域 - " + userId + " 抽到 {} 活动的 {} 奖品", activityId, context.getAwardId());
 
-        // todo 5. 写入发奖的task表
-        awardIssuanceService.insertAwardIssuanceTask(AwardIssuanceTaskBO.builder()
+        // 5. 写入发奖的task表
+        long awardIssuanceId = awardIssuanceService.insertAwardIssuanceTask(AwardIssuanceTaskBO.builder()
                 .userId(userId)
                 .userRaffleHistoryId(context.getUserRaffleHistoryId())
                 .isIssued(false)
                 .build()
         );
 
-        // todo 6. 发送发奖的mq消息，并更新task表状态
+        // 6. 发送发奖的mq消息，并更新task表状态
         awardIssuanceService.sendAwardIssuanceToMQ(AwardIssuanceTaskBO.builder()
+                .awardIssuanceId(awardIssuanceId)
                 .userId(userId)
                 .userRaffleHistoryId(context.getUserRaffleHistoryId())
                 .build()

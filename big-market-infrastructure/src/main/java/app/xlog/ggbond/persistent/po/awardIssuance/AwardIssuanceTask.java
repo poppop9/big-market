@@ -28,6 +28,5 @@ public class AwardIssuanceTask extends ShardingTableBaseEntity {
     private @Builder.Default Long awardIssuanceId = IdUtil.getSnowflakeNextId();  // 奖品发放任务id
     private Long userId;  // 用户id
     private Long userRaffleHistoryId;  // 用户抽奖历史id
-    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
     private @Builder.Default Boolean isIssued = false;  // 奖品是否发放
 }
