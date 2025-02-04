@@ -71,7 +71,7 @@ public class TriggerService {
      * 抽奖领域 - 根据活动id和当前用户，抽取一个奖品id
      */
     @Transactional
-    public Long dispatchAwardIdByActivityIdAndCurrentUser(Long activityId) {
+    public Long raffle(Long activityId) {
         // 1. 获取当前用户
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
         Long userId = user.getUserId();

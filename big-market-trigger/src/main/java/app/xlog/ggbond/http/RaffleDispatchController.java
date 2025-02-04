@@ -27,9 +27,9 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
      * 抽取奖品
      */
     @Override
-    @GetMapping("/v2/getAward")
-    public ResponseEntity<JsonNode> getAward(@RequestParam Long activityId) {
-        Long awardId = triggerService.dispatchAwardIdByActivityIdAndCurrentUser(activityId);
+    @GetMapping("/v2/raffle")
+    public ResponseEntity<JsonNode> raffle(@RequestParam Long activityId) {
+        Long awardId = triggerService.raffle(activityId);
         return ZakiResponse.ok("awardId", awardId);
     }
 

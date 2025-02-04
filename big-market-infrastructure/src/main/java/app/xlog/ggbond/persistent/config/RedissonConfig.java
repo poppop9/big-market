@@ -30,7 +30,7 @@ public class RedissonConfig {
                 .setRetryInterval(1000)  // 设置连接重试的间隔时间（单位：毫秒），默认为1000
                 .setPingConnectionInterval(0)  // 设置定期检查连接是否可用的时间间隔（单位：毫秒），默认为0，表示不进行定期检查
                 .setKeepAlive(true);  // 设置是否保持长连接，默认为true
-        config.setCodec(new JsonJacksonCodec());  // 设置Redisson存储数据的格式，这里使用Json，一定要配置，防止乱码
+        config.setCodec(JsonJacksonCodec.INSTANCE);  // 设置Redisson存储数据的格式，这里使用Json，一定要配置，防止乱码
 
         return Redisson.create(config);
     }

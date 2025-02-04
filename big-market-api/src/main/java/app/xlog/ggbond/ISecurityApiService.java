@@ -8,6 +8,6 @@ import org.springframework.http.ResponseEntity;
  */
 public interface ISecurityApiService {
 
-    ResponseEntity<JsonNode> doLogin(Long activityId, Long userId, String password) throws Exception;
+    ResponseEntity<JsonNode> doLogin(Long activityId, Long userId, String password);
 
 }

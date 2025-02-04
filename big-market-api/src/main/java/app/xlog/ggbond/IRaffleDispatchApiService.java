@@ -9,6 +9,6 @@ import org.springframework.http.ResponseEntity;
 public interface IRaffleDispatchApiService {
 
     // 根据策略id，抽取奖品
-    ResponseEntity<JsonNode> getAward(Long strategyId);
+    ResponseEntity<JsonNode> raffle(Long strategyId);
 
 }
