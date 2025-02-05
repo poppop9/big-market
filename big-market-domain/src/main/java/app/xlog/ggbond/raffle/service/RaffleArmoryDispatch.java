@@ -63,6 +63,14 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     }
 
     /**
+     * 装配 - 装配所有奖品的库存
+     */
+    @Override
+    public void assembleAwardList(Long strategyId) {
+        raffleArmoryRepo.assembleAwardList(strategyId);
+    }
+
+    /**
      * 根据活动id，用户id，查询用户的所有奖品
      */
     @Override

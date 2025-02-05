@@ -178,6 +178,7 @@ public class TriggerService {
             Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
             raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
             raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map
+            raffleArmory.assembleAwardList(strategyId);  // 装配该策略所需的所有奖品列表
 
             return true;
         }, myScheduledThreadPool);

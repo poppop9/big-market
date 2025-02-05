@@ -20,6 +20,9 @@ public interface IRaffleArmory {
     // 装配 - 装配所有奖品的库存Map
     void assembleAllAwardCountByStrategyId(Long strategyId);
 
+    // 装配 - 装配奖品列表
+    void assembleAwardList(Long strategyId);
+
     // 查询 - 根据活动id，用户id，查询用户的所有奖品
     List<AwardBO> findAllAwards(Long activityId, Long userId);
 

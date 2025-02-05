@@ -41,6 +41,8 @@ public class RaffleAfterFilters {
         raffleDispatchRepo.updateAllWeightRandomExpireTime2(context.getStrategyId());
         // 更新所有奖品库存的过期时间
         raffleDispatchRepo.updateAllAwardCountExpireTime(context.getStrategyId());
+        // 更新所有奖品列表的过期时间
+        raffleDispatchRepo.updateAllAwardListExpireTime(context.getStrategyId());
     }
 
     /**

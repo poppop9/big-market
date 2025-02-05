@@ -196,21 +196,20 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     }
 
     /**
-     * 权重对象 - 更新所有权重对象的过期时间
-     */
-    @Override
-    public void updateAllWeightRandomExpireTime(Long strategyId) {
-        Arrays.stream(RaffleFilterContext.DispatchParam.values())
-                .map(item -> redissonClient.getBucket(GlobalConstant.RedisKey.getWeightRandomCacheKey(strategyId, item.name())))
-                .forEach(item -> item.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME)));
-    }
-
-    /**
      * 权重对象 - 更新所有权重对象Map的过期时间
      */
     @Override
     public void updateAllWeightRandomExpireTime2(Long strategyId) {
         redissonClient.getMap(GlobalConstant.RedisKey.getWeightRandomMapCacheKey(strategyId))
+                .expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
+    }
+
+    /**
+     * 奖品 - 更新所有奖品列表的过期时间
+     */
+    @Override
+    public void updateAllAwardListExpireTime(Long strategyId) {
+       redissonClient.getList(GlobalConstant.RedisKey.getAwardListCacheKey(strategyId))
                 .expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
     }
 

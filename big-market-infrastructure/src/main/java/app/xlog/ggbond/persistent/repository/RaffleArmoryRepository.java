@@ -12,10 +12,7 @@ import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.WeightRandom;
 import jakarta.annotation.Resource;
-import org.redisson.api.RBitSet;
-import org.redisson.api.RBucket;
-import org.redisson.api.RMap;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.*;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
@@ -113,10 +110,17 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
 
     /**
      * 查询 - 根据活动id，用户id，查询用户的所有奖品
+     * todo 未测试
      */
     @Override
     public List<AwardBO> findAllAwards(Long activityId, Long userId) {
         Long strategyId = userRaffleConfigJpa.findByUserIdAndActivityId(userId, activityId).getStrategyId();
+
+        // 存在缓存，直接返回
+        RList<AwardBO> rList = redissonClient.getList(GlobalConstant.RedisKey.getAwardListCacheKey(strategyId));
+        if (rList.isExists()) return rList;
+
+        // 不存在，重新从数据库中查询
         List<AwardBO> awardBOS = findAwardsByStrategyId(strategyId);
         return awardBOS;
     }
@@ -132,8 +136,10 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
         ));
 
         RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getAwardCountMapCacheKey(strategyId));
-        if (rMap.isExists()) rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
-        rMap.putAll(collect);
+
+        if (!rMap.isExists()){
+            rMap.putAll(collect);
+        }
         rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
     }
 
@@ -144,7 +150,6 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     public void insertWeightRandom(Long strategyId, String dispatchParam, WeightRandom<Long> wr) {
         RBucket<Object> bucket = redissonClient.getBucket(GlobalConstant.RedisKey.getWeightRandomCacheKey(strategyId, dispatchParam));
         bucket.set(wr);
-
         bucket.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
     }
 
@@ -154,12 +159,52 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     @Override
     public void insertWeightRandom(Long strategyId, Map<String, WeightRandom<Long>> wrMap) {
         RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getWeightRandomMapCacheKey(strategyId));
-        if (rMap.isExists()) {
-            rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
-        }
-        rMap.putAll(wrMap);
 
+        if (!rMap.isExists()){
+            rMap.putAll(wrMap);
+        }
         rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
+    }
+
+    /**
+     * 装配 - 装配奖品列表
+     * todo 未测试
+     */
+    @Override
+    public void assembleAwardList(Long strategyId) {
+        RList<AwardBO> rList = redissonClient.getList(GlobalConstant.RedisKey.getAwardListCacheKey(strategyId));
+        if (rList.isExists()) {
+            // 已经存在，不再重复写入，而是延长过期时间
+            rList.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
+            return;
+        }
+
+        List<StrategyAward> strategyAwardList = strategyAwardJpa.findByStrategyIdOrderByAwardSortAsc(strategyId);
+        List<Long> awardIdList = strategyAwardList.stream().map(StrategyAward::getAwardId).toList();
+
+        // 获取所有奖品详情
+        Map<Long, Award> awardIdAwardMap = awardJpa.findByAwardIdIn(awardIdList).stream()
+                .collect(Collectors.toMap(
+                        Award::getAwardId,
+                        item -> item
+                ));
+
+        // 转为 AwardBO
+        List<AwardBO> awardBOList = strategyAwardList.stream()
+                .map(item -> AwardBO.builder()
+                        .awardId(item.getAwardId())
+                        .awardTitle(awardIdAwardMap.get(item.getAwardId()).getAwardTitle())
+                        .awardSubtitle(awardIdAwardMap.get(item.getAwardId()).getAwardSubtitle())
+                        .awardRate(item.getAwardRate())
+                        .awardCount(item.getAwardCount())
+                        .awardSort(item.getAwardSort())
+                        .build()
+                )
+                .toList();
+
+        // 写入redis
+        rList.addAll(awardBOList);
+        rList.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
     }
 
     /**

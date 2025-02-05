@@ -46,6 +46,11 @@ public class GlobalConstant {
         public static String getAwardCountMapCacheKey(Long strategyId) {
             return strategyId + "_AwardCountMap";
         }
+
+        // 抽奖领域 - 生成奖品列表的缓存key
+        public static String getAwardListCacheKey(Long strategyId) {
+            return strategyId + "_AwardList";
+        }
     }
 
     public static class KafkaConstant {
