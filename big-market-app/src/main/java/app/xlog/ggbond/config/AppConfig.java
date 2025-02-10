@@ -23,8 +23,9 @@ public class AppConfig {
             public void addCorsMappings(@NotNull CorsRegistry registry) {
                 registry.addMapping("/**")  // 应用到所有请求
                         .allowedOrigins("http://localhost:5173")  // 允许的地址
-                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")  // 允许的http方法
-                        .allowedHeaders("authorization", "content-type");  // 允许一些特殊的请求头
+                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE")  // 允许的http方法
+                        .allowedHeaders("*")  // 允许的请求头
+                        .allowCredentials(true);  // 允许一些特殊的请求头
             }
         };
     }

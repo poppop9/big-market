@@ -33,8 +33,8 @@ public class SecurityController implements ISecurityApiService {
     @Override
     @GetMapping("/v1/doLogin")
     public ResponseEntity<JsonNode> doLogin(@RequestParam Long activityId, @RequestParam Long userId, @RequestParam String password) {
-        triggerService.doLogin(userId, password);
-        return ZakiResponse.ok("用户 " + userId + " 登录成功");
+        String token = triggerService.doLogin(userId, password);
+        return ZakiResponse.ok("token", token);
     }
 
 }

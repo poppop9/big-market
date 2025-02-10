@@ -131,7 +131,7 @@ public class TriggerService {
      * 安全领域 - 登录
      */
     @SneakyThrows
-    public void doLogin(Long userId, String password) {
+    public String doLogin(Long userId, String password) {
         boolean isSuccess = securityService.doLogin(userId, password);
         // 1. 判断是否登录成功
         if (!isSuccess) {
@@ -183,6 +183,8 @@ public class TriggerService {
             return true;
         }, myScheduledThreadPool);
         StpUtil.getSession().set("doLoginCompletableFuture", doLoginCompletableFuture);
+
+        return StpUtil.getTokenInfo().getTokenValue();
     }
 
     /**

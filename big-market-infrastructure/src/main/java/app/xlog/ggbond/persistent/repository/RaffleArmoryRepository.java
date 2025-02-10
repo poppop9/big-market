@@ -137,6 +137,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
 
         RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getAwardCountMapCacheKey(strategyId));
 
+        // 由于redis中的数据实时性比数据库高，所有如果存在不覆盖，而是更新过期时间
         if (!rMap.isExists()){
             rMap.putAll(collect);
         }
@@ -160,6 +161,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     public void insertWeightRandom(Long strategyId, Map<String, WeightRandom<Long>> wrMap) {
         RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getWeightRandomMapCacheKey(strategyId));
 
+        // 由于redis中的数据实时性比数据库高，所有如果存在不覆盖，而是更新过期时间
         if (!rMap.isExists()){
             rMap.putAll(wrMap);
         }
@@ -173,8 +175,8 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     @Override
     public void assembleAwardList(Long strategyId) {
         RList<AwardBO> rList = redissonClient.getList(GlobalConstant.RedisKey.getAwardListCacheKey(strategyId));
+        // 由于redis中的数据实时性比数据库高，所有如果存在不覆盖，而是更新过期时间
         if (rList.isExists()) {
-            // 已经存在，不再重复写入，而是延长过期时间
             rList.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
             return;
         }
