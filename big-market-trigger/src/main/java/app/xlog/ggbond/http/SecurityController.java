@@ -3,6 +3,7 @@ package app.xlog.ggbond.http;
 import app.xlog.ggbond.ISecurityApiService;
 import app.xlog.ggbond.resp.ZakiResponse;
 import app.xlog.ggbond.integrationService.TriggerService;
+import app.xlog.ggbond.security.model.UserBO;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +34,8 @@ public class SecurityController implements ISecurityApiService {
     @Override
     @GetMapping("/v1/doLogin")
     public ResponseEntity<JsonNode> doLogin(@RequestParam Long activityId, @RequestParam Long userId, @RequestParam String password) {
-        String token = triggerService.doLogin(userId, password);
-        return ZakiResponse.ok("token", token);
+        UserBO userBO = triggerService.doLogin(userId, password);
+        return ZakiResponse.ok("userInfo", userBO);
     }
 
 }
