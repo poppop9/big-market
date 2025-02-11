@@ -1,8 +1,6 @@
 package app.xlog.ggbond.activity.service.chain;
 
-import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
-import app.xlog.ggbond.activity.model.po.ActivityOrderTypeBO;
-import app.xlog.ggbond.activity.model.po.ActivityOrderTypeConfigBO;
+import app.xlog.ggbond.activity.model.po.*;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
 import app.xlog.ggbond.exception.BigMarketException;
@@ -14,7 +12,6 @@ import com.yomahub.liteflow.enums.LiteFlowMethodEnum;
 import com.yomahub.liteflow.enums.NodeTypeEnum;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.util.List;
 
@@ -24,9 +21,6 @@ import java.util.List;
 @Slf4j
 @LiteflowComponent
 public class PendingPaymentToEffectivePipeline {
-
-    @Resource
-    private ThreadPoolTaskScheduler myScheduledThreadPool;
 
     @Resource
     private IActivityRepo activityRepo;
@@ -82,6 +76,7 @@ public class PendingPaymentToEffectivePipeline {
 
     /**
      * when - 付费购买裁判 - 判断是否满足付费购买的条件
+     * todo 未测试
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
@@ -90,8 +85,26 @@ public class PendingPaymentToEffectivePipeline {
     public void paidPurchaseJudge(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
-        // todo 查看传入的上下文信息，判断用户的余额是否充足
-        context.setIsConditionMet(true);
+        // 1. 计算出用户需要购买的商品总价
+        ActivityOrderProductBO activityOrderProductBO = activityRepo.findAOProductByAOProductId(
+                context.getAOProductId()
+        );
+        Double totalPrice = activityOrderProductBO.getActivityOrderProductPrice() * context.getPurchaseQuantity();
+
+        // 2. 查询用户的余额
+        ActivityAccountBO activityAccountBO = activityRepo.findActivityAccountByUserIdAndActivityId(context.getUserId(), context.getActivityId());
+        Double balance = activityAccountBO.getBalance();
+
+        // 3. 判断用户的余额是否充足
+        if (balance < totalPrice) {
+            throw new BigMarketException(BigMarketRespCode.ACTIVITY_BALANCE_NOT_ENOUGH);
+        } else {
+            // 4. 更新用户的余额
+            activityRepo.updateActivityAccountBalanceByUserIdAndActivityId(
+                    balance - totalPrice, context.getUserId(), context.getActivityId()
+            );
+            context.setIsConditionMet(true);
+        }
     }
 
     /**

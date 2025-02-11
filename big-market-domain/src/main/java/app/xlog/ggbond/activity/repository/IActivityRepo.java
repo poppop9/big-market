@@ -1,8 +1,6 @@
 package app.xlog.ggbond.activity.repository;
 
-import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
-import app.xlog.ggbond.activity.model.po.ActivityOrderTypeConfigBO;
-import app.xlog.ggbond.activity.model.po.ActivityRedeemCodeBO;
+import app.xlog.ggbond.activity.model.po.*;
 import app.xlog.ggbond.activity.model.vo.QueueItemVO;
 
 import java.util.List;
@@ -46,6 +44,9 @@ public interface IActivityRepo {
     // 查询 - 根据兑换码查询兑换码信息
     ActivityRedeemCodeBO findActivityRedeemCodeByRedeemCode(String redeemCode);
 
+    // 查询 - 查询活动单商品
+    ActivityOrderProductBO findAOProductByAOProductId(Long aoProductId);
+
     // 更新 - 更新兑换码使用状态
     void updateActivityRedeemCodeIsUsed(Long userId, String redeemCode);
 
@@ -78,4 +79,10 @@ public interface IActivityRepo {
 
     // 修改 - 在BitSet中给用户解锁
     void unLockUserInBitSet(Long userId);
+
+    // 查询 - 查询活动账户
+    ActivityAccountBO findActivityAccountByUserIdAndActivityId(Long userId, Long activityId);
+
+    // 更新 - 更新活动账户余额
+    void updateActivityAccountBalanceByUserIdAndActivityId(double balance, Long userId, Long activityId);
 }

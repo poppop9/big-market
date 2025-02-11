@@ -1,22 +1,18 @@
 package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.GlobalConstant;
-import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
-import app.xlog.ggbond.activity.model.po.ActivityOrderTypeConfigBO;
-import app.xlog.ggbond.activity.model.po.ActivityRedeemCodeBO;
+import app.xlog.ggbond.activity.model.po.*;
 import app.xlog.ggbond.activity.model.vo.QueueItemVO;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
 import app.xlog.ggbond.persistent.po.activity.*;
-import app.xlog.ggbond.persistent.repository.jpa.ActivityAccountJpa;
-import app.xlog.ggbond.persistent.repository.jpa.ActivityOrderJpa;
-import app.xlog.ggbond.persistent.repository.jpa.ActivityOrderTypeConfigJpa;
-import app.xlog.ggbond.persistent.repository.jpa.ActivityRedeemCodeJpa;
+import app.xlog.ggbond.persistent.repository.jpa.*;
 import cn.hutool.core.bean.BeanUtil;
 import jakarta.annotation.Resource;
 import org.redisson.api.RBitSet;
 import org.redisson.api.RDelayedQueue;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
@@ -45,6 +41,8 @@ public class ActivityRepository implements IActivityRepo {
     private ActivityAccountJpa activityAccountJpa;
     @Resource
     private ActivityRedeemCodeJpa activityRedeemCodeJpa;
+    @Autowired
+    private ActivityOrderProductJpa activityOrderProductJpa;
 
     /**
      * 插入 - 插入活动单流水
@@ -181,6 +179,15 @@ public class ActivityRepository implements IActivityRepo {
     }
 
     /**
+     * 查询 - 查询活动单商品
+     */
+    @Override
+    public ActivityOrderProductBO findAOProductByAOProductId(Long aoProductId) {
+        ActivityOrderProduct activityOrderProduct = activityOrderProductJpa.findByActivityOrderProductId(aoProductId);
+        return BeanUtil.copyProperties(activityOrderProduct, ActivityOrderProductBO.class);
+    }
+
+    /**
      * 更新 - 更新兑换码使用状态
      */
     @Override
@@ -299,6 +306,23 @@ public class ActivityRepository implements IActivityRepo {
     public void unLockUserInBitSet(Long userId) {
         RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_CONSUME_AO);
         rBitSet.clear(userId);
+    }
+
+    /**
+     * 查询 - 根据用户id和活动id查询活动账户
+     */
+    @Override
+    public ActivityAccountBO findActivityAccountByUserIdAndActivityId(Long userId, Long activityId) {
+        ActivityAccount activityAccount = activityAccountJpa.findByUserIdAndActivityId(userId, activityId);
+        return BeanUtil.copyProperties(activityAccount, ActivityAccountBO.class);
+    }
+
+    /**
+     * 更新 - 更新活动账户余额
+     */
+    @Override
+    public void updateActivityAccountBalanceByUserIdAndActivityId(double balance, Long userId, Long activityId) {
+        activityAccountJpa.updateBalanceByUserIdAndActivityId(balance, userId, activityId);
     }
 
 }

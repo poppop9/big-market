@@ -29,4 +29,12 @@ public interface ActivityAccountJpa extends JpaRepository<ActivityAccount, Long>
             "WHERE a.activityId = :activityId " +
             "AND a.userId = :userId")
     void updateAvailableRaffleCountByActivityIdAndUserId(Long activityId, Long userId);
+
+    @Query("select a from ActivityAccount a where a.userId = ?1 and a.activityId = ?2")
+    ActivityAccount findByUserIdAndActivityId(Long userId, Long activityId);
+
+    @Transactional
+    @Modifying
+    @Query("update ActivityAccount a set a.balance = ?1 where a.userId = ?2 and a.activityId = ?3")
+    int updateBalanceByUserIdAndActivityId(Double balance, Long userId, Long activityId);
 }

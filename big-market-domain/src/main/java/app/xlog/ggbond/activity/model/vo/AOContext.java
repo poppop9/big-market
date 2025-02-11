@@ -20,4 +20,7 @@ public class AOContext {
     private Long raffleCount; // 该类型的活动单能给予的抽奖次数
     private Boolean isConditionMet;  // 是否满足条件
     private String redeemCode;  // 兑换码
+
+    private Long AOProductId;  // 活动单商品id
+    private Long purchaseQuantity;  // 购买活动单的数量
 }
