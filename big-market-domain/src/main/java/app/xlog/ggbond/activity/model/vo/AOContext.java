@@ -21,6 +21,6 @@ public class AOContext {
     private Boolean isConditionMet;  // 是否满足条件
     private String redeemCode;  // 兑换码
 
-    private Long AOProductId;  // 活动单商品id
+    private Long aoProductId;  // 活动单商品id
     private Long purchaseQuantity;  // 购买活动单的数量
 }

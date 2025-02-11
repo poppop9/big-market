@@ -87,7 +87,7 @@ public class PendingPaymentToEffectivePipeline {
 
         // 1. 计算出用户需要购买的商品总价
         ActivityOrderProductBO activityOrderProductBO = activityRepo.findAOProductByAOProductId(
-                context.getAOProductId()
+                context.getAoProductId()
         );
         Double totalPrice = activityOrderProductBO.getActivityOrderProductPrice() * context.getPurchaseQuantity();
 
@@ -103,6 +103,7 @@ public class PendingPaymentToEffectivePipeline {
             activityRepo.updateActivityAccountBalanceByUserIdAndActivityId(
                     balance - totalPrice, context.getUserId(), context.getActivityId()
             );
+            context.setRaffleCount(activityOrderProductBO.getPurchasingPower() * context.getPurchaseQuantity());
             context.setIsConditionMet(true);
         }
     }

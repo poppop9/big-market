@@ -1,6 +1,7 @@
 package app.xlog.ggbond.infrastructure;
 
 import app.xlog.ggbond.persistent.po.activity.Activity;
+import app.xlog.ggbond.persistent.po.activity.ActivityOrderProduct;
 import app.xlog.ggbond.persistent.po.activity.ActivityOrderType;
 import app.xlog.ggbond.persistent.po.activity.ActivityOrderTypeConfig;
 import app.xlog.ggbond.persistent.po.raffle.*;
@@ -19,6 +20,7 @@ import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
@@ -54,6 +56,8 @@ public class JpaTest {
     private ActivityOrderTypeJpa activityOrderTypeJpa;
     @Resource
     private ActivityOrderTypeConfigJpa activityOrderTypeConfigJpa;
+    @Autowired
+    private ActivityOrderProductJpa activityOrderProductJpa;
 
     @Test
     void test_9fuc8d() {
@@ -144,6 +148,7 @@ public class JpaTest {
         // 活动领域
         test_activity();
         test_ActivityOrderTypeAndActivityOrderTypeConfig();
+        test_ActivityOrderProduct();
         // 抽奖领域
         test_strategy();
         test_strategyAward();
@@ -171,6 +176,21 @@ public class JpaTest {
                 ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build1.getActivityOrderTypeId()).activityOrderTypeName(build1.getActivityOrderTypeName()).raffleCount(1L).build(),
                 ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build3.getActivityOrderTypeId()).activityOrderTypeName(build3.getActivityOrderTypeName()).raffleCount(-1L).build(),
                 ActivityOrderTypeConfig.builder().activityId(10001L).activityOrderTypeId(build4.getActivityOrderTypeId()).activityOrderTypeName(build4.getActivityOrderTypeName()).raffleCount(-1L).build()
+        ));
+    }
+
+    /**
+     * 初始化活动单商品
+     */
+    @Test
+    void test_ActivityOrderProduct() {
+        activityOrderProductJpa.saveAll(List.of(
+                ActivityOrderProduct.builder()
+                        .activityId(10001L)
+                        .activityOrderProductName("单次抽奖券")
+                        .activityOrderProductPrice(10.0)
+                        .purchasingPower(1)
+                        .build()
         ));
     }
 
