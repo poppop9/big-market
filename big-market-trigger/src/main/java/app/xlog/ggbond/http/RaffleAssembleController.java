@@ -1,10 +1,13 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IRaffleAssembleApiService;
+import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import app.xlog.ggbond.resp.ZakiResponse;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.integrationService.TriggerService;
 import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
+import app.xlog.ggbond.security.model.UserBO;
+import app.xlog.ggbond.security.service.ISecurityService;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
@@ -28,6 +31,10 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
 
     @Resource
     private TriggerService triggerService;
+    @Resource
+    private ISecurityService securityService;
+    @Resource
+    private IRaffleArmory raffleArmory;
 
     /**
      * 查询对应的奖品列表
@@ -35,7 +42,9 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
     @Override
     @GetMapping("/v2/queryAwardList")
     public ResponseEntity<JsonNode> queryAwardList(@RequestParam Long activityId) {
-        List<AwardBO> awardBOs = triggerService.findAllAwardsByActivityIdAndCurrentUser(activityId);
+        UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
+        List<AwardBO> awardBOs = raffleArmory.findAllAwards(activityId, user.getUserId());
+
         return ZakiResponse.ok("awardBOs", awardBOs);
     }
 
@@ -46,7 +55,8 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
     @SneakyThrows
     @GetMapping(value = "/v1/getWinningAwardsInfo")
     public SseEmitter getWinningAwardsInfo(@RequestParam Long activityId) {
-        List<UserRaffleHistoryBO> winningAwards = triggerService.findAllWinningAwards(activityId);
+        UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
+        List<UserRaffleHistoryBO> winningAwards = raffleArmory.findWinningAwardsInfo(activityId, user.getUserId());
 
         // 创建一个 SseEmitter 对象，设置超时时间为10秒
         SseEmitter emitter = new SseEmitter(10_000L);

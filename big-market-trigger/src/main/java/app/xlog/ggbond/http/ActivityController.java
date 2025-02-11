@@ -1,6 +1,7 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IActivityApiService;
+import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
 import app.xlog.ggbond.resp.ZakiResponse;
 import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
@@ -23,6 +24,8 @@ public class ActivityController implements IActivityApiService {
 
     @Resource
     private TriggerService triggerService;
+    @Resource
+    private AOEventCenter aoEventCenter;
 
     /**
      * 活动领域 - 充值活动单
@@ -47,7 +50,7 @@ public class ActivityController implements IActivityApiService {
      */
     @PatchMapping("/v1/payPendingPaymentAO")
     public ResponseEntity<JsonNode> payPendingPaymentAO(@RequestBody AOContext aoContext) {
-        aoContext = triggerService.payPendingPaymentAO(aoContext);
+        aoContext = aoEventCenter.publishPendingPaymentToEffectiveEvent(aoContext);
         return ZakiResponse.ok("activityOrderBO", aoContext.getActivityOrderBO());
     }
 

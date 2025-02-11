@@ -56,18 +56,6 @@ public class TriggerService {
     private AOEventCenter aoEventCenter;
 
     /**
-     * 抽奖领域 - 查询当前用户在指定活动下的所有奖品
-     */
-    public List<AwardBO> findAllAwardsByActivityIdAndCurrentUser(Long activityId) {
-        // 自动获取当前用户
-        UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
-        List<AwardBO> awardBOs = raffleArmory.findAllAwards(activityId, user.getUserId());
-        log.atDebug().log("查询了活动 {} ，用户 {} 的奖品列表", activityId, user.getUserId());
-
-        return awardBOs;
-    }
-
-    /**
      * 抽奖领域 - 根据活动id和当前用户，抽取一个奖品id
      */
     @Transactional
@@ -116,15 +104,6 @@ public class TriggerService {
         );
 
         return context.getAwardId();
-    }
-
-    /**
-     * 抽奖领域 - 查询所有中奖记录
-     */
-    public List<UserRaffleHistoryBO> findAllWinningAwards(Long activityId) {
-        // 自动获取当前用户
-        UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
-        return raffleArmory.findWinningAwardsInfo(activityId, user.getUserId());
     }
 
     /**
@@ -212,13 +191,6 @@ public class TriggerService {
     public List<ActivityOrderBO> findAllPendingPaymentAO(Long activityId) {
         Long userId = securityService.getLoginIdDefaultNull();
         return activityService.findAllPendingPaymentAO(activityId, userId);
-    }
-
-    /**
-     * 活动领域 - 支付待支付的活动单
-     */
-    public AOContext payPendingPaymentAO(AOContext aoContext) {
-        return aoEventCenter.publishPendingPaymentToEffectiveEvent(aoContext);
     }
 
 }

@@ -62,7 +62,7 @@ sa-token:
   timeout: 2592000  # token 有效期（单位：秒） 为 30天，-1 代表永久有效
   active-timeout: 259200  # token 最低活跃频率为 3天（单位：秒），-1 代表永久活跃
   is-concurrent: true  # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
-  is-share: true  # 在多人登录同一账号时，是否共用一个 token（因为有一个特殊的匿名用户200，很多人登录，有可能会产生很多token）
+  is-share: false  # 在多人登录同一账号时，是否共用一个 token（因为同一个人可能参加多个活动）
   token-style: uuid  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
   is-log: true  # 是否输出操作日志
 

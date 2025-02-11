@@ -2,6 +2,7 @@ package app.xlog.ggbond.security.config;
 
 import app.xlog.ggbond.security.model.UserBO;
 import cn.dev33.satoken.interceptor.SaInterceptor;
+import cn.dev33.satoken.router.SaHttpMethod;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ public class STPRouteInterceptor implements WebMvcConfigurer {
                     // 已经被拦截器拦截到了，接下来要怎么处理
                     SaRouter.match("/api/raffle/**", "/api/security/**", "/api/activity/**")
                             .notMatch("/api/security/user/v1/doLogin", "/api/test/**")
+                            .notMatch(SaHttpMethod.OPTIONS)
                             .check(() -> StpUtil.checkRoleOr(EnumSet
                                     .allOf(UserBO.UserRole.class).stream()
                                     .map(Enum::name)

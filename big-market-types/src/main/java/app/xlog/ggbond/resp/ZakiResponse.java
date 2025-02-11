@@ -159,6 +159,15 @@ public class ZakiResponse extends ResponseEntity<Object> {
         }
     }
 
+    public static ResponseEntity<JsonNode> ok(String dataMessage) {
+        return ok().body(objectMapper
+                .createObjectNode()
+                .put("code", BigMarketRespCode.SUCCESS.getCode())
+                .put("message", BigMarketRespCode.SUCCESS.getMessage())
+                .putPOJO("data", dataMessage)
+        );
+    }
+
     public static ResponseEntity<JsonNode> ok(Object... objects) {
         if (objects.length % 2 != 0) throw new IllegalArgumentException("参数个数必须为偶数");
 
@@ -175,11 +184,11 @@ public class ZakiResponse extends ResponseEntity<Object> {
         );
     }
 
-    public static ResponseEntity<JsonNode> ok(String dataMessage) {
-        return ok().body(objectMapper
+    public static ResponseEntity<JsonNode> error(String dataMessage) {
+        return status(HttpStatus.INTERNAL_SERVER_ERROR).body(objectMapper
                 .createObjectNode()
-                .put("code", BigMarketRespCode.SUCCESS.getCode())
-                .put("message", BigMarketRespCode.SUCCESS.getMessage())
+                .put("code", BigMarketRespCode.ERROR.getCode())
+                .put("message", BigMarketRespCode.ERROR.getMessage())
                 .putPOJO("data", dataMessage)
         );
     }

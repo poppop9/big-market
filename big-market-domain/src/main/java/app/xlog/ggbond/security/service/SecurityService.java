@@ -38,6 +38,14 @@ public class SecurityService implements ISecurityService {
     }
 
     /**
+     * 通过 token 退出登录
+     */
+    @Override
+    public void logoutByToken(String token) {
+        StpUtil.logoutByTokenValue(token);
+    }
+
+    /**
      * 查询 - 获取当前登录用户id
      */
     @Override

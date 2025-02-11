@@ -8,6 +8,10 @@ import org.springframework.http.ResponseEntity;
  */
 public interface ISecurityApiService {
 
+    // 登录
     ResponseEntity<JsonNode> doLogin(Long activityId, Long userId, String password);
+
+    // 通过 token 退出登录
+    ResponseEntity<JsonNode> logoutByToken(String token);
 
 }

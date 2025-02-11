@@ -15,7 +15,6 @@ import java.util.List;
  *      - todo 奖品返回的时候不要返回重要信息
  * - 奖品发放领域
  * - 活动领域
- *      - todo 需要有一张抽奖次数的价格表
  * - 推荐领域
  *      - todo 生成大规模的用户，和历史购买数据
  */
@@ -23,6 +22,9 @@ public interface ISecurityService {
 
     // 登录
     Boolean doLogin(Long userId, String password);
+
+    // 跟据 token 退出登录
+    void logoutByToken(String token);
 
     // 查询 - 获取当前登录用户id
     Long getLoginIdDefaultNull();
