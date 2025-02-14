@@ -145,6 +145,14 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     }
 
     /**
+     * 查询 - 查询奖品信息
+     */
+    @Override
+    public AwardBO findAwardByAwardId(Long awardId) {
+        return raffleArmoryRepo.findAwardByAwardId(awardId);
+    }
+
+    /**
      * 调度 - 根据策略ID，指定的调度参数，获取对应抽奖池中的随机奖品
      */
     @Override

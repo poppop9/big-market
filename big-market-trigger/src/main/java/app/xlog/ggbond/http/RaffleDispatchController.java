@@ -1,6 +1,7 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IRaffleDispatchApiService;
+import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.resp.ZakiResponse;
 import app.xlog.ggbond.integrationService.TriggerService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,8 +30,9 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
     @Override
     @GetMapping("/v2/raffle")
     public ResponseEntity<JsonNode> raffle(@RequestParam Long activityId) {
-        Long awardId = triggerService.raffle(activityId);
-        return ZakiResponse.ok("awardId", awardId);
+        AwardBO awardBO = triggerService.raffle(activityId);
+        awardBO.setAwardIdStr(awardBO.getAwardId().toString());
+        return ZakiResponse.ok("awardBO", awardBO);
     }
 
 }

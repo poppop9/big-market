@@ -1,23 +1,23 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.ISecurityApiService;
+import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.resp.ZakiResponse;
 import app.xlog.ggbond.integrationService.TriggerService;
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.service.ISecurityService;
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Resource;
-import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 安全领域
  */
 @Slf4j
-@Validated
 @RestController
 @RequestMapping("/api/security/user")
 public class SecurityController implements ISecurityApiService {
@@ -36,9 +36,23 @@ public class SecurityController implements ISecurityApiService {
      */
     @Override
     @GetMapping("/v1/doLogin")
-    public ResponseEntity<JsonNode> doLogin(@RequestParam Long activityId, @RequestParam Long userId, @RequestParam String password) {
+    public ResponseEntity<JsonNode> doLogin(@RequestParam Long activityId,
+                                            @RequestParam Long userId,
+                                            @RequestParam String password) {
         UserBO userBO = triggerService.doLogin(userId, password);
         return ZakiResponse.ok("userInfo", userBO);
+    }
+
+    /**
+     * 查询登录用户的信息
+     */
+    @Override
+    @GetMapping("/v1/findLoginUserInfo")
+    public ResponseEntity<JsonNode> findLoginUserInfo() {
+        UserBO userBO = securityService.findLoginUserInfo();
+        return ZakiResponse.ok(
+                "userInfo", userBO
+        );
     }
 
     /**
@@ -46,7 +60,10 @@ public class SecurityController implements ISecurityApiService {
      */
     @Override
     @DeleteMapping("/v1/logoutByToken")
-    public ResponseEntity<JsonNode> logoutByToken(@NotBlank(message = "token 不能是无效文本") String token) {
+    public ResponseEntity<JsonNode> logoutByToken(String token) {
+        if (StrUtil.isBlank(token))
+            throw new BigMarketException(BigMarketRespCode.PARAMETER_VERIFICATION_FAILED, "token 不能是无效文本");
+
         securityService.logoutByToken(token);
         return ZakiResponse.ok("");
     }

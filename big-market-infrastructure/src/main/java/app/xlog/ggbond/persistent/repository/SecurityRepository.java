@@ -10,6 +10,7 @@ import app.xlog.ggbond.persistent.repository.jpa.UserRaffleConfigJpa;
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import app.xlog.ggbond.security.repository.ISecurityRepo;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import jakarta.annotation.Resource;
 import org.redisson.api.RBloomFilter;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -149,6 +151,26 @@ public class SecurityRepository implements ISecurityRepo {
     @Override
     public boolean existsUserPurchaseHistory(Long userId) {
         return userPurchaseHistoryJpa.existsByUserId(userId);
+    }
+
+    /**
+     * 查询 - 查询登录用户的信息
+     */
+    @Override
+    public UserBO findLoginUserInfo() {
+        Long userId = Optional.ofNullable(StpUtil.getLoginIdDefaultNull())
+                .map(Object::toString)
+                .map(Long::valueOf)
+                .orElse(null);
+
+        User user = userJpa.findByUserId(userId);
+        user.setPassword(null);
+
+        // 获取token信息
+        UserBO userBO = BeanUtil.copyProperties(user, UserBO.class);
+        userBO.setToken(StpUtil.getTokenInfo().getTokenValue());
+
+        return userBO;
     }
 
 }

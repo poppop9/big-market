@@ -138,4 +138,12 @@ public class SecurityService implements ISecurityService {
         return securityRepo.existsUserPurchaseHistory(userId);
     }
 
+    /**
+     * 查询 - 查询登录用户的信息
+     */
+    @Override
+    public UserBO findLoginUserInfo() {
+        return securityRepo.findLoginUserInfo();
+    }
+
 }

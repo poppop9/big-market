@@ -4,16 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
  * 奖品
  */
 @Data
 @Builder
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class AwardBO {
     private Long awardId;  // 奖品id
+    private String awardIdStr;  // 奖品id字符串
     private String awardTitle;  // 奖品标题
     private String awardSubtitle;  // 奖品副标题
     private Double awardRate;  // 奖品被抽取到的概率，单位是%

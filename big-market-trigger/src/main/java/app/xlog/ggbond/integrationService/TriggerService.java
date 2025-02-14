@@ -59,7 +59,7 @@ public class TriggerService {
      * 抽奖领域 - 根据活动id和当前用户，抽取一个奖品id
      */
     @Transactional
-    public Long raffle(Long activityId) {
+    public AwardBO raffle(Long activityId) {
         // 1. 获取当前用户
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
         Long userId = user.getUserId();
@@ -103,7 +103,11 @@ public class TriggerService {
                 .build()
         );
 
-        return context.getAwardId();
+        // 7. 查询奖品详情
+        return raffleArmory.findAwardByAwardId(context.getAwardId())
+                .setAwardRate(null)
+                .setAwardCount(null)
+                .setAwardSort(null);
     }
 
     /**

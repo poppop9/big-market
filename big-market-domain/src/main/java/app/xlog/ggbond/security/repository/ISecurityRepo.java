@@ -40,4 +40,6 @@ public interface ISecurityRepo {
     // 判断 - 判断用户是否有购买历史
     boolean existsUserPurchaseHistory(Long userId);
 
+    // 查询 - 查询登录用户的信息
+    UserBO findLoginUserInfo();
 }

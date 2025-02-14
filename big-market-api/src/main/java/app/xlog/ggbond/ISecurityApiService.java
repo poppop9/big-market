@@ -11,6 +11,9 @@ public interface ISecurityApiService {
     // 登录
     ResponseEntity<JsonNode> doLogin(Long activityId, Long userId, String password);
 
+    // 查询登录用户的信息
+    ResponseEntity<JsonNode> findLoginUserInfo();
+
     // 通过 token 退出登录
     ResponseEntity<JsonNode> logoutByToken(String token);
 

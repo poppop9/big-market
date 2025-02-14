@@ -40,4 +40,7 @@ public interface IRaffleArmory {
 
     // 插入 - 插入用户抽奖配置
     void insertUserRaffleConfig(Long userId, long activityId, Long strategyId);
+
+    // 查询 - 查询奖品信息
+    AwardBO findAwardByAwardId(Long awardId);
 }

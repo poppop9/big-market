@@ -44,6 +44,9 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
     public ResponseEntity<JsonNode> queryAwardList(@RequestParam Long activityId) {
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
         List<AwardBO> awardBOs = raffleArmory.findAllAwards(activityId, user.getUserId());
+        awardBOs = awardBOs.stream()
+                .peek(item -> item.setAwardIdStr(item.getAwardId().toString()))
+                .toList();
 
         return ZakiResponse.ok("awardBOs", awardBOs);
     }
