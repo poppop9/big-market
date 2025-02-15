@@ -1,7 +1,7 @@
 package app.xlog.ggbond.activity.service.chain;
 
 import app.xlog.ggbond.GlobalConstant;
-import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
+import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.model.vo.QueueItemVO;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
  */
 @Slf4j
 @LiteflowComponent
-public class InitialToPendingPaymentPipeline {
+public class InitialToPendPayPipeline {
 
     @Resource
     private IActivityRepo activityRepo;

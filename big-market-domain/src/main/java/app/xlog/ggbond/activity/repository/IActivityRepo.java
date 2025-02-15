@@ -1,8 +1,10 @@
 package app.xlog.ggbond.activity.repository;
 
-import app.xlog.ggbond.activity.model.po.*;
+import app.xlog.ggbond.activity.model.bo.*;
+import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.model.vo.QueueItemVO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,4 +87,16 @@ public interface IActivityRepo {
 
     // 更新 - 更新活动账户余额
     void updateActivityAccountBalanceByUserIdAndActivityId(double balance, Long userId, Long activityId);
+
+    // 新增 - 发送发放有效活动单任务到MQ
+    void sendIssuanceEffectiveActivityOrderTaskToMQ(AOContext c);
+
+    // 新增 - 插入活动单发放任务
+    Long insertActivityOrderIssuanceTask(ActivityOrderIssuanceTaskBO build);
+
+    // 更新 - 更新活动单发放任务状态
+    void updateActivityOrderIssuanceTaskStatus(Long activityOrderIssuanceTaskId, boolean isIssued);
+
+    // 查询 - 查询未发放有效活动单的任务
+    List<ActivityOrderIssuanceTaskBO> findIssuanceEffectiveAOTaskByIsIssuedAndCreateTimeBefore(boolean b, LocalDateTime localDateTime, LocalDateTime localDateTime1);
 }

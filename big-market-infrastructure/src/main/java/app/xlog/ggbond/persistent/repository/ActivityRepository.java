@@ -1,9 +1,12 @@
 package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.GlobalConstant;
-import app.xlog.ggbond.activity.model.po.*;
+import app.xlog.ggbond.MQMessage;
+import app.xlog.ggbond.activity.model.bo.*;
+import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.model.vo.QueueItemVO;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
+import app.xlog.ggbond.mq.MQEventCenter;
 import app.xlog.ggbond.persistent.po.activity.*;
 import app.xlog.ggbond.persistent.repository.jpa.*;
 import cn.hutool.core.bean.BeanUtil;
@@ -32,6 +35,8 @@ public class ActivityRepository implements IActivityRepo {
 
     @Resource
     private RedissonClient redissonClient;
+    @Resource
+    private MQEventCenter mqEventCenter;
 
     @Resource
     private ActivityOrderJpa activityOrderJPA;
@@ -43,6 +48,8 @@ public class ActivityRepository implements IActivityRepo {
     private ActivityRedeemCodeJpa activityRedeemCodeJpa;
     @Autowired
     private ActivityOrderProductJpa activityOrderProductJpa;
+    @Autowired
+    private ActivityOrderIssuanceTaskJpa activityOrderIssuanceTaskJpa;
 
     /**
      * 插入 - 插入活动单流水
@@ -323,6 +330,54 @@ public class ActivityRepository implements IActivityRepo {
     @Override
     public void updateActivityAccountBalanceByUserIdAndActivityId(double balance, Long userId, Long activityId) {
         activityAccountJpa.updateBalanceByUserIdAndActivityId(balance, userId, activityId);
+    }
+
+    /**
+     * 新增 - 发送发放有效活动单任务到MQ
+     */
+    @Override
+    public void sendIssuanceEffectiveActivityOrderTaskToMQ(AOContext aoContext) {
+        mqEventCenter.sendMessage(GlobalConstant.KafkaConstant.ISSUANCE_EFFECTIVE_ACTIVITY_ORDER_TASK,
+                MQMessage.<AOContext>builder()
+                        .data(aoContext)
+                        .build()
+        );
+    }
+
+    /**
+     * 新增 - 插入活动单发放任务
+     */
+    @Override
+    public Long insertActivityOrderIssuanceTask(ActivityOrderIssuanceTaskBO activityOrderIssuanceTaskBO) {
+        ActivityOrderIssuanceTask activityOrderIssuanceTask = ActivityOrderIssuanceTask.builder()
+                .userId(activityOrderIssuanceTaskBO.getUserId())
+                .activityOrderId(activityOrderIssuanceTaskBO.getActivityOrderId())
+                .build();
+        ActivityOrderIssuanceTask save = activityOrderIssuanceTaskJpa.save(activityOrderIssuanceTask);
+        return save.getActivityOrderIssuanceTaskId();
+    }
+
+    /**
+     * 更新 - 更新活动单发放任务状态
+     */
+    @Override
+    public void updateActivityOrderIssuanceTaskStatus(Long activityOrderIssuanceTaskId, boolean isIssued) {
+        activityOrderIssuanceTaskJpa.updateIsIssuedByActivityOrderIssuanceTaskId(
+                isIssued, activityOrderIssuanceTaskId
+        );
+    }
+
+    /**
+     * 查询 - 查询未发放有效活动单的任务
+     */
+    @Override
+    public List<ActivityOrderIssuanceTaskBO> findIssuanceEffectiveAOTaskByIsIssuedAndCreateTimeBefore(boolean isIssued,
+                                                                                                      LocalDateTime startTime,
+                                                                                                      LocalDateTime endTime) {
+        List<ActivityOrderIssuanceTask> activityOrderIssuanceTaskList = activityOrderIssuanceTaskJpa.findByIsIssuedAndCreateTimeBetween(
+                isIssued, startTime, endTime
+        );
+        return BeanUtil.copyToList(activityOrderIssuanceTaskList, ActivityOrderIssuanceTaskBO.class);
     }
 
 }

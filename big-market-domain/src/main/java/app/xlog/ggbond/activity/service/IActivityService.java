@@ -1,6 +1,6 @@
 package app.xlog.ggbond.activity.service;
 
-import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
+import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
 
 import java.util.List;
 
@@ -18,4 +18,9 @@ public interface IActivityService {
     // 判断 - 检查过期的待支付活动单
     void checkExpirePendingPaymentAO(Long activityOrderId);
 
+    // 扫描 - 扫描task表，补偿未发放有效活动单
+    void scanAndCompensateNotIssuanceEffectiveAO(Long scanIssuanceEffectiveActivityOrderTime);
+
+    // 更新 - 更新活动单发放任务状态
+    void updateActivityOrderIssuanceTaskStatus(Long activityOrderIssuanceTaskId, boolean b);
 }

@@ -1,4 +1,4 @@
-package app.xlog.ggbond.activity.model.po;
+package app.xlog.ggbond.activity.model.bo;
 
 import lombok.Builder;
 import lombok.Data;

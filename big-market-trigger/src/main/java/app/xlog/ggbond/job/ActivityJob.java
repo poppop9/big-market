@@ -37,4 +37,15 @@ public class ActivityJob {
         }
     }
 
+    /**
+     * 扫描task表，补偿未发放有效活动单
+     * todo 未测试
+     */
+    @XxlJob("scan_and_compensate_not_issuance_effective_ao")
+    public void scanAndCompensateNotIssuanceEffectiveAO() {
+        activityService.scanAndCompensateNotIssuanceEffectiveAO(
+                GlobalConstant.SCAN_ISSUANCE_EFFECTIVE_ACTIVITY_ORDER_TIME
+        );
+    }
+
 }

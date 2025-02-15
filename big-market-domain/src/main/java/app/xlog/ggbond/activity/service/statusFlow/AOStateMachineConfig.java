@@ -1,6 +1,7 @@
 package app.xlog.ggbond.activity.service.statusFlow;
 
-import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
+import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
+import app.xlog.ggbond.activity.model.bo.ActivityOrderIssuanceTaskBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
 import com.alibaba.cola.statemachine.StateMachine;
@@ -12,7 +13,6 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 状态机配置
@@ -25,6 +25,8 @@ public class AOStateMachineConfig {
 
     @Resource
     private FlowExecutor flowExecutor;
+    @Resource
+    private IActivityRepo activityRepo;
 
     @Bean
     public StateMachine<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext> stateMachine() {
@@ -64,9 +66,16 @@ public class AOStateMachineConfig {
                     return isConditionMet;
                 })
                 .perform((S1, S2, E, C) -> {
-                    // 执行待支付状态 -> 有效状态活动单生成链
-                    LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("PENDING_PAYMENT_TO_EFFECTIVE", null, C);
-                    if (!liteflowResponse.isSuccess()) throw (RuntimeException) liteflowResponse.getCause();
+                    Long activityOrderIssuanceTaskId = activityRepo.insertActivityOrderIssuanceTask(ActivityOrderIssuanceTaskBO.builder()
+                            .userId(C.getUserId())
+                            .activityId(C.getActivityId())
+                            .activityOrderId(C.getActivityOrderBO().getActivityOrderId())
+                            .activityOrderTypeId(C.getActivityOrderType().getActivityOrderTypeId())
+                            .raffleCount(C.getRaffleCount())
+                            .build()
+                    );
+                    C.setActivityOrderIssuanceTaskId(activityOrderIssuanceTaskId);
+                    activityRepo.sendIssuanceEffectiveActivityOrderTaskToMQ(C);
                 });
 
         /*

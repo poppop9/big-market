@@ -1,11 +1,9 @@
 package app.xlog.ggbond.activity.service.chain;
 
 import app.xlog.ggbond.exception.BigMarketException;
-import app.xlog.ggbond.raffle.model.bo.UserBO;
-import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.exception.RetryRouterException;
-import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
+import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
 import com.yomahub.liteflow.annotation.LiteflowComponent;

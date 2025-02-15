@@ -45,8 +45,7 @@ public class AwardIssuanceRepository implements IAwardIssuanceRepo {
      */
     @Override
     public void sendAwardIssuanceToMQ(AwardIssuanceTaskBO awardIssuanceTaskBO) {
-        mqEventCenter.sendMessage(
-                GlobalConstant.KafkaConstant.AWARD_ISSUANCE_TASK,
+        mqEventCenter.sendMessage(GlobalConstant.KafkaConstant.AWARD_ISSUANCE_TASK,
                 MQMessage.<AwardIssuanceTaskBO>builder()
                         .data(awardIssuanceTaskBO)
                         .build()

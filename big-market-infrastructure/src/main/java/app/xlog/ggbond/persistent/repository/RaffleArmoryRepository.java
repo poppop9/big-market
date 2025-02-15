@@ -82,6 +82,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
                     AwardBO awardBO = BeanUtil.copyProperties(
                             awardJpa.findByAwardId(item.getAwardId()), AwardBO.class
                     );
+                    awardBO.setAwardIdStr(item.getAwardId().toString());
                     awardBO.setAwardCount(item.getAwardCount());
                     awardBO.setAwardSort(item.getAwardSort());
                     awardBO.setAwardRate(item.getAwardRate());
@@ -96,7 +97,9 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     @Override
     public AwardBO findAwardByAwardId(Long awardId) {
         Award award = awardJpa.findByAwardId(awardId);
-        return BeanUtil.copyProperties(award, AwardBO.class);
+        AwardBO awardBO = BeanUtil.copyProperties(award, AwardBO.class);
+
+        return awardBO.setAwardIdStr(award.getAwardId().toString());
     }
 
     /**
@@ -110,7 +113,6 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
 
     /**
      * 查询 - 根据活动id，用户id，查询用户的所有奖品
-     * todo 未测试
      */
     @Override
     public List<AwardBO> findAllAwards(Long activityId, Long userId) {
@@ -121,8 +123,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
         if (rList.isExists()) return rList;
 
         // 不存在，重新从数据库中查询
-        List<AwardBO> awardBOS = findAwardsByStrategyId(strategyId);
-        return awardBOS;
+        return findAwardsByStrategyId(strategyId);
     }
 
     /**
@@ -170,7 +171,6 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
 
     /**
      * 装配 - 装配奖品列表
-     * todo 未测试
      */
     @Override
     public void assembleAwardList(Long strategyId) {
@@ -195,6 +195,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
         List<AwardBO> awardBOList = strategyAwardList.stream()
                 .map(item -> AwardBO.builder()
                         .awardId(item.getAwardId())
+                        .awardIdStr(item.getAwardId().toString())
                         .awardTitle(awardIdAwardMap.get(item.getAwardId()).getAwardTitle())
                         .awardSubtitle(awardIdAwardMap.get(item.getAwardId()).getAwardSubtitle())
                         .awardRate(item.getAwardRate())

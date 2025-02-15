@@ -1,7 +1,7 @@
 package app.xlog.ggbond.activity.model.vo;
 
-import app.xlog.ggbond.activity.model.po.ActivityOrderBO;
-import app.xlog.ggbond.activity.model.po.ActivityOrderTypeBO;
+import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
+import app.xlog.ggbond.activity.model.bo.ActivityOrderTypeBO;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -23,4 +23,6 @@ public class AOContext {
 
     private Long aoProductId;  // 活动单商品id
     private Long purchaseQuantity;  // 购买活动单的数量
+
+    private Long activityOrderIssuanceTaskId;  // 活动单发放任务id
 }

@@ -1,6 +1,6 @@
 package app.xlog.ggbond.activity.service.chain;
 
-import app.xlog.ggbond.activity.model.po.*;
+import app.xlog.ggbond.activity.model.bo.*;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
 import app.xlog.ggbond.exception.BigMarketException;
@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Slf4j
 @LiteflowComponent
-public class PendingPaymentToEffectivePipeline {
+public class PendPayToEffectivePipeline {
 
     @Resource
     private IActivityRepo activityRepo;
@@ -76,7 +76,6 @@ public class PendingPaymentToEffectivePipeline {
 
     /**
      * when - 付费购买裁判 - 判断是否满足付费购买的条件
-     * todo 未测试
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,

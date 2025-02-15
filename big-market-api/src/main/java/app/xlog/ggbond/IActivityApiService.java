@@ -3,8 +3,6 @@ package app.xlog.ggbond;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 活动领域 api
