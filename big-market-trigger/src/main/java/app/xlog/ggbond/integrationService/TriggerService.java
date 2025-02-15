@@ -1,7 +1,7 @@
 package app.xlog.ggbond.integrationService;
 
-import app.xlog.ggbond.awardIssuance.model.AwardIssuanceTaskBO;
-import app.xlog.ggbond.awardIssuance.service.IAwardIssuanceService;
+import app.xlog.ggbond.reward.model.RewardTaskBO;
+import app.xlog.ggbond.reward.service.IRewardService;
 import app.xlog.ggbond.exception.BigMarketException;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.resp.BigMarketRespCode;
@@ -48,7 +48,7 @@ public class TriggerService {
     @Resource
     private IRaffleDispatch raffleDispatch;
     @Resource
-    private IAwardIssuanceService awardIssuanceService;
+    private IRewardService rewardService;
     @Resource
     private RecommendService recommendService;
     @Resource
@@ -87,16 +87,16 @@ public class TriggerService {
         log.atInfo().log("抽奖领域 - " + userId + " 抽到 {} 活动的 {} 奖品", activityId, context.getAwardId());
 
         // 5. 写入发奖的task表
-        long awardIssuanceId = awardIssuanceService.insertAwardIssuanceTask(AwardIssuanceTaskBO.builder()
+        long rewardId = rewardService.insertRewardTask(RewardTaskBO.builder()
                 .userId(userId)
                 .userRaffleHistoryId(context.getUserRaffleHistoryId())
                 .isIssued(false)
                 .build()
         );
 
-        // 6. 发送发奖的mq消息，并更新task表状态
-        awardIssuanceService.sendAwardIssuanceToMQ(AwardIssuanceTaskBO.builder()
-                .awardIssuanceId(awardIssuanceId)
+        // 6. 发送发奖的mq消息
+        rewardService.sendRewardToMQ(RewardTaskBO.builder()
+                .rewardId(rewardId)
                 .userId(userId)
                 .userRaffleHistoryId(context.getUserRaffleHistoryId())
                 .build()

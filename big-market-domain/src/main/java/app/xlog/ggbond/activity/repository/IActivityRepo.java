@@ -92,11 +92,11 @@ public interface IActivityRepo {
     void sendIssuanceEffectiveActivityOrderTaskToMQ(AOContext c);
 
     // 新增 - 插入活动单发放任务
-    Long insertActivityOrderIssuanceTask(ActivityOrderIssuanceTaskBO build);
+    Long insertActivityOrderIssuanceTask(ActivityOrderRewardTaskBO build);
 
     // 更新 - 更新活动单发放任务状态
     void updateActivityOrderIssuanceTaskStatus(Long activityOrderIssuanceTaskId, boolean isIssued);
 
     // 查询 - 查询未发放有效活动单的任务
-    List<ActivityOrderIssuanceTaskBO> findIssuanceEffectiveAOTaskByIsIssuedAndCreateTimeBefore(boolean b, LocalDateTime localDateTime, LocalDateTime localDateTime1);
+    List<ActivityOrderRewardTaskBO> findIssuanceEffectiveAOTaskByIsIssuedAndCreateTimeBefore(boolean b, LocalDateTime localDateTime, LocalDateTime localDateTime1);
 }

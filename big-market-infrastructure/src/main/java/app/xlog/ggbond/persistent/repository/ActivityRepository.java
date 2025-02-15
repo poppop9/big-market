@@ -15,7 +15,6 @@ import org.redisson.api.RBitSet;
 import org.redisson.api.RDelayedQueue;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
@@ -46,10 +45,10 @@ public class ActivityRepository implements IActivityRepo {
     private ActivityAccountJpa activityAccountJpa;
     @Resource
     private ActivityRedeemCodeJpa activityRedeemCodeJpa;
-    @Autowired
+    @Resource
     private ActivityOrderProductJpa activityOrderProductJpa;
-    @Autowired
-    private ActivityOrderIssuanceTaskJpa activityOrderIssuanceTaskJpa;
+    @Resource
+    private ActivityOrderRewardTaskJpa activityOrderRewardTaskJpa;
 
     /**
      * 插入 - 插入活动单流水
@@ -337,7 +336,7 @@ public class ActivityRepository implements IActivityRepo {
      */
     @Override
     public void sendIssuanceEffectiveActivityOrderTaskToMQ(AOContext aoContext) {
-        mqEventCenter.sendMessage(GlobalConstant.KafkaConstant.ISSUANCE_EFFECTIVE_ACTIVITY_ORDER_TASK,
+        mqEventCenter.sendMessage(GlobalConstant.KafkaConstant.REWARD_EFFECTIVE_ACTIVITY_ORDER_TASK,
                 MQMessage.<AOContext>builder()
                         .data(aoContext)
                         .build()
@@ -348,13 +347,13 @@ public class ActivityRepository implements IActivityRepo {
      * 新增 - 插入活动单发放任务
      */
     @Override
-    public Long insertActivityOrderIssuanceTask(ActivityOrderIssuanceTaskBO activityOrderIssuanceTaskBO) {
-        ActivityOrderIssuanceTask activityOrderIssuanceTask = ActivityOrderIssuanceTask.builder()
-                .userId(activityOrderIssuanceTaskBO.getUserId())
-                .activityOrderId(activityOrderIssuanceTaskBO.getActivityOrderId())
+    public Long insertActivityOrderIssuanceTask(ActivityOrderRewardTaskBO activityOrderRewardTaskBO) {
+        ActivityOrderRewardTask activityOrderRewardTask = ActivityOrderRewardTask.builder()
+                .userId(activityOrderRewardTaskBO.getUserId())
+                .activityOrderId(activityOrderRewardTaskBO.getActivityOrderId())
                 .build();
-        ActivityOrderIssuanceTask save = activityOrderIssuanceTaskJpa.save(activityOrderIssuanceTask);
-        return save.getActivityOrderIssuanceTaskId();
+        ActivityOrderRewardTask save = activityOrderRewardTaskJpa.save(activityOrderRewardTask);
+        return save.getActivityOrderRewardTaskId();
     }
 
     /**
@@ -362,7 +361,7 @@ public class ActivityRepository implements IActivityRepo {
      */
     @Override
     public void updateActivityOrderIssuanceTaskStatus(Long activityOrderIssuanceTaskId, boolean isIssued) {
-        activityOrderIssuanceTaskJpa.updateIsIssuedByActivityOrderIssuanceTaskId(
+        activityOrderRewardTaskJpa.updateIsIssuedByActivityOrderIssuanceTaskId(
                 isIssued, activityOrderIssuanceTaskId
         );
     }
@@ -371,13 +370,13 @@ public class ActivityRepository implements IActivityRepo {
      * 查询 - 查询未发放有效活动单的任务
      */
     @Override
-    public List<ActivityOrderIssuanceTaskBO> findIssuanceEffectiveAOTaskByIsIssuedAndCreateTimeBefore(boolean isIssued,
-                                                                                                      LocalDateTime startTime,
-                                                                                                      LocalDateTime endTime) {
-        List<ActivityOrderIssuanceTask> activityOrderIssuanceTaskList = activityOrderIssuanceTaskJpa.findByIsIssuedAndCreateTimeBetween(
+    public List<ActivityOrderRewardTaskBO> findIssuanceEffectiveAOTaskByIsIssuedAndCreateTimeBefore(boolean isIssued,
+                                                                                                    LocalDateTime startTime,
+                                                                                                    LocalDateTime endTime) {
+        List<ActivityOrderRewardTask> activityOrderRewardTaskList = activityOrderRewardTaskJpa.findByIsIssuedAndCreateTimeBetween(
                 isIssued, startTime, endTime
         );
-        return BeanUtil.copyToList(activityOrderIssuanceTaskList, ActivityOrderIssuanceTaskBO.class);
+        return BeanUtil.copyToList(activityOrderRewardTaskList, ActivityOrderRewardTaskBO.class);
     }
 
 }

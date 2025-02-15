@@ -29,7 +29,7 @@ public class ActivityListener {
      * 消费发放有效活动单任务消息
      * todo 未测试
      */
-    @KafkaListener(topics = GlobalConstant.KafkaConstant.ISSUANCE_EFFECTIVE_ACTIVITY_ORDER_TASK,
+    @KafkaListener(topics = GlobalConstant.KafkaConstant.REWARD_EFFECTIVE_ACTIVITY_ORDER_TASK,
             groupId = GlobalConstant.KafkaConstant.GROUP_ID)
     @SneakyThrows
     public void consumeIssuanceEffectiveAOMessage(ConsumerRecord<String, MQMessage<AOContext>> record) {

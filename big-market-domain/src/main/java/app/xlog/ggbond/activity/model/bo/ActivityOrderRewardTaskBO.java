@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ActivityOrderIssuanceTaskBO {
-    private Long activityOrderIssuanceTaskId;  // 奖品发放任务id
+public class ActivityOrderRewardTaskBO {
+    private Long activityOrderRewardTaskId;  // 奖品发放任务id
     private Boolean isIssued = false;  // 奖品是否发放
 
-    // 一些必要数据
+    // 为补偿扫描后的操作准备的字段
     private Long userId;  // 用户id
     private Long activityId;  // 活动id
     private Long activityOrderId;  // 活动单id

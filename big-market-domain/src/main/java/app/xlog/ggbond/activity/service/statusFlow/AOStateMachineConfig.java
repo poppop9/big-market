@@ -1,7 +1,7 @@
 package app.xlog.ggbond.activity.service.statusFlow;
 
 import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
-import app.xlog.ggbond.activity.model.bo.ActivityOrderIssuanceTaskBO;
+import app.xlog.ggbond.activity.model.bo.ActivityOrderRewardTaskBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
 import com.alibaba.cola.statemachine.StateMachine;
@@ -66,7 +66,7 @@ public class AOStateMachineConfig {
                     return isConditionMet;
                 })
                 .perform((S1, S2, E, C) -> {
-                    Long activityOrderIssuanceTaskId = activityRepo.insertActivityOrderIssuanceTask(ActivityOrderIssuanceTaskBO.builder()
+                    Long activityOrderRewardIdTaskId = activityRepo.insertActivityOrderIssuanceTask(ActivityOrderRewardTaskBO.builder()
                             .userId(C.getUserId())
                             .activityId(C.getActivityId())
                             .activityOrderId(C.getActivityOrderBO().getActivityOrderId())
@@ -74,7 +74,7 @@ public class AOStateMachineConfig {
                             .raffleCount(C.getRaffleCount())
                             .build()
                     );
-                    C.setActivityOrderIssuanceTaskId(activityOrderIssuanceTaskId);
+                    C.setActivityOrderIssuanceTaskId(activityOrderRewardIdTaskId);
                     activityRepo.sendIssuanceEffectiveActivityOrderTaskToMQ(C);
                 });
 

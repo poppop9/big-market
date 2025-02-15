@@ -40,6 +40,12 @@ rules:
       ActivityOrder: # 活动单
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
+      ActivityOrderRewardTask: # 活动单奖品发放任务
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD_4 } }
+      ActivityRedeemCode: # 活动兑换码
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD_4 } }
       # 抽奖领域
       Strategy: # 策略
         actualDataSources: ds_${0..1}
@@ -60,7 +66,7 @@ rules:
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
       # 奖品发放领域
-      AwardIssuanceTask: # 奖品发放任务
+      RewardTask: # 奖品发放任务
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD_4 } }
     # 定义分片算法策略

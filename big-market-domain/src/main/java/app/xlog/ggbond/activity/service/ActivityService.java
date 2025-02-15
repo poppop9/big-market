@@ -1,7 +1,7 @@
 package app.xlog.ggbond.activity.service;
 
 import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
-import app.xlog.ggbond.activity.model.bo.ActivityOrderIssuanceTaskBO;
+import app.xlog.ggbond.activity.model.bo.ActivityOrderRewardTaskBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
 import jakarta.annotation.Resource;
@@ -48,21 +48,21 @@ public class ActivityService implements IActivityService {
      */
     @Override
     public void scanAndCompensateNotIssuanceEffectiveAO(Long scanIssuanceEffectiveActivityOrderTime) {
-        List<ActivityOrderIssuanceTaskBO> activityOrderIssuanceTaskBOList = activityRepo.findIssuanceEffectiveAOTaskByIsIssuedAndCreateTimeBefore(
+        List<ActivityOrderRewardTaskBO> activityOrderRewardTaskBOList = activityRepo.findIssuanceEffectiveAOTaskByIsIssuedAndCreateTimeBefore(
                 false,
                 LocalDateTime.now().minusSeconds(scanIssuanceEffectiveActivityOrderTime * 2),
                 LocalDateTime.now().minusSeconds(scanIssuanceEffectiveActivityOrderTime)
         );
-        for (ActivityOrderIssuanceTaskBO activityOrderIssuanceTaskBO : activityOrderIssuanceTaskBOList) {
+        for (ActivityOrderRewardTaskBO activityOrderRewardTaskBO : activityOrderRewardTaskBOList) {
             activityRepo.sendIssuanceEffectiveActivityOrderTaskToMQ(AOContext.builder()
-                    .userId(activityOrderIssuanceTaskBO.getUserId())
-                    .activityId(activityOrderIssuanceTaskBO.getActivityId())
+                    .userId(activityOrderRewardTaskBO.getUserId())
+                    .activityId(activityOrderRewardTaskBO.getActivityId())
                     .activityOrderBO(ActivityOrderBO.builder()
-                            .activityOrderId(activityOrderIssuanceTaskBO.getActivityOrderId())
-                            .activityOrderTypeId(activityOrderIssuanceTaskBO.getActivityOrderTypeId())
+                            .activityOrderId(activityOrderRewardTaskBO.getActivityOrderId())
+                            .activityOrderTypeId(activityOrderRewardTaskBO.getActivityOrderTypeId())
                             .build()
                     )
-                    .raffleCount(activityOrderIssuanceTaskBO.getRaffleCount())
+                    .raffleCount(activityOrderRewardTaskBO.getRaffleCount())
                     .build()
             );
         }
