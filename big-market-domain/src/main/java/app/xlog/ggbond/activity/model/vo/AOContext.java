@@ -24,5 +24,5 @@ public class AOContext {
     private Long aoProductId;  // 活动单商品id
     private Long purchaseQuantity;  // 购买活动单的数量
 
-    private Long activityOrderIssuanceTaskId;  // 活动单发放任务id
+    private Long activityOrderRewardTaskId;  // 活动单发放任务id
 }

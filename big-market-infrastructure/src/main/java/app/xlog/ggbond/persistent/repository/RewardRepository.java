@@ -29,7 +29,7 @@ public class RewardRepository implements IRewardRepo {
      * 奖品发放领域 - 写入task记录
      */
     @Override
-    public long insertAwardIssuanceTask(RewardTaskBO rewardTaskBO) {
+    public long insertRewardTask(RewardTaskBO rewardTaskBO) {
         RewardTask rewardTask = rewardTaskJpa.save(RewardTask.builder()
                 .userId(rewardTaskBO.getUserId())
                 .userRaffleHistoryId(rewardTaskBO.getUserRaffleHistoryId())
@@ -43,7 +43,7 @@ public class RewardRepository implements IRewardRepo {
      * 奖品发放领域 - 发送奖品发放任务
      */
     @Override
-    public void sendAwardIssuanceToMQ(RewardTaskBO rewardTaskBO) {
+    public void sendRewardToMQ(RewardTaskBO rewardTaskBO) {
         mqEventCenter.sendMessage(GlobalConstant.KafkaConstant.REWARD_TASK,
                 MQMessage.<RewardTaskBO>builder()
                         .data(rewardTaskBO)
@@ -55,7 +55,7 @@ public class RewardRepository implements IRewardRepo {
      * 奖品发放领域 - 更新奖品发放任务状态
      */
     @Override
-    public void updateAwardIssuanceTaskStatus(Long awardIssuanceId, boolean isIssued) {
+    public void updateRewardTaskStatus(Long awardIssuanceId, boolean isIssued) {
         rewardTaskJpa.updateIsIssuedByAwardIssuanceId(isIssued, awardIssuanceId);
     }
 
@@ -63,7 +63,7 @@ public class RewardRepository implements IRewardRepo {
      * 奖品发放领域 - 查询所有指定时间内，未发放奖品的记录
      */
     @Override
-    public List<RewardTaskBO> findAwardIssuanceTaskByIsIssuedAndCreateTimeBefore(boolean isIssued, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public List<RewardTaskBO> findRewardTaskByIsIssuedAndCreateTimeBefore(boolean isIssued, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         List<RewardTask> rewardTaskList = rewardTaskJpa.findByIsIssuedAndCreateTimeBetween(
                 isIssued,
                 startDateTime,

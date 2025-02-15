@@ -43,7 +43,7 @@ public class ActivityListener {
 
         // 更新 task
         activityService.updateActivityOrderIssuanceTaskStatus(
-                record.value().getData().getActivityOrderIssuanceTaskId(),
+                record.value().getData().getActivityOrderRewardTaskId(),
                 true
         );
 

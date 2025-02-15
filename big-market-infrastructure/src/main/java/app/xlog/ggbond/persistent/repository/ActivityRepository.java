@@ -335,7 +335,7 @@ public class ActivityRepository implements IActivityRepo {
      * 新增 - 发送发放有效活动单任务到MQ
      */
     @Override
-    public void sendIssuanceEffectiveActivityOrderTaskToMQ(AOContext aoContext) {
+    public void sendRewardEffectiveActivityOrderTaskToMQ(AOContext aoContext) {
         mqEventCenter.sendMessage(GlobalConstant.KafkaConstant.REWARD_EFFECTIVE_ACTIVITY_ORDER_TASK,
                 MQMessage.<AOContext>builder()
                         .data(aoContext)
@@ -347,7 +347,7 @@ public class ActivityRepository implements IActivityRepo {
      * 新增 - 插入活动单发放任务
      */
     @Override
-    public Long insertActivityOrderIssuanceTask(ActivityOrderRewardTaskBO activityOrderRewardTaskBO) {
+    public Long insertActivityOrderRewardTask(ActivityOrderRewardTaskBO activityOrderRewardTaskBO) {
         ActivityOrderRewardTask activityOrderRewardTask = ActivityOrderRewardTask.builder()
                 .userId(activityOrderRewardTaskBO.getUserId())
                 .activityOrderId(activityOrderRewardTaskBO.getActivityOrderId())
@@ -360,7 +360,7 @@ public class ActivityRepository implements IActivityRepo {
      * 更新 - 更新活动单发放任务状态
      */
     @Override
-    public void updateActivityOrderIssuanceTaskStatus(Long activityOrderIssuanceTaskId, boolean isIssued) {
+    public void updateActivityOrderRewardTaskStatus(Long activityOrderIssuanceTaskId, boolean isIssued) {
         activityOrderRewardTaskJpa.updateIsIssuedByActivityOrderIssuanceTaskId(
                 isIssued, activityOrderIssuanceTaskId
         );
@@ -370,7 +370,7 @@ public class ActivityRepository implements IActivityRepo {
      * 查询 - 查询未发放有效活动单的任务
      */
     @Override
-    public List<ActivityOrderRewardTaskBO> findIssuanceEffectiveAOTaskByIsIssuedAndCreateTimeBefore(boolean isIssued,
+    public List<ActivityOrderRewardTaskBO> findRewardEffectiveAOTaskByIsIssuedAndCreateTimeBefore(boolean isIssued,
                                                                                                     LocalDateTime startTime,
                                                                                                     LocalDateTime endTime) {
         List<ActivityOrderRewardTask> activityOrderRewardTaskList = activityOrderRewardTaskJpa.findByIsIssuedAndCreateTimeBetween(

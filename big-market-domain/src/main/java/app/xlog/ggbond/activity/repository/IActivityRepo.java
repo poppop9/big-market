@@ -89,14 +89,14 @@ public interface IActivityRepo {
     void updateActivityAccountBalanceByUserIdAndActivityId(double balance, Long userId, Long activityId);
 
     // 新增 - 发送发放有效活动单任务到MQ
-    void sendIssuanceEffectiveActivityOrderTaskToMQ(AOContext c);
+    void sendRewardEffectiveActivityOrderTaskToMQ(AOContext c);
 
     // 新增 - 插入活动单发放任务
-    Long insertActivityOrderIssuanceTask(ActivityOrderRewardTaskBO build);
+    Long insertActivityOrderRewardTask(ActivityOrderRewardTaskBO build);
 
     // 更新 - 更新活动单发放任务状态
-    void updateActivityOrderIssuanceTaskStatus(Long activityOrderIssuanceTaskId, boolean isIssued);
+    void updateActivityOrderRewardTaskStatus(Long activityOrderIssuanceTaskId, boolean isIssued);
 
     // 查询 - 查询未发放有效活动单的任务
-    List<ActivityOrderRewardTaskBO> findIssuanceEffectiveAOTaskByIsIssuedAndCreateTimeBefore(boolean b, LocalDateTime localDateTime, LocalDateTime localDateTime1);
+    List<ActivityOrderRewardTaskBO> findRewardEffectiveAOTaskByIsIssuedAndCreateTimeBefore(boolean b, LocalDateTime localDateTime, LocalDateTime localDateTime1);
 }

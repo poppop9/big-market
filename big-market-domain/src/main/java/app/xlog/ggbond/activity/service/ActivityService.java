@@ -48,13 +48,13 @@ public class ActivityService implements IActivityService {
      */
     @Override
     public void scanAndCompensateNotIssuanceEffectiveAO(Long scanIssuanceEffectiveActivityOrderTime) {
-        List<ActivityOrderRewardTaskBO> activityOrderRewardTaskBOList = activityRepo.findIssuanceEffectiveAOTaskByIsIssuedAndCreateTimeBefore(
+        List<ActivityOrderRewardTaskBO> activityOrderRewardTaskBOList = activityRepo.findRewardEffectiveAOTaskByIsIssuedAndCreateTimeBefore(
                 false,
                 LocalDateTime.now().minusSeconds(scanIssuanceEffectiveActivityOrderTime * 2),
                 LocalDateTime.now().minusSeconds(scanIssuanceEffectiveActivityOrderTime)
         );
         for (ActivityOrderRewardTaskBO activityOrderRewardTaskBO : activityOrderRewardTaskBOList) {
-            activityRepo.sendIssuanceEffectiveActivityOrderTaskToMQ(AOContext.builder()
+            activityRepo.sendRewardEffectiveActivityOrderTaskToMQ(AOContext.builder()
                     .userId(activityOrderRewardTaskBO.getUserId())
                     .activityId(activityOrderRewardTaskBO.getActivityId())
                     .activityOrderBO(ActivityOrderBO.builder()
@@ -73,7 +73,7 @@ public class ActivityService implements IActivityService {
      */
     @Override
     public void updateActivityOrderIssuanceTaskStatus(Long activityOrderIssuanceTaskId, boolean isIssued) {
-        activityRepo.updateActivityOrderIssuanceTaskStatus(activityOrderIssuanceTaskId, isIssued);
+        activityRepo.updateActivityOrderRewardTaskStatus(activityOrderIssuanceTaskId, isIssued);
     }
 
 }

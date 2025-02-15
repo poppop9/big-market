@@ -22,7 +22,7 @@ public class RewardService implements IRewardService {
      */
     @Override
     public long insertRewardTask(RewardTaskBO rewardTaskBO) {
-        long awardIssuanceId = rewardRepo.insertAwardIssuanceTask(rewardTaskBO);
+        long awardIssuanceId = rewardRepo.insertRewardTask(rewardTaskBO);
         return awardIssuanceId;
     }
 
@@ -31,7 +31,7 @@ public class RewardService implements IRewardService {
      */
     @Override
     public void sendRewardToMQ(RewardTaskBO rewardTaskBO) {
-        rewardRepo.sendAwardIssuanceToMQ(rewardTaskBO);
+        rewardRepo.sendRewardToMQ(rewardTaskBO);
     }
 
     /**
@@ -39,7 +39,7 @@ public class RewardService implements IRewardService {
      */
     @Override
     public void updateRewardTaskStatus(Long awardIssuanceId, boolean isIssued) {
-        rewardRepo.updateAwardIssuanceTaskStatus(awardIssuanceId, isIssued);
+        rewardRepo.updateRewardTaskStatus(awardIssuanceId, isIssued);
     }
 
     /**
@@ -48,7 +48,7 @@ public class RewardService implements IRewardService {
     @Override
     public void scanAndCompensateNotReward(Long scanAwardIssuanceTaskTime) {
         // 获取到指定时间之前的所有未发奖成功的task记录
-        List<RewardTaskBO> rewardTaskBOList = rewardRepo.findAwardIssuanceTaskByIsIssuedAndCreateTimeBefore(
+        List<RewardTaskBO> rewardTaskBOList = rewardRepo.findRewardTaskByIsIssuedAndCreateTimeBefore(
                 false,
                 LocalDateTime.now().minusSeconds(scanAwardIssuanceTaskTime * 2),
                 LocalDateTime.now().minusSeconds(scanAwardIssuanceTaskTime)

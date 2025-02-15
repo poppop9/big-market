@@ -66,7 +66,7 @@ public class AOStateMachineConfig {
                     return isConditionMet;
                 })
                 .perform((S1, S2, E, C) -> {
-                    Long activityOrderRewardIdTaskId = activityRepo.insertActivityOrderIssuanceTask(ActivityOrderRewardTaskBO.builder()
+                    Long activityOrderRewardIdTaskId = activityRepo.insertActivityOrderRewardTask(ActivityOrderRewardTaskBO.builder()
                             .userId(C.getUserId())
                             .activityId(C.getActivityId())
                             .activityOrderId(C.getActivityOrderBO().getActivityOrderId())
@@ -74,8 +74,8 @@ public class AOStateMachineConfig {
                             .raffleCount(C.getRaffleCount())
                             .build()
                     );
-                    C.setActivityOrderIssuanceTaskId(activityOrderRewardIdTaskId);
-                    activityRepo.sendIssuanceEffectiveActivityOrderTaskToMQ(C);
+                    C.setActivityOrderRewardTaskId(activityOrderRewardIdTaskId);
+                    activityRepo.sendRewardEffectiveActivityOrderTaskToMQ(C);
                 });
 
         /*
