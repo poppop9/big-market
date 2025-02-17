@@ -103,26 +103,6 @@ public class RedissonTest {
     }
 
     @Test
-    void test_8u4jf() {
-        Map<String, WeightRandom<Long>> map = new HashMap<>();
-
-        raffleArmoryRepo.findAllRafflePoolByStrategyId(10001L)
-                .forEach(item -> {
-                    List<WeightRandom.WeightObj<Long>> weightObjs = item.getAwardIds().stream()
-                            .map(child -> {
-                                AwardBO award = raffleArmoryRepo.findAwardByAwardId(child);
-                                return new WeightRandom.WeightObj<>(child, award.getAwardRate());
-                            })
-                            .toList();
-                    WeightRandom<Long> weightRandom = RandomUtil.weightRandom(weightObjs);
-                    map.put(item.getRafflePoolName(), weightRandom);
-                });
-
-        RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap("myMap");
-        rMap.putAll(map);
-    }
-
-    @Test
     void test_8u4jfdf() {
         Map<String, RafflePoolBO> map = new HashMap<>();
 

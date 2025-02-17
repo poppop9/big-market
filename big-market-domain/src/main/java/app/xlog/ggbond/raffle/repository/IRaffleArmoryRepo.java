@@ -25,9 +25,6 @@ public interface IRaffleArmoryRepo {
     // 查询 - 奖品 - 根据策略id，查询对应的所有奖品
     List<AwardBO> findAwardsByStrategyId(Long strategyId);
 
-    // 查询 - 奖品 - 根据奖品Id，查询对应的奖品
-    AwardBO findAwardByAwardId(Long awardId);
-
     // 查询 - 奖品 - 根据策略id，奖品Id，查询奖品详情
     AwardBO findAwardByStrategyIdAndAwardId(Long strategyId, Long awardId);
 

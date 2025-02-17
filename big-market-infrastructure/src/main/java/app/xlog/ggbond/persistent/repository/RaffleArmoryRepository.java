@@ -82,17 +82,6 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     }
 
     /**
-     * 查询 - 根据奖品Id，查询对应的奖品
-     */
-    @Override
-    public AwardBO findAwardByAwardId(Long awardId) {
-        Award award = awardJpa.findByAwardId(awardId);
-        AwardBO awardBO = BeanUtil.copyProperties(award, AwardBO.class);
-
-        return awardBO.setAwardIdStr(award.getAwardId().toString());
-    }
-
-    /**
      * 查询 - 根据策略id，奖品Id，查询奖品详情
      */
     @Override

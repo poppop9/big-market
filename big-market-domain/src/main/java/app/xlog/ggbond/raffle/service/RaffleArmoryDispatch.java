@@ -41,9 +41,11 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
                 .collect(Collectors.toMap(
                         RafflePoolBO::getRafflePoolName,
                         item -> {
-                            List<AwardBO> awardsByStrategyId = raffleArmoryRepo.findAwardsByStrategyId(item.getStrategyId());
+                            List<AwardBO> awardBOList = item.getAwardIds().stream()
+                                    .map(awardId -> raffleArmoryRepo.findAwardByStrategyIdAndAwardId(strategyId, awardId))
+                                    .toList();
                             // 生成权重集合
-                            List<WeightRandom.WeightObj<Long>> weightObjs = awardsByStrategyId.stream()
+                            List<WeightRandom.WeightObj<Long>> weightObjs = awardBOList.stream()
                                     .map(child -> new WeightRandom.WeightObj<>(child.getAwardId(), child.getAwardRate()))
                                     .toList();
                             return RandomUtil.weightRandom(weightObjs);
