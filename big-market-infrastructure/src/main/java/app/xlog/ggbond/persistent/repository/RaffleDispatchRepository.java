@@ -65,7 +65,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
                             // 生成权重集合
                             List<WeightRandom.WeightObj<Long>> weightObjs = item.getAwardIds().stream()
                                     .map(child -> {
-                                        AwardBO award = raffleArmoryRepo.findAwardByAwardId(child);
+                                        AwardBO award = raffleArmoryRepo.findAwardByStrategyIdAndAwardId(strategyId, child);
                                         return new WeightRandom.WeightObj<>(child, award.getAwardRate());
                                     })
                                     .toList();
@@ -74,7 +74,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
                 ));
 
         // 将WeightRandom对象存入redis，方便后续抽奖调用
-        raffleArmoryRepo.insertWeightRandom(strategyId, collect);
+        raffleArmoryRepo.forceInsertWeightRandom(strategyId, collect);
     }
 
     /**
@@ -209,7 +209,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     public void updateAllAwardListExpireTime(Long strategyId) {
-       redissonClient.getList(GlobalConstant.RedisKey.getAwardListCacheKey(strategyId))
+        redissonClient.getList(GlobalConstant.RedisKey.getAwardListCacheKey(strategyId))
                 .expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
     }
 

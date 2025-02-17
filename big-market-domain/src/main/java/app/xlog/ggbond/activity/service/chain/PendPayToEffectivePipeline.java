@@ -1,5 +1,6 @@
 package app.xlog.ggbond.activity.service.chain;
 
+import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.activity.model.bo.*;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
@@ -13,6 +14,9 @@ import com.yomahub.liteflow.enums.NodeTypeEnum;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -68,10 +72,16 @@ public class PendPayToEffectivePipeline {
             nodeName = "签到领取裁判")
     public void signInToClaimJudge(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
+
         // 判断今天是否有领取记录，如果没有，则满足条件
         boolean isSignIn = activityRepo.existSignInToClaimAOToday(context.getUserId(), context.getActivityId());
         context.setIsConditionMet(!isSignIn);
         if (isSignIn) throw new BigMarketException(BigMarketRespCode.ACTIVITY_SIGN_IN_TO_CLAIM_AO_EXIST);
+
+        // 活动单有效期只限今天
+        context.setActivityOrderBO(context.getActivityOrderBO()
+                .setActivityOrderExpireTime(LocalDateTime.of(LocalDate.now(), LocalTime.MAX))
+        );
     }
 
     /**
@@ -88,6 +98,8 @@ public class PendPayToEffectivePipeline {
         ActivityOrderProductBO activityOrderProductBO = activityRepo.findAOProductByAOProductId(
                 context.getAoProductId()
         );
+        if (activityOrderProductBO == null)
+            throw new BigMarketException(BigMarketRespCode.ACTIVITY_ORDER_PRODUCT_NOT_EXIST);
         Double totalPrice = activityOrderProductBO.getActivityOrderProductPrice() * context.getPurchaseQuantity();
 
         // 2. 查询用户的余额
@@ -105,6 +117,11 @@ public class PendPayToEffectivePipeline {
             context.setRaffleCount(activityOrderProductBO.getPurchasingPower() * context.getPurchaseQuantity());
             context.setIsConditionMet(true);
         }
+
+        // 4. 设置活动单有效期永久
+        context.setActivityOrderBO(context.getActivityOrderBO()
+                .setActivityOrderExpireTime(GlobalConstant.validLocalDateTimeMax)
+        );
     }
 
     /**
@@ -133,6 +150,11 @@ public class PendPayToEffectivePipeline {
         } else {
             throw new BigMarketException(BigMarketRespCode.ACTIVITY_REDEEM_CODE_ERROR);
         }
+
+        // 设置活动单有效期永久
+        context.setActivityOrderBO(context.getActivityOrderBO()
+                .setActivityOrderExpireTime(GlobalConstant.validLocalDateTimeMax)
+        );
     }
 
     /**
@@ -150,6 +172,10 @@ public class PendPayToEffectivePipeline {
                 ActivityOrderBO.ActivityOrderStatus.EFFECTIVE,
                 context.getActivityOrderType().getActivityOrderTypeId(),
                 context.getRaffleCount()
+        );
+        activityRepo.updateAOExpireTime(
+                context.getActivityOrderBO().getActivityOrderId(),
+                context.getActivityOrderBO().getActivityOrderExpireTime()
         );
     }
 

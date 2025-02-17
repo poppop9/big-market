@@ -82,8 +82,8 @@ public class RafflePreFilters {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         UserBO userBO = context.getUserBO();
 
-        Long raffleTimes = raffleArmoryRepo.queryRaffleTimesByUserId(userBO.getUserId(), context.getStrategyId());
-        userBO.setRaffleTime(raffleTimes);
+        Long raffleTime = raffleArmoryRepo.queryRaffleTimesByUserId(userBO.getUserId(), context.getStrategyId());
+        userBO.setRaffleTime(raffleTime);
     }
 
     /**
@@ -153,6 +153,7 @@ public class RafflePreFilters {
         Map<List<Long>, String> rangeNameMap = raffleArmoryRepo.findAllRafflePoolByStrategyId(context.getStrategyId()).stream()
                 .filter(item -> item.getRafflePoolType() == RafflePoolBO.RafflePoolType.NormalTime)
                 .collect(Collectors.toMap(
+                        // 开始值和结束值作为key，抽奖池名称作为value
                         item -> List.of(item.getNormalTimeStartValue(), item.getNormalTimeEndValue()),
                         RafflePoolBO::getRafflePoolName
                 ));

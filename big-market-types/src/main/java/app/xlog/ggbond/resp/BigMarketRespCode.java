@@ -21,6 +21,7 @@ public enum BigMarketRespCode {
     ACTIVITY_ORDER_IS_USED(304, "该活动单的可用抽奖次数已满，重新调度"),
     USER_IS_IN_CONSUME_AO(305, "该用户正在消费活动单"),
     ACTIVITY_BALANCE_NOT_ENOUGH(306, "用户余额不足"),
+    ACTIVITY_ORDER_PRODUCT_NOT_EXIST(307, "活动单商品不存在"),
     // 抽奖领域
     DECREASE_AWARD_COUNT_FAILED(400, "扣减奖品库存失败，可能由于并发太高，或者奖品库存没有装配"),
     USER_IS_IN_RAFFLE(401, "该用户已经在抽奖中"),

@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
  * 活动单
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Accessors(chain = true)
 public class ActivityOrderBO {
     private Long userId;  // 用户id

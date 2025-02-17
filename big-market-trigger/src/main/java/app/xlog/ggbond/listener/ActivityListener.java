@@ -10,7 +10,11 @@ import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.listener.KafkaListenerErrorHandler;
+import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,7 +34,8 @@ public class ActivityListener {
      * todo 未测试
      */
     @KafkaListener(topics = GlobalConstant.KafkaConstant.REWARD_EFFECTIVE_ACTIVITY_ORDER_TASK,
-            groupId = GlobalConstant.KafkaConstant.GROUP_ID)
+            groupId = GlobalConstant.KafkaConstant.GROUP_ID,
+            errorHandler = "ignoreErrorHandler")
     @SneakyThrows
     public void consumeIssuanceEffectiveAOMessage(ConsumerRecord<String, MQMessage<AOContext>> record) {
         // 执行待支付状态 -> 有效状态活动单生成链

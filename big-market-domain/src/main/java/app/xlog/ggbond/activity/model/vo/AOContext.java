@@ -2,8 +2,10 @@ package app.xlog.ggbond.activity.model.vo;
 
 import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.bo.ActivityOrderTypeBO;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -11,6 +13,8 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
 public class AOContext {
     private Long userId;  // 用户id

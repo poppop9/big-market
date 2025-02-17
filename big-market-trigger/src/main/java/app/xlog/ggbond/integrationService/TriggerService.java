@@ -103,7 +103,7 @@ public class TriggerService {
         );
 
         // 7. 查询奖品详情
-        return raffleArmory.findAwardByAwardId(context.getAwardId())
+        return raffleArmory.findAwardByStrategyIdAndAwardId(context.getStrategyId(), context.getAwardId())
                 .setAwardRate(null)
                 .setAwardCount(null)
                 .setAwardSort(null);

@@ -62,16 +62,6 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     }
 
     /**
-     * 查询 - 权重对象 - 从 redis 中查询出指定策略的所有权重对象
-     */
-    @Override
-    public List<WeightRandom<Long>> findAllWeightRandomByStrategyId(Long strategyId) {
-        return Arrays.stream(RaffleFilterContext.DispatchParam.values())
-                .map(item -> (WeightRandom<Long>) redissonClient.getBucket(GlobalConstant.RedisKey.getWeightRandomCacheKey(strategyId, item.name())).get())
-                .toList();
-    }
-
-    /**
      * 查询 - 根据策略id，查询对应的所有奖品
      **/
     @Override
@@ -100,6 +90,21 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
         AwardBO awardBO = BeanUtil.copyProperties(award, AwardBO.class);
 
         return awardBO.setAwardIdStr(award.getAwardId().toString());
+    }
+
+    /**
+     * 查询 - 根据策略id，奖品Id，查询奖品详情
+     */
+    @Override
+    public AwardBO findAwardByStrategyIdAndAwardId(Long strategyId, Long awardId) {
+        Award award = awardJpa.findByAwardId(awardId);
+        AwardBO awardBO = BeanUtil.copyProperties(award, AwardBO.class);
+        StrategyAward strategyAward = strategyAwardJpa.findByStrategyIdAndAwardId(strategyId, awardId);
+
+        return awardBO.setAwardRate(strategyAward.getAwardRate())
+                .setAwardCount(strategyAward.getAwardCount())
+                .setAwardSort(strategyAward.getAwardSort())
+                .setAwardIdStr(award.getAwardId().toString());
     }
 
     /**
@@ -139,20 +144,10 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
         RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getAwardCountMapCacheKey(strategyId));
 
         // 由于redis中的数据实时性比数据库高，所有如果存在不覆盖，而是更新过期时间
-        if (!rMap.isExists()){
+        if (!rMap.isExists()) {
             rMap.putAll(collect);
         }
         rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
-    }
-
-    /**
-     * 装配 - 将权重对象插入到Redis中
-     */
-    @Override
-    public void insertWeightRandom(Long strategyId, String dispatchParam, WeightRandom<Long> wr) {
-        RBucket<Object> bucket = redissonClient.getBucket(GlobalConstant.RedisKey.getWeightRandomCacheKey(strategyId, dispatchParam));
-        bucket.set(wr);
-        bucket.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
     }
 
     /**
@@ -163,10 +158,19 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
         RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getWeightRandomMapCacheKey(strategyId));
 
         // 由于redis中的数据实时性比数据库高，所有如果存在不覆盖，而是更新过期时间
-        if (!rMap.isExists()){
+        if (!rMap.isExists()) {
             rMap.putAll(wrMap);
         }
         rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
+    }
+
+    /**
+     * 装配 - 权重对象 - 将权重对象Map强制插入到Redis中
+     */
+    @Override
+    public void forceInsertWeightRandom(Long strategyId, Map<String, WeightRandom<Long>> wrMap) {
+        RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getWeightRandomMapCacheKey(strategyId));
+        rMap.putAll(wrMap);
     }
 
     /**
@@ -370,6 +374,15 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
                 .strategyId(strategyId)
                 .build()
         );
+    }
+
+    /**
+     * 查询 - 查询用户的抽奖次数
+     */
+    @Override
+    public Long findRaffleCount(Long activityId, Long userId) {
+        UserRaffleConfig userRaffleConfig = userRaffleConfigJpa.findByUserIdAndActivityId(userId, activityId);
+        return userRaffleConfig.getRaffleTime();
     }
 
 }

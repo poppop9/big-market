@@ -379,4 +379,14 @@ public class ActivityRepository implements IActivityRepo {
         return BeanUtil.copyToList(activityOrderRewardTaskList, ActivityOrderRewardTaskBO.class);
     }
 
+    /**
+     * 更新 - 更新活动单的过期时间
+     */
+    @Override
+    public void updateAOExpireTime(Long activityOrderId, LocalDateTime activityOrderExpireTime) {
+        activityOrderJPA.updateActivityOrderExpireTimeByActivityOrderId(
+                activityOrderExpireTime, activityOrderId
+        );
+    }
+
 }

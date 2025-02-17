@@ -26,4 +26,6 @@ public interface StrategyAwardJpa extends JpaRepository<StrategyAward, Long> {
             "AND s.awardId = :awardId")
     void decrementAwardCountByStrategyIdAndAwardId(Long strategyId, Long awardId);
 
+    @Query("select s from StrategyAward s where s.strategyId = ?1 and s.awardId = ?2")
+    StrategyAward findByStrategyIdAndAwardId(Long strategyId, Long awardId);
 }

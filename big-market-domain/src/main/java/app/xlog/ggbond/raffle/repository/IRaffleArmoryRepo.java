@@ -22,14 +22,14 @@ public interface IRaffleArmoryRepo {
     // 查询 - 权重对象 - 从 redis 中查询出指定的权重对象
     WeightRandom<Long> findWeightRandom2(Long strategyId, String dispatchParam);
 
-    // 查询 - 权重对象 - 从 redis 中查询出指定策略的所有权重对象
-    List<WeightRandom<Long>> findAllWeightRandomByStrategyId(Long strategyId);
-
     // 查询 - 奖品 - 根据策略id，查询对应的所有奖品
     List<AwardBO> findAwardsByStrategyId(Long strategyId);
 
     // 查询 - 奖品 - 根据奖品Id，查询对应的奖品
     AwardBO findAwardByAwardId(Long awardId);
+
+    // 查询 - 奖品 - 根据策略id，奖品Id，查询奖品详情
+    AwardBO findAwardByStrategyIdAndAwardId(Long strategyId, Long awardId);
 
     // 查询 - 抽奖池 - 根据策略Id，查询对应的所有抽奖池规则
     List<RafflePoolBO> findAllRafflePoolByStrategyId(Long strategyId);
@@ -40,11 +40,11 @@ public interface IRaffleArmoryRepo {
     // 装配 - 奖品库存 - 装配所有奖品的库存
     void assembleAllAwardCountByStrategyId(Long strategyId);
 
-    // 装配 - 权重对象 - 将权重对象插入到Redis中，dispatchParam是抽奖池的名称
-    void insertWeightRandom(Long strategyId, String dispatchParam, WeightRandom<Long> wr);
-
     // 装配 - 权重对象 - 将权重对象Map插入到Redis中
     void insertWeightRandom(Long strategyId, Map<String, WeightRandom<Long>> wrMap);
+
+    // 装配 - 权重对象 - 将权重对象Map强制插入到Redis中
+    void forceInsertWeightRandom(Long strategyId, Map<String, WeightRandom<Long>> wrMap);
 
     // 装配 - 装配奖品列表
     void assembleAwardList(Long strategyId);
@@ -81,5 +81,8 @@ public interface IRaffleArmoryRepo {
 
     // 插入 - 插入用户抽奖配置
     void insertUserRaffleConfig(Long userId, long activityId, Long strategyId);
+
+    // 查询 - 查询用户的抽奖次数
+    Long findRaffleCount(Long activityId, Long userId);
 
 }

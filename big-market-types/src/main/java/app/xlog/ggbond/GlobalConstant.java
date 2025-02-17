@@ -3,10 +3,14 @@ package app.xlog.ggbond;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 /**
  * 全局常量
  */
 public class GlobalConstant {
+
+    public static LocalDateTime validLocalDateTimeMax = LocalDateTime.of(9999, 12, 31, 23, 59, 59, 0);
 
     public static class RedisKey {
         public final static Long REDIS_EXPIRE_TIME = 3 * 24 * 60 * 60L;  // 抽奖领域 - redis过期时长 : 3天（单位是秒）

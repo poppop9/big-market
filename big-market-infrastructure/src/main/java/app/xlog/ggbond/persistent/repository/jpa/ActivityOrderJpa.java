@@ -62,4 +62,9 @@ public interface ActivityOrderJpa extends JpaRepository<ActivityOrder, Long> {
             select (count(a) > 0) from ActivityOrder a
             where a.userId = ?1 and a.activityId = ?2 and a.activityOrderTypeName = ?3 and a.activityOrderStatus = ?4 and a.createTime between ?5 and ?6""")
     boolean existsByUserIdAndActivityIdAndActivityOrderTypeNameAndActivityOrderStatusAndCreateTimeBetween(Long userId, Long activityId, ActivityOrderType.ActivityOrderTypeName activityOrderTypeName, ActivityOrder.ActivityOrderStatus activityOrderStatus, LocalDateTime createTimeStart, LocalDateTime createTimeEnd);
+
+    @Transactional
+    @Modifying
+    @Query("update ActivityOrder a set a.activityOrderExpireTime = ?1 where a.activityOrderId = ?2")
+    int updateActivityOrderExpireTimeByActivityOrderId(LocalDateTime activityOrderExpireTime, Long activityOrderId);
 }

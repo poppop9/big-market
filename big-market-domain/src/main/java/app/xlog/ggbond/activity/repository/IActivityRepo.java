@@ -99,4 +99,7 @@ public interface IActivityRepo {
 
     // 查询 - 查询未发放有效活动单的任务
     List<ActivityOrderRewardTaskBO> findRewardEffectiveAOTaskByIsIssuedAndCreateTimeBefore(boolean b, LocalDateTime localDateTime, LocalDateTime localDateTime1);
+
+    // 更新 - 更新活动单过期时间
+    void updateAOExpireTime(Long activityOrderId, LocalDateTime activityOrderExpireTime);
 }

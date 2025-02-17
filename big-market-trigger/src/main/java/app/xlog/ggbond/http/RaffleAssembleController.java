@@ -1,11 +1,11 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IRaffleAssembleApiService;
+import app.xlog.ggbond.integrationService.TriggerService;
+import app.xlog.ggbond.raffle.model.bo.AwardBO;
+import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import app.xlog.ggbond.resp.ZakiResponse;
-import app.xlog.ggbond.raffle.model.bo.AwardBO;
-import app.xlog.ggbond.integrationService.TriggerService;
-import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.service.ISecurityService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -84,6 +84,19 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
         }).start();
 
         return emitter;
+    }
+
+    /**
+     * 查询当前的抽奖次数
+     * todo 未测试
+     */
+    @Override
+    @GetMapping("/v1/findRaffleCount")
+    public ResponseEntity<JsonNode> findRaffleCount(Long activityId) {
+        // 查询出当前用户，再去查询这个用户的抽奖次数
+        Long userId = securityService.getLoginIdDefaultNull();
+        Long raffleCount = raffleArmory.findRaffleCount(activityId, userId);
+        return ZakiResponse.ok("raffleCount", raffleCount);
     }
 
 }

@@ -148,8 +148,16 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
      * 查询 - 查询奖品信息
      */
     @Override
-    public AwardBO findAwardByAwardId(Long awardId) {
-        return raffleArmoryRepo.findAwardByAwardId(awardId);
+    public AwardBO findAwardByStrategyIdAndAwardId(Long strategyId, Long awardId) {
+        return raffleArmoryRepo.findAwardByStrategyIdAndAwardId(strategyId, awardId);
+    }
+
+    /**
+     * 查询 - 查询用户的抽奖次数
+     */
+    @Override
+    public Long findRaffleCount(Long activityId, Long userId) {
+        return raffleArmoryRepo.findRaffleCount(activityId, userId);
     }
 
     /**
