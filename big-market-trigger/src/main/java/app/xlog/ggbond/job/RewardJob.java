@@ -19,7 +19,6 @@ public class RewardJob {
 
     /**
      * 扫描task表，补偿未发放奖品的用户
-     * todo 未测试
      */
     @XxlJob("scan_and_compensate_not_reward")
     public void scanAndCompensateNotReward() {

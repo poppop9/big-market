@@ -88,7 +88,6 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
 
     /**
      * 查询当前的抽奖次数
-     * todo 未测试
      */
     @Override
     @GetMapping("/v1/findRaffleCount")

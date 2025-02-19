@@ -49,7 +49,9 @@ public class PendPayToEffectivePipeline {
         // 2. 并准备好下一个工位所需的数据
         if (nodeId.getRaffleCount() != -1L) {
             context.setRaffleCount(nodeId.getRaffleCount());
-            context.getActivityOrderBO().setTotalRaffleCount(nodeId.getRaffleCount());
+            context.getActivityOrderBO()
+                    .setTotalRaffleCount(nodeId.getRaffleCount())
+                    .setActivityOrderTypeId(nodeId.getActivityOrderTypeId());
         }
         context.setActivityOrderType(ActivityOrderTypeBO.builder()
                 .activityOrderTypeId(nodeId.getActivityOrderTypeId())
@@ -57,9 +59,7 @@ public class PendPayToEffectivePipeline {
                 .build()
         );
 
-        // 3. 判断传入的规则是否在所有规则中，如果没有则报错，如果有则返回对应工位的nodeId
-        context.getActivityOrderType().setActivityOrderTypeId(nodeId.getActivityOrderTypeId());
-        context.getActivityOrderBO().setActivityOrderTypeId(nodeId.getActivityOrderTypeId());
+        // 3. 返回对应工位的nodeId
         return nodeId.getActivityOrderTypeName().toString();
     }
 

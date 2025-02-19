@@ -8,9 +8,12 @@ import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
 import app.xlog.ggbond.recommend.AIRepo;
 import app.xlog.ggbond.recommend.RecommendService;
 import cn.dev33.satoken.stp.StpUtil;
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.naming.NamingService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.SneakyThrows;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Lazy;
@@ -45,6 +48,22 @@ public class TestController {
     private TestService testService;
     @Resource
     private RedissonClient redissonClient;
+    @Resource
+    private ConfigService configService;
+    @Resource
+    private NamingService namingService;
+
+    /**
+     * 测试 nacos
+     */
+    @SneakyThrows
+    @GetMapping("/v1/testNacos")
+    public void testNacos() {
+        namingService.registerInstance(
+                "big-market-app", "localhost", 8090
+        );
+        // configService.getConfig(String dataId, String group, long timeoutMs)
+    }
 
     /**
      * 推荐领域 - 大模型回答
