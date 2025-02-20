@@ -1,6 +1,9 @@
 package app.xlog.ggbond.raffle.service;
 
-import app.xlog.ggbond.raffle.model.bo.*;
+import app.xlog.ggbond.raffle.model.bo.AwardBO;
+import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
+import app.xlog.ggbond.raffle.model.bo.StrategyBO;
+import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import cn.hutool.core.lang.WeightRandom;
@@ -11,6 +14,7 @@ import com.yomahub.liteflow.flow.LiteflowResponse;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,14 +24,13 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
- * 抽奖领域 - 及（装配，查询，调度）于一身的实现类
+ * 抽奖领域 - 装配实现类
  */
 @Slf4j
 @Service
-public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
+@DubboService
+public class RaffleArmory implements IRaffleArmory {
 
-    @Resource
-    private FlowExecutor flowExecutor;
     @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
 
@@ -160,33 +163,6 @@ public class RaffleArmoryDispatch implements IRaffleArmory, IRaffleDispatch {
     @Override
     public Long findRaffleCount(Long activityId, Long userId) {
         return raffleArmoryRepo.findRaffleCount(activityId, userId);
-    }
-
-    /**
-     * 调度 - 根据策略ID，指定的调度参数，获取对应抽奖池中的随机奖品
-     */
-    @Override
-    public Long findAwardIdByDispatchParam(Long strategyId, RaffleFilterContext.DispatchParam dispatchParam) {
-        WeightRandom<Long> weightRandom = raffleArmoryRepo.findWeightRandom2(strategyId, dispatchParam.toString());
-        return weightRandom.next();
-    }
-
-    /**
-     * 调度 - 根据策略id，抽取奖品
-     */
-    @Override
-    @Transactional
-    @SneakyThrows
-    public RaffleFilterContext raffle(RaffleFilterContext context) {
-        context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS);
-        Long userId = context.getUserBO().getUserId();
-
-        log.atInfo().log("抽奖领域 - " + userId + " 过滤器链开始执行");
-        LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("RAFFLE_FILTER_CHAIN", null, context);
-        if (!liteflowResponse.isSuccess()) throw liteflowResponse.getCause();
-        log.atInfo().log("抽奖领域 - " + userId + " 过滤器链执行完毕");
-
-        return liteflowResponse.getContextBean(RaffleFilterContext.class);
     }
 
 }

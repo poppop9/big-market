@@ -1,15 +1,13 @@
 package app.xlog.ggbond.http;
 
-import app.xlog.ggbond.exception.BigMarketException;
-import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.TestService;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
+import app.xlog.ggbond.exception.BigMarketException;
 import app.xlog.ggbond.recommend.AIRepo;
 import app.xlog.ggbond.recommend.RecommendService;
+import app.xlog.ggbond.resp.BigMarketRespCode;
 import cn.dev33.satoken.stp.StpUtil;
-import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.naming.NamingService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -48,10 +46,10 @@ public class TestController {
     private TestService testService;
     @Resource
     private RedissonClient redissonClient;
-    @Resource
-    private ConfigService configService;
-    @Resource
-    private NamingService namingService;
+    // @Resource
+    // private ConfigService configService;
+    // @Resource
+    // private NamingService namingService;
 
     /**
      * 测试 nacos
@@ -59,9 +57,9 @@ public class TestController {
     @SneakyThrows
     @GetMapping("/v1/testNacos")
     public void testNacos() {
-        namingService.registerInstance(
-                "big-market-app", "localhost", 8090
-        );
+        // namingService.registerInstance(
+        //         "big-market-app", "localhost", 8090
+        // );
         // configService.getConfig(String dataId, String group, long timeoutMs)
     }
 

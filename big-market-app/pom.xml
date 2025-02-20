@@ -64,19 +64,14 @@
             <artifactId>redisson-spring-boot-starter</artifactId>
         </dependency>
         <!--++++++++++++++ 工具包 ++++++++++++++-->
-        <!-- nacos -->
+        <!-- dubbo -->
         <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-client</artifactId>
-            <classifier>pure</classifier>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-api</artifactId>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-nacos-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>

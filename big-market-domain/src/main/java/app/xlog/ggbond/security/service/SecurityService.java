@@ -1,12 +1,12 @@
 package app.xlog.ggbond.security.service;
 
-import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +17,7 @@ import java.util.Optional;
  */
 @Slf4j
 @Service
+@DubboService
 public class SecurityService implements ISecurityService {
 
     @Resource

@@ -1,3 +1,5 @@
 spring:
+  application:
+    name: big-market-app
   profiles:
     active: @spring.profiles.active@
