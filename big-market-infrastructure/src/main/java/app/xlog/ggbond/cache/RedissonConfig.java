@@ -1,7 +1,9 @@
-package app.xlog.ggbond.persistent.config;
+package app.xlog.ggbond.cache;
 
 import org.redisson.Redisson;
+import org.redisson.api.RExecutorService;
 import org.redisson.api.RedissonClient;
+import org.redisson.api.WorkerOptions;
 import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +33,12 @@ public class RedissonConfig {
                 .setPingConnectionInterval(0)  // 设置定期检查连接是否可用的时间间隔（单位：毫秒），默认为0，表示不进行定期检查
                 .setKeepAlive(true);  // 设置是否保持长连接，默认为true
         config.setCodec(JsonJacksonCodec.INSTANCE);  // 设置Redisson存储数据的格式，这里使用Json，一定要配置，防止乱码
+        RedissonClient redissonClient = Redisson.create(config);
 
-        return Redisson.create(config);
+        RExecutorService executorService = redissonClient.getExecutorService("myRedisExecutor");
+        executorService.registerWorkers(WorkerOptions.defaults()
+                .workers(10));
+
+        return redissonClient;
     }
 }

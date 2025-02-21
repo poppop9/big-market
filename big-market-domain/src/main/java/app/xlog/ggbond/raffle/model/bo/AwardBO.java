@@ -22,6 +22,7 @@ public class AwardBO {
     private Double awardRate;  // 奖品被抽取到的概率，单位是%
     private Long awardCount;  // 奖品库存
     private Integer awardSort;  // 奖品在前端的排序
+    private Long currentRaffleCount;  // 当前的抽奖次数
 
     public final static AwardBO randomPointsAward = AwardBO.builder()
             .awardId(101L)

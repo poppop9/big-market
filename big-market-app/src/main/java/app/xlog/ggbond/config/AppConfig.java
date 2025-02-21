@@ -29,16 +29,6 @@ public class AppConfig {
     }
 
     /**
-     * 更改参数校验器的异常（默认抛出的异常是ConstraintViolationException，不够详细）
-     */
-    @Bean
-    public static MethodValidationPostProcessor validationPostProcessor() {
-        MethodValidationPostProcessor processor = new MethodValidationPostProcessor();
-        processor.setAdaptConstraintViolations(true);
-        return processor;
-    }
-
-    /**
      * OKHttp 请求客户端配置
      */
     @Bean

@@ -1,6 +1,6 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
-import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
+import app.xlog.ggbond.persistent.po.ShardingTable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "awardId"),
         @Index(columnList = "strategyId, awardId")
 })
-public class StrategyAward extends ShardingTableBaseEntity {
+public class StrategyAward extends ShardingTable {
     private Long strategyId;  // 策略id（同1个strategyId下，一定会有9个awardId）
     private Long awardId;  // 奖品id
     private Long awardCount;  // 奖品库存

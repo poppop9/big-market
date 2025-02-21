@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
- * 全局 - 定时任务线程池配置类
+ * 定时任务线程池配置
  */
 @EnableScheduling
 @Configuration

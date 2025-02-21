@@ -20,6 +20,8 @@ import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RKeys;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -33,6 +35,8 @@ import java.util.Random;
 @SpringBootTest
 public class JpaTest {
 
+    @Resource
+    private RedissonClient redissonClient;
     @Resource
     private BeanSearcher beanSearcher;
 
@@ -158,6 +162,10 @@ public class JpaTest {
         // 安全领域
         test_user(snowflakeNextId);
         test_userPurchaseHistory();
+
+        // 清空 redis
+        RKeys keys = redissonClient.getKeys();
+        keys.flushall();
     }
 
     /**

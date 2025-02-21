@@ -1,6 +1,6 @@
 package app.xlog.ggbond.persistent.po.security;
 
-import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
+import app.xlog.ggbond.persistent.po.ShardingTable;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,7 +18,7 @@ import lombok.*;
         @Index(columnList = "userId"),
         @Index(columnList = "userId, password"),
 })
-public class User extends ShardingTableBaseEntity {
+public class User extends ShardingTable {
     private @Builder.Default Long userId = IdUtil.getSnowflakeNextId();  // 用户id
     private String userName;  // 用户名
     private String password;  // 密码

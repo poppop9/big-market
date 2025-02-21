@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @SpringBootTest
@@ -24,6 +25,37 @@ public class RedissonTest {
     private RedissonClient redissonClient;
     @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
+
+    @Test
+    void test_78jnf() {
+        String userId = "10001";
+        RMap<String, RFuture<Object>> userFutures = redissonClient.getMap("userFutures");
+        userFutures.computeAsync(userId, (key, existingFuture) -> {
+            try {
+                // 如果已有未完成的RFuture，阻塞等待它完成
+                if (existingFuture != null && !existingFuture.isDone()) {
+                    existingFuture.get();  // 阻塞当前线程直到任务完成
+                }
+
+                RExecutorService executorService = redissonClient.getExecutorService("myExecutor");
+                return executorService.submitAsync(() -> {
+                    // 在这里执行你的逻辑
+                    System.out.println("Executing task for user: " + userId);
+                    Thread.sleep(2000); // 模拟耗时操作
+                    return null; // Void 类型返回值
+                });
+
+                // 创建新的异步任务并返回（该返回值会自动存入userFutures）
+                // return CompletableFuture.runAsync(() -> {
+                //             System.out.println("异步任务开始执行" + userId);
+                //         })
+                //         .toCompletableFuture();
+            } catch (Exception e) {
+                // 异常处理逻辑（需根据业务需求定制）
+                throw new RuntimeException("任务执行失败", e);
+            }
+        });
+    }
 
     @Test
     void test_dc9j() {

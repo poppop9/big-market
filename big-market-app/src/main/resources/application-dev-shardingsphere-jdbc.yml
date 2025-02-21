@@ -46,6 +46,9 @@ rules:
       ActivityRedeemCode: # 活动兑换码
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD_4 } }
+      PointsLog: # 积分流水
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: id, shardingAlgorithmName: HASH_MOD_4 } }
       # 抽奖领域
       Strategy: # 策略
         actualDataSources: ds_${0..1}

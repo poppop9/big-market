@@ -1,6 +1,6 @@
 package app.xlog.ggbond.persistent.po.reward;
 
-import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
+import app.xlog.ggbond.persistent.po.ShardingTable;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "rewardId"),
         @Index(columnList = "userId"),
 })
-public class RewardTask extends ShardingTableBaseEntity {
+public class RewardTask extends ShardingTable {
     private @Builder.Default Long rewardId = IdUtil.getSnowflakeNextId();  // 奖品发放任务id
     private Long userId;  // 用户id
     private Long userRaffleHistoryId;  // 用户抽奖历史id

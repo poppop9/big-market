@@ -3,7 +3,6 @@
 server:
   port: 8090
 
-# 日志
 logging:
   level:
     root: INFO  # 设置全局日志级别

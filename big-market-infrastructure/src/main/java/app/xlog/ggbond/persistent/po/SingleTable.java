@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
-public class SingleTableBaseEntity {
+public class SingleTable {
     @Id
     private Long id = IdUtil.getSnowflakeNextId();
     @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)

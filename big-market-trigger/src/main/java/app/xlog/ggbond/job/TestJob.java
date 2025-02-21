@@ -3,7 +3,6 @@ package app.xlog.ggbond.job;
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.activity.model.vo.QueueItemVO;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.util.IdUtil;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import jakarta.annotation.Resource;
@@ -18,7 +17,7 @@ import java.util.List;
  * 测试任务
  */
 @Component
-public class JobTest {
+public class TestJob {
 
     @Resource
     private RedissonClient redissonClient;

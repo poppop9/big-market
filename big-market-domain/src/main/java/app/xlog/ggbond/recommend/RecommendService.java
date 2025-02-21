@@ -22,9 +22,6 @@ import java.util.stream.Collectors;
 public class RecommendService {
 
     @Resource
-    private ObjectMapper objectMapper;
-
-    @Resource
     private AIRepo aiRepo;
 
     /**

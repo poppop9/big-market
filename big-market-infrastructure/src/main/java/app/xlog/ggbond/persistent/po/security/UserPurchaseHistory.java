@@ -1,13 +1,8 @@
 package app.xlog.ggbond.persistent.po.security;
 
-import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
+import app.xlog.ggbond.persistent.po.ShardingTable;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 /**
  * 用户购买历史
@@ -20,7 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "UserPurchaseHistory", indexes = {
         @Index(columnList = "userId"),
 })
-public class UserPurchaseHistory extends ShardingTableBaseEntity {
+public class UserPurchaseHistory extends ShardingTable {
     private Long userId;  // 用户id
     private String purchaseName;  // 商品名称
     private PurchaseCategory purchaseCategory;  // 商品类型

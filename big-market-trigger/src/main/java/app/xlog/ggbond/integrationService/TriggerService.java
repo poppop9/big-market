@@ -106,7 +106,8 @@ public class TriggerService {
         return raffleArmory.findAwardByStrategyIdAndAwardId(context.getStrategyId(), context.getAwardId())
                 .setAwardRate(null)
                 .setAwardCount(null)
-                .setAwardSort(null);
+                .setAwardSort(null)
+                .setCurrentRaffleCount(context.getUserBO().getRaffleTime() + 1);
     }
 
     /**

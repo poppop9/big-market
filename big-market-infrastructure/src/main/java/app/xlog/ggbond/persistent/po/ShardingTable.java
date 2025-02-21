@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @MappedSuperclass
-public class ShardingTableBaseEntity {
+public class ShardingTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

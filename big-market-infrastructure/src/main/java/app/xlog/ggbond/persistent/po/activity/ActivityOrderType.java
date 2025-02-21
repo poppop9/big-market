@@ -1,6 +1,6 @@
 package app.xlog.ggbond.persistent.po.activity;
 
-import app.xlog.ggbond.persistent.po.SingleTableBaseEntity;
+import app.xlog.ggbond.persistent.po.SingleTable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "activityOrderTypeId"),
         @Index(columnList = "activityOrderTypeName"),
 })
-public class ActivityOrderType extends SingleTableBaseEntity {
+public class ActivityOrderType extends SingleTable {
     private Long activityOrderTypeId;  // 活动单类型id
     private @Enumerated(EnumType.STRING) ActivityOrderTypeName activityOrderTypeName;  // 活动单类型名称（也是唯一的）
 

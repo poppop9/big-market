@@ -1,6 +1,6 @@
 package app.xlog.ggbond.persistent.po.activity;
 
-import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
+import app.xlog.ggbond.persistent.po.ShardingTable;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
         @Index(columnList = "userId, activityId"),
         @Index(columnList = "userId, activityId, activityOrderStatus"),
 })
-public class ActivityOrder extends ShardingTableBaseEntity {
+public class ActivityOrder extends ShardingTable {
     private Long userId;  // 用户id
     private Long activityId;  // 活动id
     private @Builder.Default Long activityOrderId = IdUtil.getSnowflakeNextId();  // 活动单id

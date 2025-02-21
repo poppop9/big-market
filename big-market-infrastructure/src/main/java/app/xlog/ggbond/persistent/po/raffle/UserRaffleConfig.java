@@ -1,6 +1,6 @@
 package app.xlog.ggbond.persistent.po.raffle;
 
-import app.xlog.ggbond.persistent.po.ShardingTableBaseEntity;
+import app.xlog.ggbond.persistent.po.ShardingTable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "userId, activityId"),
         @Index(columnList = "userId, strategyId")
 })
-public class UserRaffleConfig extends ShardingTableBaseEntity {
+public class UserRaffleConfig extends ShardingTable {
     private Long userId;  // 用户id
     private Long activityId;  // 活动id
     private Long strategyId;  // 用户在哪个策略下抽奖的

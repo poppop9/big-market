@@ -3,7 +3,6 @@
 server:
   port: 8090
 
-# 日志
 logging:
   level:
     root: INFO  # 设置全局日志级别
@@ -84,9 +83,6 @@ xxl:
       logPath: /data/appLogs/xxl-job/jobHandler  # 执行器日志存储路径
       logRetentionDays: 30  # 执行器日志保存天数
 
-#nacos:
-#  serverAddr: 192.168.0.12:8848  # nacos的地址
-#  namespace: f1680a4a-b6f6-49ec-a747-aa35a219570a  # nacos的命名空间（可以为空）
 dubbo:
   application:
     name: big-market-app  # 应用名称

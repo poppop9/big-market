@@ -17,4 +17,5 @@ public class ActivityAccountBO {
     private Long activityId;  // 活动id
     private Long availableRaffleCount;  // 可用的抽奖次数
     private Double balance;  // 余额
+    private Long points;  // 积分
 }

@@ -1,6 +1,6 @@
 package app.xlog.ggbond.persistent.po.activity;
 
-import app.xlog.ggbond.persistent.po.SingleTableBaseEntity;
+import app.xlog.ggbond.persistent.po.SingleTable;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "ActivityOrderProduct", indexes = {
         @Index(columnList = "activityOrderProductId"),
 })
-public class ActivityOrderProduct extends SingleTableBaseEntity {
+public class ActivityOrderProduct extends SingleTable {
     private Long activityId;  // 活动id
     private @Builder.Default Long activityOrderProductId = IdUtil.getSnowflakeNextId();  // 活动单商品id
     private String activityOrderProductName;  // 活动单商品名称
