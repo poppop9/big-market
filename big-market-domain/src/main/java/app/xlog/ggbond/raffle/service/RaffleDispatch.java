@@ -1,8 +1,11 @@
 package app.xlog.ggbond.raffle.service;
 
+import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.raffle.model.bo.*;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
+import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
+import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +36,8 @@ public class RaffleDispatch implements IRaffleDispatch {
     private FlowExecutor flowExecutor;
     @Resource
     private IRaffleArmoryRepo raffleArmoryRepo;
+    @Resource
+    private IRaffleDispatchRepo raffleDispatchRepo;
 
     /**
      * 调度 - 根据策略ID，指定的调度参数，获取对应抽奖池中的随机奖品

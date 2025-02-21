@@ -4,6 +4,9 @@ import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
 import cn.hutool.core.lang.WeightRandom;
+import org.redisson.api.RBitSet;
+import org.redisson.api.RFuture;
+import org.redisson.api.RMap;
 
 import java.util.List;
 import java.util.Map;

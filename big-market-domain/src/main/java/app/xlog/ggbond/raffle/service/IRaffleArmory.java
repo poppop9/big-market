@@ -3,6 +3,9 @@ package app.xlog.ggbond.raffle.service;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.StrategyBO;
 import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
+import org.redisson.api.RBitSet;
+import org.redisson.api.RFuture;
+import org.redisson.api.RMap;
 
 import java.util.List;
 
@@ -46,4 +49,5 @@ public interface IRaffleArmory {
 
     // 查询 - 查询用户的抽奖次数
     Long findRaffleCount(Long activityId, Long userId);
+
 }

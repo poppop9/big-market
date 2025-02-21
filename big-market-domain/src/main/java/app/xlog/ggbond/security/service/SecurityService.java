@@ -147,4 +147,28 @@ public class SecurityService implements ISecurityService {
         return securityRepo.findLoginUserInfo();
     }
 
+    /**
+     * 判断 - 用户是否频繁登录
+     */
+    @Override
+    public boolean isFrequentLogin(Long userId) {
+        return securityRepo.isFrequentLogin(userId);
+    }
+
+    /**
+     * 更新 - 设置正在登录的用户状态
+     */
+    @Override
+    public void LoggingIn(Long userId) {
+        securityRepo.LoggingIn(userId);
+    }
+
+    /**
+     * 更新 - 设置即将结束登录的用户状态
+     */
+    @Override
+    public void nearingLoggingEnd(Long userId) {
+        securityRepo.nearingLoggingEnd(userId);
+    }
+
 }

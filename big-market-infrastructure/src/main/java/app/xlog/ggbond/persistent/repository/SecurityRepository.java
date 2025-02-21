@@ -13,6 +13,7 @@ import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import jakarta.annotation.Resource;
+import org.redisson.api.RBitSet;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -171,6 +172,33 @@ public class SecurityRepository implements ISecurityRepo {
         userBO.setToken(StpUtil.getTokenInfo().getTokenValue());
 
         return userBO;
+    }
+
+    /**
+     * 判断 - 用户是否频繁登录
+     */
+    @Override
+    public boolean isFrequentLogin(Long userId) {
+        RBitSet bitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.FREQUENT_LOGIN_USER);
+        return bitSet.get(userId);
+    }
+
+    /**
+     * 更新 - 设置正在登录的用户状态
+     */
+    @Override
+    public void LoggingIn(Long userId) {
+        RBitSet bitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.FREQUENT_LOGIN_USER);
+        bitSet.set(userId);
+    }
+
+    /**
+     * 更新 - 设置即将结束登录的用户状态
+     */
+    @Override
+    public void nearingLoggingEnd(Long userId) {
+        RBitSet bitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.FREQUENT_LOGIN_USER);
+        bitSet.clear(userId);
     }
 
 }

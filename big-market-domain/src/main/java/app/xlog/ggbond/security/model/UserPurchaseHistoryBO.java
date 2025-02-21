@@ -2,6 +2,8 @@ package app.xlog.ggbond.security.model;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 /**
  * 用户购买历史
  */
@@ -9,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserPurchaseHistoryBO {
+public class UserPurchaseHistoryBO implements Serializable {
     private Long userId;  // 用户id
     private String purchaseName;  // 商品名称
     private PurchaseCategory purchaseCategory;  // 商品类型（生鲜、家居、数码 ……）

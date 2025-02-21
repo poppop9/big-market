@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 /**
  * 奖品
  */
@@ -14,7 +16,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class AwardBO {
+public class AwardBO implements Serializable {
     private Long awardId;  // 奖品id
     private String awardIdStr;  // 奖品id字符串
     private String awardTitle;  // 奖品标题

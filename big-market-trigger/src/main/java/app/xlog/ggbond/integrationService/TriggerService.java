@@ -1,19 +1,19 @@
 package app.xlog.ggbond.integrationService;
 
-import app.xlog.ggbond.reward.model.RewardTaskBO;
-import app.xlog.ggbond.reward.service.IRewardService;
-import app.xlog.ggbond.exception.BigMarketException;
-import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
-import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.service.IActivityService;
 import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
+import app.xlog.ggbond.exception.BigMarketException;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.StrategyBO;
+import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.service.IRaffleArmory;
 import app.xlog.ggbond.raffle.service.IRaffleDispatch;
 import app.xlog.ggbond.recommend.RecommendService;
+import app.xlog.ggbond.resp.BigMarketRespCode;
+import app.xlog.ggbond.reward.model.RewardTaskBO;
+import app.xlog.ggbond.reward.service.IRewardService;
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import app.xlog.ggbond.security.service.ISecurityService;
@@ -22,37 +22,43 @@ import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.*;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 组合应用服务
  */
 @Slf4j
 @Service
-public class TriggerService {
+public class TriggerService implements Serializable {
 
+    @Resource
+    private RedissonClient redissonClient;
     @Resource
     private ThreadPoolTaskScheduler myScheduledThreadPool;
 
     @Resource
-    private ISecurityService securityService;
+    private transient ISecurityService securityService;
     @Resource
-    private IActivityService activityService;
+    private transient IActivityService activityService;
     @Resource
-    private IRaffleArmory raffleArmory;
+    private transient IRaffleArmory raffleArmory;
     @Resource
-    private IRaffleDispatch raffleDispatch;
+    private transient IRaffleDispatch raffleDispatch;
     @Resource
-    private IRewardService rewardService;
+    private transient IRewardService rewardService;
     @Resource
-    private RecommendService recommendService;
+    private transient RecommendService recommendService;
     @Resource
-    private AOEventCenter aoEventCenter;
+    private transient AOEventCenter aoEventCenter;
 
     /**
      * 抽奖领域 - 根据活动id和当前用户，抽取一个奖品id
@@ -128,44 +134,52 @@ public class TriggerService {
         // 3. 将该用户的角色信息放入session
         securityService.insertPermissionIntoSession();
 
-        CompletableFuture<Boolean> doLoginCompletableFuture = CompletableFuture.supplyAsync(() -> {
-            // 4. 检查该用户是否有策略，如果没有则ai生成推荐商品
-            if (!securityService.existsByUserIdAndActivityId(activityId, userId)) {
-                List<AwardBO> noAwardIdAwardBOS;
-                // 4.1 判断用户是否有购买历史
-                if (securityService.existsUserPurchaseHistory(userId)) {
-                    // 4.1.1 查询用户购买历史，生成推荐奖品
-                    List<UserPurchaseHistoryBO> userPurchaseHistoryBOList = securityService.findUserPurchaseHistory(userId);
-                    noAwardIdAwardBOS = recommendService.recommendAwardByUserPurchaseHistory(
-                            "你是一个推荐系统，根据用户的购买历史推荐最能吸引该用户的商品。",
-                            userPurchaseHistoryBOList
-                    );
-                } else {
-                    // 4.1.2 无购买历史，从海量用户的购买历史中生成热销产品
-                    List<UserPurchaseHistoryBO> recentPurchaseHistoryList = securityService.findRecentPurchaseHistory();
-                    noAwardIdAwardBOS = recommendService.recommendHotSaleProductByRecentPurchaseHistory(
-                            "你是一个推荐系统，根据海量用户的购买历史，推算出近期用户喜好，给某个用户推荐商品。",
-                            recentPurchaseHistoryList
-                    );
+        if (securityService.isFrequentLogin(userId)) {
+            throw new BigMarketException(BigMarketRespCode.FREQUENT_LOGIN);
+        } else {
+            securityService.LoggingIn(userId);  // 在redis位图中设置登录中状态
+
+            CompletableFuture<Boolean> doLoginCompletableFuture = CompletableFuture.supplyAsync(() -> {
+                // 4. 检查该用户是否有策略，如果没有则ai生成推荐商品
+                if (!securityService.existsByUserIdAndActivityId(activityId, userId)) {
+                    List<AwardBO> noAwardIdAwardBOS;
+                    // 4.1 判断用户是否有购买历史
+                    if (securityService.existsUserPurchaseHistory(userId)) {
+                        // 4.1.1 查询用户购买历史，生成推荐奖品
+                        List<UserPurchaseHistoryBO> userPurchaseHistoryBOList = securityService.findUserPurchaseHistory(userId);
+                        noAwardIdAwardBOS = recommendService.recommendAwardByUserPurchaseHistory(
+                                "你是一个推荐系统，根据用户的购买历史推荐最能吸引该用户的商品。",
+                                userPurchaseHistoryBOList
+                        );
+                    } else {
+                        // 4.1.2 无购买历史，从海量用户的购买历史中生成热销产品
+                        List<UserPurchaseHistoryBO> recentPurchaseHistoryList = securityService.findRecentPurchaseHistory();
+                        noAwardIdAwardBOS = recommendService.recommendHotSaleProductByRecentPurchaseHistory(
+                                "你是一个推荐系统，根据海量用户的购买历史，推算出近期用户喜好，给某个用户推荐商品。",
+                                recentPurchaseHistoryList
+                        );
+                    }
+
+                    // 4.2 插入数据库
+                    StrategyBO strategyBO = raffleArmory.insertAwardList(userId, activityId, noAwardIdAwardBOS);
+                    raffleArmory.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
                 }
 
-                // 4.2 插入数据库
-                StrategyBO strategyBO = raffleArmory.insertAwardList(userId, activityId, noAwardIdAwardBOS);
-                raffleArmory.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
-            }
+                // 5. 如果该用户没有活动账户，则初始化一个活动账户
+                activityService.initActivityAccount(userId, activityId);
 
-            // 5. 如果该用户没有活动账户，则初始化一个活动账户
-            activityService.initActivityAccount(userId, activityId);
+                // 6. 装配
+                Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
+                raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
+                raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map
+                raffleArmory.assembleAwardList(strategyId);  // 装配该策略所需的所有奖品列表
 
-            // 6. 装配
-            Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
-            raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
-            raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map
-            raffleArmory.assembleAwardList(strategyId);  // 装配该策略所需的所有奖品列表
+                return true;
+            }, myScheduledThreadPool);
+            StpUtil.getSession().set("doLoginCompletableFuture", doLoginCompletableFuture);
 
-            return true;
-        }, myScheduledThreadPool);
-        StpUtil.getSession().set("doLoginCompletableFuture", doLoginCompletableFuture);
+            securityService.nearingLoggingEnd(userId);
+        }
 
         return UserBO.builder()
                 .userId(userId)
