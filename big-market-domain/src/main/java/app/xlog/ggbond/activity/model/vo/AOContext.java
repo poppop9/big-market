@@ -22,7 +22,7 @@ public class AOContext {
     private ActivityOrderBO activityOrderBO;  // 活动单
     private ActivityOrderTypeBO activityOrderType;  // 活动单类型名称
     private Long raffleCount; // 该类型的活动单能给予的抽奖次数
-    private Boolean isConditionMet;  // 是否满足条件
+    private @Builder.Default Boolean isConditionMet = false;  // 是否满足条件
     private String redeemCode;  // 兑换码
 
     private Long aoProductId;  // 活动单商品id

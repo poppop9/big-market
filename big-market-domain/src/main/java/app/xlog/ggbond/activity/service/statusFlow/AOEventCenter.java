@@ -2,10 +2,12 @@ package app.xlog.ggbond.activity.service.statusFlow;
 
 import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
+import app.xlog.ggbond.exception.BigMarketException;
 import com.alibaba.cola.statemachine.StateMachine;
 import com.alibaba.cola.statemachine.StateMachineFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -47,7 +49,7 @@ public class AOEventCenter {
     /**
      * 发布事件 - 有效活动单转已使用活动单
      */
-    // @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = BigMarketException.class)
     public AOContext publishEffectiveToUsedEvent(AOContext aoContext) {
         StateMachineFactory.<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext>get(AOStateMachineConfig.ACTIVITY_ORDER_MACHINE_ID)
                 .fireEvent(

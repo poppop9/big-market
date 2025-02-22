@@ -134,7 +134,6 @@ public class TriggerService implements Serializable {
         // 3. 将该用户的角色信息放入session
         securityService.insertPermissionIntoSession();
 
-        // todo 这个地方也有并发问题要修复
         if (!securityService.acquireLoginLock(userId)) {
             throw new BigMarketException(BigMarketRespCode.FREQUENT_LOGIN);
         } else {

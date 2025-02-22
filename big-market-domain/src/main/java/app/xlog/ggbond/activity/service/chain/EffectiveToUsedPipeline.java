@@ -36,8 +36,7 @@ public class EffectiveToUsedPipeline {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         activityRepo.updateExpiredAOStatus(
-                context.getActivityId(),
-                context.getUserId()
+                context.getActivityId(), context.getUserId()
         );
     }
 
@@ -52,8 +51,7 @@ public class EffectiveToUsedPipeline {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         Optional<ActivityOrderBO> effectiveActivityOrder = activityRepo.findEffectiveActivityOrder(
-                context.getActivityId(),
-                context.getUserId()
+                context.getActivityId(), context.getUserId()
         );
         effectiveActivityOrder.ifPresentOrElse(
                 item -> {
@@ -90,6 +88,7 @@ public class EffectiveToUsedPipeline {
             nodeName = "更新活动单的抽奖次数和状态工位")
     public void updateAOUsedRaffleCountAndStatusWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
+
 
         // 查出这一单的活动单对象，判断是否已经达到最大抽奖次数
         ActivityOrderBO activityOrderBO = activityRepo.findActivityOrderByActivityOrderId(context.getActivityOrderBO().getActivityOrderId());

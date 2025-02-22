@@ -11,6 +11,7 @@ import app.xlog.ggbond.persistent.po.activity.*;
 import app.xlog.ggbond.persistent.repository.jpa.*;
 import cn.hutool.core.bean.BeanUtil;
 import jakarta.annotation.Resource;
+import jakarta.persistence.EntityManager;
 import org.redisson.api.RBitSet;
 import org.redisson.api.RDelayedQueue;
 import org.redisson.api.RQueue;
