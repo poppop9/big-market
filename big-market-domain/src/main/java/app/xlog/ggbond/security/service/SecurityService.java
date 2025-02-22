@@ -156,19 +156,19 @@ public class SecurityService implements ISecurityService {
     }
 
     /**
-     * 更新 - 设置正在登录的用户状态
-     */
-    @Override
-    public void LoggingIn(Long userId) {
-        securityRepo.LoggingIn(userId);
-    }
-
-    /**
      * 更新 - 设置即将结束登录的用户状态
      */
     @Override
-    public void nearingLoggingEnd(Long userId) {
-        securityRepo.nearingLoggingEnd(userId);
+    public void releaseLoginLock(Long userId) {
+        securityRepo.releaseLoginLock(userId);
+    }
+
+    /**
+     * 判断 - 判断是否可以获取登录锁
+     */
+    @Override
+    public boolean acquireLoginLock(Long userId) {
+        return securityRepo.acquireLoginLock(userId);
     }
 
 }

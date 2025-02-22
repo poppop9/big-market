@@ -184,21 +184,22 @@ public class SecurityRepository implements ISecurityRepo {
     }
 
     /**
-     * 更新 - 设置正在登录的用户状态
-     */
-    @Override
-    public void LoggingIn(Long userId) {
-        RBitSet bitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.FREQUENT_LOGIN_USER);
-        bitSet.set(userId);
-    }
-
-    /**
      * 更新 - 设置即将结束登录的用户状态
      */
     @Override
-    public void nearingLoggingEnd(Long userId) {
+    public void releaseLoginLock(Long userId) {
         RBitSet bitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.FREQUENT_LOGIN_USER);
         bitSet.clear(userId);
+    }
+
+    /**
+     * 判断 - 是否能够获取登录锁
+     */
+    @Override
+    public boolean acquireLoginLock(Long userId) {
+        RBitSet bitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.FREQUENT_LOGIN_USER);
+        boolean wasLocked = bitSet.set(userId, true);
+        return !wasLocked;
     }
 
 }

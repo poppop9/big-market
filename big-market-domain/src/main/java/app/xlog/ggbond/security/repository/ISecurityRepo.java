@@ -46,9 +46,9 @@ public interface ISecurityRepo {
     // 判断 - 用户是否频繁登录
     boolean isFrequentLogin(Long userId);
 
-    // 更新 - 设置正在登录的用户状态
-    void LoggingIn(Long userId);
-
     // 更新 - 设置即将结束登录的用户状态
-    void nearingLoggingEnd(Long userId);
+    void releaseLoginLock(Long userId);
+
+    // 判断 - 是否能够获取登录锁
+    boolean acquireLoginLock(Long userId);
 }

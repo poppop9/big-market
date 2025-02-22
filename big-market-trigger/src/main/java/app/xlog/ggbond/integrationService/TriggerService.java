@@ -134,11 +134,10 @@ public class TriggerService implements Serializable {
         // 3. 将该用户的角色信息放入session
         securityService.insertPermissionIntoSession();
 
-        if (securityService.isFrequentLogin(userId)) {
+        // todo 这个地方也有并发问题要修复
+        if (!securityService.acquireLoginLock(userId)) {
             throw new BigMarketException(BigMarketRespCode.FREQUENT_LOGIN);
         } else {
-            securityService.LoggingIn(userId);  // 在redis位图中设置登录中状态
-
             CompletableFuture<Boolean> doLoginCompletableFuture = CompletableFuture.supplyAsync(() -> {
                 // 4. 检查该用户是否有策略，如果没有则ai生成推荐商品
                 if (!securityService.existsByUserIdAndActivityId(activityId, userId)) {
@@ -177,8 +176,7 @@ public class TriggerService implements Serializable {
                 return true;
             }, myScheduledThreadPool);
             StpUtil.getSession().set("doLoginCompletableFuture", doLoginCompletableFuture);
-
-            securityService.nearingLoggingEnd(userId);
+            securityService.releaseLoginLock(userId);
         }
 
         return UserBO.builder()
