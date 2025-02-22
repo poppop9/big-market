@@ -1,11 +1,10 @@
 package app.xlog.ggbond.activity.service.chain;
 
-import app.xlog.ggbond.exception.BigMarketException;
-import app.xlog.ggbond.resp.BigMarketRespCode;
-import app.xlog.ggbond.exception.RetryRouterException;
 import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
+import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.resp.BigMarketRespCode;
 import com.yomahub.liteflow.annotation.LiteflowComponent;
 import com.yomahub.liteflow.annotation.LiteflowMethod;
 import com.yomahub.liteflow.core.NodeComponent;
@@ -77,10 +76,8 @@ public class EffectiveToUsedPipeline {
     public void concurrencySafetyLockWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
-        if (activityRepo.isUserInConsumeAO(context.getUserId())) {
+        if (!activityRepo.acquireConsumeAOLock(context.getUserId())) {
             throw new BigMarketException(BigMarketRespCode.USER_IS_IN_CONSUME_AO, "您当前正在消费活动单，请稍后再试");
-        } else {
-            activityRepo.lockUserInConsumeAO(context.getUserId());
         }
     }
 
@@ -105,7 +102,7 @@ public class EffectiveToUsedPipeline {
                     context.getActivityOrderBO().getActivityOrderId(),
                     ActivityOrderBO.ActivityOrderStatus.USED
             );
-            throw new RetryRouterException(BigMarketRespCode.ACTIVITY_ORDER_IS_USED);
+            throw new BigMarketException(BigMarketRespCode.ACTIVITY_ORDER_IS_USED);
         } else {
             // 未达到最大抽奖次数，更新其已使用抽奖次数
             Long nowUsedRaffleCount = activityRepo.increaseAOUsedRaffleCount(

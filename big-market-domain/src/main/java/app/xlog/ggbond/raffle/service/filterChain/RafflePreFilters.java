@@ -45,10 +45,8 @@ public class RafflePreFilters {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         UserBO userBO = context.getUserBO();
 
-        if (raffleArmoryRepo.isUserInRaffle(userBO.getUserId())) {
+        if (!raffleArmoryRepo.acquireRaffleLock(userBO.getUserId())) {
             throw new BigMarketException(BigMarketRespCode.USER_IS_IN_RAFFLE, "您当前正在抽奖中，请稍后再试");
-        } else {
-            raffleArmoryRepo.lockUserInBitSet(userBO.getUserId());
         }
     }
 

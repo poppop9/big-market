@@ -1,7 +1,6 @@
 package app.xlog.ggbond.exception;
 
 import app.xlog.ggbond.resp.BigMarketRespCode;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**

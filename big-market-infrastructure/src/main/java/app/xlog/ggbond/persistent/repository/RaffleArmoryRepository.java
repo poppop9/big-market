@@ -299,24 +299,6 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     }
 
     /**
-     * 判断 - 用户是否在抽奖中
-     */
-    @Override
-    public boolean isUserInRaffle(Long userId) {
-        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_RAFFLE_BIT_SET);
-        return rBitSet.get(userId);
-    }
-
-    /**
-     * 修改 - 在BitSet中给用户加锁
-     */
-    @Override
-    public void lockUserInBitSet(Long userId) {
-        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_RAFFLE_BIT_SET);
-        rBitSet.set(userId);
-    }
-
-    /**
      * 修改 - 在BitSet中给用户解锁
      */
     @Override
@@ -372,6 +354,16 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     public Long findRaffleCount(Long activityId, Long userId) {
         UserRaffleConfig userRaffleConfig = userRaffleConfigJpa.findByUserIdAndActivityId(userId, activityId);
         return userRaffleConfig.getRaffleTime();
+    }
+
+    /**
+     * 判断 - 是否能获取到抽奖锁
+     */
+    @Override
+    public boolean acquireRaffleLock(Long userId) {
+        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_RAFFLE_BIT_SET);
+        boolean wasLocked = rBitSet.set(userId, true);
+        return !wasLocked;
     }
 
 }

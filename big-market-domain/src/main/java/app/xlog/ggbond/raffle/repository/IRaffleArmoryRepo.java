@@ -61,12 +61,6 @@ public interface IRaffleArmoryRepo {
     // 插入 - 插入抽奖池
     void insertRafflePoolList(long strategyId, List<AwardBO> awardBOS);
 
-    // 判断 - 用户是否在抽奖中
-    boolean isUserInRaffle(Long userId);
-
-    // 修改 - 在BitSet中给用户加锁
-    void lockUserInBitSet(Long userId);
-
     // 修改 - 在BitSet中给用户解锁
     void unLockUserInBitSet(Long userId);
 
@@ -85,4 +79,6 @@ public interface IRaffleArmoryRepo {
     // 查询 - 查询用户的抽奖次数
     Long findRaffleCount(Long activityId, Long userId);
 
+    // 判断 - 是否能获取到抽奖锁
+    boolean acquireRaffleLock(Long userId);
 }

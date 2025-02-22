@@ -288,24 +288,6 @@ public class ActivityRepository implements IActivityRepo {
     }
 
     /**
-     * 判断 - 判断用户是否在消费活动单
-     */
-    @Override
-    public boolean isUserInConsumeAO(Long userId) {
-        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_CONSUME_AO);
-        return rBitSet.get(userId);
-    }
-
-    /**
-     * 修改 - 在BitSet中给用户加锁
-     */
-    @Override
-    public void lockUserInConsumeAO(Long userId) {
-        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_CONSUME_AO);
-        rBitSet.set(userId);
-    }
-
-    /**
      * 修改 - 在BitSet中给用户解锁
      */
     @Override
@@ -371,8 +353,8 @@ public class ActivityRepository implements IActivityRepo {
      */
     @Override
     public List<ActivityOrderRewardTaskBO> findRewardEffectiveAOTaskByIsIssuedAndCreateTimeBefore(boolean isIssued,
-                                                                                                    LocalDateTime startTime,
-                                                                                                    LocalDateTime endTime) {
+                                                                                                  LocalDateTime startTime,
+                                                                                                  LocalDateTime endTime) {
         List<ActivityOrderRewardTask> activityOrderRewardTaskList = activityOrderRewardTaskJpa.findByIsIssuedAndCreateTimeBetween(
                 isIssued, startTime, endTime
         );
@@ -387,6 +369,16 @@ public class ActivityRepository implements IActivityRepo {
         activityOrderJPA.updateActivityOrderExpireTimeByActivityOrderId(
                 activityOrderExpireTime, activityOrderId
         );
+    }
+
+    /**
+     * 判断 - 是否能成功获得锁
+     */
+    @Override
+    public boolean acquireConsumeAOLock(Long userId) {
+        RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_CONSUME_AO);
+        boolean wasLocked = rBitSet.set(userId, true);
+        return !wasLocked;
     }
 
 }

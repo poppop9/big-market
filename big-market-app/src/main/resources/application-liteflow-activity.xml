@@ -7,6 +7,7 @@
             CheckExpirePendingPaymentAOWorker
         );
     </chain>
+
     <chain name="WHEN_PENDING_PAYMENT_TO_EFFECTIVE">
         THEN(
             SWITCH(ActivityOrderTypeRouter).TO(
@@ -22,6 +23,7 @@
             IncreaseAvailableRaffleTimeWorker
         );
     </chain>
+
     <chain name="WHEN_EFFECTIVE_TO_USED">
         THEN(
             UpdateExpiredAOStatusWorker,
@@ -34,7 +36,7 @@
             THEN(
                 UpdateAOUsedRaffleCountAndStatusWorker,
                 UpdateUserAvailableRaffleCountWorker
-            ).retry(300, "app.xlog.ggbond.exception.RetryRouterException"),
+            ),
             FINALLY(ConcurrencySafetyUnLockWorker)
         );
     </chain>

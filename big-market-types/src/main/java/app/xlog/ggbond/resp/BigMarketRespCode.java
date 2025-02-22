@@ -28,7 +28,7 @@ public enum BigMarketRespCode {
     RAFFLE_CONFIG_ARMORY_ERROR(402, "抽奖相关配置装配失败"),
     // 安全领域
     WRONG_USERNAME_OR_PASSWORD(700, "用户名或密码错误"),
-    FREQUENT_LOGIN(701, "用户频繁登录"),
+    FREQUENT_LOGIN(701, "登录频繁"),
     // 推荐领域
     AI_RESPONSE_ERROR(800, "AI 的回答格式错误"),
     ;
