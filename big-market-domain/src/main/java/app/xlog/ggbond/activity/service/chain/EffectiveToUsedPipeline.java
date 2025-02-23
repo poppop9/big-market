@@ -17,6 +17,7 @@ import java.util.Optional;
 
 /**
  * 有效状态 -> 已使用状态流水线
+ * todo 把锁去掉，改成外部加redis锁
  */
 @Slf4j
 @LiteflowComponent

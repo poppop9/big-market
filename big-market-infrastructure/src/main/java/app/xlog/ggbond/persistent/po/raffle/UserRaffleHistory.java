@@ -20,6 +20,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "UserRaffleHistory", indexes = {
         @Index(columnList = "userId"),
+        @Index(columnList = "strategyId"),
+        @Index(columnList = "awardId"),
         @Index(columnList = "userId, strategyId"),
 })
 public class UserRaffleHistory  extends ShardingTable {

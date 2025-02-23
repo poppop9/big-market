@@ -1,4 +1,4 @@
-package app.xlog.ggbond.persistent.po.activity;
+package app.xlog.ggbond.persistent.po.reward;
 
 import app.xlog.ggbond.persistent.po.ShardingTable;
 import jakarta.persistence.Entity;
@@ -18,7 +18,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "PointsLog", indexes = {
-        // @Index(columnList = "activityId"),
+        @Index(columnList = "pointsLogId"),
+        @Index(columnList = "activityId"),
+        @Index(columnList = "userId"),
+        @Index(columnList = "activityId, userId"),
 })
 public class PointsLog extends ShardingTable {
     private Long pointsLogId;  // 积分流水id

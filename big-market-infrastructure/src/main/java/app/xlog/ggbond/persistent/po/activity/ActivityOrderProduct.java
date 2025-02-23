@@ -19,7 +19,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "ActivityOrderProduct", indexes = {
+        @Index(columnList = "activityId"),
         @Index(columnList = "activityOrderProductId"),
+        @Index(columnList = "activityId, activityOrderProductId"),
 })
 public class ActivityOrderProduct extends SingleTable {
     private Long activityId;  // 活动id

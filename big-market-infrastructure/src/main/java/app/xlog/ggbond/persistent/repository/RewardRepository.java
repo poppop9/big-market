@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 奖品发放领域 - 奖品发放仓储实现类
+ * 返利领域 - 返利仓储实现类
  */
 @Repository
 public class RewardRepository implements IRewardRepo {
@@ -26,7 +26,7 @@ public class RewardRepository implements IRewardRepo {
     private RewardTaskJpa rewardTaskJpa;
 
     /**
-     * 奖品发放领域 - 写入task记录
+     * 写入task记录
      */
     @Override
     public long insertRewardTask(RewardTaskBO rewardTaskBO) {
@@ -40,7 +40,7 @@ public class RewardRepository implements IRewardRepo {
     }
 
     /**
-     * 奖品发放领域 - 发送奖品发放任务
+     * 发送返利任务
      */
     @Override
     public void sendRewardToMQ(RewardTaskBO rewardTaskBO) {
@@ -52,7 +52,7 @@ public class RewardRepository implements IRewardRepo {
     }
 
     /**
-     * 奖品发放领域 - 更新奖品发放任务状态
+     * 更新返利任务状态
      */
     @Override
     public void updateRewardTaskStatus(Long awardIssuanceId, boolean isIssued) {
@@ -60,7 +60,7 @@ public class RewardRepository implements IRewardRepo {
     }
 
     /**
-     * 奖品发放领域 - 查询所有指定时间内，未发放奖品的记录
+     * 查询所有指定时间内，未发放奖品的记录
      */
     @Override
     public List<RewardTaskBO> findRewardTaskByIsIssuedAndCreateTimeBefore(boolean isIssued, LocalDateTime startDateTime, LocalDateTime endDateTime) {

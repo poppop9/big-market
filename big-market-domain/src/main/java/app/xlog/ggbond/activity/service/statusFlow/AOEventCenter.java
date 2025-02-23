@@ -49,7 +49,7 @@ public class AOEventCenter {
     /**
      * 发布事件 - 有效活动单转已使用活动单
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = BigMarketException.class)
+    @Transactional(noRollbackFor = BigMarketException.class)
     public AOContext publishEffectiveToUsedEvent(AOContext aoContext) {
         StateMachineFactory.<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext>get(AOStateMachineConfig.ACTIVITY_ORDER_MACHINE_ID)
                 .fireEvent(

@@ -72,7 +72,7 @@ public class GlobalConstant {
         // 抽奖领域 - 扣减奖品库存
         public final static String DECR_AWARD_INVENTORY = "Raffle-DecrAwardInventory";
 
-        // 奖品发放领域 - 发放奖品任务
+        // 返利领域 - 发放奖品任务
         public static final String REWARD_TASK = "Reward-RewardTask";
         public static final String REWARD_EFFECTIVE_ACTIVITY_ORDER_TASK = "Activity-RewardEffectiveActivityOrderTask";
     }
@@ -105,7 +105,7 @@ public class GlobalConstant {
     // 活动领域 - 待支付活动单的过期时间
     public final static Long ACTIVITY_ORDER_EXPIRE_TIME = 10 * 60L;  // 10分钟（单位是秒）
 
-    // 奖品发放领域 - 扫描多久之前的中奖记录
+    // 返利领域 - 扫描多久之前的中奖记录
     public final static Long SCAN_REWARD_TASK_TIME = 10 * 60L;  // 10分钟（单位是秒）
 
     // 活动领域 - 扫描多久之前的发送有效活动单记录

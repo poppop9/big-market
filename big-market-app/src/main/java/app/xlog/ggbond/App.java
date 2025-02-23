@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  *      - todo redis中的黑名单用户要定时更新
  *      - todo 什么行为算是违规行为，要列为黑名单用户：
  *          - 使用插件、或者脚本模拟用户行为
- *          - 同一ip的异常高流量
+ *          - 对于同一ip的异常高流量，要做限流，并加入黑名单
  * - 发奖领域
  * - 安全领域
  *      - 登录后的异步操作有并发安全问题：使用 RMap + RFuture 解决

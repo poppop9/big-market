@@ -105,16 +105,11 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
             if (surplus > 0) {
                 log.atInfo().log("抽奖领域 - 奖品 {} 库存扣减成功，剩余库存：{}", awardId, surplus);
                 return true;
-            } else if (surplus == 0) {
+            } else {
                 log.atInfo().log("抽奖领域 - 奖品 {} 库存扣减完成，剩余库存：{}", awardId, surplus);
                 // 将该奖品从缓存中的抽奖池里移除
                 removeAwardFromPools(strategyId, awardId);
                 return true;
-            } else {
-                // 这里如果并发高，会出现扣减为负数的情况，但是没关系，返回false，后续会重新调度
-                log.atError().log("抽奖领域 - 奖品 {} 库存扣减失败", awardId);
-                removeAwardFromPools(strategyId, awardId);  // 将该奖品从缓存中的抽奖池里移除
-                return false;
             }
         }
 

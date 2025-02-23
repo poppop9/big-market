@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * JPA - 奖品发放任务
+ * JPA - 返利任务
  */
 @Repository
 public interface RewardTaskJpa extends JpaRepository<RewardTask, Long> {

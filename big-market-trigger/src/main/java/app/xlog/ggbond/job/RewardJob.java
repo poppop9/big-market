@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
- * 奖品发放领域 - 任务
+ * 返利领域 - 任务
  */
 @Slf4j
 @Component

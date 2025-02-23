@@ -11,7 +11,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 /**
- * 奖品发放领域 - 监听器
+ * 返利领域 - 监听器
  */
 @Slf4j
 @Component
@@ -21,7 +21,7 @@ public class RewardListener {
     private IRewardService rewardService;
 
     /**
-     * 消费奖品发放任务消息，进行发奖，并更新task表
+     * 消费返利任务消息，进行发奖，并更新task表
      */
     @KafkaListener(topics = GlobalConstant.KafkaConstant.REWARD_TASK,
             groupId = GlobalConstant.KafkaConstant.GROUP_ID)

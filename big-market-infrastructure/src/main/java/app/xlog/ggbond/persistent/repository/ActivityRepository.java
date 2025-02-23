@@ -86,7 +86,7 @@ public class ActivityRepository implements IActivityRepo {
     public void initActivityAccount(Long userId, long activityId) {
         if (!activityAccountJpa.existsByUserIdAndActivityId(userId, activityId)) {
             activityAccountJpa.save(new ActivityAccount(
-                    userId, activityId, 0L, 0.0, 0L
+                    userId, activityId, 0L, 0.0
             ));
         }
     }

@@ -24,5 +24,4 @@ public class ActivityAccount extends ShardingTable {
     private Long activityId;  // 活动id
     private Long availableRaffleCount;  // 可用的抽奖次数
     private @Builder.Default Double balance = 0d;  // 余额
-    private @Builder.Default Long points = 0L;  // 积分
 }

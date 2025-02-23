@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "Strategy", indexes = {
         @Index(columnList = "activityId"),
         @Index(columnList = "strategyId"),
+        @Index(columnList = "activityId, strategyId"),
 })
 public class Strategy extends ShardingTable {
     private Long activityId;  // 活动id
