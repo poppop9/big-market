@@ -66,4 +66,20 @@ public class RaffleDispatch implements IRaffleDispatch {
         return liteflowResponse.getContextBean(RaffleFilterContext.class);
     }
 
+    /**
+     * 调度 - 加锁
+     */
+    @Override
+    public void acquireRaffleLock(Long userId) {
+        raffleDispatchRepo.acquireRaffleLock(userId);
+    }
+
+    /**
+     * 调度 - 释放锁
+     */
+    @Override
+    public void releaseRaffleLock(Long userId) {
+        raffleDispatchRepo.releaseRaffleLock(userId);
+    }
+
 }

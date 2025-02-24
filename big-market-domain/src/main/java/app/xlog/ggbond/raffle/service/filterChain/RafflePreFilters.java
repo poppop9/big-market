@@ -36,22 +36,6 @@ public class RafflePreFilters {
     private IRaffleArmoryRepo raffleArmoryRepo;
 
     /**
-     * 并发安全加锁过滤器
-     */
-    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
-            value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "ConcurrencySafetyLockFilter",
-            nodeName = "并发安全加锁过滤器")
-    public void concurrencySafetyLockFilter(NodeComponent bindCmp) {
-        RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
-        UserBO userBO = context.getUserBO();
-
-        if (!raffleArmoryRepo.acquireRaffleLock(userBO.getUserId())) {
-            throw new BigMarketException(BigMarketRespCode.USER_IS_IN_RAFFLE, "您当前正在抽奖中，请稍后再试");
-        }
-    }
-
-    /**
      * 抽奖资格验证过滤器 - 判断登录后为抽奖做准备的各种异步操作是否完成
      */
     @SneakyThrows

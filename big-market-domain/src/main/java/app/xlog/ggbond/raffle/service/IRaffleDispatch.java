@@ -14,4 +14,9 @@ public interface IRaffleDispatch {
     // 调度 - 抽取奖品
     RaffleFilterContext raffle(RaffleFilterContext context);
 
+    // 调度 - 加锁
+    void acquireRaffleLock(Long userId);
+
+    // 调度 - 释放锁
+    void releaseRaffleLock(Long userId);
 }

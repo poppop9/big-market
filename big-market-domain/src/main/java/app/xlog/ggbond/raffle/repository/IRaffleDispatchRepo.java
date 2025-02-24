@@ -41,4 +41,9 @@ public interface IRaffleDispatchRepo {
     // 奖品 - 更新所有奖品列表的过期时间
     void updateAllAwardListExpireTime(Long strategyId);
 
+    // 锁 - 加锁
+    void acquireRaffleLock(Long userId);
+
+    // 锁 - 释放锁
+    void releaseRaffleLock(Long userId);
 }

@@ -122,9 +122,7 @@ public class ActivityRepository implements IActivityRepo {
     @Override
     public List<ActivityOrderBO> findAllPendingPaymentAO(Long activityId, Long userId) {
         List<ActivityOrder> activityOrderList = activityOrderJPA.findByActivityIdAndUserIdAndActivityOrderStatusOrderByCreateTimeAsc(
-                activityId,
-                userId,
-                ActivityOrder.ActivityOrderStatus.PENDING_PAYMENT
+                activityId, userId, ActivityOrder.ActivityOrderStatus.PENDING_PAYMENT
         );
         activityOrderList = activityOrderList.stream()
                 .filter(item -> {
@@ -146,9 +144,7 @@ public class ActivityRepository implements IActivityRepo {
         RQueue<QueueItemVO> rQueue = redissonClient.getQueue(GlobalConstant.RedisKey.CHECK_EXPIRE_PENDING_PAYMENT_AO_QUEUE);
         RDelayedQueue<QueueItemVO> rDelayedQueue = redissonClient.getDelayedQueue(rQueue);
         rDelayedQueue.offer(
-                queueItemVO,
-                delayed,
-                TimeUnit.SECONDS
+                queueItemVO, delayed, TimeUnit.SECONDS
         );
     }
 
@@ -240,8 +236,8 @@ public class ActivityRepository implements IActivityRepo {
                         .getActivityOrderExpireTime()
                         .isBefore(LocalDateTime.now())
                 )
-                .forEach(item ->
-                        activityOrderJPA.updateActivityOrderStatusByActivityOrderId(
+                .forEach(item -> activityOrderJPA
+                        .updateActivityOrderStatusByActivityOrderId(
                                 ActivityOrder.ActivityOrderStatus.EXPIRED,
                                 item.getActivityOrderId()
                         )

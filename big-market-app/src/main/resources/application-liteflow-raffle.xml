@@ -3,7 +3,6 @@
     <!-- 抽奖领域 - 抽奖 -->
     <chain name="RAFFLE_FILTER_CHAIN">
         THEN(
-            PRE(ConcurrencySafetyLockFilter),
             // 1. 前置过滤器链
             RaffleQualificationFilter,
             DataPreparationFilter,
@@ -18,8 +17,7 @@
                 AwardInventoryFilter,
                 UserRaffleTimeFilter,
                 UserRaffleFlowRecordFilter
-            ).retry(30, "app.xlog.ggbond.exception.RetryRouterException"),
-            FINALLY(ConcurrencySafetyUnLockFilter)
+            ).retry(30, "app.xlog.ggbond.exception.RetryRouterException")
         );
     </chain>
 </flow>

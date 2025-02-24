@@ -103,18 +103,4 @@ public class RaffleAfterFilters {
         log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器执行完毕");
     }
 
-    /**
-     * 并发安全解锁过滤器
-     */
-    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
-            value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "ConcurrencySafetyUnLockFilter",
-            nodeName = "并发安全解锁过滤器")
-    public void concurrencySafetyUnLockFilter(NodeComponent bindCmp) {
-        RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
-        UserBO userBO = context.getUserBO();
-
-        raffleArmoryRepo.unLockUserInBitSet(userBO.getUserId());
-    }
-
 }

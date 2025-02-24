@@ -26,6 +26,7 @@ import org.redisson.api.*;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.Serializable;
 import java.util.List;
@@ -41,7 +42,8 @@ import java.util.concurrent.ExecutionException;
 public class TriggerService implements Serializable {
 
     @Resource
-    private RedissonClient redissonClient;
+    private TransactionTemplate transactionTemplate;
+
     @Resource
     private ThreadPoolTaskScheduler myScheduledThreadPool;
 
@@ -63,7 +65,6 @@ public class TriggerService implements Serializable {
     /**
      * 抽奖领域 - 根据活动id和当前用户，抽取一个奖品id
      */
-    @Transactional
     public AwardBO raffle(Long activityId) {
         // 1. 获取当前用户
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
@@ -72,27 +73,34 @@ public class TriggerService implements Serializable {
         // 2. 跟据活动id，用户id，查询用户的策略id
         Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
 
-        // 3. 发布事件，消费活动单
-        aoEventCenter.publishEffectiveToUsedEvent(AOContext.builder()
-                .activityId(activityId)
-                .userId(userId)
-                .build()
-        );
+        // 3. 加锁
+        raffleDispatch.acquireRaffleLock(userId);
+        RaffleFilterContext context = transactionTemplate.execute(status -> {
+            // 4. 发布事件，消费活动单
+            aoEventCenter.publishEffectiveToUsedEvent(AOContext.builder()
+                    .activityId(activityId)
+                    .userId(userId)
+                    .build()
+            );
 
-        // 4. 抽奖
-        RaffleFilterContext context = raffleDispatch.raffle(RaffleFilterContext.builder()
-                .strategyId(strategyId)
-                .userBO(app.xlog.ggbond.raffle.model.bo.UserBO.builder()
-                        .userId(userId)
-                        .isBlacklistUser(securityService.isBlacklistUser(userId))
-                        .build()
-                )
-                .saSession(StpUtil.getSession())
-                .build()
-        );
-        log.atInfo().log("抽奖领域 - " + userId + " 抽到 {} 活动的 {} 奖品", activityId, context.getAwardId());
+            // 5. 抽奖
+            RaffleFilterContext contextTemp = raffleDispatch.raffle(RaffleFilterContext.builder()
+                    .strategyId(strategyId)
+                    .userBO(app.xlog.ggbond.raffle.model.bo.UserBO.builder()
+                            .userId(userId)
+                            .isBlacklistUser(securityService.isBlacklistUser(userId))
+                            .build()
+                    )
+                    .saSession(StpUtil.getSession())
+                    .build()
+            );
+            log.atInfo().log("抽奖领域 - " + userId + " 抽到 {} 活动的 {} 奖品", activityId, contextTemp.getAwardId());
+            return contextTemp;
+        });
+        // 6. 释放锁 todo 这里如果事务里有异常，锁不会释放
+        raffleDispatch.releaseRaffleLock(userId);
 
-        // 5. 写入发奖的task表
+        // 7. 写入发奖的task表
         long rewardId = rewardService.insertRewardTask(RewardTaskBO.builder()
                 .userId(userId)
                 .userRaffleHistoryId(context.getUserRaffleHistoryId())
@@ -100,7 +108,7 @@ public class TriggerService implements Serializable {
                 .build()
         );
 
-        // 6. 发送发奖的mq消息
+        // 8. 发送发奖的mq消息
         rewardService.sendRewardToMQ(RewardTaskBO.builder()
                 .rewardId(rewardId)
                 .userId(userId)
@@ -108,7 +116,7 @@ public class TriggerService implements Serializable {
                 .build()
         );
 
-        // 7. 查询奖品详情
+        // 9. 查询奖品详情
         return raffleArmory.findAwardByStrategyIdAndAwardId(context.getStrategyId(), context.getAwardId())
                 .setAwardRate(null)
                 .setAwardCount(null)

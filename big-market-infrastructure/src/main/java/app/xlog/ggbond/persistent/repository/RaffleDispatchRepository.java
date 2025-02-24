@@ -211,4 +211,22 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
                 .expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
     }
 
+    /**
+     * 锁 - 加锁
+     */
+    @Override
+    public void acquireRaffleLock(Long userId) {
+        RLock fairLock = redissonClient.getFairLock(userId.toString());
+        fairLock.lock();
+    }
+
+    /**
+     * 锁 - 释放锁
+     */
+    @Override
+    public void releaseRaffleLock(Long userId) {
+        RLock fairLock = redissonClient.getFairLock(userId.toString());
+        fairLock.unlock();
+    }
+
 }

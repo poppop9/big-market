@@ -66,21 +66,6 @@ public class EffectiveToUsedPipeline {
     }
 
     /**
-     * perform - 并发安全加锁工位
-     */
-    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
-            value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "ConcurrencySafetyLockWorker",
-            nodeName = "并发安全加锁工位")
-    public void concurrencySafetyLockWorker(NodeComponent bindCmp) {
-        AOContext context = bindCmp.getContextBean(AOContext.class);
-
-        if (!activityRepo.acquireConsumeAOLock(context.getUserId())) {
-            throw new BigMarketException(BigMarketRespCode.USER_IS_IN_CONSUME_AO, "您当前正在消费活动单，请稍后再试");
-        }
-    }
-
-    /**
      * perform - 更新活动单的抽奖次数和状态工位 - 更新活动单已使用的抽奖次数
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
@@ -89,7 +74,6 @@ public class EffectiveToUsedPipeline {
             nodeName = "更新活动单的抽奖次数和状态工位")
     public void updateAOUsedRaffleCountAndStatusWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
-
 
         // 查出这一单的活动单对象，判断是否已经达到最大抽奖次数
         ActivityOrderBO activityOrderBO = activityRepo.findActivityOrderByActivityOrderId(context.getActivityOrderBO().getActivityOrderId());
@@ -130,19 +114,6 @@ public class EffectiveToUsedPipeline {
         activityRepo.decreaseUserAvailableRaffleCount(
                 context.getActivityId(), context.getUserId()
         );
-    }
-
-    /**
-     * perform - 并发安全解锁工位
-     */
-    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
-            value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "ConcurrencySafetyUnLockWorker",
-            nodeName = "并发安全解锁工位")
-    public void concurrencySafetyUnLockWorker(NodeComponent bindCmp) {
-        AOContext context = bindCmp.getContextBean(AOContext.class);
-
-        activityRepo.unLockUserInBitSet(context.getUserId());
     }
 
 }
