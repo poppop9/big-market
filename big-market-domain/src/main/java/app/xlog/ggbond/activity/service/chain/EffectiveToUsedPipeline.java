@@ -17,7 +17,6 @@ import java.util.Optional;
 
 /**
  * 有效状态 -> 已使用状态流水线
- * todo 把锁去掉，改成外部加redis锁
  */
 @Slf4j
 @LiteflowComponent
@@ -78,26 +77,15 @@ public class EffectiveToUsedPipeline {
         // 查出这一单的活动单对象，判断是否已经达到最大抽奖次数
         ActivityOrderBO activityOrderBO = activityRepo.findActivityOrderByActivityOrderId(context.getActivityOrderBO().getActivityOrderId());
         Long totalRaffleCount = activityOrderBO.getTotalRaffleCount();
-        Long usedRaffleCount = activityOrderBO.getUsedRaffleCount();
 
-        if (usedRaffleCount >= totalRaffleCount) {
-            // 已达到最大抽奖次数，更新其状态，并且retry
+        Long nowUsedRaffleCount = activityRepo.increaseAOUsedRaffleCount(
+                context.getActivityOrderBO().getActivityOrderId()
+        );
+        if (nowUsedRaffleCount.equals(totalRaffleCount)) {
             activityRepo.updateActivityOrderStatus(
                     context.getActivityOrderBO().getActivityOrderId(),
                     ActivityOrderBO.ActivityOrderStatus.USED
             );
-            throw new BigMarketException(BigMarketRespCode.ACTIVITY_ORDER_IS_USED);
-        } else {
-            // 未达到最大抽奖次数，更新其已使用抽奖次数
-            Long nowUsedRaffleCount = activityRepo.increaseAOUsedRaffleCount(
-                    context.getActivityOrderBO().getActivityOrderId()
-            );
-            if (nowUsedRaffleCount.equals(totalRaffleCount)) {
-                activityRepo.updateActivityOrderStatus(
-                        context.getActivityOrderBO().getActivityOrderId(),
-                        ActivityOrderBO.ActivityOrderStatus.USED
-                );
-            }
         }
     }
 

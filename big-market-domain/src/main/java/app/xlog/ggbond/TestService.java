@@ -4,8 +4,6 @@ import app.xlog.ggbond.exception.RetryRouterException;
 import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.security.repository.ISecurityRepo;
 import jakarta.annotation.Resource;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +15,7 @@ public class TestService {
     @Resource
     private ISecurityRepo securityRepo;
 
-    public void test(@NotBlank String number, @NotNull String s) {
+    public void test( String number, String s) {
         System.out.println("number = " + number);
         System.out.println("s = " + s);
     }

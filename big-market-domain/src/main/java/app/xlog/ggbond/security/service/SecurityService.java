@@ -4,11 +4,18 @@ import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.idev.excel.FastExcel;
+import cn.idev.excel.context.AnalysisContext;
+import cn.idev.excel.converters.Converter;
+import cn.idev.excel.event.AnalysisEventListener;
 import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -148,14 +155,6 @@ public class SecurityService implements ISecurityService {
     }
 
     /**
-     * 判断 - 用户是否频繁登录
-     */
-    @Override
-    public boolean isFrequentLogin(Long userId) {
-        return securityRepo.isFrequentLogin(userId);
-    }
-
-    /**
      * 更新 - 设置即将结束登录的用户状态
      */
     @Override
@@ -169,6 +168,27 @@ public class SecurityService implements ISecurityService {
     @Override
     public boolean acquireLoginLock(Long userId) {
         return securityRepo.acquireLoginLock(userId);
+    }
+
+    /**
+     * 读取excel，写入用户购买历史
+     */
+    @Override
+    @SneakyThrows
+    public void writePurchaseHistoryFromExcel(MultipartFile file) {
+        FastExcel.read(file.getInputStream(), UserPurchaseHistoryBO.class, new AnalysisEventListener<UserPurchaseHistoryBO>() {
+                    private final List<UserPurchaseHistoryBO> userPurchaseHistoryBOList = new ArrayList<>();
+
+                    @Override
+                    public void invoke(UserPurchaseHistoryBO userPurchaseHistoryBO, AnalysisContext analysisContext) {
+                        userPurchaseHistoryBOList.add(userPurchaseHistoryBO);
+                    }
+
+                    @Override
+                    public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+                        securityRepo.writePurchaseHistoryFromExcel(userPurchaseHistoryBOList);
+                    }
+                }).sheet().doRead();
     }
 
 }

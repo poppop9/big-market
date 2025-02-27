@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 /**
  * 抽奖领域 - 前置过滤器链
- * todo 把锁去掉，改成外部加redis公平锁
  */
 @Slf4j
 @LiteflowComponent

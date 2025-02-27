@@ -17,8 +17,8 @@ import lombok.*;
 })
 public class UserPurchaseHistory extends ShardingTable {
     private Long userId;  // 用户id
-    private String purchaseName;  // 商品名称
     private PurchaseCategory purchaseCategory;  // 商品类型
+    private String purchaseName;  // 商品名称
     private double purchasePrice;  // 商品价格
     private Long purchaseCount;  // 购买数量
     private Long purchaseTimes;  // 此次是第几次购买

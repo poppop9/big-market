@@ -13,6 +13,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 安全领域
@@ -66,6 +67,17 @@ public class SecurityController implements ISecurityApiService {
 
         securityService.logoutByToken(token);
         return ZakiResponse.ok("");
+    }
+
+    /**
+     * 读取excel，写入用户购买历史
+     */
+    @PostMapping("/v1/writePurchaseHistoryFromExcel")
+    public ResponseEntity<JsonNode> writePurchaseHistoryFromExcel(MultipartFile file) {
+        if (file.isEmpty()) return ZakiResponse.error("文件为空！");
+        securityService.writePurchaseHistoryFromExcel(file);
+
+        return ZakiResponse.ok("文件上传成功，数据已写入数据库");
     }
 
 }

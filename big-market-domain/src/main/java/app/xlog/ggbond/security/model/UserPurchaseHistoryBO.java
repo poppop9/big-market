@@ -1,5 +1,7 @@
 package app.xlog.ggbond.security.model;
 
+import app.xlog.ggbond.security.config.StringEnumConverter;
+import cn.idev.excel.annotation.ExcelProperty;
 import lombok.*;
 
 import java.io.Serializable;
@@ -13,8 +15,9 @@ import java.io.Serializable;
 @Builder
 public class UserPurchaseHistoryBO implements Serializable {
     private Long userId;  // 用户id
-    private String purchaseName;  // 商品名称
+    @ExcelProperty(converter = StringEnumConverter.class)
     private PurchaseCategory purchaseCategory;  // 商品类型（生鲜、家居、数码 ……）
+    private String purchaseName;  // 商品名称
     private double purchasePrice;  // 商品价格
     private Long purchaseCount;  // 购买数量
     private Long purchaseTimes;  // 此次是第几次购买

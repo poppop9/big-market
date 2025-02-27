@@ -2,8 +2,8 @@ package app.xlog.ggbond.security.service;
 
 import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -50,12 +50,12 @@ public interface ISecurityService {
     // 查询 - 查询登录用户的信息
     UserBO findLoginUserInfo();
 
-    // 判断 - 用户是否频繁登录
-    boolean isFrequentLogin(Long userId);
-
     // 更新 - 设置即将结束登录的用户状态
     void releaseLoginLock(Long userId);
 
     // 判断 - 判断是否可以获取登录锁
     boolean acquireLoginLock(Long userId);
+
+    // 读取excel，写入用户购买历史
+    void writePurchaseHistoryFromExcel(MultipartFile file);
 }

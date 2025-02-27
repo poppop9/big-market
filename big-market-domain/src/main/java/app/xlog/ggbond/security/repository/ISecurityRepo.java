@@ -43,12 +43,12 @@ public interface ISecurityRepo {
     // 查询 - 查询登录用户的信息
     UserBO findLoginUserInfo();
 
-    // 判断 - 用户是否频繁登录
-    boolean isFrequentLogin(Long userId);
-
     // 更新 - 设置即将结束登录的用户状态
     void releaseLoginLock(Long userId);
 
     // 判断 - 是否能够获取登录锁
     boolean acquireLoginLock(Long userId);
+
+    // 读取excel，写入用户购买历史
+    void writePurchaseHistoryFromExcel(List<UserPurchaseHistoryBO> userPurchaseHistoryBOList);
 }

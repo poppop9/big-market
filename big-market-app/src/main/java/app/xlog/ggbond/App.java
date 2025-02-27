@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  *          - 对于同一ip的异常高流量，要做限流，并加入黑名单
  * - 发奖领域
  * - 安全领域
- *      - 登录后的异步操作有并发安全问题：使用 RMap + RFuture 解决
+ *      - todo 登录后的异步操作有并发安全问题：使用 RMap + RFuture 解决
  * - 活动领域
  * - 推荐领域
  *      - todo 生成大规模的用户，和历史购买数据

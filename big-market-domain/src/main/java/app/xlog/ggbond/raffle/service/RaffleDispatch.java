@@ -1,14 +1,9 @@
 package app.xlog.ggbond.raffle.service;
 
-import app.xlog.ggbond.GlobalConstant;
-import app.xlog.ggbond.raffle.model.bo.*;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
-import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import cn.hutool.core.lang.WeightRandom;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.RandomUtil;
 import com.yomahub.liteflow.core.FlowExecutor;
 import com.yomahub.liteflow.flow.LiteflowResponse;
 import jakarta.annotation.Resource;
@@ -17,12 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 /**
  * 抽奖领域 - 调度实现类

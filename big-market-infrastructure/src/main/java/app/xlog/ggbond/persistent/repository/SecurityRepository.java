@@ -16,7 +16,6 @@ import jakarta.annotation.Resource;
 import org.redisson.api.RBitSet;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
@@ -175,15 +174,6 @@ public class SecurityRepository implements ISecurityRepo {
     }
 
     /**
-     * 判断 - 用户是否频繁登录
-     */
-    @Override
-    public boolean isFrequentLogin(Long userId) {
-        RBitSet bitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.FREQUENT_LOGIN_USER);
-        return bitSet.get(userId);
-    }
-
-    /**
      * 更新 - 设置即将结束登录的用户状态
      */
     @Override
@@ -200,6 +190,15 @@ public class SecurityRepository implements ISecurityRepo {
         RBitSet bitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.FREQUENT_LOGIN_USER);
         boolean wasLocked = bitSet.set(userId, true);
         return !wasLocked;
+    }
+
+    /**
+     * 读取excel，写入用户购买历史
+     */
+    @Override
+    public void writePurchaseHistoryFromExcel(List<UserPurchaseHistoryBO> userPurchaseHistoryBOList) {
+        List<UserPurchaseHistory> userPurchaseHistoryList = BeanUtil.copyToList(userPurchaseHistoryBOList, UserPurchaseHistory.class);
+        userPurchaseHistoryJpa.saveAll(userPurchaseHistoryList);
     }
 
 }

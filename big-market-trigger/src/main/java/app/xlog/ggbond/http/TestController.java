@@ -9,8 +9,6 @@ import app.xlog.ggbond.recommend.RecommendService;
 import app.xlog.ggbond.resp.BigMarketRespCode;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.SneakyThrows;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -164,8 +162,8 @@ public class TestController {
      * Mess - 测试参数校验
      */
     @GetMapping("/v1/testParamCheck")
-    public void testParamCheck(@NotBlank(message = "var1 不能是无效文本") String var1,
-                               @NotNull(message = "var2 不能为 null") String var2) {
+    public void testParamCheck(String var1,
+                               String var2) {
         throw new BigMarketException(
                 BigMarketRespCode.PARAMETER_VERIFICATION_FAILED,
                 "lalala"
@@ -187,7 +185,7 @@ public class TestController {
         // testController.test("");
     }
 
-    void test(@NotBlank(message = "var3 不能是无效文本") String var3) {
+    void test(String var3) {
         System.out.println("var3: " + var3);
     }
 

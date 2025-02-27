@@ -1,11 +1,10 @@
 package app.xlog.ggbond.recommend;
 
 import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
-import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 

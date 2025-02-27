@@ -27,10 +27,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Stream;
 
 @SpringBootTest
 public class JpaTest {
@@ -147,8 +145,6 @@ public class JpaTest {
      */
     @Test
     void initAllData() {
-        long snowflakeNextId = IdUtil.getSnowflakeNextId();
-
         // 活动领域
         test_activity();
         test_ActivityOrderTypeAndActivityOrderTypeConfig();
@@ -158,9 +154,9 @@ public class JpaTest {
         test_strategyAward();
         test_award();
         test_RafflePool();
-        test_userRaffleConfig(snowflakeNextId);
+        test_userRaffleConfig();
         // 安全领域
-        test_user(snowflakeNextId);
+        test_user();
         test_userPurchaseHistory();
 
         // 清空 redis
@@ -252,7 +248,7 @@ public class JpaTest {
      * 初始化用户抽奖配置
      */
     @Test
-    void test_userRaffleConfig(long snowflakeNextId) {
+    void test_userRaffleConfig() {
         userRaffleConfigJpa.saveAll(List.of(
                 UserRaffleConfig.builder()
                         .userId(404L)
@@ -261,11 +257,6 @@ public class JpaTest {
                         .build(),
                 UserRaffleConfig.builder()
                         .userId(200L)
-                        .activityId(10001L)
-                        .strategyId(10001L)
-                        .build(),
-                UserRaffleConfig.builder()
-                        .userId(snowflakeNextId)
                         .activityId(10001L)
                         .strategyId(10001L)
                         .build()
@@ -323,34 +314,23 @@ public class JpaTest {
      * 初始化用户
      */
     @Test
-    void test_user(long snowflakeNextId) {
-        userJpa.saveAll(List.of(
-                User.builder()
-                        .userId(404L)
-                        .userName("404 用户")
-                        .password("404")
-                        .userRole(User.UserRole.BLACKLIST)
-                        .build(),
-                User.builder()
-                        .userId(200L)
-                        .userName("游客用户")
-                        .password("user200")
+    void test_user() {
+        List<User> userList = Stream.iterate(1L, i -> i < 500, i -> i + 1)
+                .map(item -> User.builder()
+                        .userId(item)
+                        .userName("普通用户_" + item)
+                        .password("pzq")
                         .userRole(User.UserRole.USER)
-                        .build(),
-                User.builder()
-                        .userId(111L)
-                        .userName("普通用户1")
-                        .password("111")
-                        .userRole(User.UserRole.USER)
-                        .build(),
-                User.builder()
-                        .userId(snowflakeNextId)
-                        .userName("普通用户2")
-                        .password("222")
-                        .userRole(User.UserRole.USER)
-                        .build(),
-                new EasyRandom().nextObject(User.class)
-        ));
+                        .build())
+                .peek(item -> {
+                    if (item.getUserId() == 1) {
+                        item.setUserRole(User.UserRole.ADMIN);
+                    } else if (item.getUserId() == 404) {
+                        item.setUserRole(User.UserRole.BLACKLIST);
+                    }
+                })
+                .toList();
+        userJpa.saveAll(userList);
     }
 
     /**
