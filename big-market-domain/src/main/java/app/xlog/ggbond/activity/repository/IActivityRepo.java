@@ -99,4 +99,7 @@ public interface IActivityRepo {
 
     // 判断 - 是否能成功获得锁
     boolean acquireConsumeAOLock(Long userId);
+
+    // 查询 - 查询活动
+    ActivityBO findActivityByActivityId(Long activityId);
 }

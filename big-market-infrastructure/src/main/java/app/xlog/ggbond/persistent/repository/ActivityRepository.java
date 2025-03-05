@@ -16,6 +16,7 @@ import org.redisson.api.RBitSet;
 import org.redisson.api.RDelayedQueue;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
@@ -50,6 +51,8 @@ public class ActivityRepository implements IActivityRepo {
     private ActivityOrderProductJpa activityOrderProductJpa;
     @Resource
     private ActivityOrderRewardTaskJpa activityOrderRewardTaskJpa;
+    @Autowired
+    private ActivityJpa activityJpa;
 
     /**
      * 插入 - 插入活动单流水
@@ -376,6 +379,15 @@ public class ActivityRepository implements IActivityRepo {
         RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_CONSUME_AO);
         boolean wasLocked = rBitSet.set(userId, true);
         return !wasLocked;
+    }
+
+    /**
+     * 查询 - 查询活动
+     */
+    @Override
+    public ActivityBO findActivityByActivityId(Long activityId) {
+        Activity activity = activityJpa.findByActivityId(activityId);
+        return BeanUtil.copyProperties(activity, ActivityBO.class);
     }
 
 }

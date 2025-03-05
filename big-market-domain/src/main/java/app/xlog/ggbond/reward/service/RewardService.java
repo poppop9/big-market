@@ -1,5 +1,7 @@
 package app.xlog.ggbond.reward.service;
 
+import app.xlog.ggbond.MQMessage;
+import app.xlog.ggbond.reward.model.PointsLogBO;
 import app.xlog.ggbond.reward.model.RewardTaskBO;
 import app.xlog.ggbond.reward.repository.IRewardRepo;
 import jakarta.annotation.Resource;
@@ -58,6 +60,38 @@ public class RewardService implements IRewardService {
         for (RewardTaskBO rewardTaskBO : rewardTaskBOList) {
             sendRewardToMQ(rewardTaskBO);
         }
+    }
+
+    /**
+     * 插入积分流水
+     */
+    @Override
+    public PointsLogBO insetPointsLog(Long activityId, Long userId, int points, boolean isIssued) {
+        return rewardRepo.insertPointsLog(activityId, userId, points, isIssued);
+    }
+
+    /**
+     * 发送积分奖励消息
+     */
+    @Override
+    public void publishPointsRewardMessage(MQMessage<PointsLogBO> build) {
+        rewardRepo.publishPointsRewardMessage(build);
+    }
+
+    /**
+     * 充值返利账户积分
+     */
+    @Override
+    public void rechargeRewardAccountPoints(Long activityId, Long userId, Long points) {
+        rewardRepo.rechargeRewardAccountPoints(activityId, userId, points);
+    }
+
+    /**
+     * 更新积分流水是否发放
+     */
+    @Override
+    public void updatePointsLogIsIssued(Long pointsLogId, boolean isIssued) {
+        rewardRepo.updatePointsLogIsIssued(pointsLogId, isIssued);
     }
 
 }

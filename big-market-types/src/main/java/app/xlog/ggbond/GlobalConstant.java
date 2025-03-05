@@ -75,6 +75,7 @@ public class GlobalConstant {
         // 返利领域 - 发放奖品任务
         public static final String REWARD_TASK = "Reward-RewardTask";
         public static final String REWARD_EFFECTIVE_ACTIVITY_ORDER_TASK = "Activity-RewardEffectiveActivityOrderTask";
+        public static final String POINTS_REWARD = "POINTS_REWARD";
     }
 
     // 抽奖，推荐领域 - 奖品级别

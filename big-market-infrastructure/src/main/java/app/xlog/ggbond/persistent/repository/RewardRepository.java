@@ -2,6 +2,10 @@ package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.MQMessage;
+import app.xlog.ggbond.persistent.po.reward.PointsLog;
+import app.xlog.ggbond.persistent.repository.jpa.PointsLogJpa;
+import app.xlog.ggbond.persistent.repository.jpa.RewardAccountJpa;
+import app.xlog.ggbond.reward.model.PointsLogBO;
 import app.xlog.ggbond.reward.model.RewardTaskBO;
 import app.xlog.ggbond.reward.repository.IRewardRepo;
 import app.xlog.ggbond.mq.MQEventCenter;
@@ -9,6 +13,7 @@ import app.xlog.ggbond.persistent.po.reward.RewardTask;
 import app.xlog.ggbond.persistent.repository.jpa.RewardTaskJpa;
 import cn.hutool.core.bean.BeanUtil;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -24,6 +29,10 @@ public class RewardRepository implements IRewardRepo {
     private MQEventCenter mqEventCenter;
     @Resource
     private RewardTaskJpa rewardTaskJpa;
+    @Autowired
+    private PointsLogJpa pointsLogJpa;
+    @Autowired
+    private RewardAccountJpa rewardAccountJpa;
 
     /**
      * 写入task记录
@@ -70,6 +79,44 @@ public class RewardRepository implements IRewardRepo {
                 endDateTime
         );
         return BeanUtil.copyToList(rewardTaskList, RewardTaskBO.class);
+    }
+
+    /**
+     * 插入积分流水
+     */
+    @Override
+    public PointsLogBO insertPointsLog(Long activityId, Long userId, int points, boolean isIssued) {
+        PointsLog pointsLog = pointsLogJpa.save(PointsLog.builder()
+                .activityId(activityId)
+                .userId(userId)
+                .points((long) points)
+                .isIssued(isIssued)
+                .build());
+        return BeanUtil.copyProperties(pointsLog, PointsLogBO.class);
+    }
+
+    /**
+     * 发布积分返利的消息
+     */
+    @Override
+    public void publishPointsRewardMessage(MQMessage<PointsLogBO> build) {
+        mqEventCenter.sendMessage(GlobalConstant.KafkaConstant.POINTS_REWARD, build);
+    }
+
+    /**
+     * 充值返利账户积分
+     */
+    @Override
+    public void rechargeRewardAccountPoints(Long activityId, Long userId, Long points) {
+        rewardAccountJpa.rechargeRewardAccountPoints(points, activityId, userId);
+    }
+
+    /**
+     * 更新积分流水是否发放
+     */
+    @Override
+    public void updatePointsLogIsIssued(Long pointsLogId, boolean isIssued) {
+        pointsLogJpa.updateIsIssuedByPointsLogId(isIssued, pointsLogId);
     }
 
 }

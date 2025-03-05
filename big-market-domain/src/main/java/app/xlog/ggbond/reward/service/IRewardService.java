@@ -1,5 +1,7 @@
 package app.xlog.ggbond.reward.service;
 
+import app.xlog.ggbond.MQMessage;
+import app.xlog.ggbond.reward.model.PointsLogBO;
 import app.xlog.ggbond.reward.model.RewardTaskBO;
 
 /**
@@ -19,4 +21,15 @@ public interface IRewardService {
     // 扫描task表，补偿未发放奖品的用户
     void scanAndCompensateNotReward(Long scanAwardIssuanceTaskTime);
 
+    // 插入积分流水
+    PointsLogBO insetPointsLog(Long activityId, Long userId, int points, boolean isIssued);
+
+    // 发送积分奖励消息
+    void publishPointsRewardMessage(MQMessage<PointsLogBO> build);
+
+    // 充值返利账户积分
+    void rechargeRewardAccountPoints(Long activityId, Long userId, Long points);
+
+    // 更新积分流水是否发放
+    void updatePointsLogIsIssued(Long pointsLogId, boolean b);
 }

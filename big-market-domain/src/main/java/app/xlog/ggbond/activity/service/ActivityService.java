@@ -1,5 +1,6 @@
 package app.xlog.ggbond.activity.service;
 
+import app.xlog.ggbond.activity.model.bo.ActivityBO;
 import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.bo.ActivityOrderRewardTaskBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
@@ -74,6 +75,14 @@ public class ActivityService implements IActivityService {
     @Override
     public void updateActivityOrderIssuanceTaskStatus(Long activityOrderIssuanceTaskId, boolean isIssued) {
         activityRepo.updateActivityOrderRewardTaskStatus(activityOrderIssuanceTaskId, isIssued);
+    }
+
+    /**
+     * 查询 - 查询活动
+     */
+    @Override
+    public ActivityBO findActivityByActivityId(Long activityId) {
+        return activityRepo.findActivityByActivityId(activityId);
     }
 
 }

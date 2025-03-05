@@ -84,6 +84,7 @@ public class TriggerService implements Serializable {
 
                     // 5. 抽奖
                     RaffleFilterContext contextTemp = raffleDispatch.raffle(RaffleFilterContext.builder()
+                            .activityId(activityId)
                             .strategyId(strategyId)
                             .userBO(app.xlog.ggbond.raffle.model.bo.UserBO.builder()
                                     .userId(userId)

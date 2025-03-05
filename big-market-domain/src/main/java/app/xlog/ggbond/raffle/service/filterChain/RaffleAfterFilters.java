@@ -1,5 +1,8 @@
 package app.xlog.ggbond.raffle.service.filterChain;
 
+import app.xlog.ggbond.MQMessage;
+import app.xlog.ggbond.activity.model.bo.ActivityBO;
+import app.xlog.ggbond.activity.service.IActivityService;
 import app.xlog.ggbond.exception.RetryRouterException;
 import app.xlog.ggbond.raffle.model.bo.UserBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
@@ -7,6 +10,9 @@ import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
 import app.xlog.ggbond.resp.BigMarketRespCode;
+import app.xlog.ggbond.reward.model.PointsLogBO;
+import app.xlog.ggbond.reward.service.IRewardService;
+import cn.hutool.core.util.RandomUtil;
 import com.yomahub.liteflow.annotation.LiteflowComponent;
 import com.yomahub.liteflow.annotation.LiteflowMethod;
 import com.yomahub.liteflow.core.NodeComponent;
@@ -21,6 +27,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @LiteflowComponent
 public class RaffleAfterFilters {
+
+    @Resource
+    private IRewardService rewardService;
+    @Resource
+    private IActivityService activityService;
 
     @Resource
     private IRaffleDispatchRepo raffleDispatchRepo;
@@ -101,6 +112,39 @@ public class RaffleAfterFilters {
         Long userRaffleHistoryId = raffleDispatchRepo.addUserRaffleFlowRecordFilter(userId, context.getStrategyId(), context.getAwardId());
         context.setUserRaffleHistoryId(userRaffleHistoryId);
         log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器执行完毕");
+    }
+
+    /**
+     * 返利过滤器 todo 未测试
+     */
+    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
+            value = LiteFlowMethodEnum.PROCESS,
+            nodeId = "RewardFilter",
+            nodeName = "返利过滤器")
+    public void rewardFilter(NodeComponent bindCmp) {
+        RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
+        Long userId = context.getUserBO().getUserId();
+
+        log.atInfo().log("抽奖领域 - " + userId + " 返利过滤器开始执行");
+        // 1. 判断奖品是否是随机积分
+        if (!context.getAwardId().equals(101L)) return;
+
+        // 2. 查询活动积分范围
+        ActivityBO activityBO = activityService.findActivityByActivityId(context.getActivityId());
+        // 3. 写入积分流水表
+        PointsLogBO pointsLogBO = rewardService.insetPointsLog(
+                context.getActivityId(),
+                userId,
+                RandomUtil.randomInt(Integer.parseInt(activityBO.getRangeOfPoints().split("-")[0]), Integer.parseInt(activityBO.getRangeOfPoints().split("-")[1])),
+                false
+        );
+
+        // 4. 发布积分返利的消息
+        rewardService.publishPointsRewardMessage(MQMessage.<PointsLogBO>builder()
+                .data(pointsLogBO)
+                .build()
+        );
+        log.atInfo().log("抽奖领域 - " + userId + " 返利过滤器执行完毕");
     }
 
 }

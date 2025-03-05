@@ -2,6 +2,7 @@ package app.xlog.ggbond.listener;
 
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.MQMessage;
+import app.xlog.ggbond.reward.model.PointsLogBO;
 import app.xlog.ggbond.reward.model.RewardTaskBO;
 import app.xlog.ggbond.reward.service.IRewardService;
 import jakarta.annotation.Resource;
@@ -33,6 +34,25 @@ public class RewardListener {
         // 2. 更新task表
         rewardService.updateRewardTaskStatus(
                 data.getRewardId(), true
+        );
+    }
+
+    /**
+     * 消费积分返利任务消息，进行积分账户的充值，并更新积分流水表
+     * todo 未测试
+     */
+    @KafkaListener(topics = GlobalConstant.KafkaConstant.POINTS_REWARD,
+            groupId = GlobalConstant.KafkaConstant.GROUP_ID)
+    public void consumePointsRewardMessage(ConsumerRecord<String, MQMessage<PointsLogBO>> record) {
+        PointsLogBO data = record.value().getData();
+
+        // 1. 充值积分账户
+        rewardService.rechargeRewardAccountPoints(
+                data.getActivityId(), data.getUserId(), data.getPoints()
+        );
+        // 2. 更新积分流水表
+        rewardService.updatePointsLogIsIssued(
+                data.getPointsLogId(), true
         );
     }
 

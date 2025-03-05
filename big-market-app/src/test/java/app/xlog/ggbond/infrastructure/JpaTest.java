@@ -206,6 +206,7 @@ public class JpaTest {
         activityJPA.save(Activity.builder()
                 .activityId(10001L)
                 .activityName("测试活动")
+                .rangeOfPoints("1-10")
                 .build()
         );
     }
@@ -301,8 +302,8 @@ public class JpaTest {
                 Award.builder().awardId(101L).awardTitle("随机积分").build(),
                 Award.builder().awardId(102L).awardTitle("淘宝优惠券").build(),
                 Award.builder().awardId(103L).awardTitle("京东优惠券").build(),
-                Award.builder().awardId(104L).awardTitle("1 天 VIP").build(),
-                Award.builder().awardId(105L).awardTitle("高额随机积分").build(),
+                Award.builder().awardId(104L).awardTitle("拼多多优惠券").build(),
+                Award.builder().awardId(105L).awardTitle("1 天 VIP").build(),
                 Award.builder().awardId(106L).awardTitle("付费音乐 30 天免费听").awardSubtitle("抽奖 10 次后解锁").build(),
                 Award.builder().awardId(107L).awardTitle("付费电影 30 天免费看").awardSubtitle("抽奖 10 次后解锁").build(),
                 Award.builder().awardId(108L).awardTitle("付费小说 30 天免费看").awardSubtitle("抽奖 10 次后解锁").build(),

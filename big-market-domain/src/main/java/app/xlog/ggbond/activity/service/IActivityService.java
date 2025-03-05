@@ -1,5 +1,6 @@
 package app.xlog.ggbond.activity.service;
 
+import app.xlog.ggbond.activity.model.bo.ActivityBO;
 import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
 
 import java.util.List;
@@ -23,4 +24,7 @@ public interface IActivityService {
 
     // 更新 - 更新活动单发放任务状态
     void updateActivityOrderIssuanceTaskStatus(Long activityOrderIssuanceTaskId, boolean b);
+
+    // 查询 - 查询活动
+    ActivityBO findActivityByActivityId(Long activityId);
 }

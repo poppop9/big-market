@@ -21,6 +21,7 @@ public class RaffleFilterContext {
     @Builder.Default
     private RaffleFilterContext.MiddleFilterParam middleFilterParam = RaffleFilterContext.MiddleFilterParam.PASS;
     private UserBO userBO;  // 用户
+    private Long activityId;  // 活动id
     private Long strategyId;  // 策略id，需要根据策略id来判断到底是哪些奖品
     private SaSession saSession;  // session
 

@@ -1,6 +1,7 @@
 package app.xlog.ggbond.persistent.po.reward;
 
 import app.xlog.ggbond.persistent.po.ShardingTable;
+import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
@@ -24,8 +25,9 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "activityId, userId"),
 })
 public class PointsLog extends ShardingTable {
-    private Long pointsLogId;  // 积分流水id
+    private @Builder.Default Long pointsLogId = IdUtil.getSnowflakeNextId();  // 积分流水id
     private Long activityId;  // 活动id
     private Long userId;  // 用户id
     private Long points;  // 积分
+    private Boolean isIssued;  // 是否发放
 }

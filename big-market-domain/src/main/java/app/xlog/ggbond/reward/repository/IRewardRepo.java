@@ -1,5 +1,7 @@
 package app.xlog.ggbond.reward.repository;
 
+import app.xlog.ggbond.MQMessage;
+import app.xlog.ggbond.reward.model.PointsLogBO;
 import app.xlog.ggbond.reward.model.RewardTaskBO;
 
 import java.time.LocalDateTime;
@@ -22,4 +24,15 @@ public interface IRewardRepo {
     // 查询 - 查询所有指定时间内，未发放奖品的记录
     List<RewardTaskBO> findRewardTaskByIsIssuedAndCreateTimeBefore(boolean isIssued, LocalDateTime startDateTime, LocalDateTime endDateTime);
 
+    // 新增 - 插入积分流水
+    PointsLogBO insertPointsLog(Long activityId, Long userId, int points, boolean isIssued);
+
+    // 发布积分返利的消息
+    void publishPointsRewardMessage(MQMessage<PointsLogBO> build);
+
+    // 充值返利账户积分
+    void rechargeRewardAccountPoints(Long activityId, Long userId, Long points);
+
+    // 更新积分流水是否发放
+    void updatePointsLogIsIssued(Long pointsLogId, boolean isIssued);
 }

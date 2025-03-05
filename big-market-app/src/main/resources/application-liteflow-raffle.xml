@@ -16,7 +16,8 @@
                 UpdateExpireTimeFilter,
                 AwardInventoryFilter,
                 UserRaffleTimeFilter,
-                UserRaffleFlowRecordFilter
+                UserRaffleFlowRecordFilter,
+                RewardFilter
             ).retry(30, "app.xlog.ggbond.exception.RetryRouterException")
         );
     </chain>

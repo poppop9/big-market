@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 
 /**
  * 返利任务
+ * <p>
+ * - 针对于除了随机积分的其他奖品
  */
 @Data
 @NoArgsConstructor
