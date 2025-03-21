@@ -1,7 +1,6 @@
 package app.xlog.ggbond.domain;
 
-import app.xlog.ggbond.gpt.GLM4FlashService;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import app.xlog.ggbond.llm.GLM4FlashService;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

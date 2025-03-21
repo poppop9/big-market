@@ -9,53 +9,6 @@ logging:
     app.xlog.ggbond: INFO  # 设置包级别日志级别
     org.springframework: WARN  # 设置spring的日志级别
 
-spring:
-  kafka:
-    bootstrap-servers: localhost:9092  # kafka的地址
-    producer: # 生产者配置
-      acks: 1  # 只有在主副本确认时，生产者才认为消息已成功发送
-      retries: 1   # 发送消息失败时，重试的次数
-      batch-size: 16384   # 生产者在发送批次之前可以积累的最大字节数
-      key-serializer: org.springframework.kafka.support.serializer.JsonSerializer  # 消息键的序列化器
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer  # 消息值的序列化器
-      properties:
-        linger.ms: 0  # 生产者在发送批次之前等待更多消息的时间
-        buffer-memory: 33554432  # 生产者可以使用的缓冲区内存大小
-        spring:
-          json:
-            trusted:
-              packages: "*"  # 序列化时，信任的包
-    consumer: # 消费者配置
-      group.id: consumer_group_1   # 消费组的id
-      # 偏移量
-      enable-auto-commit: true    # 自动提交偏移量
-      auto.commit.interval.ms: 1000  # 自动提交偏移量的时间间隔
-      auto-offset-reset: earliest  # 当没有初始偏移量时，消费者从最早的消息开始消费
-      # 心跳机制
-      heartbeat.interval.ms: 3000  # 消费者发送心跳的时间间隔
-      session.timeout.ms: 120000  # 消费者会话的超时时间
-      request.timeout.ms: 180000  # 消费者请求的超时时间
-      # poll
-      max-poll-records: 50   # 单次poll返回的最大消息数
-      max-poll-interval-ms: 5000   # 消费者在两次连续的poll之间可以等待的最大时间，消费者处理数据超过这个时间，会被认定为死亡
-      # 反序列化
-      key-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer  # 消息键的反序列化器
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer  # 消息值的反序列化器
-      properties:
-        spring:
-          json:
-            trusted:
-              packages: "*"  # 反序列化时，信任的包
-      #    listener:  # 监听器配置
-      # record：当每一条记录被消费者监听器（ListenerConsumer）处理之后提交
-      # batch：当每一批poll()的数据被ListenerConsumer处理之后提交
-      # time：当每一批poll()的数据被ListenerConsumer处理之后，距离上次提交时间大于TIME时提交
-      # count：当每一批poll()的数据被ListenerConsumer处理之后，被处理record数量大于等于COUNT时提交
-      # count_time：TIME或COUNT中有一个条件满足时提交
-      # manual：当每一批poll()的数据被ListenerConsumer处理之后, 手动调用Acknowledgment.acknowledge()后提交
-      # manual_immediate：手动调用Acknowledgment.acknowledge()后立即提交，一般推荐使用这种
-      # ack-mode: manual_immediate
-
 sa-token:
   token-name: satoken  # token 名称（同时也是 cookie 名称）
   timeout: 2592000  # token 有效期（单位：秒） 为 30天，-1 代表永久有效
@@ -87,8 +40,8 @@ dubbo:
   application:
     name: big-market-app  # 应用名称
   registry:
-    address: nacos://192.168.0.12:8848  # 服务注册中心的地址
+    address: nacos://localhost:8848  # 服务注册中心的地址
     parameters.namespace: f1680a4a-b6f6-49ec-a747-aa35a219570a
     register-mode: all  # 注册模式
   config-center:
-    address: nacos://192.168.0.12:8848  # 配置中心的地址，用于集中管理、动态调整 Dubbo 的配置信息
+    address: nacos://localhost:8848  # 配置中心的地址，用于集中管理、动态调整 Dubbo 的配置信息

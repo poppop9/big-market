@@ -72,8 +72,7 @@ public class AOStateMachineConfig {
                             .activityOrderId(C.getActivityOrderBO().getActivityOrderId())
                             .activityOrderTypeId(C.getActivityOrderType().getActivityOrderTypeId())
                             .raffleCount(C.getRaffleCount())
-                            .build()
-                    );
+                            .build());
                     C.setActivityOrderRewardTaskId(activityOrderRewardIdTaskId);
                     activityRepo.sendRewardEffectiveActivityOrderTaskToMQ(C);
                 });

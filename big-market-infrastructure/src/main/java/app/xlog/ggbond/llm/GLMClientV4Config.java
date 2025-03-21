@@ -1,4 +1,4 @@
-package app.xlog.ggbond.gpt;
+package app.xlog.ggbond.llm;
 
 import com.zhipu.oapi.ClientV4;
 import org.springframework.beans.factory.annotation.Value;

@@ -18,6 +18,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * - 安全领域
  * - 活动领域
  *      - todo 可以弄一个后台，配置Activity
+ *      - todo 用户可以手动取消活动单
  * - 推荐领域
  *      - todo 生成大规模的用户，和历史购买数据
  */

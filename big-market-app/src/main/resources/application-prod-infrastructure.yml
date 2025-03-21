@@ -14,6 +14,42 @@ spring:
           format_sql: true  # 格式化sql语句
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  kafka:
+    bootstrap-servers: kafka:9092  # kafka的地址
+    producer: # 生产者配置
+      acks: 1  # 只有在主副本确认时，生产者才认为消息已成功发送
+      retries: 1   # 发送消息失败时，重试的次数
+      batch-size: 16384   # 生产者在发送批次之前可以积累的最大字节数
+      key-serializer: org.springframework.kafka.support.serializer.JsonSerializer  # 消息键的序列化器
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer  # 消息值的序列化器
+      properties:
+        linger.ms: 0  # 生产者在发送批次之前等待更多消息的时间
+        buffer-memory: 33554432  # 生产者可以使用的缓冲区内存大小
+        spring:
+          json:
+            trusted:
+              packages: "*"  # 序列化时，信任的包
+    consumer: # 消费者配置
+      group.id: consumer_group_1   # 消费组的id
+      # 偏移量
+      enable-auto-commit: true    # 自动提交偏移量
+      auto.commit.interval.ms: 1000  # 自动提交偏移量的时间间隔
+      auto-offset-reset: earliest  # 当没有初始偏移量时，消费者从最早的消息开始消费
+      # 心跳机制
+      heartbeat.interval.ms: 3000  # 消费者发送心跳的时间间隔
+      session.timeout.ms: 120000  # 消费者会话的超时时间
+      request.timeout.ms: 180000  # 消费者请求的超时时间
+      # poll
+      max-poll-records: 50   # 单次poll返回的最大消息数
+      max-poll-interval-ms: 5000   # 消费者在两次连续的poll之间可以等待的最大时间，消费者处理数据超过这个时间，会被认定为死亡
+      # 反序列化
+      key-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer  # 消息键的反序列化器
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer  # 消息值的反序列化器
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"  # 反序列化时，信任的包
 
 redis:
   address: redis://172.17.0.1:6379

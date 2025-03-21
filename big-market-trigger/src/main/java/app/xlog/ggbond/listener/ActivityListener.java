@@ -47,10 +47,8 @@ public class ActivityListener {
 
         // 更新 task
         activityService.updateActivityOrderIssuanceTaskStatus(
-                record.value().getData().getActivityOrderRewardTaskId(),
-                true
+                record.value().getData().getActivityOrderRewardTaskId(), true
         );
-
         log.debug("活动领域 - 发放有效活动单任务消息消费成功 {}", record.value().getMessageId());
     }
 

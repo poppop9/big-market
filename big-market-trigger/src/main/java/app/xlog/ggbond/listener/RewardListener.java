@@ -51,9 +51,7 @@ public class RewardListener {
                 data.getActivityId(), data.getUserId(), data.getPoints()
         );
         // 2. 更新积分流水表
-        rewardService.updatePointsLogIsIssued(
-                data.getPointsLogId(), true
-        );
+        rewardService.updatePointsLogIsIssued(data.getPointsLogId(), true);
     }
 
 }

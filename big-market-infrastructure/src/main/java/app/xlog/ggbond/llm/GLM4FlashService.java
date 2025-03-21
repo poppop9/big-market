@@ -1,4 +1,4 @@
-package app.xlog.ggbond.gpt;
+package app.xlog.ggbond.llm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhipu.oapi.ClientV4;

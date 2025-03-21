@@ -1,4 +1,4 @@
-package app.xlog.ggbond.gpt;
+package app.xlog.ggbond.llm;
 
 import app.xlog.ggbond.recommend.AIRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;

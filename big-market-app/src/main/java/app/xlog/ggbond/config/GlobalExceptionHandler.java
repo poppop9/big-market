@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestController
 public class GlobalExceptionHandler {
 
-    @Resource
-    private ObjectMapper objectMapper;
-
     /**
      * 处理自定义异常
      */
