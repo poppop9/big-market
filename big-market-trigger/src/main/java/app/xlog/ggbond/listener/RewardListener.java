@@ -32,9 +32,7 @@ public class RewardListener {
         // 1. 发奖 todo
 
         // 2. 更新task表
-        rewardService.updateRewardTaskStatus(
-                data.getRewardId(), true
-        );
+        rewardService.updateRewardTaskStatus(data.getRewardId(), true);
     }
 
     /**

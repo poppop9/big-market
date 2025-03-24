@@ -115,7 +115,7 @@ public class RaffleAfterFilters {
     }
 
     /**
-     * 返利过滤器 todo 未测试
+     * 返利过滤器
      */
     @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
             value = LiteFlowMethodEnum.PROCESS,
@@ -124,8 +124,8 @@ public class RaffleAfterFilters {
     public void rewardFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         Long userId = context.getUserBO().getUserId();
-
         log.atInfo().log("抽奖领域 - " + userId + " 返利过滤器开始执行");
+
         // 1. 奖品不是随机积分，跳过
         if (!context.getAwardId().equals(101L)) return;
 

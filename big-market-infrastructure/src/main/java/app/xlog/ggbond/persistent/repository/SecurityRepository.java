@@ -60,7 +60,6 @@ public class SecurityRepository implements ISecurityRepo {
         if (bloomFilter.isExists()) {
             bloomFilter.delete();
         }
-
         bloomFilter.tryInit(100000L, 0.03);
         bloomFilter.add(userIds);
     }

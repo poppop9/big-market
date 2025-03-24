@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * 全局 - 任务
+ * 安全领域 - 任务
  */
 @Slf4j
 @Component
-public class InitializeJob {
+public class SecurityJob {
 
     @Resource
     private ISecurityService securityService;
@@ -23,7 +23,7 @@ public class InitializeJob {
      * 查询出所有黑名单用户，将其放入到布隆过滤器中
      */
     @PostConstruct
-    public void initialize() {
+    public void initializeBlacklistUsers() {
         List<Long> userIds = securityService.queryAllBlacklistUser().stream()
                 .map(UserBO::getUserId)
                 .toList();
