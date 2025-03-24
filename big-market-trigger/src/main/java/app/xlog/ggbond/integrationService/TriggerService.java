@@ -181,8 +181,10 @@ public class TriggerService implements Serializable {
 
                 // 5. 如果该用户没有活动账户，则初始化一个活动账户
                 activityService.initActivityAccount(userId, activityId);
+                // 6. 如果该用户没有返利账户，则初始化一个返利账户
+                rewardService.initRewardAccount(userId, activityId);
 
-                // 6. 装配
+                // 7. 装配
                 Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
                 raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
                 raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map

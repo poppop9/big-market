@@ -19,4 +19,7 @@ public interface RewardAccountJpa extends JpaRepository<RewardAccount, Long> {
             "WHERE r.activityId = :activityId " +
             "AND r.userId = :userId")
     void rechargeRewardAccountPoints(Long points, Long activityId, Long userId);
+
+    @Query("select (count(r) > 0) from RewardAccount r where r.activityId = ?1 and r.userId = ?2")
+    boolean existsByActivityIdAndUserId(Long activityId, Long userId);
 }

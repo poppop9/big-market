@@ -94,4 +94,12 @@ public class RewardService implements IRewardService {
         rewardRepo.updatePointsLogIsIssued(pointsLogId, isIssued);
     }
 
+    /**
+     * 初始化返利账户
+     */
+    @Override
+    public void initRewardAccount(Long userId, long activityId) {
+        rewardRepo.initRewardAccount(userId, activityId);
+    }
+
 }

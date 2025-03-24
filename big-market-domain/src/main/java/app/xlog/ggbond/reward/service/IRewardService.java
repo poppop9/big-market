@@ -32,4 +32,7 @@ public interface IRewardService {
 
     // 更新积分流水是否发放
     void updatePointsLogIsIssued(Long pointsLogId, boolean b);
+
+    // 初始化返利账户
+    void initRewardAccount(Long userId, long activityId);
 }

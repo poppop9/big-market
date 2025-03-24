@@ -126,7 +126,7 @@ public class RaffleAfterFilters {
         Long userId = context.getUserBO().getUserId();
 
         log.atInfo().log("抽奖领域 - " + userId + " 返利过滤器开始执行");
-        // 1. 判断奖品是否是随机积分
+        // 1. 奖品不是随机积分，跳过
         if (!context.getAwardId().equals(101L)) return;
 
         // 2. 查询活动积分范围
@@ -142,8 +142,7 @@ public class RaffleAfterFilters {
         // 4. 发布积分返利的消息
         rewardService.publishPointsRewardMessage(MQMessage.<PointsLogBO>builder()
                 .data(pointsLogBO)
-                .build()
-        );
+                .build());
         log.atInfo().log("抽奖领域 - " + userId + " 返利过滤器执行完毕");
     }
 

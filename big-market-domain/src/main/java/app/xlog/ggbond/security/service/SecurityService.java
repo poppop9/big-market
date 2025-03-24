@@ -73,7 +73,6 @@ public class SecurityService implements ISecurityService {
             // id为空，则为游客，不是黑名单用户
             return true;
         }
-
         return securityRepo.isBlacklistUser(userId);
     }
 
@@ -125,8 +124,7 @@ public class SecurityService implements ISecurityService {
     @Override
     public void insertPermissionIntoSession() {
         StpUtil.getSession().set(
-                "role",
-                securityRepo.findByUserId(getLoginIdDefaultNull()).getUserRole().name()
+                "role", securityRepo.findByUserId(getLoginIdDefaultNull()).getUserRole().name()
         );
     }
 
@@ -177,18 +175,18 @@ public class SecurityService implements ISecurityService {
     @SneakyThrows
     public void writePurchaseHistoryFromExcel(MultipartFile file) {
         FastExcel.read(file.getInputStream(), UserPurchaseHistoryBO.class, new AnalysisEventListener<UserPurchaseHistoryBO>() {
-                    private final List<UserPurchaseHistoryBO> userPurchaseHistoryBOList = new ArrayList<>();
+            private final List<UserPurchaseHistoryBO> userPurchaseHistoryBOList = new ArrayList<>();
 
-                    @Override
-                    public void invoke(UserPurchaseHistoryBO userPurchaseHistoryBO, AnalysisContext analysisContext) {
-                        userPurchaseHistoryBOList.add(userPurchaseHistoryBO);
-                    }
+            @Override
+            public void invoke(UserPurchaseHistoryBO userPurchaseHistoryBO, AnalysisContext analysisContext) {
+                userPurchaseHistoryBOList.add(userPurchaseHistoryBO);
+            }
 
-                    @Override
-                    public void doAfterAllAnalysed(AnalysisContext analysisContext) {
-                        securityRepo.writePurchaseHistoryFromExcel(userPurchaseHistoryBOList);
-                    }
-                }).sheet().doRead();
+            @Override
+            public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+                securityRepo.writePurchaseHistoryFromExcel(userPurchaseHistoryBOList);
+            }
+        }).sheet().doRead();
     }
 
 }

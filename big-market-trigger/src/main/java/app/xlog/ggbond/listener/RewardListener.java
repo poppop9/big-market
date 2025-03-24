@@ -38,8 +38,7 @@ public class RewardListener {
     }
 
     /**
-     * 消费积分返利任务消息，进行积分账户的充值，并更新积分流水表
-     * todo 未测试
+     * 消费积分返利任务消息，进行返利账户的充值，并更新积分流水表
      */
     @KafkaListener(topics = GlobalConstant.KafkaConstant.POINTS_REWARD,
             groupId = GlobalConstant.KafkaConstant.GROUP_ID)

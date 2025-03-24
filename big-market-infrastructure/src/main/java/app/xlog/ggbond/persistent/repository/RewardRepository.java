@@ -3,6 +3,7 @@ package app.xlog.ggbond.persistent.repository;
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.MQMessage;
 import app.xlog.ggbond.persistent.po.reward.PointsLog;
+import app.xlog.ggbond.persistent.po.reward.RewardAccount;
 import app.xlog.ggbond.persistent.repository.jpa.PointsLogJpa;
 import app.xlog.ggbond.persistent.repository.jpa.RewardAccountJpa;
 import app.xlog.ggbond.reward.model.PointsLogBO;
@@ -117,6 +118,19 @@ public class RewardRepository implements IRewardRepo {
     @Override
     public void updatePointsLogIsIssued(Long pointsLogId, boolean isIssued) {
         pointsLogJpa.updateIsIssuedByPointsLogId(isIssued, pointsLogId);
+    }
+
+    /**
+     * 初始化返利账户
+     */
+    @Override
+    public void initRewardAccount(Long userId, long activityId) {
+        if (!rewardAccountJpa.existsByActivityIdAndUserId(activityId, userId)) {
+            rewardAccountJpa.save(RewardAccount.builder()
+                    .activityId(activityId)
+                    .userId(userId)
+                    .build());
+        }
     }
 
 }
