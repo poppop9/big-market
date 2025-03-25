@@ -32,7 +32,7 @@ public class InitialToPendPayPipeline {
             value = LiteFlowMethodEnum.PROCESS,
             nodeId = "InitialToPendingPaymentWorker",
             nodeName = "初始状态转为待支付状态工位")
-    public void createPendingPaymentWorker(NodeComponent bindCmp) {
+    public void initialToPendingPaymentWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
 
         ActivityOrderBO activityOrderBO = activityRepo.saveActivityOrder(ActivityOrderBO.builder()

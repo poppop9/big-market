@@ -60,6 +60,19 @@ public class AOEventCenter {
     }
 
     /**
+     * 发布事件 - 待支付活动单转已关闭活动单
+     */
+    public AOContext publishPendingPaymentToClosedEvent(AOContext aoContext) {
+        StateMachineFactory.<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext>get(AOStateMachineConfig.ACTIVITY_ORDER_MACHINE_ID)
+                .fireEvent(
+                        ActivityOrderBO.ActivityOrderStatus.PENDING_PAYMENT,
+                        ActivityOrderBO.ActivityOrderEvent.PENDING_PAYMENT_TO_CLOSED,
+                        aoContext
+                );
+        return aoContext;
+    }
+
+    /**
      * 测试 - 测试方法
      */
     public void test() {

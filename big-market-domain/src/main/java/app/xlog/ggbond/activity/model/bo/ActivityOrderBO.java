@@ -37,7 +37,7 @@ public class ActivityOrderBO {
         EFFECTIVE("有效", "待支付的活动单，支付成功之后 --->>> 转为有效"),
         USED("已使用", "有效的活动单，使用之后 --->>> 转为已使用"),
         EXPIRED("已过期", "有效的活动单，过期时间到了之后 --->>> 转为已过期"),
-        CLOSED("已关闭", "待支付的活动单，过期时间到了之后 --->>> 转为已关闭");
+        CLOSED("已关闭", "待支付的活动单，过期时间到了之后，或者用户手动取消 --->>> 转为已关闭");
 
         private final String code;
         private final String info;
@@ -51,6 +51,7 @@ public class ActivityOrderBO {
     public enum ActivityOrderEvent {
         INITIAL_TO_PENDING_PAYMENT("初始状态 --->>> 待支付状态"),
         PENDING_PAYMENT_TO_EFFECTIVE("待支付状态 --->>> 有效状态"),
+        PENDING_PAYMENT_TO_CLOSED("待支付状态 --->>> 已关闭状态"),
         EFFECTIVE_TO_USED("有效状态 --->>> 已使用状态"),
         PAY_FAIL("支付失败");
 

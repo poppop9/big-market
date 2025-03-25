@@ -41,8 +41,20 @@ public class AOStateMachineConfig {
                 .on(ActivityOrderBO.ActivityOrderEvent.INITIAL_TO_PENDING_PAYMENT)
                 .when(context -> true)
                 .perform((S1, S2, E, C) -> {
-                    // 执行活动单生成链
                     LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("INITIAL_TO_PENDING_PAYMENT", null, C);
+                    if (!liteflowResponse.isSuccess()) throw (RuntimeException) liteflowResponse.getCause();
+                });
+
+        /*
+          外部 - 关闭待支付的活动单 : 待支付状态 -> 已关闭状态
+         */
+        builder.externalTransition()
+                .from(ActivityOrderBO.ActivityOrderStatus.PENDING_PAYMENT)
+                .to(ActivityOrderBO.ActivityOrderStatus.CLOSED)
+                .on(ActivityOrderBO.ActivityOrderEvent.PENDING_PAYMENT_TO_CLOSED)
+                .when(context -> true)
+                .perform((S1, S2, E, C) -> {
+                    LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("PENDING_PAYMENT_TO_CLOSED", null, C);
                     if (!liteflowResponse.isSuccess()) throw (RuntimeException) liteflowResponse.getCause();
                 });
 

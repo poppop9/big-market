@@ -54,4 +54,18 @@ public class ActivityController implements IActivityApiService {
         return ZakiResponse.ok("activityOrderBO", aoContext.getActivityOrderBO());
     }
 
+    /**
+     * 活动领域 - 用户取消活动单
+     */
+    @Override
+    @PatchMapping("/v1/cancelAO")
+    public ResponseEntity<JsonNode> cancelAO(@RequestParam Long activityOrderId) {
+        aoEventCenter.publishPendingPaymentToClosedEvent(AOContext.builder()
+                .activityOrderBO(ActivityOrderBO.builder()
+                        .activityOrderId(activityOrderId)
+                        .build())
+                .build());
+        return ZakiResponse.ok("取消活动单成功");
+    }
+
 }
