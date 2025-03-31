@@ -34,10 +34,7 @@ public class EffectiveToUsedPipeline {
             nodeName = "更新过期活动单状态工位")
     public void updateExpiredAOStatusWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
-
-        activityRepo.updateExpiredAOStatus(
-                context.getActivityId(), context.getUserId()
-        );
+        activityRepo.updateExpiredAOStatus(context.getActivityId(), context.getUserId());
     }
 
     /**
@@ -98,7 +95,6 @@ public class EffectiveToUsedPipeline {
             nodeName = "更新用户的可用抽奖次数工位")
     public void updateUserAvailableRaffleCountWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
-
         activityRepo.decreaseUserAvailableRaffleCount(
                 context.getActivityId(), context.getUserId()
         );

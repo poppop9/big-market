@@ -316,7 +316,8 @@ public class JpaTest {
      */
     @Test
     void test_user() {
-        List<User> userList = Stream.iterate(1L, i -> i < 500, i -> i + 1)
+        // 生成 userId 是从 1 到 1000 的用户
+        List<User> userList = Stream.iterate(1L, i -> i <= 1000, i -> i + 1)
                 .map(item -> User.builder()
                         .userId(item)
                         .userName("普通用户_" + item)

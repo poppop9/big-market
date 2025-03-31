@@ -6,6 +6,7 @@ import app.xlog.ggbond.activity.model.bo.*;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.model.vo.QueueItemVO;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
+import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
 import app.xlog.ggbond.mq.MQEventCenter;
 import app.xlog.ggbond.persistent.po.activity.*;
 import app.xlog.ggbond.persistent.repository.jpa.*;
@@ -38,6 +39,8 @@ public class ActivityRepository implements IActivityRepo {
     private RedissonClient redissonClient;
     @Resource
     private MQEventCenter mqEventCenter;
+    @Resource
+    private AOEventCenter aoEventCenter;
 
     @Resource
     private ActivityOrderJpa activityOrderJPA;
@@ -51,7 +54,7 @@ public class ActivityRepository implements IActivityRepo {
     private ActivityOrderProductJpa activityOrderProductJpa;
     @Resource
     private ActivityOrderRewardTaskJpa activityOrderRewardTaskJpa;
-    @Autowired
+    @Resource
     private ActivityJpa activityJpa;
 
     /**
@@ -125,9 +128,8 @@ public class ActivityRepository implements IActivityRepo {
     @Override
     public List<ActivityOrderBO> findAllPendingPaymentAO(Long activityId, Long userId) {
         List<ActivityOrder> activityOrderList = activityOrderJPA.findByActivityIdAndUserIdAndActivityOrderStatusOrderByCreateTimeAsc(
-                activityId, userId, ActivityOrder.ActivityOrderStatus.PENDING_PAYMENT
-        );
-        activityOrderList = activityOrderList.stream()
+                        activityId, userId, ActivityOrder.ActivityOrderStatus.PENDING_PAYMENT
+                ).stream()
                 .filter(item -> {
                     ActivityOrderType.ActivityOrderTypeName activityOrderTypeName = item.getActivityOrderTypeName();
                     return activityOrderTypeName.equals(ActivityOrderType.ActivityOrderTypeName.PAID_PURCHASE);
@@ -239,12 +241,7 @@ public class ActivityRepository implements IActivityRepo {
                         .getActivityOrderExpireTime()
                         .isBefore(LocalDateTime.now())
                 )
-                .forEach(item -> activityOrderJPA
-                        .updateActivityOrderStatusByActivityOrderId(
-                                ActivityOrder.ActivityOrderStatus.EXPIRED,
-                                item.getActivityOrderId()
-                        )
-                );
+                .forEach(item -> aoEventCenter.publishEffectiveToExpiredEvent(item.getActivityOrderId()));
     }
 
     /**
@@ -388,6 +385,17 @@ public class ActivityRepository implements IActivityRepo {
     public ActivityBO findActivityByActivityId(Long activityId) {
         Activity activity = activityJpa.findByActivityId(activityId);
         return BeanUtil.copyProperties(activity, ActivityBO.class);
+    }
+
+    /**
+     * 更新 - 更新活动单状态
+     */
+    @Override
+    public void updateActivityOrderStatusByActivityOrderId(ActivityOrderBO.ActivityOrderStatus activityOrderStatus, Long activityOrderId) {
+        activityOrderJPA.updateActivityOrderStatusByActivityOrderId(
+                ActivityOrder.ActivityOrderStatus.valueOf(activityOrderStatus.name()),
+                activityOrderId
+        );
     }
 
 }

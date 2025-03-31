@@ -35,8 +35,6 @@ public class RaffleAfterFilters {
 
     @Resource
     private IRaffleDispatchRepo raffleDispatchRepo;
-    @Resource
-    private IRaffleArmoryRepo raffleArmoryRepo;
 
     /**
      * 更新过期时间过滤器 - 更新redis中的过期时间
@@ -47,13 +45,9 @@ public class RaffleAfterFilters {
             nodeName = "更新过期时间过滤器")
     public void updateExpireTimeFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
-
-        // 更新所有权重对象Map的过期时间
-        raffleDispatchRepo.updateAllWeightRandomExpireTime2(context.getStrategyId());
-        // 更新所有奖品库存的过期时间
-        raffleDispatchRepo.updateAllAwardCountExpireTime(context.getStrategyId());
-        // 更新所有奖品列表的过期时间
-        raffleDispatchRepo.updateAllAwardListExpireTime(context.getStrategyId());
+        raffleDispatchRepo.updateAllWeightRandomExpireTime2(context.getStrategyId());  // 更新所有权重对象Map的过期时间
+        raffleDispatchRepo.updateAllAwardCountExpireTime(context.getStrategyId());  // 更新所有奖品库存的过期时间
+        raffleDispatchRepo.updateAllAwardListExpireTime(context.getStrategyId());  // 更新所有奖品列表的过期时间
     }
 
     /**
@@ -76,8 +70,7 @@ public class RaffleAfterFilters {
         // 将扣减信息写入队列
         raffleDispatchRepo.addDecrAwardCountToMQ(DecrQueueVO.builder()
                 .strategyId(context.getStrategyId())
-                .awardId(context.getAwardId()).build()
-        );
+                .awardId(context.getAwardId()).build());
         log.atInfo().log("抽奖领域 - " + userId + " 奖品库存过滤器执行完毕");
     }
 

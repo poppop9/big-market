@@ -146,7 +146,6 @@ public class TriggerService implements Serializable {
         // 2. 把activityId塞到session里，后面的操作都可以直接从这里取
         long activityId = Long.parseLong(SaHolder.getRequest().getParam("activityId"));
         StpUtil.getSession().set("activityId", activityId);
-
         // 3. 将该用户的角色信息放入session
         securityService.insertPermissionIntoSession();
 

@@ -57,7 +57,6 @@ public class RaffleArmory implements IRaffleArmory {
                             return RandomUtil.weightRandom(weightObjs);
                         }
                 ));
-
         // 将WeightRandom对象存入redis，方便后续抽奖调用
         raffleArmoryRepo.insertWeightRandom(strategyId, collect);
     }

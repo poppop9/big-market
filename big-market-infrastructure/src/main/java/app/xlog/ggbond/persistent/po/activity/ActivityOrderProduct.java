@@ -21,8 +21,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "ActivityOrderProduct", indexes = {
         @Index(columnList = "activityId"),
         @Index(columnList = "activityOrderProductId"),
-        @Index(columnList = "activityId, activityOrderProductId"),
-})
+        @Index(columnList = "activityId, activityOrderProductId"),})
 public class ActivityOrderProduct extends SingleTable {
     private Long activityId;  // 活动id
     private @Builder.Default Long activityOrderProductId = IdUtil.getSnowflakeNextId();  // 活动单商品id

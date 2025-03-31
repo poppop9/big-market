@@ -73,6 +73,22 @@ public class AOEventCenter {
     }
 
     /**
+     * 发布事件 - 有效活动单转已过期活动单
+     */
+    public void publishEffectiveToExpiredEvent(Long activityOrderId) {
+        StateMachineFactory.<ActivityOrderBO.ActivityOrderStatus, ActivityOrderBO.ActivityOrderEvent, AOContext>get(AOStateMachineConfig.ACTIVITY_ORDER_MACHINE_ID)
+                .fireEvent(
+                        ActivityOrderBO.ActivityOrderStatus.EFFECTIVE,
+                        ActivityOrderBO.ActivityOrderEvent.EFFECTIVE_TO_EXPIRED,
+                        AOContext.builder()
+                                .activityOrderBO(ActivityOrderBO.builder()
+                                        .activityOrderId(activityOrderId)
+                                        .build())
+                                .build()
+                );
+    }
+
+    /**
      * 测试 - 测试方法
      */
     public void test() {

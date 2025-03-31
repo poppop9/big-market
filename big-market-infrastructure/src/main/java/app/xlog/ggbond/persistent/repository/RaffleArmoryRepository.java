@@ -125,13 +125,13 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public void assembleAllAwardCountByStrategyId(Long strategyId) {
-        Map<Long, Long> collect = findAwardsByStrategyId(strategyId).stream().collect(Collectors.toMap(
-                AwardBO::getAwardId,
-                AwardBO::getAwardCount
-        ));
+        Map<Long, Long> collect = findAwardsByStrategyId(strategyId).stream()
+                .collect(Collectors.toMap(
+                        AwardBO::getAwardId,
+                        AwardBO::getAwardCount
+                ));
 
         RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getAwardCountMapCacheKey(strategyId));
-
         // 由于redis中的数据实时性比数据库高，所有如果存在不覆盖，而是更新过期时间
         if (!rMap.isExists()) {
             rMap.putAll(collect);
@@ -168,7 +168,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     @Override
     public void assembleAwardList(Long strategyId) {
         RList<AwardBO> rList = redissonClient.getList(GlobalConstant.RedisKey.getAwardListCacheKey(strategyId));
-        // 由于redis中的数据实时性比数据库高，所有如果存在不覆盖，而是更新过期时间
+        // 由于redis中的数据实时性比数据库高，所有如果存在，不覆盖，而是更新过期时间
         if (rList.isExists()) {
             rList.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
             return;
@@ -176,14 +176,11 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
 
         List<StrategyAward> strategyAwardList = strategyAwardJpa.findByStrategyIdOrderByAwardSortAsc(strategyId);
         List<Long> awardIdList = strategyAwardList.stream().map(StrategyAward::getAwardId).toList();
-
         // 获取所有奖品详情
         Map<Long, Award> awardIdAwardMap = awardJpa.findByAwardIdIn(awardIdList).stream()
                 .collect(Collectors.toMap(
-                        Award::getAwardId,
-                        item -> item
+                        Award::getAwardId, item -> item
                 ));
-
         // 转为 AwardBO
         List<AwardBO> awardBOList = strategyAwardList.stream()
                 .map(item -> AwardBO.builder()
@@ -194,8 +191,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
                         .awardRate(item.getAwardRate())
                         .awardCount(item.getAwardCount())
                         .awardSort(item.getAwardSort())
-                        .build()
-                )
+                        .build())
                 .toList();
 
         // 写入redis

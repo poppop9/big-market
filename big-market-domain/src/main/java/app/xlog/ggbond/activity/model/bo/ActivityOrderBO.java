@@ -52,8 +52,10 @@ public class ActivityOrderBO {
         INITIAL_TO_PENDING_PAYMENT("初始状态 --->>> 待支付状态"),
         PENDING_PAYMENT_TO_EFFECTIVE("待支付状态 --->>> 有效状态"),
         PENDING_PAYMENT_TO_CLOSED("待支付状态 --->>> 已关闭状态"),
+        EFFECTIVE_TO_EXPIRED("有效状态 --->>> 已过期状态"),
         EFFECTIVE_TO_USED("有效状态 --->>> 已使用状态"),
-        PAY_FAIL("支付失败");
+        PAY_FAIL("支付失败"),
+        ;
 
         private final String message;
     }

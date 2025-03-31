@@ -7,16 +7,22 @@ import app.xlog.ggbond.exception.BigMarketException;
 import app.xlog.ggbond.recommend.AIRepo;
 import app.xlog.ggbond.recommend.RecommendService;
 import app.xlog.ggbond.resp.BigMarketRespCode;
+import app.xlog.ggbond.resp.ZakiResponse;
+import app.xlog.ggbond.security.service.ISecurityService;
 import cn.dev33.satoken.stp.StpUtil;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -38,6 +44,8 @@ public class TestController {
     @Resource
     @Lazy
     private TestController testController;
+    @Resource
+    private ISecurityService securityService;
     @Resource
     private AOEventCenter AOEventCenter;
     @Resource
@@ -217,6 +225,16 @@ public class TestController {
     @GetMapping("/v1/testTransaction")
     public void testTransaction() {
         testService.testTransaction();
+    }
+
+    /**
+     * 读取excel，写入用户购买历史
+     */
+    @PostMapping("/v1/writePurchaseHistoryFromExcel")
+    public ResponseEntity<JsonNode> writePurchaseHistoryFromExcel(MultipartFile file) {
+        if (file.isEmpty()) return ZakiResponse.error("文件为空！");
+        securityService.writePurchaseHistoryFromExcel(file);
+        return ZakiResponse.ok("文件上传成功，数据已写入数据库");
     }
 
 }

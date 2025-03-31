@@ -102,4 +102,7 @@ public interface IActivityRepo {
 
     // 查询 - 查询活动
     ActivityBO findActivityByActivityId(Long activityId);
+
+    // 更新 - 更新活动单状态
+    void updateActivityOrderStatusByActivityOrderId(ActivityOrderBO.ActivityOrderStatus activityOrderStatus, Long activityOrderId);
 }

@@ -90,6 +90,20 @@ public class AOStateMachineConfig {
                 });
 
         /*
+          外部 - 有效活动单转已过期活动单 : 有效状态 -> 已过期状态
+         */
+        builder.externalTransition()
+                .from(ActivityOrderBO.ActivityOrderStatus.EFFECTIVE)
+                .to(ActivityOrderBO.ActivityOrderStatus.EXPIRED)
+                .on(ActivityOrderBO.ActivityOrderEvent.EFFECTIVE_TO_EXPIRED)
+                .when(context -> true)
+                .perform((S1, S2, E, C) -> {
+                    activityRepo.updateActivityOrderStatusByActivityOrderId(
+                            ActivityOrderBO.ActivityOrderStatus.EXPIRED, C.getActivityOrderBO().getActivityOrderId()
+                    );
+                });
+
+        /*
           外部 - 有效活动单转已使用活动单 : 有效状态 -> 已使用状态
          */
         builder.externalTransition()
