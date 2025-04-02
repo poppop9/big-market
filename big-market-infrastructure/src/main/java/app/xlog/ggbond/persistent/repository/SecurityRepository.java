@@ -100,7 +100,6 @@ public class SecurityRepository implements ISecurityRepo {
             // 如果布隆过滤器中不存在，则一定不是黑名单用户
             return false;
         }
-
         return isBlackListUser;
     }
 

@@ -66,7 +66,6 @@ public class RaffleAfterFilters {
         if (!raffleDispatchRepo.decreaseAwardCount(context.getStrategyId(), context.getAwardId())) {
             throw new RetryRouterException(BigMarketRespCode.DECREASE_AWARD_COUNT_FAILED, "扣减库存失败，重新调度");
         }
-
         // 将扣减信息写入队列
         raffleDispatchRepo.addDecrAwardCountToMQ(DecrQueueVO.builder()
                 .strategyId(context.getStrategyId())

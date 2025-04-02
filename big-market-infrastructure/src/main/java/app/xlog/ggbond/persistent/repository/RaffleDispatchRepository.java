@@ -128,11 +128,8 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     public void addDecrAwardCountToMQ(DecrQueueVO decrQueueVO) {
         boolean isSuccess = mqEventCenter.sendMessage(
                 GlobalConstant.KafkaConstant.DECR_AWARD_INVENTORY,
-                MQMessage.<DecrQueueVO>builder()
-                        .data(decrQueueVO)
-                        .build()
+                MQMessage.<DecrQueueVO>builder().data(decrQueueVO).build()
         );
-
         if (isSuccess) {
             log.debug("抽奖领域 - 将扣减信息写入kafka - 消息发送成功：{}", decrQueueVO);
         } else {
@@ -169,8 +166,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     @Override
     public void addUserRaffleTimeByStrategyId(Long userId, Long strategyId) {
         userRaffleConfigJpa.updateRaffleTimeByUserIdAndStrategyId(
-                userId,
-                strategyId
+                userId, strategyId
         );
     }
 
