@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 /**
  * 返利任务
@@ -24,9 +25,12 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "rewardId"),
         @Index(columnList = "userId"),
 })
+@Comment("返利任务")
 public class RewardTask extends ShardingTable {
-    private @Builder.Default Long rewardId = IdUtil.getSnowflakeNextId();  // 返利任务id
-    private Long userId;  // 用户id
-    private Long userRaffleHistoryId;  // 用户抽奖历史id
-    private @Builder.Default Boolean isIssued = false;  // 奖品是否发放
+    @Builder.Default
+    private @Comment("返利任务ID") Long rewardId = IdUtil.getSnowflakeNextId();
+    private @Comment("用户ID") Long userId;
+    private @Comment("用户抽奖历史ID") Long userRaffleHistoryId;
+    @Builder.Default
+    private @Comment("奖品是否发放，默认为false") Boolean isIssued = false;
 }

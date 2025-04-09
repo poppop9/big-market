@@ -102,16 +102,14 @@ public class RecommendService {
                     return Arrays.stream(split[1].trim()
                                     .replace("[", "")
                                     .replace("]", "")
-                                    .split(", ")
-                            )
+                                    .split(", "))
                             .map(child -> AwardBO.builder()
                                     .awardTitle(child)
                                     .awardSubtitle(awardLevel.getAwardSubtitle())
                                     .awardRate(awardLevel.getAwardRate())
                                     .awardCount(awardLevel.getAwardCount())
                                     .awardSort(initAwardSort.getAndIncrement())
-                                    .build()
-                            );
+                                    .build());
                 })
                 .toList();
         return awardBOList;
@@ -135,16 +133,14 @@ public class RecommendService {
                     return Arrays.stream(split[1].trim()
                                     .replace("[", "")
                                     .replace("]", "")
-                                    .split(", ")
-                            )
+                                    .split(", "))
                             .map(child -> AwardBO.builder()
                                     .awardTitle(child)
                                     .awardSubtitle(awardLevel.getAwardSubtitle())
                                     .awardRate(awardLevel.getAwardRate())
                                     .awardCount(awardLevel.getAwardCount())
                                     .awardSort(initAwardSort.getAndIncrement())
-                                    .build()
-                            );
+                                    .build());
                 })
                 .toList();
     }

@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.EnumSet;
 
 /**
- * 安全领域 - 路由拦截鉴权
+ * 路由拦截鉴权
  */
 @Configuration
 public class STPRouteInterceptor implements WebMvcConfigurer {

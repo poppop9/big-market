@@ -153,7 +153,6 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     public void updateAllAwardCountExpireTime(Long strategyId) {
         raffleArmoryRepo.findAwardsByStrategyId(strategyId).forEach(item -> {
             RAtomicLong rAtomicLong = redissonClient.getAtomicLong(GlobalConstant.RedisKey.getAwardCountCacheKey(strategyId, item.getAwardId()));
-
             if (rAtomicLong.isExists()) {
                 rAtomicLong.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
             }

@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 /**
  * 积分流水表
@@ -24,10 +25,12 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "userId"),
         @Index(columnList = "activityId, userId"),
 })
+@Comment("积分流水表")
 public class PointsLog extends ShardingTable {
-    private @Builder.Default Long pointsLogId = IdUtil.getSnowflakeNextId();  // 积分流水id
-    private Long activityId;  // 活动id
-    private Long userId;  // 用户id
-    private Long points;  // 积分
-    private Boolean isIssued;  // 是否发放
+    @Builder.Default
+    private @Comment("积分流水ID") Long pointsLogId = IdUtil.getSnowflakeNextId();
+    private @Comment("活动ID") Long activityId;
+    private @Comment("用户ID") Long userId;
+    private @Comment("积分数量") Long points;
+    private @Comment("是否发放") Boolean isIssued;
 }

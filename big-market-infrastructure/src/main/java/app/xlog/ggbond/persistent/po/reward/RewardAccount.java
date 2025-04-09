@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 /**
  * 返利账户
@@ -25,9 +26,12 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "activityId, userId"),
         @Index(columnList = "rewardAccountId, userId"),
 })
+@Comment("返利账户")
 public class RewardAccount extends ShardingTable {
-    private @Builder.Default Long rewardAccountId = IdUtil.getSnowflakeNextId();  // 返利账户id
-    private Long activityId;  // 活动id
-    private Long userId;  // 用户id
-    private @Builder.Default Long points = 0L;  // 积分
+    @Builder.Default
+    private @Comment("返利账户ID") Long rewardAccountId = IdUtil.getSnowflakeNextId();
+    private @Comment("活动ID") Long activityId;
+    private @Comment("用户ID") Long userId;
+    @Builder.Default
+    private @Comment("积分数量，默认为0") Long points = 0L;
 }

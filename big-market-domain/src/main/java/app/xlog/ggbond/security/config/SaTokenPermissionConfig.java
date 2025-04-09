@@ -8,18 +8,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 安全领域 - 权限和角色的配置
+ * 权限和角色的配置
  */
 @Configuration
 public class SaTokenPermissionConfig implements StpInterface {
-
-    /**
-     * 返回一个账号所拥有的权限码集合
-     */
-    @Override
-    public List<String> getPermissionList(Object loginId, String loginType) {
-        return Collections.emptyList();
-    }
 
     /**
      * 返回一个账号所拥有的角色集合
@@ -29,9 +21,18 @@ public class SaTokenPermissionConfig implements StpInterface {
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        return List.of(
-                StpUtil.getSession().get("role").toString()
-        );
+        return List.of(StpUtil
+                .getSession()
+                .get("role")
+                .toString());
+    }
+
+    /**
+     * 无用 - 返回一个账号所拥有的权限码集合
+     */
+    @Override
+    public List<String> getPermissionList(Object loginId, String loginType) {
+        return Collections.emptyList();
     }
 
 }

@@ -5,7 +5,7 @@ import cn.dev33.satoken.stp.SaLoginModel;
 import org.springframework.stereotype.Component;
 
 /**
- * 安全领域 - SaToken 监听器
+ * SaToken 监听器
  */
 @Component
 public class MySaTokenListener extends SaTokenListenerForSimple {

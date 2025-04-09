@@ -4,6 +4,7 @@ import app.xlog.ggbond.persistent.po.ShardingTable;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 
 /**
  * 用户
@@ -18,11 +19,14 @@ import lombok.*;
         @Index(columnList = "userId"),
         @Index(columnList = "userId, password"),
 })
+@Comment("用户")
 public class User extends ShardingTable {
-    private @Builder.Default Long userId = IdUtil.getSnowflakeNextId();  // 用户id
-    private String userName;  // 用户名
-    private String password;  // 密码
-    private @Enumerated(EnumType.STRING) UserRole userRole;  // 用户的角色
+    @Builder.Default
+    private @Comment("用户id") Long userId = IdUtil.getSnowflakeNextId();
+    private @Comment("用户名") String userName;
+    private @Comment("密码") String password;
+    @Enumerated(EnumType.STRING)
+    private @Comment("用户角色") UserRole userRole;
 
     @Getter
     @AllArgsConstructor

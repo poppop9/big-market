@@ -3,6 +3,7 @@ package app.xlog.ggbond.persistent.po.security;
 import app.xlog.ggbond.persistent.po.ShardingTable;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 
 /**
  * 用户购买历史
@@ -15,14 +16,16 @@ import lombok.*;
 @Table(name = "UserPurchaseHistory", indexes = {
         @Index(columnList = "userId"),
 })
+@Comment("用户购买历史")
 public class UserPurchaseHistory extends ShardingTable {
-    private Long userId;  // 用户id
-    private PurchaseCategory purchaseCategory;  // 商品类型
-    private String purchaseName;  // 商品名称
-    private double purchasePrice;  // 商品价格
-    private Long purchaseCount;  // 购买数量
-    private Long purchaseTimes;  // 此次是第几次购买
-    private @Builder.Default boolean isReturn = false;  // 是否退货
+    private @Comment("用户id") Long userId;
+    private @Comment("商品类型") PurchaseCategory purchaseCategory;
+    private @Comment("商品名称") String purchaseName;
+    private @Comment("商品价格") double purchasePrice;
+    private @Comment("购买数量") Long purchaseCount;
+    private @Comment("购买次数(此次是第几次购买)") Long purchaseTimes;
+    @Builder.Default
+    private @Comment("是否退货") boolean isReturn = false;
 
     /**
      * 商品类型

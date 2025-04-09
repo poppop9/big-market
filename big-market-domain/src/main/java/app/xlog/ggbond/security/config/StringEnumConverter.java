@@ -7,7 +7,7 @@ import cn.idev.excel.converters.ReadConverterContext;
 import java.util.EnumSet;
 
 /**
- * Excel - String转枚举
+ * Excel - String 转枚举
  */
 public class StringEnumConverter implements Converter<UserPurchaseHistoryBO.PurchaseCategory> {
     @Override
