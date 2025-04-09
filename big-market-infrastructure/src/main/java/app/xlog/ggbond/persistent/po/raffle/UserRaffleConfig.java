@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 /**
  * 用户抽奖配置
@@ -23,9 +24,11 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "userId, activityId"),
         @Index(columnList = "userId, strategyId")
 })
+@Comment("用户抽奖配置")
 public class UserRaffleConfig extends ShardingTable {
-    private Long userId;  // 用户id
-    private Long activityId;  // 活动id
-    private Long strategyId;  // 用户在哪个策略下抽奖的
-    private @Builder.Default Long raffleTime = 0L;  // 抽奖次数
+    private @Comment("用户ID") Long userId;
+    private @Comment("活动ID") Long activityId;
+    private @Comment("用户在哪个策略下抽奖的") Long strategyId;
+    @Builder.Default
+    private @Comment("抽奖次数") Long raffleTime = 0L;
 }

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 /**
  * 策略
@@ -21,9 +22,11 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "strategyId"),
         @Index(columnList = "activityId, strategyId"),
 })
+@Comment("策略")
 public class Strategy extends ShardingTable {
-    private Long activityId;  // 活动id
+    private @Comment("活动ID") Long activityId;
     @Column(unique = true)
-    private @Builder.Default Long strategyId = IdUtil.getSnowflakeNextId();  // 策略id，全局唯一（不同活动的策略id也不能重复）
-    private String strategyDesc;  // 策略描述
+    @Builder.Default
+    private @Comment("策略ID，全局唯一（不同活动的策略ID也不能重复）") Long strategyId = IdUtil.getSnowflakeNextId();
+    private @Comment("策略描述") String strategyDesc;
 }

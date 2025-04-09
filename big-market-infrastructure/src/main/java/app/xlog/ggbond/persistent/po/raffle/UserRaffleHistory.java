@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 /**
  * 用户抽奖历史
@@ -24,8 +25,9 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "awardId"),
         @Index(columnList = "userId, strategyId"),
 })
-public class UserRaffleHistory  extends ShardingTable {
-    private Long userId;  // 用户id
-    private Long strategyId;  // 用户在哪个策略下抽奖的
-    private Long awardId;  // 用户抽取到的奖品id（表数据以奖品id为单位）
+@Comment("用户抽奖历史")
+public class UserRaffleHistory extends ShardingTable {
+    private @Comment("用户ID") Long userId;
+    private @Comment("用户在哪个策略下抽奖的") Long strategyId;
+    private @Comment("用户抽取到的奖品ID（表数据以奖品ID为单位）") Long awardId;
 }

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 /**
  * 奖品
@@ -19,8 +20,10 @@ import lombok.NoArgsConstructor;
 @Table(name = "Award", indexes = {
         @Index(columnList = "awardId"),
 })
+@Comment("奖品")
 public class Award extends ShardingTable {
-    private @Builder.Default Long awardId = IdUtil.getSnowflakeNextId();  // 奖品id
-    private String awardTitle;  // 奖品标题
-    private String awardSubtitle;  // 奖品副标题
+    @Builder.Default
+    private @Comment("奖品ID") Long awardId = IdUtil.getSnowflakeNextId();
+    private @Comment("奖品标题") String awardTitle;
+    private @Comment("奖品副标题") String awardSubtitle;
 }
