@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 /**
  * 活动单类型配置
@@ -22,9 +23,10 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "activityOrderTypeId"),
         @Index(columnList = "activityOrderTypeName"),
 })
+@Comment("活动单类型配置")
 public class ActivityOrderTypeConfig extends SingleTable {
-    private Long activityId;  // 活动id
-    private Long activityOrderTypeId;  // 活动单类型id
-    private ActivityOrderType.ActivityOrderTypeName activityOrderTypeName;  // 活动单类型名称
-    private Long raffleCount; // 该类型的活动单能给予的抽奖次数（-1表示给予的抽奖次数不固定）
+    private @Comment("活动ID") Long activityId;
+    private @Comment("活动单类型ID") Long activityOrderTypeId;
+    private @Comment("活动单类型名称") ActivityOrderType.ActivityOrderTypeName activityOrderTypeName;
+    private @Comment("该类型的活动单能给予的抽奖次数（-1表示给予的抽奖次数不固定）") Long raffleCount;
 }

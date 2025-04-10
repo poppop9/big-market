@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 /**
  * 活动兑换码
@@ -24,10 +25,13 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "activityId, redeemCode"),
         @Index(columnList = "userId"),
 })
+@Comment("活动兑换码")
 public class ActivityRedeemCode extends ShardingTable {
-    private Long activityId;  // 活动id
-    private @Builder.Default String redeemCode = IdUtil.randomUUID();  // 兑换码
-    private Long raffleCount;  // 该兑换码能兑换的抽奖次数
-    private @Builder.Default Boolean isUsed = false;  // 是否已使用
-    private Long userId;  // 使用者id
+    private @Comment("活动ID") Long activityId;
+    @Builder.Default
+    private @Comment("兑换码") String redeemCode = IdUtil.randomUUID();
+    private @Comment("该兑换码能兑换的抽奖次数") Long raffleCount;
+    @Builder.Default
+    private @Comment("是否已使用") Boolean isUsed = false;
+    private @Comment("使用者ID") Long userId;
 }

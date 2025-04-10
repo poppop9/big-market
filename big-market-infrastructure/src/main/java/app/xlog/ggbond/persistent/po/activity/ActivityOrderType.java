@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 /**
  * 活动单类型
@@ -21,9 +22,11 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "activityOrderTypeId"),
         @Index(columnList = "activityOrderTypeName"),
 })
+@Comment("活动单类型")
 public class ActivityOrderType extends SingleTable {
-    private Long activityOrderTypeId;  // 活动单类型id
-    private @Enumerated(EnumType.STRING) ActivityOrderTypeName activityOrderTypeName;  // 活动单类型名称（也是唯一的）
+    private @Comment("活动单类型ID") Long activityOrderTypeId;
+    @Enumerated(EnumType.STRING)
+    private @Comment("活动单类型名称（也是唯一的）") ActivityOrderTypeName activityOrderTypeName;
 
     public enum ActivityOrderTypeName {
         SIGN_IN_TO_CLAIM,  // 签到领取

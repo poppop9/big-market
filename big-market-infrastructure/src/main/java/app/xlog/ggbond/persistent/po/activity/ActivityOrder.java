@@ -4,6 +4,7 @@ import app.xlog.ggbond.persistent.po.ShardingTable;
 import cn.hutool.core.util.IdUtil;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 
@@ -21,17 +22,24 @@ import java.time.LocalDateTime;
         @Index(columnList = "userId, activityId"),
         @Index(columnList = "userId, activityId, activityOrderStatus"),
 })
+@Comment("活动单")
 public class ActivityOrder extends ShardingTable {
-    private Long userId;  // 用户id
-    private Long activityId;  // 活动id
-    private @Builder.Default Long activityOrderId = IdUtil.getSnowflakeNextId();  // 活动单id
-    private Long activityOrderTypeId;  // 活动单类型id
-    private @Enumerated(EnumType.STRING) ActivityOrderType.ActivityOrderTypeName activityOrderTypeName;  // 活动单类型名称
-    private @Builder.Default Long usedRaffleCount = 0L; // 该活动单已使用的抽奖次数
-    private Long totalRaffleCount;  // 该活动单购买拥有的总抽奖次数
-    private @Builder.Default LocalDateTime activityOrderEffectiveTime = LocalDateTime.of(2000, 12, 31, 0, 0, 0);  // 订单生效时间（立马生效为LocalDateTime.MIN）
-    private @Builder.Default LocalDateTime activityOrderExpireTime = LocalDateTime.of(9999, 12, 31, 0, 0, 0);  // 订单过期时间（永久有效为LocalDateTime.MAX）
-    private @Enumerated(EnumType.STRING) ActivityOrderStatus activityOrderStatus;  // 订单状态
+    private @Comment("用户ID") Long userId;
+    private @Comment("活动ID") Long activityId;
+    @Builder.Default
+    private @Comment("活动单ID") Long activityOrderId = IdUtil.getSnowflakeNextId();
+    private @Comment("活动单类型ID") Long activityOrderTypeId;
+    @Enumerated(EnumType.STRING)
+    private @Comment("活动单类型名称") ActivityOrderType.ActivityOrderTypeName activityOrderTypeName;
+    @Builder.Default
+    private @Comment("该活动单已使用的抽奖次数") Long usedRaffleCount = 0L;
+    private @Comment("该活动单购买拥有的总抽奖次数") Long totalRaffleCount;
+    @Builder.Default
+    private @Comment("订单生效时间（立马生效为LocalDateTime.MIN）") LocalDateTime activityOrderEffectiveTime = LocalDateTime.of(2000, 12, 31, 0, 0, 0);
+    @Builder.Default
+    private @Comment("订单过期时间（永久有效为LocalDateTime.MAX）") LocalDateTime activityOrderExpireTime = LocalDateTime.of(9999, 12, 31, 0, 0, 0);
+    @Enumerated(EnumType.STRING)
+    private @Comment("订单状态") ActivityOrderStatus activityOrderStatus;
 
     @AllArgsConstructor
     public enum ActivityOrderStatus {

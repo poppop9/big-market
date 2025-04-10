@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 /**
  * 活动账户
@@ -19,9 +20,11 @@ import lombok.NoArgsConstructor;
         @Index(columnList = "userId"),
         @Index(columnList = "activityId")
 })
+@Comment("活动账户")
 public class ActivityAccount extends ShardingTable {
-    private Long userId;  // 用户id
-    private Long activityId;  // 活动id
-    private Long availableRaffleCount;  // 可用的抽奖次数
-    private @Builder.Default Double balance = 0d;  // 余额
+    private @Comment("用户ID") Long userId;
+    private @Comment("活动ID") Long activityId;
+    private @Comment("可用的抽奖次数") Long availableRaffleCount;
+    @Builder.Default
+    private @Comment("余额") Double balance = 0d;
 }
