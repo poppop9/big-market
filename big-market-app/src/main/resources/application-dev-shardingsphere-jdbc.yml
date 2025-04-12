@@ -5,13 +5,13 @@ dataSources:
   ds_0:
     dataSourceClassName: com.zaxxer.hikari.HikariDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/big_market_0?allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/big_market_0?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
     username: root
     password: 13433026660
   ds_1:
     dataSourceClassName: com.zaxxer.hikari.HikariDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/big_market_1?allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/big_market_1?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
     username: root
     password: 13433026660
 

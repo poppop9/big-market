@@ -4,6 +4,7 @@ import app.xlog.ggbond.TestService;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
 import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.persistent.repository.jpa.ActivityOrderJpa;
 import app.xlog.ggbond.recommend.AIRepo;
 import app.xlog.ggbond.recommend.RecommendService;
 import app.xlog.ggbond.resp.BigMarketRespCode;
@@ -18,10 +19,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
@@ -52,6 +50,8 @@ public class TestController {
     private TestService testService;
     @Resource
     private RedissonClient redissonClient;
+    @Resource
+    private ActivityOrderJpa activityOrderJpa;
     // @Resource
     // private ConfigService configService;
     // @Resource
@@ -235,6 +235,15 @@ public class TestController {
         if (file.isEmpty()) return ZakiResponse.error("文件为空！");
         securityService.writePurchaseHistoryFromExcel(file);
         return ZakiResponse.ok("文件上传成功，数据已写入数据库");
+    }
+
+    /**
+     * 清空所有活动单
+     */
+    @DeleteMapping("/v1/clearAllActivityOrder")
+    public ResponseEntity<JsonNode> clearAllActivityOrder() {
+        activityOrderJpa.deleteAll();
+        return ZakiResponse.ok("清空成功");
     }
 
 }

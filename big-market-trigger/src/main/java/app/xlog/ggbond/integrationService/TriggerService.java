@@ -206,14 +206,13 @@ public class TriggerService implements Serializable {
      * 活动领域 - 充值活动单
      */
     public AOContext rechargeAO(AOContext aoContext) {
+        aoContext.setSaSession(StpUtil.getSession());
         // 初始状态 --->>> 待支付状态
         aoContext = aoEventCenter.publishInitialToPendingPaymentEvent(
                 aoContext.setUserId(securityService.getLoginIdDefaultNull())
         );
-
         // 待支付状态 --->>> 有效状态
         aoContext = aoEventCenter.publishPendingPaymentToEffectiveEvent(aoContext);
-
         return aoContext;
     }
 

@@ -2,6 +2,7 @@
 <flow>
     <chain name="INITIAL_TO_PENDING_PAYMENT">
         THEN(
+            RechargeQualificationFilter,
             InitialToPendingPaymentWorker,
             CheckExpirePendingPaymentAOWorker
         );

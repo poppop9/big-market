@@ -2,6 +2,7 @@ package app.xlog.ggbond.activity.model.vo;
 
 import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.bo.ActivityOrderTypeBO;
+import cn.dev33.satoken.session.SaSession;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,4 +30,5 @@ public class AOContext {
     private Long purchaseQuantity;  // 购买活动单的数量
 
     private Long activityOrderRewardTaskId;  // 活动单发放任务id
+    private SaSession saSession;
 }
