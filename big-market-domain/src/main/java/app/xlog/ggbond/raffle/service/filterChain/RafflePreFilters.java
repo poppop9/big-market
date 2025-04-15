@@ -1,12 +1,11 @@
 package app.xlog.ggbond.raffle.service.filterChain;
 
-import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.exception.BigMarketException;
-import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.bo.UserBO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
+import app.xlog.ggbond.resp.BigMarketRespCode;
 import cn.dev33.satoken.session.SaSession;
 import com.yomahub.liteflow.annotation.LiteflowComponent;
 import com.yomahub.liteflow.annotation.LiteflowMethod;
@@ -16,8 +15,6 @@ import com.yomahub.liteflow.enums.NodeTypeEnum;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RFuture;
-import org.redisson.api.RMap;
 
 import java.util.List;
 import java.util.Map;
@@ -88,6 +85,8 @@ public class RafflePreFilters {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         UserBO userBO = context.getUserBO();
 
+        Long strategyId = raffleArmoryRepo.findStrategyIdByActivityIdAndUserId(context.getActivityId(), context.getUserBO().getUserId());
+        context.setStrategyId(strategyId);
         Long raffleTime = raffleArmoryRepo.queryRaffleTimesByUserId(userBO.getUserId(), context.getStrategyId());
         userBO.setRaffleTime(raffleTime);
     }

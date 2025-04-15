@@ -66,9 +66,6 @@ public class TriggerService implements Serializable {
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
         Long userId = user.getUserId();
 
-        // 2. 跟据活动id，用户id，查询用户的策略id
-        Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
-
         // 3. 加锁
         raffleDispatch.acquireRaffleLock(userId);
         RaffleFilterContext context;
@@ -76,21 +73,20 @@ public class TriggerService implements Serializable {
             context = transactionTemplate.execute(status -> {
                 try {
                     // 4. 发布事件，消费活动单
-                    aoEventCenter.publishEffectiveToUsedEvent(AOContext.builder()
+                    // todo 临时注释
+                    /*aoEventCenter.publishEffectiveToUsedEvent(AOContext.builder()
                             .activityId(activityId)
                             .userId(userId)
                             .build()
-                    );
+                    );*/
 
                     // 5. 抽奖
                     RaffleFilterContext contextTemp = raffleDispatch.raffle(RaffleFilterContext.builder()
                             .activityId(activityId)
-                            .strategyId(strategyId)
                             .userBO(app.xlog.ggbond.raffle.model.bo.UserBO.builder()
                                     .userId(userId)
                                     .isBlacklistUser(securityService.isBlacklistUser(userId))
-                                    .build()
-                            )
+                                    .build())
                             .saSession(StpUtil.getSession())
                             .build()
                     );

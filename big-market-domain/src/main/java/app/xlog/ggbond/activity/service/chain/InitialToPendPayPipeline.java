@@ -49,7 +49,7 @@ public class InitialToPendPayPipeline {
         if (doLoginCompletableFuture.get()) {
             log.atDebug().log("抽奖领域 - " + context.getUserId() + " 抽奖资格验证过滤器放行");
         } else {
-            throw new BigMarketException(BigMarketRespCode.RAFFLE_CONFIG_ARMORY_ERROR);
+            throw new BigMarketException(BigMarketRespCode.ACTIVITY_CONFIG_ARMORY_ERROR);
         }
     }
 

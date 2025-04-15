@@ -49,7 +49,10 @@ public class RaffleDispatch implements IRaffleDispatch {
 
         log.atInfo().log("抽奖领域 - " + userId + " 过滤器链开始执行");
         LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("RAFFLE_FILTER_CHAIN", null, context);
-        if (!liteflowResponse.isSuccess()) throw liteflowResponse.getCause();
+        if (!liteflowResponse.isSuccess()) {
+            log.error("抽奖领域 - " + "用户 " + userId + " 抽奖出现错误");
+            throw liteflowResponse.getCause();
+        }
         log.atInfo().log("抽奖领域 - " + userId + " 过滤器链执行完毕");
 
         return liteflowResponse.getContextBean(RaffleFilterContext.class);

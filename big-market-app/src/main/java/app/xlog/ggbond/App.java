@@ -20,6 +20,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  *      - todo 可以弄一个后台，配置Activity
  *      - todo 需要写一个延时任务来动态检查活动单超时吗？
  * - 推荐领域
+ *      - todo api调用如果不够怎么办
  */
 @EnableDubbo
 @EnableAsync
