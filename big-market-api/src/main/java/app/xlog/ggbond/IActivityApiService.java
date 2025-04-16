@@ -9,16 +9,16 @@ import org.springframework.http.ResponseEntity;
  */
 public interface IActivityApiService {
 
-    // 活动领域 - 充值活动单
+    // 充值活动单
     ResponseEntity<JsonNode> rechargeAO(AOContext aoContext);
 
-    // 活动领域 - 查询所有待支付的活动单
+    // 查询所有待支付的活动单
     ResponseEntity<JsonNode> findAllPendingPaymentAO(Long activityId);
 
-    // 活动领域 - 支付待支付的活动单
+    // 支付待支付的活动单
     ResponseEntity<JsonNode> payPendingPaymentAO(AOContext aoContext);
 
-    // 活动领域 - 用户取消活动单
+    // 用户取消活动单
     ResponseEntity<JsonNode> cancelAO(Long activityOrderId);
 
 }

@@ -96,4 +96,4 @@ rules:
 
 # 通用的属性配置
 props:
-  sql-show: true  # 显示 SQL 语句
+  sql-show: false  # 显示 SQL 语句

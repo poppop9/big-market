@@ -28,6 +28,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SpringBootTest
@@ -384,6 +385,24 @@ public class JpaTest {
                         .ruleDescription("黑名单用户专属抽奖池")
                         .build()
         ));
+    }
+
+    /**
+     * 清除重复的UserRaffleConfig数据
+     */
+    @Test
+    void test_fji3() {
+        List<UserRaffleConfig> all = userRaffleConfigJpa.findAll();
+        Map<Long, List<UserRaffleConfig>> groupedByUserId = all.stream()
+                .collect(Collectors.groupingBy(UserRaffleConfig::getUserId));
+
+        groupedByUserId.forEach((userId, configs) -> {
+            if (configs.size() > 1) {
+                // 保留一条记录，删除其他记录
+                List<UserRaffleConfig> toDelete = configs.subList(0, 1);
+                userRaffleConfigJpa.deleteAll(toDelete);
+            }
+        });
     }
 
 }

@@ -8,6 +8,7 @@ logging:
     root: INFO  # 设置全局日志级别
     app.xlog.ggbond: INFO  # 设置包级别日志级别
     org.springframework: WARN  # 设置spring的日志级别
+#    com.zaxxer.hikari: DEBUG  # 数据库连接池
 
 sa-token:
   token-name: satoken  # token 名称（同时也是 cookie 名称）

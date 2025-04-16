@@ -28,7 +28,7 @@ public class ActivityController implements IActivityApiService {
     private AOEventCenter aoEventCenter;
 
     /**
-     * 活动领域 - 充值活动单
+     * 充值活动单
      */
     @PostMapping("/v1/rechargeAO")
     public ResponseEntity<JsonNode> rechargeAO(@RequestBody AOContext aoContext) {
@@ -37,7 +37,7 @@ public class ActivityController implements IActivityApiService {
     }
 
     /**
-     * 活动领域 - 查询所有待支付的活动单
+     * 查询所有待支付的活动单
      */
     @GetMapping("/v1/findAllPendingPaymentAO")
     public ResponseEntity<JsonNode> findAllPendingPaymentAO(@RequestParam Long activityId) {
@@ -46,7 +46,7 @@ public class ActivityController implements IActivityApiService {
     }
 
     /**
-     * 活动领域 - 支付待支付的活动单
+     * 支付待支付的活动单
      */
     @PatchMapping("/v1/payPendingPaymentAO")
     public ResponseEntity<JsonNode> payPendingPaymentAO(@RequestBody AOContext aoContext) {
@@ -55,7 +55,7 @@ public class ActivityController implements IActivityApiService {
     }
 
     /**
-     * 活动领域 - 用户取消活动单
+     * 用户取消活动单
      */
     @Override
     @PatchMapping("/v1/cancelAO")

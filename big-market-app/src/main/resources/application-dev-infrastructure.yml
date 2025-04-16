@@ -4,6 +4,12 @@ spring:
   datasource:
     driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
     url: jdbc:shardingsphere:classpath:application-dev-shardingsphere-jdbc.yml
+  hikari:
+    minimum-idle: 10  # 确保连接池中始终保留至少 10 个空闲连接，供应用程序随时使用
+    maximum-pool-size: 16  # 限制连接池中同时存在的最大连接数，避免数据库过载
+    idle-timeout: 30000  # 空闲连接的超时时间
+    max-lifetime: 1800000  # 连接的最大生命周期
+    connection-timeout: 30000  # 获取连接的最大等待时间
   jpa:
     open-in-view: false  # 避免内存泄漏
     hibernate:

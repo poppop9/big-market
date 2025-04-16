@@ -18,7 +18,7 @@ public class TaskSchedulerPoolConfig {
     @Bean(name = "myScheduledThreadPool")
     public ThreadPoolTaskScheduler myScheduledThreadPool() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setPoolSize(20); // 设置线程池大小
+        scheduler.setPoolSize(16); // 设置线程池大小
         scheduler.setThreadNamePrefix("MyScheduledThreadPool - ");
         scheduler.initialize();
 

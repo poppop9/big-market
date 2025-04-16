@@ -45,11 +45,13 @@ public class RafflePreFilters {
         UserBO userBO = context.getUserBO();
         SaSession saSession = context.getSaSession();
 
-        CompletableFuture<Boolean> doLoginCompletableFuture = (CompletableFuture<Boolean>) saSession.get("doLoginCompletableFuture");
-        if (doLoginCompletableFuture.get()) {
-            log.atDebug().log("抽奖领域 - " + userBO.getUserId() + " 抽奖资格验证过滤器放行");
-        } else {
-            throw new BigMarketException(BigMarketRespCode.RAFFLE_CONFIG_ARMORY_ERROR);
+        if ((boolean) saSession.get("isNewUser")) {
+            CompletableFuture<Boolean> doLoginCompletableFuture = (CompletableFuture<Boolean>) saSession.get("doLoginCompletableFuture");
+            if (doLoginCompletableFuture.get()) {
+                log.atDebug().log("抽奖领域 - " + userBO.getUserId() + " 抽奖资格验证过滤器放行");
+            } else {
+                throw new BigMarketException(BigMarketRespCode.RAFFLE_CONFIG_ARMORY_ERROR);
+            }
         }
     }
 

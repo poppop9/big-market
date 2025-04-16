@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * - 发奖领域
  *      - todo 积分达到一定的次数可以兑换奖品
  * - 安全领域
+ *      - todo 我不能让所有登录都异步执行，这样线程太多了
  * - 活动领域
  *      - todo 可以弄一个后台，配置Activity
  *      - todo 需要写一个延时任务来动态检查活动单超时吗？

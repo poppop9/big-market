@@ -148,20 +148,27 @@ public class TriggerService implements Serializable {
         if (!securityService.acquireLoginLock(userId)) {
             throw new BigMarketException(BigMarketRespCode.FREQUENT_LOGIN);
         } else {
-            CompletableFuture<Boolean> doLoginCompletableFuture = CompletableFuture.supplyAsync(() -> {
-                // 4. 检查该用户是否有策略，如果没有则ai生成推荐商品
-                if (!securityService.existsByUserIdAndActivityId(activityId, userId)) {
+            if (securityService.existsByUserIdAndActivityId(activityId, userId)) {
+                // 4. 用户存在策略，直接装配
+                Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
+                raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
+                raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map
+                raffleArmory.assembleAwardList(strategyId);  // 装配该策略所需的所有奖品列表
+                StpUtil.getSession().set("isNewUser", false);
+            } else {
+                // 5. 用户不存在策略，异步生成并装配
+                CompletableFuture<Boolean> doLoginCompletableFuture = CompletableFuture.supplyAsync(() -> {
                     List<AwardBO> noAwardIdAwardBOS;
-                    // 4.1 判断用户是否有购买历史
+                    // 5.1 判断用户是否有购买历史
                     if (securityService.existsUserPurchaseHistory(userId)) {
-                        // 4.1.1 查询用户购买历史，生成推荐奖品
+                        // 5.1.1 询用户购买历史，生成推荐奖品
                         List<UserPurchaseHistoryBO> userPurchaseHistoryBOList = securityService.findUserPurchaseHistory(userId);
                         noAwardIdAwardBOS = recommendService.recommendAwardByUserPurchaseHistory(
                                 "你是一个推荐系统，根据用户的购买历史推荐最能吸引该用户的商品。",
                                 userPurchaseHistoryBOList
                         );
                     } else {
-                        // 4.1.2 无购买历史，从海量用户的购买历史中生成热销产品
+                        // 5.1.2 无购买历史，从海量用户的购买历史中生成热销产品
                         List<UserPurchaseHistoryBO> recentPurchaseHistoryList = securityService.findRecentPurchaseHistory();
                         noAwardIdAwardBOS = recommendService.recommendHotSaleProductByRecentPurchaseHistory(
                                 "你是一个推荐系统，根据海量用户的购买历史，推算出近期用户喜好，给某个用户推荐商品。",
@@ -169,25 +176,26 @@ public class TriggerService implements Serializable {
                         );
                     }
 
-                    // 4.2 插入数据库
+                    // 5.2 插入数据库
                     StrategyBO strategyBO = raffleArmory.insertAwardList(userId, activityId, noAwardIdAwardBOS);
                     raffleArmory.insertUserRaffleConfig(userId, activityId, strategyBO.getStrategyId());
-                }
 
-                // 5. 如果该用户没有活动账户，则初始化一个活动账户
-                activityService.initActivityAccount(userId, activityId);
-                // 6. 如果该用户没有返利账户，则初始化一个返利账户
-                rewardService.initRewardAccount(userId, activityId);
+                    // 5.3 如果该用户没有活动账户，则初始化一个活动账户
+                    activityService.initActivityAccount(userId, activityId);
+                    // 5.4 如果该用户没有返利账户，则初始化一个返利账户
+                    rewardService.initRewardAccount(userId, activityId);
 
-                // 7. 装配
-                Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
-                raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
-                raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map
-                raffleArmory.assembleAwardList(strategyId);  // 装配该策略所需的所有奖品列表
+                    // 5.5 装配
+                    Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);
+                    raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
+                    raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map
+                    raffleArmory.assembleAwardList(strategyId);  // 装配该策略所需的所有奖品列表
 
-                return true;
-            }, myScheduledThreadPool);
-            StpUtil.getSession().set("doLoginCompletableFuture", doLoginCompletableFuture);
+                    return true;
+                }, myScheduledThreadPool);
+                StpUtil.getSession().set("isNewUser", true);
+                StpUtil.getSession().set("doLoginCompletableFuture", doLoginCompletableFuture);
+            }
             securityService.releaseLoginLock(userId);
         }
 
