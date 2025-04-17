@@ -142,11 +142,18 @@ public class TriggerService implements Serializable {
                 throw new BigMarketException(BigMarketRespCode.WRONG_USERNAME_OR_PASSWORD);
             }
 
-            // 2. 把activityId塞到session里，后面的操作都可以直接从这里取
-            long activityId = Long.parseLong(SaHolder.getRequest().getParam("activityId"));
-            StpUtil.getSession().set("activityId", activityId);
-            // 3. 将该用户的角色信息放入session
-            securityService.insertPermissionIntoSession();
+            long activityId;
+            try {
+                // 2. 把activityId塞到session里，后面的操作都可以直接从这里取
+                activityId = Long.parseLong(SaHolder.getRequest().getParam("activityId"));
+                StpUtil.getSession().set("activityId", activityId);
+                // 3. 将该用户的角色信息放入session
+                securityService.insertPermissionIntoSession();
+            } catch (RuntimeException e) {
+                // 这段代码有任何报错，都要注销登录用户
+                securityService.logoutByToken(StpUtil.getTokenValue());
+                throw e;
+            }
 
             if (securityService.existsByUserIdAndActivityId(activityId, userId)) {
                 // 4. 用户存在策略，直接装配
