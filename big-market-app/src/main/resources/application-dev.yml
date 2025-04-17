@@ -21,6 +21,7 @@ sa-token:
 
 liteflow:
   rule-source: application-liteflow-raffle.xml, application-liteflow-activity.xml
+  print-execution-log: false  # 是否打印日志
 
 xxl:
   job:

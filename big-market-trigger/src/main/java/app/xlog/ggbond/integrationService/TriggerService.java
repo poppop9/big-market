@@ -133,21 +133,21 @@ public class TriggerService implements Serializable {
      */
     @SneakyThrows
     public UserBO doLogin(Long userId, String password) {
-        boolean isSuccess = securityService.doLogin(userId, password);
-        // 1. 判断是否登录成功
-        if (!isSuccess) {
-            throw new BigMarketException(BigMarketRespCode.WRONG_USERNAME_OR_PASSWORD);
-        }
-
-        // 2. 把activityId塞到session里，后面的操作都可以直接从这里取
-        long activityId = Long.parseLong(SaHolder.getRequest().getParam("activityId"));
-        StpUtil.getSession().set("activityId", activityId);
-        // 3. 将该用户的角色信息放入session
-        securityService.insertPermissionIntoSession();
-
         if (!securityService.acquireLoginLock(userId)) {
             throw new BigMarketException(BigMarketRespCode.FREQUENT_LOGIN);
         } else {
+            boolean isSuccess = securityService.doLogin(userId, password);
+            // 1. 判断是否登录成功
+            if (!isSuccess) {
+                throw new BigMarketException(BigMarketRespCode.WRONG_USERNAME_OR_PASSWORD);
+            }
+
+            // 2. 把activityId塞到session里，后面的操作都可以直接从这里取
+            long activityId = Long.parseLong(SaHolder.getRequest().getParam("activityId"));
+            StpUtil.getSession().set("activityId", activityId);
+            // 3. 将该用户的角色信息放入session
+            securityService.insertPermissionIntoSession();
+
             if (securityService.existsByUserIdAndActivityId(activityId, userId)) {
                 // 4. 用户存在策略，直接装配
                 Long strategyId = raffleArmory.findStrategyIdByActivityIdAndUserId(activityId, userId);

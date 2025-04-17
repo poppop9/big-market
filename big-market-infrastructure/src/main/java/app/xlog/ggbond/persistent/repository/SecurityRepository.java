@@ -186,7 +186,7 @@ public class SecurityRepository implements ISecurityRepo {
     @Override
     public boolean acquireLoginLock(Long userId) {
         RBitSet bitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.FREQUENT_LOGIN_USER);
-        boolean wasLocked = bitSet.set(userId, true);
+        boolean wasLocked = bitSet.set(userId, true);  // 返回旧值
         return !wasLocked;
     }
 
