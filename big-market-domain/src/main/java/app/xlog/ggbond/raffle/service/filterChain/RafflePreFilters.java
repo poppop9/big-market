@@ -45,7 +45,7 @@ public class RafflePreFilters {
         UserBO userBO = context.getUserBO();
         SaSession saSession = context.getSaSession();
 
-        if ((boolean) saSession.get("isNewUser")) {
+        if (Boolean.parseBoolean(saSession.get("isNewUser").toString())) {
             CompletableFuture<Boolean> doLoginCompletableFuture = (CompletableFuture<Boolean>) saSession.get("doLoginCompletableFuture");
             if (doLoginCompletableFuture.get()) {
                 log.atDebug().log("抽奖领域 - " + userBO.getUserId() + " 抽奖资格验证过滤器放行");
@@ -53,6 +53,23 @@ public class RafflePreFilters {
                 throw new BigMarketException(BigMarketRespCode.RAFFLE_CONFIG_ARMORY_ERROR);
             }
         }
+    }
+
+    /**
+     * 数据准备过滤器
+     */
+    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
+            value = LiteFlowMethodEnum.PROCESS,
+            nodeId = "DataPreparationFilter",
+            nodeName = "数据准备过滤器")
+    public void dataPreparationFilter(NodeComponent bindCmp) {
+        RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
+        UserBO userBO = context.getUserBO();
+
+        Long strategyId = raffleArmoryRepo.findStrategyIdByActivityIdAndUserId(context.getActivityId(), context.getUserBO().getUserId());
+        context.setStrategyId(strategyId);
+        Long raffleTime = raffleArmoryRepo.queryRaffleTimesByUserId(userBO.getUserId(), context.getStrategyId());
+        userBO.setRaffleTime(raffleTime);
     }
 
     /**
@@ -74,23 +91,6 @@ public class RafflePreFilters {
         } else {
             log.atInfo().log("抽奖领域 - " + userBO.getUserId() + " 黑名单过滤器放行");
         }
-    }
-
-    /**
-     * 数据准备过滤器
-     */
-    @LiteflowMethod(nodeType = NodeTypeEnum.COMMON,
-            value = LiteFlowMethodEnum.PROCESS,
-            nodeId = "DataPreparationFilter",
-            nodeName = "数据准备过滤器")
-    public void dataPreparationFilter(NodeComponent bindCmp) {
-        RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
-        UserBO userBO = context.getUserBO();
-
-        Long strategyId = raffleArmoryRepo.findStrategyIdByActivityIdAndUserId(context.getActivityId(), context.getUserBO().getUserId());
-        context.setStrategyId(strategyId);
-        Long raffleTime = raffleArmoryRepo.queryRaffleTimesByUserId(userBO.getUserId(), context.getStrategyId());
-        userBO.setRaffleTime(raffleTime);
     }
 
     /**

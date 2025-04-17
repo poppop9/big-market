@@ -5,8 +5,8 @@
         THEN(
             // 1. 前置过滤器链
             RaffleQualificationFilter,
+            DataPreparationFilter,
             BlacklistRaffleFilter,
-            IF(CheckProceed, DataPreparationFilter),
             IF(CheckProceed, SpecialTimeMatchRafflePoolFilter),
             IF(CheckProceed, NormalTimeMatchRafflePoolFilter),
             THEN(
