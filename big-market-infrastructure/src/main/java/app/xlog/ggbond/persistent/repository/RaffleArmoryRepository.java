@@ -125,18 +125,15 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
      */
     @Override
     public void assembleAllAwardCountByStrategyId(Long strategyId) {
-        Map<Long, Long> collect = findAwardsByStrategyId(strategyId).stream()
-                .collect(Collectors.toMap(
-                        AwardBO::getAwardId,
-                        AwardBO::getAwardCount
-                ));
-
         RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getAwardCountMapCacheKey(strategyId));
         // 由于redis中的数据实时性比数据库高，所有如果存在不覆盖，而是更新过期时间
-        if (!rMap.isExists()) {
+        if (rMap.isExists()) {
+            rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
+        } else {
+            Map<Long, Long> collect = findAwardsByStrategyId(strategyId).stream()
+                    .collect(Collectors.toMap(AwardBO::getAwardId, AwardBO::getAwardCount));
             rMap.putAll(collect);
         }
-        rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
     }
 
     /**
@@ -145,12 +142,7 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     @Override
     public void insertWeightRandom(Long strategyId, Map<String, WeightRandom<Long>> wrMap) {
         RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getWeightRandomMapCacheKey(strategyId));
-
-        // 由于redis中的数据实时性比数据库高，所有如果存在不覆盖，而是更新过期时间
-        if (!rMap.isExists()) {
-            rMap.putAll(wrMap);
-        }
-        rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
+        rMap.putAll(wrMap);
     }
 
     /**
@@ -360,6 +352,21 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
         RBitSet rBitSet = redissonClient.getBitSet(GlobalConstant.RedisKey.USER_IN_RAFFLE_BIT_SET);
         boolean wasLocked = rBitSet.set(userId, true);
         return !wasLocked;
+    }
+
+    /**
+     * 判断 - 判断redis中是否有指定的权重对象
+     */
+    @Override
+    public boolean existWeightRandom(Long strategyId) {
+        RMap<String, WeightRandom<Long>> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getWeightRandomMapCacheKey(strategyId));
+        if (rMap.isExists()) {
+            // 由于redis中的数据实时性比数据库高，所以如果存在不覆盖，而是更新过期时间
+            rMap.expire(Duration.ofSeconds(GlobalConstant.RedisKey.REDIS_EXPIRE_TIME));
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

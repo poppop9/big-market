@@ -81,4 +81,7 @@ public interface IRaffleArmoryRepo {
 
     // 判断 - 是否能获取到抽奖锁
     boolean acquireRaffleLock(Long userId);
+
+    // 判断 - 判断redis中是否有指定的权重对象
+    boolean existWeightRandom(Long strategyId);
 }

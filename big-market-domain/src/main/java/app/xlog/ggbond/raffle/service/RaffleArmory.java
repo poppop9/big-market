@@ -42,6 +42,8 @@ public class RaffleArmory implements IRaffleArmory {
      */
     @Override
     public void assembleRaffleWeightRandomByStrategyId2(Long strategyId) {
+        if (raffleArmoryRepo.existWeightRandom(strategyId)) return;
+
         // 所有的权重对象集合
         Map<String, WeightRandom<Long>> collect = raffleArmoryRepo.findAllRafflePoolByStrategyId(strategyId).stream()
                 .collect(Collectors.toMap(

@@ -36,9 +36,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(SaTokenException.class)
     public ResponseEntity<JsonNode> saTokenExceptionHandler(SaTokenException e) {
-        return ZakiResponse.error(
-                e.getMessage()
-        );
+        return ZakiResponse.error(e.getMessage());
     }
 
 }

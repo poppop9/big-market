@@ -167,16 +167,7 @@ public class SecurityService implements ISecurityService {
     @Override
     @SneakyThrows
     public boolean acquireLoginLock(Long userId) {
-        boolean lockAcquired = securityRepo.acquireLoginLock(userId);
-
-        // 如果第一次获取失败，尝试再获取 3 次
-        int retryCount = 0;
-        while (!lockAcquired && retryCount < 3) {
-            Thread.sleep(200);  // 间隔 200ms
-            lockAcquired = securityRepo.acquireLoginLock(userId); // 再次尝试获取锁
-            retryCount++;
-        }
-        return lockAcquired;
+        return securityRepo.acquireLoginLock(userId);
     }
 
     /**
