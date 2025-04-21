@@ -22,9 +22,7 @@ public class RewardJob {
      */
     @XxlJob("scan_and_compensate_not_reward")
     public void scanAndCompensateNotReward() {
-        rewardService.scanAndCompensateNotReward(
-                GlobalConstant.SCAN_REWARD_TASK_TIME
-        );
+        rewardService.scanAndCompensateNotReward(GlobalConstant.SCAN_REWARD_TASK_TIME);
     }
 
 }

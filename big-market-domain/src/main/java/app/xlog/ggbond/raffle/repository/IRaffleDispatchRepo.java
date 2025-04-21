@@ -1,6 +1,7 @@
 package app.xlog.ggbond.raffle.repository;
 
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
+import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import cn.hutool.core.lang.WeightRandom;
 
 /**
@@ -15,7 +16,7 @@ public interface IRaffleDispatchRepo {
     void updateAwardCount(DecrQueueVO decrQueueVO);
 
     // 库存 - 更新奖品库存
-    Boolean decreaseAwardCount(Long strategyId, Long awardId);
+    boolean decreaseAwardCount(Long strategyId, Long awardId);
 
     // 库存 - 将扣减信息写入队列
     void addDecrAwardCountToQueue(DecrQueueVO decrQueueVO);
@@ -46,4 +47,7 @@ public interface IRaffleDispatchRepo {
 
     // 锁 - 释放锁
     void releaseRaffleLock(Long userId);
+
+    // 链 - 执行抽奖后置过滤器链
+    void sendExecuteRaffleAfterFiltersMessage(RaffleFilterContext context);
 }

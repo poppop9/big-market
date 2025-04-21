@@ -61,9 +61,7 @@ public class RaffleAfterFilters {
         log.atInfo().log("抽奖领域 - " + userId + " 奖品库存过滤器开始执行");
 
         // 调度扣减方法
-        if (!raffleDispatchRepo.decreaseAwardCount(context.getStrategyId(), context.getAwardId())) {
-            throw new RetryRouterException(BigMarketRespCode.DECREASE_AWARD_COUNT_FAILED, "扣减库存失败，重新调度");
-        }
+        raffleDispatchRepo.decreaseAwardCount(context.getStrategyId(), context.getAwardId());
         // 将扣减信息写入队列
         raffleDispatchRepo.addDecrAwardCountToMQ(DecrQueueVO.builder()
                 .strategyId(context.getStrategyId())
@@ -118,7 +116,6 @@ public class RaffleAfterFilters {
 
         // 1. 奖品不是随机积分，跳过
         if (!context.getAwardId().equals(101L)) return;
-
         // 2. 查询活动积分范围
         ActivityBO activityBO = activityService.findActivityByActivityId(context.getActivityId());
         // 3. 写入积分流水表
@@ -128,7 +125,6 @@ public class RaffleAfterFilters {
                 RandomUtil.randomInt(Integer.parseInt(activityBO.getRangeOfPoints().split("-")[0]), Integer.parseInt(activityBO.getRangeOfPoints().split("-")[1])),
                 false
         );
-
         // 4. 发布积分返利的消息
         rewardService.publishPointsRewardMessage(MQMessage.<PointsLogBO>builder()
                 .data(pointsLogBO)

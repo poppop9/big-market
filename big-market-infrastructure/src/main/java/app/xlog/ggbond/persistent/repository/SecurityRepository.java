@@ -77,7 +77,15 @@ public class SecurityRepository implements ISecurityRepo {
      */
     @Override
     public boolean existsByUserIdAndActivityId(Long activityId, Long userId) {
-        return userRaffleConfigJpa.existsByUserIdAndActivityId(userId, activityId);
+        RBloomFilter<Long> rBloomFilter = redissonClient.getBloomFilter(GlobalConstant.RedisKey.USER_ACTIVITY_BLOOM_FILTER);
+        boolean contains;
+        for (int i = 0; i < 3; i++) {
+            contains = rBloomFilter.contains(userId ^ activityId);
+            if (!contains) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

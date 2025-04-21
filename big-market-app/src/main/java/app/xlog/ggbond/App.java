@@ -13,10 +13,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
  *      - todo 什么行为算是违规行为，要列为黑名单用户：
  *          - 使用插件、或者脚本模拟用户行为
  *          - 对于同一ip的异常高流量，要做限流，并加入黑名单
+ *      - todo 将整个抽奖的后置链放到kafka中
+ *          - 要确保后置操作没完成该用户不能下一次抽奖
  * - 发奖领域
  *      - todo 积分达到一定的次数可以兑换奖品
  * - 安全领域
- *      - todo 我不能让所有登录都异步执行，这样线程太多了
  * - 活动领域
  *      - todo 可以弄一个后台，配置Activity
  *      - todo 需要写一个延时任务来动态检查活动单超时吗？

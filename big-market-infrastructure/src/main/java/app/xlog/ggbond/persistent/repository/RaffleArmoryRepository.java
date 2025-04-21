@@ -369,4 +369,13 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
         }
     }
 
+    /**
+     * 插入 - 将用户id和活动id异或结果插入到布隆过滤器
+     */
+    @Override
+    public void insertUserIdActivityIdBloomFilter(Long userId, long activityId) {
+        RBloomFilter<Long> rBloomFilter = redissonClient.getBloomFilter(GlobalConstant.RedisKey.USER_ACTIVITY_BLOOM_FILTER);
+        rBloomFilter.add(userId ^ activityId);
+    }
+
 }

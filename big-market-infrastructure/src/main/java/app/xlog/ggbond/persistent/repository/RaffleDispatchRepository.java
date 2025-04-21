@@ -2,6 +2,7 @@ package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.MQMessage;
+import app.xlog.ggbond.exception.RetryRouterException;
 import app.xlog.ggbond.mq.MQEventCenter;
 import app.xlog.ggbond.persistent.po.raffle.UserRaffleHistory;
 import app.xlog.ggbond.persistent.repository.jpa.AwardJpa;
@@ -11,8 +12,10 @@ import app.xlog.ggbond.persistent.repository.jpa.UserRaffleHistoryJpa;
 import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
+import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
+import app.xlog.ggbond.resp.BigMarketRespCode;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
 import jakarta.annotation.Resource;
@@ -93,7 +96,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
      */
     @Override
     @SneakyThrows
-    public Boolean decreaseAwardCount(Long strategyId, Long awardId) {
+    public boolean decreaseAwardCount(Long strategyId, Long awardId) {
         RMap<Long, Long> rMap = redissonClient.getMap(GlobalConstant.RedisKey.getAwardCountMapCacheKey(strategyId));
         if (rMap.isExists()) {
             Long surplus = rMap.compute(awardId, (k, v) -> (v != null && v > 0) ? (v - 1) : 0);
@@ -107,9 +110,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
                 return true;
             }
         }
-
-        log.atError().log("抽奖领域 - 奖品 {} 库存扣减失败，可能库存没有装配成功", awardId);
-        return false;
+        throw new RetryRouterException(BigMarketRespCode.DECREASE_AWARD_COUNT_FAILED, "扣减库存失败，请重新调度或登录");
     }
 
     /**
@@ -217,6 +218,16 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     public void releaseRaffleLock(Long userId) {
         RLock fairLock = redissonClient.getFairLock(userId.toString());
         fairLock.unlock();
+    }
+
+    /**
+     * 链 - 执行抽奖后置过滤器链
+     */
+    @Override
+    public void sendExecuteRaffleAfterFiltersMessage(RaffleFilterContext context) {
+        mqEventCenter.sendMessage(GlobalConstant.KafkaConstant.RAFFLE_AFTER_CHAIN,
+                MQMessage.<RaffleFilterContext>builder().data(context).build()
+        );
     }
 
 }

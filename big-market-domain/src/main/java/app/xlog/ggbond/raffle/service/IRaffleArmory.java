@@ -50,4 +50,6 @@ public interface IRaffleArmory {
     // 查询 - 查询用户的抽奖次数
     Long findRaffleCount(Long activityId, Long userId);
 
+    // 插入 - 将用户id和活动id异或结果插入到布隆过滤器
+    void insertUserIdActivityIdBloomFilter(Long userId, long activityId);
 }

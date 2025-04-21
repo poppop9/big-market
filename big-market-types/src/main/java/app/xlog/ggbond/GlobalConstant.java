@@ -61,6 +61,9 @@ public class GlobalConstant {
 
         // 安全领域 - 用户是否频繁登录的bitmap
         public static String FREQUENT_LOGIN_USER = "FREQUENT_LOGIN_USER";
+
+        // 抽奖领域 - 用户活动布隆过滤器
+        public static final String USER_ACTIVITY_BLOOM_FILTER = "USER_ACTIVITY_BLOOM_FILTER";
     }
 
     /**
@@ -76,6 +79,7 @@ public class GlobalConstant {
         public static final String REWARD_TASK = "Reward-RewardTask";
         public static final String REWARD_EFFECTIVE_ACTIVITY_ORDER_TASK = "Activity-RewardEffectiveActivityOrderTask";
         public static final String POINTS_REWARD = "POINTS_REWARD";
+        public static final String RAFFLE_AFTER_CHAIN = "RAFFLE_AFTER_CHAIN";
     }
 
     // 抽奖，推荐领域 - 奖品级别

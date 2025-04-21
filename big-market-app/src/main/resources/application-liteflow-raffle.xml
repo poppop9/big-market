@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <flow>
-    <!-- 抽奖领域 - 抽奖 -->
-    <chain name="RAFFLE_FILTER_CHAIN">
+    <!-- 抽奖领域 - 前置过滤器和路由过滤器链 -->
+    <chain name="RAFFLE_PRE_AND_ROUTER_CHAIN">
         THEN(
             // 1. 前置过滤器链
             RaffleQualificationFilter,
@@ -9,16 +9,18 @@
             BlacklistRaffleFilter,
             IF(CheckProceed, SpecialTimeMatchRafflePoolFilter),
             IF(CheckProceed, NormalTimeMatchRafflePoolFilter),
-            THEN(
-                // 2. 路由
-                RaffleFilterRouter,
-                // 3. 后置过滤器链
-                UpdateExpireTimeFilter,
-                AwardInventoryFilter,
-                UserRaffleTimeFilter,
-                UserRaffleFlowRecordFilter,
-                RewardFilter
-            ).retry(30, "app.xlog.ggbond.exception.RetryRouterException")
+            // 2. 路由
+            RaffleFilterRouter
+        );
+    </chain>
+    <!-- 抽奖领域 - 后置过滤器链 -->
+    <chain name="RAFFLE_AFTER_CHAIN">
+        THEN(
+            UpdateExpireTimeFilter,
+            AwardInventoryFilter,
+            UserRaffleTimeFilter,
+            UserRaffleFlowRecordFilter,
+            RewardFilter
         );
     </chain>
 </flow>

@@ -47,15 +47,16 @@ public class RaffleDispatch implements IRaffleDispatch {
         context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS);
         Long userId = context.getUserBO().getUserId();
 
-        log.atInfo().log("抽奖领域 - " + userId + " 过滤器链开始执行");
-        LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("RAFFLE_FILTER_CHAIN", null, context);
+        LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("RAFFLE_PRE_AND_ROUTER_CHAIN", null, context);
         if (!liteflowResponse.isSuccess()) {
             log.error("抽奖领域 - " + "用户 " + userId + " 抽奖出现错误");
             throw liteflowResponse.getCause();
         }
-        log.atInfo().log("抽奖领域 - " + userId + " 过滤器链执行完毕");
+        context = liteflowResponse.getContextBean(RaffleFilterContext.class);
+        // todo 锁住当前用户，不让其进行下一次抽奖，然后在监听器端解锁
 
-        return liteflowResponse.getContextBean(RaffleFilterContext.class);
+        raffleDispatchRepo.sendExecuteRaffleAfterFiltersMessage(context);
+        return context;
     }
 
     /**

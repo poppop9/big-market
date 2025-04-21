@@ -24,6 +24,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.Serializable;
@@ -68,41 +69,35 @@ public class TriggerService implements Serializable {
 
         // 3. 加锁
         raffleDispatch.acquireRaffleLock(userId);
-        RaffleFilterContext context;
-        try {
-            context = transactionTemplate.execute(status -> {
-                try {
-                    // 4. 发布事件，消费活动单
-                    // todo 临时注释
+        RaffleFilterContext context = transactionTemplate.execute(status -> {
+            try {
+                // 4. 发布事件，消费活动单
+                // todo 临时注释
                     /*aoEventCenter.publishEffectiveToUsedEvent(AOContext.builder()
                             .activityId(activityId)
                             .userId(userId)
                             .build()
                     );*/
 
-                    // 5. 抽奖
-                    RaffleFilterContext contextTemp = raffleDispatch.raffle(RaffleFilterContext.builder()
-                            .activityId(activityId)
-                            .userBO(app.xlog.ggbond.raffle.model.bo.UserBO.builder()
-                                    .userId(userId)
-                                    .isBlacklistUser(securityService.isBlacklistUser(userId))
-                                    .build())
-                            .saSession(StpUtil.getSession())
-                            .build()
-                    );
-                    log.atInfo().log("抽奖领域 - " + userId + " 抽到 {} 活动的 {} 奖品", activityId, contextTemp.getAwardId());
-                    return contextTemp;
-                } catch (BigMarketException e) {
-                    throw e;
-                } catch (Exception e) {
-                    status.setRollbackOnly();
-                    throw e;
-                }
-            });
-        } finally {
-            // 6. 释放锁
-            raffleDispatch.releaseRaffleLock(userId);
-        }
+                // 5. 抽奖
+                RaffleFilterContext contextTemp = raffleDispatch.raffle(RaffleFilterContext.builder()
+                        .activityId(activityId)
+                        .userBO(app.xlog.ggbond.raffle.model.bo.UserBO.builder()
+                                .userId(userId)
+                                .isBlacklistUser(securityService.isBlacklistUser(userId))
+                                .build())
+                        .saSession(StpUtil.getSession())
+                        .build()
+                );
+                log.atInfo().log("抽奖领域 - " + userId + " 抽到 {} 活动的 {} 奖品", activityId, contextTemp.getAwardId());
+                return contextTemp;
+            } catch (BigMarketException e) {
+                throw e;
+            } catch (Exception e) {
+                status.setRollbackOnly();
+                throw e;
+            }
+        });
 
         // 7. 写入发奖的task表
         long rewardId = rewardService.insertRewardTask(RewardTaskBO.builder()
@@ -136,9 +131,8 @@ public class TriggerService implements Serializable {
         if (!securityService.acquireLoginLock(userId)) {
             throw new BigMarketException(BigMarketRespCode.FREQUENT_LOGIN);
         } else {
-            boolean isSuccess = securityService.doLogin(userId, password);
             // 1. 判断是否登录成功
-            if (!isSuccess) {
+            if (!securityService.doLogin(userId, password)) {
                 throw new BigMarketException(BigMarketRespCode.WRONG_USERNAME_OR_PASSWORD);
             }
 
@@ -197,6 +191,7 @@ public class TriggerService implements Serializable {
                     raffleArmory.assembleRaffleWeightRandomByStrategyId2(strategyId);  // 装配该策略所需的所有权重对象Map
                     raffleArmory.assembleAllAwardCountByStrategyId(strategyId);  // 装配该策略所需的所有奖品的库存Map
                     raffleArmory.assembleAwardList(strategyId);  // 装配该策略所需的所有奖品列表
+                    raffleArmory.insertUserIdActivityIdBloomFilter(userId, activityId);
 
                     return true;
                 }, myScheduledThreadPool);

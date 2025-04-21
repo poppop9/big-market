@@ -84,4 +84,7 @@ public interface IRaffleArmoryRepo {
 
     // 判断 - 判断redis中是否有指定的权重对象
     boolean existWeightRandom(Long strategyId);
+
+    // 插入 - 将用户id和活动id异或结果插入到布隆过滤器
+    void insertUserIdActivityIdBloomFilter(Long userId, long activityId);
 }
