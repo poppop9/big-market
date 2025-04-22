@@ -43,9 +43,12 @@ public class RaffleAfterFilters {
             nodeName = "更新过期时间过滤器")
     public void updateExpireTimeFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
+
+        log.atInfo().log("抽奖领域 - " + context.getUserBO().getUserId() + " 更新过期时间过滤器 start");
         raffleDispatchRepo.updateAllWeightRandomExpireTime2(context.getStrategyId());  // 更新所有权重对象Map的过期时间
         raffleDispatchRepo.updateAllAwardCountExpireTime(context.getStrategyId());  // 更新所有奖品库存的过期时间
         raffleDispatchRepo.updateAllAwardListExpireTime(context.getStrategyId());  // 更新所有奖品列表的过期时间
+        log.atInfo().log("抽奖领域 - " + context.getUserBO().getUserId() + " 更新过期时间过滤器 end");
     }
 
     /**
@@ -58,7 +61,7 @@ public class RaffleAfterFilters {
     public void awardInventoryFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         Long userId = context.getUserBO().getUserId();
-        log.atInfo().log("抽奖领域 - " + userId + " 奖品库存过滤器开始执行");
+        log.atInfo().log("抽奖领域 - " + userId + " 奖品库存过滤器 start");
 
         // 调度扣减方法
         raffleDispatchRepo.decreaseAwardCount(context.getStrategyId(), context.getAwardId());
@@ -66,7 +69,7 @@ public class RaffleAfterFilters {
         raffleDispatchRepo.addDecrAwardCountToMQ(DecrQueueVO.builder()
                 .strategyId(context.getStrategyId())
                 .awardId(context.getAwardId()).build());
-        log.atInfo().log("抽奖领域 - " + userId + " 奖品库存过滤器执行完毕");
+        log.atInfo().log("抽奖领域 - " + userId + " 奖品库存过滤器 end");
     }
 
     /**
@@ -80,9 +83,9 @@ public class RaffleAfterFilters {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         Long userId = context.getUserBO().getUserId();
 
-        log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖次数过滤器开始执行");
+        log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖次数过滤器 start");
         raffleDispatchRepo.addUserRaffleTimeByStrategyId(userId, context.getStrategyId());
-        log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖次数过滤器执行完毕");
+        log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖次数过滤器 end");
     }
 
     /**
@@ -96,10 +99,10 @@ public class RaffleAfterFilters {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         Long userId = context.getUserBO().getUserId();
 
-        log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器开始执行");
+        log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器 start");
         Long userRaffleHistoryId = raffleDispatchRepo.addUserRaffleFlowRecordFilter(userId, context.getStrategyId(), context.getAwardId());
         context.setUserRaffleHistoryId(userRaffleHistoryId);
-        log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器执行完毕");
+        log.atInfo().log("抽奖领域 - " + userId + " 用户抽奖流水记录过滤器 end");
     }
 
     /**
@@ -112,7 +115,7 @@ public class RaffleAfterFilters {
     public void rewardFilter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
         Long userId = context.getUserBO().getUserId();
-        log.atInfo().log("抽奖领域 - " + userId + " 返利过滤器开始执行");
+        log.atInfo().log("抽奖领域 - " + userId + " 返利过滤器 start");
 
         // 1. 奖品不是随机积分，跳过
         if (!context.getAwardId().equals(101L)) return;
@@ -129,7 +132,7 @@ public class RaffleAfterFilters {
         rewardService.publishPointsRewardMessage(MQMessage.<PointsLogBO>builder()
                 .data(pointsLogBO)
                 .build());
-        log.atInfo().log("抽奖领域 - " + userId + " 返利过滤器执行完毕");
+        log.atInfo().log("抽奖领域 - " + userId + " 返利过滤器 end");
     }
 
 }

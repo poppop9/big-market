@@ -8,10 +8,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 /**
  * 定时任务线程池配置
  */
-@EnableScheduling
 @Configuration
 public class TaskSchedulerPoolConfig {
-
     /**
      * 定时调度异步线程池
      */
@@ -21,8 +19,6 @@ public class TaskSchedulerPoolConfig {
         scheduler.setPoolSize(16); // 设置线程池大小
         scheduler.setThreadNamePrefix("MyScheduledThreadPool - ");
         scheduler.initialize();
-
         return scheduler;
     }
-
 }

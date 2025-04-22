@@ -3,8 +3,6 @@ package app.xlog.ggbond.job;
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.activity.model.vo.QueueItemVO;
 import cn.dev33.satoken.stp.StpUtil;
-import com.xxl.job.core.context.XxlJobHelper;
-import com.xxl.job.core.handler.annotation.XxlJob;
 import jakarta.annotation.Resource;
 import org.redisson.api.RDelayedQueue;
 import org.redisson.api.RQueue;
@@ -24,13 +22,13 @@ public class TestJob {
 
     int count = 0;
 
-    @XxlJob("test_job")
+/*    @XxlJob("test_job")
     public void execute() {
         System.out.println("xxl-job test in thread: " + Thread.currentThread().getName());
         XxlJobHelper.log("xxl-job test in thread: " + Thread.currentThread().getName());
         // Thread.sleep(10000);  // 10s
         XxlJobHelper.handleSuccess();
-    }
+    }*/
 
     // @Scheduled(fixedDelay = 1000)
     public void test() {

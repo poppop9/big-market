@@ -42,12 +42,12 @@ public class RaffleFilterRouter {
     public void raffleFilterRouter(NodeComponent bindCmp) {
         RaffleFilterContext context = bindCmp.getContextBean(RaffleFilterContext.class);
 
-        log.atInfo().log("抽奖领域 - 抽奖过滤器路由调度开始执行");
+        log.atInfo().log("抽奖领域 - 抽奖过滤器路由调度 start");
         Long awardId = raffleDispatch.findAwardIdByDispatchParam(context.getStrategyId(), context.getDispatchParam());
 
         context.setAwardId(awardId);
         context.setMiddleFilterParam(RaffleFilterContext.MiddleFilterParam.PASS);
-        log.atInfo().log("抽奖领域 - 抽奖过滤器路由调度执行完毕");
+        log.atInfo().log("抽奖领域 - 抽奖过滤器路由调度 end");
     }
 
 }

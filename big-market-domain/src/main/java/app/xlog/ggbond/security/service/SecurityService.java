@@ -6,12 +6,10 @@ import app.xlog.ggbond.security.repository.ISecurityRepo;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.idev.excel.FastExcel;
 import cn.idev.excel.context.AnalysisContext;
-import cn.idev.excel.converters.Converter;
 import cn.idev.excel.event.AnalysisEventListener;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +22,7 @@ import java.util.Optional;
  */
 @Slf4j
 @Service
-@DubboService
+// @DubboService
 public class SecurityService implements ISecurityService {
 
     @Resource

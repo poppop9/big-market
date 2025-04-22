@@ -1,9 +1,9 @@
 package app.xlog.ggbond;
 
-import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * - 抽奖领域
@@ -24,8 +24,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * - 推荐领域
  *      - todo api调用如果不够怎么办
  */
-@EnableDubbo
+// @EnableDubbo
 @EnableAsync
+@EnableScheduling
 @SpringBootApplication
 public class App {
     public static void main(String[] args) {

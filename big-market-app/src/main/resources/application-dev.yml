@@ -38,12 +38,12 @@ xxl:
       logPath: /data/appLogs/xxl-job/jobHandler  # 执行器日志存储路径
       logRetentionDays: 30  # 执行器日志保存天数
 
-dubbo:
-  application:
-    name: big-market-app  # 应用名称
-  registry:
-    address: nacos://localhost:8848  # 服务注册中心的地址
-    parameters.namespace: f1680a4a-b6f6-49ec-a747-aa35a219570a
-    register-mode: all  # 注册模式
-  config-center:
-    address: nacos://localhost:8848  # 配置中心的地址，用于集中管理、动态调整 Dubbo 的配置信息
+#dubbo:
+#  application:
+#    name: big-market-app  # 应用名称
+#  registry:
+#    address: nacos://localhost:8848  # 服务注册中心的地址
+#    parameters.namespace: f1680a4a-b6f6-49ec-a747-aa35a219570a
+#    register-mode: all  # 注册模式
+#  config-center:
+#    address: nacos://localhost:8848  # 配置中心的地址，用于集中管理、动态调整 Dubbo 的配置信息

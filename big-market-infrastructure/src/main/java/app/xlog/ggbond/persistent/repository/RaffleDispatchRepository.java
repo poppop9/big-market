@@ -217,7 +217,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     @Override
     public void releaseRaffleLock(Long userId) {
         RLock fairLock = redissonClient.getFairLock(userId.toString());
-        fairLock.unlock();
+        fairLock.forceUnlock();
     }
 
     /**

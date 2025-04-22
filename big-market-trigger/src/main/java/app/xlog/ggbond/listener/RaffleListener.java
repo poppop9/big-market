@@ -6,7 +6,6 @@ import app.xlog.ggbond.raffle.model.vo.DecrQueueVO;
 import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleDispatchRepo;
 import app.xlog.ggbond.raffle.service.IRaffleDispatch;
-import com.xxl.job.core.context.XxlJobHelper;
 import com.yomahub.liteflow.core.FlowExecutor;
 import com.yomahub.liteflow.flow.LiteflowResponse;
 import jakarta.annotation.Resource;

@@ -9,7 +9,6 @@ import com.yomahub.liteflow.flow.LiteflowResponse;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Slf4j
 @Service
-@DubboService
+// @DubboService
 public class RaffleDispatch implements IRaffleDispatch {
 
     @Resource
@@ -53,8 +52,6 @@ public class RaffleDispatch implements IRaffleDispatch {
             throw liteflowResponse.getCause();
         }
         context = liteflowResponse.getContextBean(RaffleFilterContext.class);
-        // todo 锁住当前用户，不让其进行下一次抽奖，然后在监听器端解锁
-
         raffleDispatchRepo.sendExecuteRaffleAfterFiltersMessage(context);
         return context;
     }

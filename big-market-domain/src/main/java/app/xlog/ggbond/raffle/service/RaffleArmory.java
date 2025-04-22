@@ -4,20 +4,12 @@ import app.xlog.ggbond.raffle.model.bo.AwardBO;
 import app.xlog.ggbond.raffle.model.bo.RafflePoolBO;
 import app.xlog.ggbond.raffle.model.bo.StrategyBO;
 import app.xlog.ggbond.raffle.model.bo.UserRaffleHistoryBO;
-import app.xlog.ggbond.raffle.model.vo.RaffleFilterContext;
 import app.xlog.ggbond.raffle.repository.IRaffleArmoryRepo;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
-import com.yomahub.liteflow.core.FlowExecutor;
-import com.yomahub.liteflow.flow.LiteflowResponse;
 import jakarta.annotation.Resource;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.redisson.api.RBitSet;
-import org.redisson.api.RFuture;
-import org.redisson.api.RMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +23,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-@DubboService
+// @DubboService
 public class RaffleArmory implements IRaffleArmory {
 
     @Resource

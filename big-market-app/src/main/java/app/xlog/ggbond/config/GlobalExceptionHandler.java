@@ -25,6 +25,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BigMarketException.class)
     public ResponseEntity<JsonNode> bigMarketExceptionHandler(BigMarketException e) {
+        log.error("业务异常", e);
         return ZakiResponse.error(
                 e.getRespCode(),
                 e.getMessage() != null ? e.getMessage() : e.getRespCode().getMessage()
@@ -36,6 +37,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(SaTokenException.class)
     public ResponseEntity<JsonNode> saTokenExceptionHandler(SaTokenException e) {
+        log.error("登录异常", e);
         return ZakiResponse.error(e.getMessage());
     }
 

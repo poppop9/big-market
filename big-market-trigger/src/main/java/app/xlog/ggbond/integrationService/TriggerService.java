@@ -18,10 +18,12 @@ import app.xlog.ggbond.security.model.UserBO;
 import app.xlog.ggbond.security.model.UserPurchaseHistoryBO;
 import app.xlog.ggbond.security.service.ISecurityService;
 import cn.dev33.satoken.context.SaHolder;
+import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
@@ -62,12 +64,10 @@ public class TriggerService implements Serializable {
     /**
      * 抽奖领域 - 根据活动id和当前用户，抽取一个奖品id
      */
-    public AwardBO raffle(Long activityId) {
-        // 1. 获取当前用户
-        UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
+    @Async("myScheduledThreadPool")
+    public CompletableFuture<AwardBO> raffle(SaSession saSession, UserBO user, Long activityId) {
         Long userId = user.getUserId();
-
-        // 3. 加锁
+        // 2. 加锁
         raffleDispatch.acquireRaffleLock(userId);
         RaffleFilterContext context = transactionTemplate.execute(status -> {
             try {
@@ -86,7 +86,7 @@ public class TriggerService implements Serializable {
                                 .userId(userId)
                                 .isBlacklistUser(securityService.isBlacklistUser(userId))
                                 .build())
-                        .saSession(StpUtil.getSession())
+                        .saSession(saSession)
                         .build()
                 );
                 log.atInfo().log("抽奖领域 - " + userId + " 抽到 {} 活动的 {} 奖品", activityId, contextTemp.getAwardId());
@@ -106,7 +106,6 @@ public class TriggerService implements Serializable {
                 .isIssued(false)
                 .build()
         );
-
         // 8. 发送发奖的mq消息
         rewardService.sendRewardToMQ(RewardTaskBO.builder()
                 .rewardId(rewardId)
@@ -114,13 +113,12 @@ public class TriggerService implements Serializable {
                 .userRaffleHistoryId(context.getUserRaffleHistoryId())
                 .build()
         );
-
         // 9. 查询奖品详情
-        return raffleArmory.findAwardByStrategyIdAndAwardId(context.getStrategyId(), context.getAwardId())
+        return CompletableFuture.completedFuture(raffleArmory.findAwardByStrategyIdAndAwardId(context.getStrategyId(), context.getAwardId())
                 .setAwardRate(null)
                 .setAwardCount(null)
                 .setAwardSort(null)
-                .setCurrentRaffleCount(context.getUserBO().getRaffleTime() + 1);
+                .setCurrentRaffleCount(context.getUserBO().getRaffleTime() + 1));
     }
 
     /**
