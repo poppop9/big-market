@@ -157,8 +157,9 @@ public class JpaTest {
         test_RafflePool();
         test_userRaffleConfig();
         // 安全领域
-        test_user();
-        test_userPurchaseHistory();
+        test_user_1();
+        test_user_2();
+        // test_userPurchaseHistory();
 
         // 清空 redis
         RKeys keys = redissonClient.getKeys();
@@ -316,7 +317,7 @@ public class JpaTest {
      * 初始化用户
      */
     @Test
-    void test_user() {
+    void test_user_1() {
         // 生成 userId 是从 1 到 1000 的用户
         List<User> userList = Stream.iterate(1L, i -> i <= 1000, i -> i + 1)
                 .map(item -> User.builder()
@@ -332,6 +333,23 @@ public class JpaTest {
                         item.setUserRole(User.UserRole.BLACKLIST);
                     }
                 })
+                .toList();
+        userJpa.saveAll(userList);
+    }
+
+    /**
+     * 初始化用户
+     */
+    @Test
+    void test_user_2() {
+        // 生成 userId 是从 1001 到 2000 的用户
+        List<User> userList = Stream.iterate(1001L, i -> i <= 2000, i -> i + 1)
+                .map(item -> User.builder()
+                        .userId(item)
+                        .userName("普通用户_" + item)
+                        .password("pzq")
+                        .userRole(User.UserRole.USER)
+                        .build())
                 .toList();
         userJpa.saveAll(userList);
     }

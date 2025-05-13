@@ -123,7 +123,7 @@ public class RaffleDispatchRepository implements IRaffleDispatchRepo {
     }
 
     /**
-     * 库存 - 将扣减信息写入kafka
+     * 库存 - 将扣减信息写入 kafka
      */
     @Override
     public void addDecrAwardCountToMQ(DecrQueueVO decrQueueVO) {

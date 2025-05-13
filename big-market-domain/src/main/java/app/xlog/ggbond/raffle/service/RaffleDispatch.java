@@ -52,7 +52,12 @@ public class RaffleDispatch implements IRaffleDispatch {
             throw liteflowResponse.getCause();
         }
         context = liteflowResponse.getContextBean(RaffleFilterContext.class);
-        raffleDispatchRepo.sendExecuteRaffleAfterFiltersMessage(context);
+        // raffleDispatchRepo.sendExecuteRaffleAfterFiltersMessage(context);
+
+        liteflowResponse = flowExecutor.execute2Resp("RAFFLE_AFTER_CHAIN", null, context);
+        context = liteflowResponse.getContextBean(RaffleFilterContext.class);
+        releaseRaffleLock(userId);
+
         return context;
     }
 

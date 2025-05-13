@@ -33,7 +33,9 @@ public class SecurityService implements ISecurityService {
      */
     @Override
     public Boolean doLogin(Long userId, String password) {
-        // 进行数据库验证
+        // StpUtil.login(userId);
+        // return true;
+
         if (securityRepo.doLogin(userId, password)) {
             StpUtil.login(userId);
             return true;

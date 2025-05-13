@@ -3,3 +3,6 @@ spring:
     name: big-market-app
   profiles:
     active: @spring.profiles.active@
+  threads:
+    virtual:
+      enabled: true # 启用虚拟线程

@@ -66,9 +66,15 @@ public class RaffleAfterFilters {
         // 调度扣减方法
         raffleDispatchRepo.decreaseAwardCount(context.getStrategyId(), context.getAwardId());
         // 将扣减信息写入队列
-        raffleDispatchRepo.addDecrAwardCountToMQ(DecrQueueVO.builder()
+/*        raffleDispatchRepo.addDecrAwardCountToMQ(DecrQueueVO.builder()
                 .strategyId(context.getStrategyId())
-                .awardId(context.getAwardId()).build());
+                .awardId(context.getAwardId()).build());*/
+        DecrQueueVO decrQueueVO = DecrQueueVO.builder()
+                .strategyId(context.getStrategyId())
+                .awardId(context.getAwardId())
+                .build();
+        raffleDispatchRepo.updateAwardCount(decrQueueVO);
+        log.info("抽奖领域 - 扣减数据库中 {} 策略 {} 奖品的库存成功", decrQueueVO.getStrategyId(), decrQueueVO.getAwardId());
         log.atInfo().log("抽奖领域 - " + userId + " 奖品库存过滤器 end");
     }
 

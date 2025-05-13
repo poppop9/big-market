@@ -132,7 +132,7 @@
                             <image>
                                 <name>big-market:1.2.0</name>
                                 <env>
-                                    <BP_JVM_VERSION>17</BP_JVM_VERSION>
+                                    <BP_JVM_VERSION>21</BP_JVM_VERSION>
                                     <TZ>Asia/Shanghai</TZ>
                                 </env>
                             </image>

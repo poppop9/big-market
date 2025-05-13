@@ -41,7 +41,11 @@ public class AOStateMachineConfig {
                 .on(ActivityOrderBO.ActivityOrderEvent.INITIAL_TO_PENDING_PAYMENT)
                 .when(context -> true)
                 .perform((S1, S2, E, C) -> {
-                    LiteflowResponse liteflowResponse = flowExecutor.execute2Resp("INITIAL_TO_PENDING_PAYMENT", null, C);
+                    LiteflowResponse liteflowResponse = flowExecutor.execute2Resp(
+                            "INITIAL_TO_PENDING_PAYMENT",
+                            null,
+                            C
+                    );
                     if (!liteflowResponse.isSuccess()) throw (RuntimeException) liteflowResponse.getCause();
                 });
 

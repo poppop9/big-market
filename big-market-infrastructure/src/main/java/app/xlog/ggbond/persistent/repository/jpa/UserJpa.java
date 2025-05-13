@@ -30,4 +30,6 @@ public interface UserJpa extends JpaRepository<User, Long> {
     @Query("update User u set u.password = ?1 where u.userId = ?2")
     void updatePasswordByUserId(String password, Long userId);
 
+    @Query("select (count(u) > 0) from User u where u.userId = ?1 and u.password = ?2")
+    boolean existsByUserIdAndPassword(Long userId, String password);
 }

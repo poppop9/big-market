@@ -4,7 +4,11 @@ import app.xlog.ggbond.TestService;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
 import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.persistent.po.security.User;
+import app.xlog.ggbond.persistent.po.security.UserPurchaseHistory;
 import app.xlog.ggbond.persistent.repository.jpa.ActivityOrderJpa;
+import app.xlog.ggbond.persistent.repository.jpa.UserJpa;
+import app.xlog.ggbond.persistent.repository.jpa.UserPurchaseHistoryJpa;
 import app.xlog.ggbond.recommend.AIRepo;
 import app.xlog.ggbond.recommend.RecommendService;
 import app.xlog.ggbond.resp.BigMarketRespCode;
@@ -16,6 +20,7 @@ import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +31,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * 测试接口
@@ -52,6 +58,10 @@ public class TestController {
     private RedissonClient redissonClient;
     @Resource
     private ActivityOrderJpa activityOrderJpa;
+    @Resource
+    private UserPurchaseHistoryJpa userPurchaseHistoryJpa;
+    @Autowired
+    private UserJpa userJpa;
     // @Resource
     // private ConfigService configService;
     // @Resource
@@ -244,6 +254,21 @@ public class TestController {
     public ResponseEntity<JsonNode> clearAllActivityOrder() {
         activityOrderJpa.deleteAll();
         return ZakiResponse.ok("清空成功");
+    }
+
+    /**
+     * 将1-1000的用户购买历史复制到1001-2000用户上
+     */
+    @GetMapping("/v1/copyUserPurchaseHistory")
+    public ResponseEntity<JsonNode> copyUserPurchaseHistory() {
+        List<UserPurchaseHistory> list = userPurchaseHistoryJpa.findAll().stream().peek(item -> {
+            item.setId(null);
+            item.setCreateTime(LocalDateTime.now());
+            item.setUpdateTime(LocalDateTime.now());
+            item.setUserId(item.getUserId() + 1000);
+        }).toList();
+        userPurchaseHistoryJpa.saveAll(list);
+        return ZakiResponse.ok("请求成功");
     }
 
 }

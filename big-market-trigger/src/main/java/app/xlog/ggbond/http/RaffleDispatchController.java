@@ -41,8 +41,8 @@ public class RaffleDispatchController implements IRaffleDispatchApiService {
     @GetMapping("/v2/raffle")
     public ResponseEntity<JsonNode> raffle(@RequestParam Long activityId) {
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
-        CompletableFuture<AwardBO> awardBO = triggerService.raffle(StpUtil.getSession(),user, activityId);
-        return ZakiResponse.ok("awardBO", awardBO.get());
+        AwardBO awardBO = triggerService.raffle(StpUtil.getSession(),user, activityId);
+        return ZakiResponse.ok("awardBO", awardBO);
     }
 
 }

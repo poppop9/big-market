@@ -64,8 +64,7 @@ public class TriggerService implements Serializable {
     /**
      * 抽奖领域 - 根据活动id和当前用户，抽取一个奖品id
      */
-    @Async("myScheduledThreadPool")
-    public CompletableFuture<AwardBO> raffle(SaSession saSession, UserBO user, Long activityId) {
+    public AwardBO raffle(SaSession saSession, UserBO user, Long activityId) {
         Long userId = user.getUserId();
         // 2. 加锁
         raffleDispatch.acquireRaffleLock(userId);
@@ -114,11 +113,11 @@ public class TriggerService implements Serializable {
                 .build()
         );
         // 9. 查询奖品详情
-        return CompletableFuture.completedFuture(raffleArmory.findAwardByStrategyIdAndAwardId(context.getStrategyId(), context.getAwardId())
+        return raffleArmory.findAwardByStrategyIdAndAwardId(context.getStrategyId(), context.getAwardId())
                 .setAwardRate(null)
                 .setAwardCount(null)
                 .setAwardSort(null)
-                .setCurrentRaffleCount(context.getUserBO().getRaffleTime() + 1));
+                .setCurrentRaffleCount(context.getUserBO().getRaffleTime() + 1);
     }
 
     /**
