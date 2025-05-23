@@ -7,6 +7,7 @@ import app.xlog.ggbond.persistent.po.reward.RewardAccount;
 import app.xlog.ggbond.persistent.repository.jpa.PointsLogJpa;
 import app.xlog.ggbond.persistent.repository.jpa.RewardAccountJpa;
 import app.xlog.ggbond.reward.model.PointsLogBO;
+import app.xlog.ggbond.reward.model.RewardAccountBO;
 import app.xlog.ggbond.reward.model.RewardTaskBO;
 import app.xlog.ggbond.reward.repository.IRewardRepo;
 import app.xlog.ggbond.mq.MQEventCenter;
@@ -30,9 +31,9 @@ public class RewardRepository implements IRewardRepo {
     private MQEventCenter mqEventCenter;
     @Resource
     private RewardTaskJpa rewardTaskJpa;
-    @Autowired
+    @Resource
     private PointsLogJpa pointsLogJpa;
-    @Autowired
+    @Resource
     private RewardAccountJpa rewardAccountJpa;
 
     /**
@@ -131,6 +132,15 @@ public class RewardRepository implements IRewardRepo {
                     .userId(userId)
                     .build());
         }
+    }
+
+    /**
+     * 查询返利账户
+     */
+    @Override
+    public RewardAccountBO findRewardAccountByUserIdAndActivityId(Long userId, Long activityId) {
+        RewardAccount rewardAccount = rewardAccountJpa.findByUserIdAndActivityId(userId, activityId);
+        return BeanUtil.copyProperties(rewardAccount, RewardAccountBO.class);
     }
 
 }

@@ -58,4 +58,8 @@ public interface ISecurityService {
 
     // 读取excel，写入用户购买历史
     void writePurchaseHistoryFromExcel(MultipartFile file);
+
+    // 查询用户的购买历史记录
+    List<UserPurchaseHistoryBO> findUserPurchaseHistory();
+
 }

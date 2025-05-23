@@ -30,7 +30,6 @@ public class RewardListener {
         RewardTaskBO data = record.value().getData();
 
         // 1. 发奖 todo
-
         // 2. 更新task表
         rewardService.updateRewardTaskStatus(data.getRewardId(), true);
     }

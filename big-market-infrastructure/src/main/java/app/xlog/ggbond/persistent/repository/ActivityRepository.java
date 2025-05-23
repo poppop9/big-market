@@ -172,7 +172,7 @@ public class ActivityRepository implements IActivityRepo {
      */
     @Override
     public boolean existRedeemCode(Long activityId, String redeemCode) {
-        return activityRedeemCodeJpa.existsByActivityIdAndIsUsedAndRedeemCode(
+        return activityRedeemCodeJpa.existsAllByActivityIdAndIsUsedAndRedeemCode(
                 activityId, false, redeemCode
         );
     }
@@ -237,10 +237,7 @@ public class ActivityRepository implements IActivityRepo {
                 activityId, userId, ActivityOrder.ActivityOrderStatus.EFFECTIVE
         );
         activityOrderList.stream()
-                .filter(item -> item
-                        .getActivityOrderExpireTime()
-                        .isBefore(LocalDateTime.now())
-                )
+                .filter(item -> item.getActivityOrderExpireTime().isBefore(LocalDateTime.now()))
                 .forEach(item -> aoEventCenter.publishEffectiveToExpiredEvent(item.getActivityOrderId()));
     }
 

@@ -4,9 +4,11 @@ import app.xlog.ggbond.TestService;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
 import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.persistent.po.activity.ActivityRedeemCode;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.po.security.UserPurchaseHistory;
 import app.xlog.ggbond.persistent.repository.jpa.ActivityOrderJpa;
+import app.xlog.ggbond.persistent.repository.jpa.ActivityRedeemCodeJpa;
 import app.xlog.ggbond.persistent.repository.jpa.UserJpa;
 import app.xlog.ggbond.persistent.repository.jpa.UserPurchaseHistoryJpa;
 import app.xlog.ggbond.recommend.AIRepo;
@@ -15,6 +17,7 @@ import app.xlog.ggbond.resp.BigMarketRespCode;
 import app.xlog.ggbond.resp.ZakiResponse;
 import app.xlog.ggbond.security.service.ISecurityService;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.IdUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
@@ -60,7 +63,9 @@ public class TestController {
     private ActivityOrderJpa activityOrderJpa;
     @Resource
     private UserPurchaseHistoryJpa userPurchaseHistoryJpa;
-    @Autowired
+    @Resource
+    private ActivityRedeemCodeJpa activityRedeemCodeJpa;
+    @Resource
     private UserJpa userJpa;
     // @Resource
     // private ConfigService configService;
@@ -234,7 +239,12 @@ public class TestController {
      */
     @GetMapping("/v1/testTransaction")
     public void testTransaction() {
-        testService.testTransaction();
+        // testService.testTransaction();
+        activityRedeemCodeJpa.save(ActivityRedeemCode.builder()
+                .activityId(10001L)
+                .redeemCode(IdUtil.randomUUID())
+                .raffleCount(10L)
+                .build());
     }
 
     /**

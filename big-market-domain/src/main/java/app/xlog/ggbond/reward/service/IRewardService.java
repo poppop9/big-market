@@ -35,4 +35,8 @@ public interface IRewardService {
 
     // 初始化返利账户
     void initRewardAccount(Long userId, long activityId);
+
+    // 查询用户积分
+    Long findUserRewardAccountPoints(Long userId, Long activityId);
+
 }

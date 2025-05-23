@@ -18,4 +18,7 @@ public interface ISecurityApiService {
     // 通过 token 退出登录
     ResponseEntity<JsonNode> logoutByToken(String token);
 
+    // 查询用户的购买历史记录
+    ResponseEntity<JsonNode> findUserPurchaseHistory();
+
 }

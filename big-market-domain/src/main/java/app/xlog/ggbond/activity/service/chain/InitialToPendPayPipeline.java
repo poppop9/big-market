@@ -47,7 +47,7 @@ public class InitialToPendPayPipeline {
 
         CompletableFuture<Boolean> doLoginCompletableFuture = (CompletableFuture<Boolean>) saSession.get("doLoginCompletableFuture");
         if (doLoginCompletableFuture == null || doLoginCompletableFuture.get()) {
-            log.atDebug().log("抽奖领域 - " + context.getUserId() + " 抽奖资格验证过滤器放行");
+            log.atDebug().log("活动领域 - " + context.getUserId() + " 充值资格验证过滤器放行");
         } else {
             throw new BigMarketException(BigMarketRespCode.ACTIVITY_CONFIG_ARMORY_ERROR);
         }

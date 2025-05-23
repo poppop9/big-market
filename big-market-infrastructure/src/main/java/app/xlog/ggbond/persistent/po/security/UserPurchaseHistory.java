@@ -81,5 +81,4 @@ public class UserPurchaseHistory extends ShardingTable {
             return null;
         }
     }
-
 }

@@ -2,6 +2,7 @@ package app.xlog.ggbond.reward.service;
 
 import app.xlog.ggbond.MQMessage;
 import app.xlog.ggbond.reward.model.PointsLogBO;
+import app.xlog.ggbond.reward.model.RewardAccountBO;
 import app.xlog.ggbond.reward.model.RewardTaskBO;
 import app.xlog.ggbond.reward.repository.IRewardRepo;
 import jakarta.annotation.Resource;
@@ -100,6 +101,15 @@ public class RewardService implements IRewardService {
     @Override
     public void initRewardAccount(Long userId, long activityId) {
         rewardRepo.initRewardAccount(userId, activityId);
+    }
+
+    /**
+     * 查询用户积分
+     */
+    @Override
+    public Long findUserRewardAccountPoints(Long userId, Long activityId) {
+        RewardAccountBO rewardAccountBO = rewardRepo.findRewardAccountByUserIdAndActivityId(userId, activityId);
+        return rewardAccountBO.getPoints();
     }
 
 }

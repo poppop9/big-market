@@ -13,7 +13,9 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,11 +56,11 @@ public class AppTest {
     @Test
     public void testRedisson() {
         RKeys keys = redissonClient.getKeys();
-        //获取所有key值
+        // 获取所有key值
         keys.getKeys().forEach(System.out::println);
         System.out.println("====================================");
 
-        //模糊获取key值
+        // 模糊获取key值
         keys.getKeysByPattern("*sys*").forEach(System.out::println);
 
         // 删除key
@@ -121,5 +123,31 @@ public class AppTest {
         System.out.println("B:" + numB);
         System.out.println("C:" + numC);
         System.out.println("D:" + numD);
+    }
+
+    @Test
+    void name() {
+        Scanner in1 = new Scanner(System.in);
+
+        int count = in1.nextInt();
+        List<Long> list = new ArrayList<>();
+        while (in1.hasNextLong()) {
+            list.add(in1.nextLong());
+        }
+
+        long all = list.get(0);
+        for (int i = 1; i < count; i++) {
+            Long i1 = list.get(i);
+            all = all * i1;
+            if (all >= 1000000000L) {
+                System.out.println("TLE");
+                return;
+            }
+        }
+        if (all >= 1000000000L) {
+            System.out.println("TLE");
+        } else {
+            System.out.println(all);
+        }
     }
 }

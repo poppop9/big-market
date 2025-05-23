@@ -2,6 +2,7 @@ package app.xlog.ggbond.reward.repository;
 
 import app.xlog.ggbond.MQMessage;
 import app.xlog.ggbond.reward.model.PointsLogBO;
+import app.xlog.ggbond.reward.model.RewardAccountBO;
 import app.xlog.ggbond.reward.model.RewardTaskBO;
 
 import java.time.LocalDateTime;
@@ -38,4 +39,7 @@ public interface IRewardRepo {
 
     // 初始化返利账户
     void initRewardAccount(Long userId, long activityId);
+
+    // 查询返利账户
+    RewardAccountBO findRewardAccountByUserIdAndActivityId(Long userId, Long activityId);
 }

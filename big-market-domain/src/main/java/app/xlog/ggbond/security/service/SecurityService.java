@@ -190,4 +190,13 @@ public class SecurityService implements ISecurityService {
         }).sheet().doRead();
     }
 
+    /**
+     * 查询用户的购买历史记录
+     */
+    @Override
+    public List<UserPurchaseHistoryBO> findUserPurchaseHistory() {
+        UserBO userBO = securityRepo.findLoginUserInfo();
+        return securityRepo.findUserPurchaseHistory(userBO.getUserId());
+    }
+
 }

@@ -69,4 +69,13 @@ public class SecurityController implements ISecurityApiService {
         return ZakiResponse.ok("");
     }
 
+    /**
+     * 查询用户的购买历史记录
+     */
+    @Override
+    @GetMapping("/v1/findUserPurchaseHistory")
+    public ResponseEntity<JsonNode> findUserPurchaseHistory() {
+        return ZakiResponse.ok("userPurchaseHistoryList", securityService.findUserPurchaseHistory());
+    }
+
 }

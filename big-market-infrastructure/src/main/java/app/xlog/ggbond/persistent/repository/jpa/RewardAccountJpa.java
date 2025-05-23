@@ -22,4 +22,7 @@ public interface RewardAccountJpa extends JpaRepository<RewardAccount, Long> {
 
     @Query("select (count(r) > 0) from RewardAccount r where r.activityId = ?1 and r.userId = ?2")
     boolean existsByActivityIdAndUserId(Long activityId, Long userId);
+
+    @Query("select r from RewardAccount r where r.userId = ?1 and r.activityId = ?2")
+    RewardAccount findByUserIdAndActivityId(Long userId, Long activityId);
 }
