@@ -11,7 +11,7 @@
 
     <groupId>app.xlog.ggbond</groupId>
     <artifactId>big-market</artifactId>
-    <version>1.0</version>
+    <version>1.3</version>
     <packaging>pom</packaging>
 
     <name>big-market</name>

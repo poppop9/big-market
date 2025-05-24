@@ -1,5 +1,6 @@
 package app.xlog.ggbond.activity.service;
 
+import app.xlog.ggbond.activity.model.bo.ActivityAccountBO;
 import app.xlog.ggbond.activity.model.bo.ActivityBO;
 import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.bo.ActivityOrderRewardTaskBO;
@@ -83,6 +84,15 @@ public class ActivityService implements IActivityService {
     @Override
     public ActivityBO findActivityByActivityId(Long activityId) {
         return activityRepo.findActivityByActivityId(activityId);
+    }
+
+    /**
+     * 查询 - 查询用户的可用抽奖次数
+     */
+    @Override
+    public Long findAvailableRaffleCount(Long userId, Long activityId) {
+        ActivityAccountBO activityAccount = activityRepo.findActivityAccountByUserIdAndActivityId(userId, activityId);
+        return activityAccount.getAvailableRaffleCount();
     }
 
 }

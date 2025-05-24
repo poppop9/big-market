@@ -95,8 +95,7 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
     public ResponseEntity<JsonNode> findRaffleCount(Long activityId) {
         // 查询出当前用户，再去查询这个用户的抽奖次数
         Long userId = securityService.getLoginIdDefaultNull();
-        Long raffleCount = raffleArmory.findRaffleCount(activityId, userId);
-        return ZakiResponse.ok("raffleCount", raffleCount);
+        return ZakiResponse.ok("raffleCount", raffleArmory.findRaffleCount(activityId, userId));
     }
 
 }

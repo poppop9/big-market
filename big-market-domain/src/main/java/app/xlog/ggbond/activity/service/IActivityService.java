@@ -27,4 +27,7 @@ public interface IActivityService {
 
     // 查询 - 查询活动
     ActivityBO findActivityByActivityId(Long activityId);
+
+    // 查询用户的可用抽奖次数
+    Long findAvailableRaffleCount(Long userId,Long activityId);
 }

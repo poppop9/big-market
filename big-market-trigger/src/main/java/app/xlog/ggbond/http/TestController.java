@@ -240,11 +240,14 @@ public class TestController {
     @GetMapping("/v1/testTransaction")
     public void testTransaction() {
         // testService.testTransaction();
-        activityRedeemCodeJpa.save(ActivityRedeemCode.builder()
+
+/*        activityRedeemCodeJpa.save(ActivityRedeemCode.builder()
                 .activityId(10001L)
                 .redeemCode(IdUtil.randomUUID())
                 .raffleCount(10L)
-                .build());
+                .build());*/
+
+
     }
 
     /**

@@ -148,9 +148,7 @@ public class ActivityRepository implements IActivityRepo {
 
         RQueue<QueueItemVO> rQueue = redissonClient.getQueue(GlobalConstant.RedisKey.CHECK_EXPIRE_PENDING_PAYMENT_AO_QUEUE);
         RDelayedQueue<QueueItemVO> rDelayedQueue = redissonClient.getDelayedQueue(rQueue);
-        rDelayedQueue.offer(
-                queueItemVO, delayed, TimeUnit.SECONDS
-        );
+        rDelayedQueue.offer(queueItemVO, delayed, TimeUnit.SECONDS);
     }
 
     /**

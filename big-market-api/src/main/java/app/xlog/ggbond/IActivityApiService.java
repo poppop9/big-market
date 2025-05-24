@@ -21,4 +21,7 @@ public interface IActivityApiService {
     // 用户取消活动单
     ResponseEntity<JsonNode> cancelAO(Long activityOrderId);
 
+    // 查询用户的可用抽奖次数
+    ResponseEntity<JsonNode> findAvailableRaffleCount(Long activityId);
+
 }

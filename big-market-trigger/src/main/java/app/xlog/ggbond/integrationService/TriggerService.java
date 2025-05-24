@@ -71,12 +71,12 @@ public class TriggerService implements Serializable {
         RaffleFilterContext context = transactionTemplate.execute(status -> {
             try {
                 // 4. 发布事件，消费活动单
-                // todo 临时注释
-                    /*aoEventCenter.publishEffectiveToUsedEvent(AOContext.builder()
-                            .activityId(activityId)
-                            .userId(userId)
-                            .build()
-                    );*/
+                // todo 临时注销
+                aoEventCenter.publishEffectiveToUsedEvent(AOContext.builder()
+                        .activityId(activityId)
+                        .userId(userId)
+                        .build()
+                );
 
                 // 5. 抽奖
                 RaffleFilterContext contextTemp = raffleDispatch.raffle(RaffleFilterContext.builder()
