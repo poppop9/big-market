@@ -18,6 +18,7 @@ public class ActivityOrderBO {
     private Long userId;  // 用户id
     private Long activityId;  // 活动id
     private @Builder.Default Long activityOrderId = IdUtil.getSnowflakeNextId();  // 活动单id
+    private String activityOrderIdStr;  // 活动单id
     private Long activityOrderTypeId;  // 活动单类型id
     private ActivityOrderTypeBO.ActivityOrderTypeName activityOrderTypeName;  // 活动单类型名称
     private @Builder.Default Long usedRaffleCount = 0L; // 该活动单已使用的抽奖次数

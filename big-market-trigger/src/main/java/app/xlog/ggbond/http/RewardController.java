@@ -38,4 +38,16 @@ public class RewardController implements IRewardApiService {
         );
     }
 
+    /**
+     * 查询兑换奖品
+     */
+    @Override
+    @GetMapping("/v1/findExchangePrizes")
+    public ResponseEntity<JsonNode> findExchangePrizes(Long activityId) {
+        return ZakiResponse.ok(
+                "exchangePrizes",
+                rewardService.findExchangePrizes(activityId)
+        );
+    }
+
 }

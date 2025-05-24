@@ -34,7 +34,9 @@ public class ActivityService implements IActivityService {
      */
     @Override
     public List<ActivityOrderBO> findAllPendingPaymentAO(Long activityId, Long userId) {
-        return activityRepo.findAllPendingPaymentAO(activityId, userId);
+        return activityRepo.findAllPendingPaymentAO(activityId, userId).stream()
+                .peek(item -> item.setActivityOrderIdStr(item.getActivityOrderId().toString()))
+                .toList();
     }
 
     /**

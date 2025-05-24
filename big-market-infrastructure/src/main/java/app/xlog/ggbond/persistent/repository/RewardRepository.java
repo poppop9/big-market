@@ -2,10 +2,13 @@ package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.MQMessage;
+import app.xlog.ggbond.persistent.po.reward.ExchangePrizes;
 import app.xlog.ggbond.persistent.po.reward.PointsLog;
 import app.xlog.ggbond.persistent.po.reward.RewardAccount;
+import app.xlog.ggbond.persistent.repository.jpa.ExchangePrizesJpa;
 import app.xlog.ggbond.persistent.repository.jpa.PointsLogJpa;
 import app.xlog.ggbond.persistent.repository.jpa.RewardAccountJpa;
+import app.xlog.ggbond.reward.model.ExchangePrizesBO;
 import app.xlog.ggbond.reward.model.PointsLogBO;
 import app.xlog.ggbond.reward.model.RewardAccountBO;
 import app.xlog.ggbond.reward.model.RewardTaskBO;
@@ -35,6 +38,8 @@ public class RewardRepository implements IRewardRepo {
     private PointsLogJpa pointsLogJpa;
     @Resource
     private RewardAccountJpa rewardAccountJpa;
+    @Autowired
+    private ExchangePrizesJpa exchangePrizesJpa;
 
     /**
      * 写入task记录
@@ -141,6 +146,15 @@ public class RewardRepository implements IRewardRepo {
     public RewardAccountBO findRewardAccountByUserIdAndActivityId(Long userId, Long activityId) {
         RewardAccount rewardAccount = rewardAccountJpa.findByUserIdAndActivityId(userId, activityId);
         return BeanUtil.copyProperties(rewardAccount, RewardAccountBO.class);
+    }
+
+    /**
+     * 查询兑换奖品
+     */
+    @Override
+    public List<ExchangePrizesBO> findExchangePrizes(Long activityId) {
+        List<ExchangePrizes> byActivityId = exchangePrizesJpa.findByActivityId(activityId);
+        return BeanUtil.copyToList(byActivityId, ExchangePrizesBO.class);
     }
 
 }

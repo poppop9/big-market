@@ -68,10 +68,10 @@ public class ActivityController implements IActivityApiService {
      */
     @Override
     @PatchMapping("/v1/cancelAO")
-    public ResponseEntity<JsonNode> cancelAO(@RequestParam Long activityOrderId) {
+    public ResponseEntity<JsonNode> cancelAO(@RequestParam String activityOrderId) {
         aoEventCenter.publishPendingPaymentToClosedEvent(AOContext.builder()
                 .activityOrderBO(ActivityOrderBO.builder()
-                        .activityOrderId(activityOrderId)
+                        .activityOrderId(Long.valueOf(activityOrderId))
                         .build())
                 .build());
         return ZakiResponse.ok("取消活动单成功");

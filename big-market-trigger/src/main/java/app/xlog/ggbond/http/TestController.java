@@ -5,12 +5,10 @@ import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
 import app.xlog.ggbond.exception.BigMarketException;
 import app.xlog.ggbond.persistent.po.activity.ActivityRedeemCode;
+import app.xlog.ggbond.persistent.po.reward.ExchangePrizes;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.po.security.UserPurchaseHistory;
-import app.xlog.ggbond.persistent.repository.jpa.ActivityOrderJpa;
-import app.xlog.ggbond.persistent.repository.jpa.ActivityRedeemCodeJpa;
-import app.xlog.ggbond.persistent.repository.jpa.UserJpa;
-import app.xlog.ggbond.persistent.repository.jpa.UserPurchaseHistoryJpa;
+import app.xlog.ggbond.persistent.repository.jpa.*;
 import app.xlog.ggbond.recommend.AIRepo;
 import app.xlog.ggbond.recommend.RecommendService;
 import app.xlog.ggbond.resp.BigMarketRespCode;
@@ -65,6 +63,8 @@ public class TestController {
     private UserPurchaseHistoryJpa userPurchaseHistoryJpa;
     @Resource
     private ActivityRedeemCodeJpa activityRedeemCodeJpa;
+    @Resource
+    private ExchangePrizesJpa exchangePrizesJpa;
     @Resource
     private UserJpa userJpa;
     // @Resource
@@ -246,8 +246,27 @@ public class TestController {
                 .redeemCode(IdUtil.randomUUID())
                 .raffleCount(10L)
                 .build());*/
-
-
+        exchangePrizesJpa.save(ExchangePrizes.builder()
+                .activityId(10001L)
+                .exchangePrizesId(IdUtil.getSnowflakeNextId())
+                .exchangePrizesName("10 元无门槛优惠券")
+                .points(50L)
+                .build()
+        );
+        exchangePrizesJpa.save(ExchangePrizes.builder()
+                .activityId(10001L)
+                .exchangePrizesId(IdUtil.getSnowflakeNextId())
+                .exchangePrizesName("满 100 - 30 优惠券")
+                .points(200L)
+                .build()
+        );
+        exchangePrizesJpa.save(ExchangePrizes.builder()
+                .activityId(10001L)
+                .exchangePrizesId(IdUtil.getSnowflakeNextId())
+                .exchangePrizesName("50 元无门槛优惠券")
+                .points(500L)
+                .build()
+        );
     }
 
     /**

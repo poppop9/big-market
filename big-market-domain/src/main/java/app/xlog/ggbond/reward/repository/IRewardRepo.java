@@ -1,6 +1,7 @@
 package app.xlog.ggbond.reward.repository;
 
 import app.xlog.ggbond.MQMessage;
+import app.xlog.ggbond.reward.model.ExchangePrizesBO;
 import app.xlog.ggbond.reward.model.PointsLogBO;
 import app.xlog.ggbond.reward.model.RewardAccountBO;
 import app.xlog.ggbond.reward.model.RewardTaskBO;
@@ -42,4 +43,7 @@ public interface IRewardRepo {
 
     // 查询返利账户
     RewardAccountBO findRewardAccountByUserIdAndActivityId(Long userId, Long activityId);
+
+    // 查询兑换奖品
+    List<ExchangePrizesBO> findExchangePrizes(Long activityId);
 }

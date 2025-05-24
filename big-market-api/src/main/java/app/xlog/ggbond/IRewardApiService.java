@@ -11,4 +11,7 @@ public interface IRewardApiService {
     // 查询用户积分
     ResponseEntity<JsonNode> findUserRewardAccountPoints(Long activityId);
 
+    // 查询兑换奖品
+    ResponseEntity<JsonNode> findExchangePrizes(Long activityId);
+
 }
