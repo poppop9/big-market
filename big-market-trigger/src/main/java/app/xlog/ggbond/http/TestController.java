@@ -4,6 +4,7 @@ import app.xlog.ggbond.TestService;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
 import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.persistent.po.activity.ActivityOrderType;
 import app.xlog.ggbond.persistent.po.activity.ActivityRedeemCode;
 import app.xlog.ggbond.persistent.po.reward.ExchangePrizes;
 import app.xlog.ggbond.persistent.po.reward.RewardAccount;
@@ -276,12 +277,10 @@ public class TestController {
                 .build()
         );*/
 
-        List<RewardAccount> all = rewardAccountJpa.findAll();
-        Set<Long> seenIds = new HashSet<>();
-        List<RewardAccount> distinctList = all.stream()
-                .filter(r -> seenIds.add(r.getId()))
-                .toList();
-        rewardAccountJpa.saveAll(distinctList);
+        activityOrderJpa.updateActivityOrderProductIdByActivityOrderTypeName(
+                1910937768625401856L,
+                ActivityOrderType.ActivityOrderTypeName.PAID_PURCHASE
+        );
     }
 
     /**

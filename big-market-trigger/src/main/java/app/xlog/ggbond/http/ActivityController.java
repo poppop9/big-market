@@ -58,9 +58,10 @@ public class ActivityController implements IActivityApiService {
      * 支付待支付的活动单
      */
     @PatchMapping("/v1/payPendingPaymentAO")
-    public ResponseEntity<JsonNode> payPendingPaymentAO(@RequestBody AOContext aoContext) {
-        aoContext = aoEventCenter.publishPendingPaymentToEffectiveEvent(aoContext);
-        return ZakiResponse.ok("activityOrderBO", aoContext.getActivityOrderBO());
+    public ResponseEntity<JsonNode> payPendingPaymentAO(Long activityId, Long activityOrderId) {
+        /*aoContext = aoEventCenter.publishPendingPaymentToEffectiveEvent(aoContext);
+        return ZakiResponse.ok("activityOrderBO", aoContext.getActivityOrderBO());*/
+        return null;
     }
 
     /**

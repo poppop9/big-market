@@ -31,6 +31,7 @@ public class ActivityOrder extends ShardingTable {
     private @Comment("活动单类型ID") Long activityOrderTypeId;
     @Enumerated(EnumType.STRING)
     private @Comment("活动单类型名称") ActivityOrderType.ActivityOrderTypeName activityOrderTypeName;
+    private @Comment("活动单商品ID(如果不是付费购买的，则为空)") Long activityOrderProductId;
     @Builder.Default
     private @Comment("该活动单已使用的抽奖次数") Long usedRaffleCount = 0L;
     private @Comment("该活动单购买拥有的总抽奖次数") Long totalRaffleCount;

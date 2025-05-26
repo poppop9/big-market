@@ -93,9 +93,12 @@ public class RecommendService {
         List<AwardBO> awardBOList = Arrays.stream(answer.split("\n"))
                 .flatMap(item -> {
                     String[] split = item.split(":");
-                    if (split.length != 2) throw new BigMarketException(BigMarketRespCode.AI_RESPONSE_ERROR);
+                    if (split.length != 2)
+                        throw new BigMarketException(BigMarketRespCode.AI_RESPONSE_ERROR);
 
-                    GlobalConstant.AwardLevel awardLevel = GlobalConstant.AwardLevel.getNameByPriceRange(split[0].trim());
+                    GlobalConstant.AwardLevel awardLevel = GlobalConstant
+                            .AwardLevel
+                            .getNameByPriceRange(split[0].trim());
                     if (awardLevel == null) throw new BigMarketException(BigMarketRespCode.AI_RESPONSE_ERROR);
 
                     AtomicInteger initAwardSort = new AtomicInteger(awardLevel.getInitAwardSort());

@@ -16,7 +16,7 @@ public interface IActivityApiService {
     ResponseEntity<JsonNode> findAllPendingPaymentAO(Long activityId);
 
     // 支付待支付的活动单
-    ResponseEntity<JsonNode> payPendingPaymentAO(AOContext aoContext);
+    ResponseEntity<JsonNode> payPendingPaymentAO(Long activityId, Long activityOrderId);
 
     // 用户取消活动单
     ResponseEntity<JsonNode> cancelAO(String activityOrderId);

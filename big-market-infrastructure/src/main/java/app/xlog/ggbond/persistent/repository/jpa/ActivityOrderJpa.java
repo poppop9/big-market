@@ -67,4 +67,9 @@ public interface ActivityOrderJpa extends JpaRepository<ActivityOrder, Long> {
     @Modifying
     @Query("update ActivityOrder a set a.activityOrderExpireTime = ?1 where a.activityOrderId = ?2")
     int updateActivityOrderExpireTimeByActivityOrderId(LocalDateTime activityOrderExpireTime, Long activityOrderId);
+
+    @Transactional
+    @Modifying
+    @Query("update ActivityOrder a set a.activityOrderProductId = ?1 where a.activityOrderTypeName = ?2")
+    int updateActivityOrderProductIdByActivityOrderTypeName(Long activityOrderProductId, ActivityOrderType.ActivityOrderTypeName activityOrderTypeName);
 }
