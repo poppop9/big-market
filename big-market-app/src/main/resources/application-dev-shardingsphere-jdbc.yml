@@ -75,6 +75,9 @@ rules:
       RewardAccount: # 返利账户
         actualDataSources: ds_${0..1}
         shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
+      ExchangePrizesLog:
+        actualDataSources: ds_${0..1}
+        shardingStrategy: { standard: { shardingColumn: userId, shardingAlgorithmName: HASH_MOD_4 } }
     # 定义分片算法策略
     shardingAlgorithms:
       HASH_MOD_2:

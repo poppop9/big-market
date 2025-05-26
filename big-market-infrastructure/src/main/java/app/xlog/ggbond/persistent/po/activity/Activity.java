@@ -24,10 +24,7 @@ import org.hibernate.annotations.Comments;
 })
 @Comment("活动")
 public class Activity extends SingleTable {
-    @Comment("活动id")
-    private Long activityId;
-    @Comment("活动名称")
-    private String activityName;
-    @Comment("积分范围（格式：\"1-10\"），随机积分奖品就可能是1-10之间的随机数")
-    private String rangeOfPoints;
+    private @Comment("活动id") Long activityId;
+    private @Comment("活动名称") String activityName;
+    private @Comment("积分范围（格式：\"1-10\"），随机积分奖品就可能是1-10之间的随机数") String rangeOfPoints;
 }

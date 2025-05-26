@@ -5,17 +5,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
- * 返利账户
+ * 兑换奖品流水
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RewardAccountBO {
-    private Long id;
-    private Long rewardAccountId;  // 返利账户id
+public class ExchangePrizesLogBO {
     private Long activityId;  // 活动id
     private Long userId;  // 用户id
-    private Long points;  // 积分
+    private Long exchangePrizesId;  // 兑换奖品id
+    private String exchangePrizesName;
+    private LocalDateTime createTime;
 }

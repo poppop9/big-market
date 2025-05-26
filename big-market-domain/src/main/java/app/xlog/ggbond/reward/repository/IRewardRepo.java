@@ -1,10 +1,7 @@
 package app.xlog.ggbond.reward.repository;
 
 import app.xlog.ggbond.MQMessage;
-import app.xlog.ggbond.reward.model.ExchangePrizesBO;
-import app.xlog.ggbond.reward.model.PointsLogBO;
-import app.xlog.ggbond.reward.model.RewardAccountBO;
-import app.xlog.ggbond.reward.model.RewardTaskBO;
+import app.xlog.ggbond.reward.model.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,4 +43,13 @@ public interface IRewardRepo {
 
     // 查询兑换奖品
     List<ExchangePrizesBO> findExchangePrizes(Long activityId);
+
+    // 更新返利账户
+    void updateRewardAccount(RewardAccountBO rewardAccountBO);
+
+    // 写入流水表
+    void saveExchangePrizesLog(ExchangePrizesLogBO build);
+
+    // 查询兑换奖品历史
+    List<ExchangePrizesLogBO> findExchangePrizesLogList(Long activityId, Long userId);
 }

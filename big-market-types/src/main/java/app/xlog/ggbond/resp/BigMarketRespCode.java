@@ -32,6 +32,8 @@ public enum BigMarketRespCode {
     FREQUENT_LOGIN(701, "登录频繁"),
     // 推荐领域
     AI_RESPONSE_ERROR(800, "AI 的回答格式错误"),
+    // 返利领域bai
+    INSUFFICIENT_POINTS(901, "积分不足")
     ;
 
     private final int code;

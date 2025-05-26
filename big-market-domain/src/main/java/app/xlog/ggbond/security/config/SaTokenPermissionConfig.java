@@ -15,14 +15,12 @@ public class SaTokenPermissionConfig implements StpInterface {
 
     /**
      * 返回一个账号所拥有的角色集合
-     *
      * @param loginId   用户id
      * @param loginType 账号体系标识
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        return List.of(StpUtil
-                .getSession()
+        return List.of(StpUtil.getSession()
                 .get("role")
                 .toString());
     }

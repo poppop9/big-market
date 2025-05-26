@@ -14,9 +14,9 @@ public interface IRaffleAssembleApiService {
     ResponseEntity<JsonNode> queryAwardList(Long strategyId);
 
     // 实时获取中奖奖品信息
-    SseEmitter getWinningAwardsInfo(@RequestParam Long activityId);
+    SseEmitter getWinningAwardsInfoRealTime(Long activityId);
 
     // 查询当前的抽奖次数
-    ResponseEntity<JsonNode> findRaffleCount(@RequestParam Long activityId);
+    ResponseEntity<JsonNode> findRaffleCount(Long activityId);
 
 }

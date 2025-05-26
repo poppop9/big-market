@@ -6,6 +6,7 @@ import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
 import app.xlog.ggbond.exception.BigMarketException;
 import app.xlog.ggbond.persistent.po.activity.ActivityRedeemCode;
 import app.xlog.ggbond.persistent.po.reward.ExchangePrizes;
+import app.xlog.ggbond.persistent.po.reward.RewardAccount;
 import app.xlog.ggbond.persistent.po.security.User;
 import app.xlog.ggbond.persistent.po.security.UserPurchaseHistory;
 import app.xlog.ggbond.persistent.repository.jpa.*;
@@ -31,7 +32,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -67,6 +72,8 @@ public class TestController {
     private ExchangePrizesJpa exchangePrizesJpa;
     @Resource
     private UserJpa userJpa;
+    @Autowired
+    private RewardAccountJpa rewardAccountJpa;
     // @Resource
     // private ConfigService configService;
     // @Resource
@@ -246,7 +253,8 @@ public class TestController {
                 .redeemCode(IdUtil.randomUUID())
                 .raffleCount(10L)
                 .build());*/
-        exchangePrizesJpa.save(ExchangePrizes.builder()
+
+        /*exchangePrizesJpa.save(ExchangePrizes.builder()
                 .activityId(10001L)
                 .exchangePrizesId(IdUtil.getSnowflakeNextId())
                 .exchangePrizesName("10 元无门槛优惠券")
@@ -266,7 +274,14 @@ public class TestController {
                 .exchangePrizesName("50 元无门槛优惠券")
                 .points(500L)
                 .build()
-        );
+        );*/
+
+        List<RewardAccount> all = rewardAccountJpa.findAll();
+        Set<Long> seenIds = new HashSet<>();
+        List<RewardAccount> distinctList = all.stream()
+                .filter(r -> seenIds.add(r.getId()))
+                .toList();
+        rewardAccountJpa.saveAll(distinctList);
     }
 
     /**

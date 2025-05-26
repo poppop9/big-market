@@ -2,6 +2,7 @@ package app.xlog.ggbond.reward.service;
 
 import app.xlog.ggbond.MQMessage;
 import app.xlog.ggbond.reward.model.ExchangePrizesBO;
+import app.xlog.ggbond.reward.model.ExchangePrizesLogBO;
 import app.xlog.ggbond.reward.model.PointsLogBO;
 import app.xlog.ggbond.reward.model.RewardTaskBO;
 
@@ -44,4 +45,10 @@ public interface IRewardService {
 
     // 查询兑换奖品
     List<ExchangePrizesBO> findExchangePrizes(Long activityId);
+
+    // 兑换奖品
+    void exchangePrizes(Long activityId, Long userId, Long exchangePrizesId);
+
+    // 查询兑换奖品历史
+    List<ExchangePrizesLogBO> findExchangePrizesLogList(Long activityId, Long userId);
 }

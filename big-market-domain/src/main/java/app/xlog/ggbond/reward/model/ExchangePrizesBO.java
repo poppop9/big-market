@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class ExchangePrizesBO {
     private Long activityId;  // 活动id
     private Long exchangePrizesId;  // 兑换奖品id
+    private String exchangePrizesIdStr;  // 兑换奖品id
     private String exchangePrizesName;  // 兑换奖品名称
     private Long points;  // 兑换该奖品所需的积分
 }

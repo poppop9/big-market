@@ -25,4 +25,9 @@ public interface RewardAccountJpa extends JpaRepository<RewardAccount, Long> {
 
     @Query("select r from RewardAccount r where r.userId = ?1 and r.activityId = ?2")
     RewardAccount findByUserIdAndActivityId(Long userId, Long activityId);
+
+    @Transactional
+    @Modifying
+    @Query("update RewardAccount r set r.points = ?1 where r.activityId = ?2 and r.userId = ?3")
+    int updatePointsByActivityIdAndUserId(Long points, Long activityId, Long userId);
 }

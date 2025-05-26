@@ -2,20 +2,11 @@ package app.xlog.ggbond.persistent.repository;
 
 import app.xlog.ggbond.GlobalConstant;
 import app.xlog.ggbond.MQMessage;
-import app.xlog.ggbond.persistent.po.reward.ExchangePrizes;
-import app.xlog.ggbond.persistent.po.reward.PointsLog;
-import app.xlog.ggbond.persistent.po.reward.RewardAccount;
-import app.xlog.ggbond.persistent.repository.jpa.ExchangePrizesJpa;
-import app.xlog.ggbond.persistent.repository.jpa.PointsLogJpa;
-import app.xlog.ggbond.persistent.repository.jpa.RewardAccountJpa;
-import app.xlog.ggbond.reward.model.ExchangePrizesBO;
-import app.xlog.ggbond.reward.model.PointsLogBO;
-import app.xlog.ggbond.reward.model.RewardAccountBO;
-import app.xlog.ggbond.reward.model.RewardTaskBO;
+import app.xlog.ggbond.persistent.po.reward.*;
+import app.xlog.ggbond.persistent.repository.jpa.*;
+import app.xlog.ggbond.reward.model.*;
 import app.xlog.ggbond.reward.repository.IRewardRepo;
 import app.xlog.ggbond.mq.MQEventCenter;
-import app.xlog.ggbond.persistent.po.reward.RewardTask;
-import app.xlog.ggbond.persistent.repository.jpa.RewardTaskJpa;
 import cn.hutool.core.bean.BeanUtil;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +31,8 @@ public class RewardRepository implements IRewardRepo {
     private RewardAccountJpa rewardAccountJpa;
     @Autowired
     private ExchangePrizesJpa exchangePrizesJpa;
+    @Autowired
+    private ExchangePrizesLogJpa exchangePrizesLogJpa;
 
     /**
      * 写入task记录
@@ -155,6 +148,45 @@ public class RewardRepository implements IRewardRepo {
     public List<ExchangePrizesBO> findExchangePrizes(Long activityId) {
         List<ExchangePrizes> byActivityId = exchangePrizesJpa.findByActivityId(activityId);
         return BeanUtil.copyToList(byActivityId, ExchangePrizesBO.class);
+    }
+
+    /**
+     * 更新返利账户
+     */
+    @Override
+    public void updateRewardAccount(RewardAccountBO rewardAccountBO) {
+        rewardAccountJpa.updatePointsByActivityIdAndUserId(
+                rewardAccountBO.getPoints(),
+                rewardAccountBO.getActivityId(),
+                rewardAccountBO.getUserId()
+        );
+    }
+
+    /**
+     * 写入流水表
+     */
+    @Override
+    public void saveExchangePrizesLog(ExchangePrizesLogBO build) {
+        exchangePrizesLogJpa.save(BeanUtil.copyProperties(build, ExchangePrizesLog.class));
+    }
+
+    /**
+     * 查询兑换奖品历史
+     */
+    @Override
+    public List<ExchangePrizesLogBO> findExchangePrizesLogList(Long activityId, Long userId) {
+        List<ExchangePrizesLog> byActivityIdAndUserId = exchangePrizesLogJpa.findByActivityIdAndUserId(activityId, userId);
+        return BeanUtil.copyToList(byActivityIdAndUserId, ExchangePrizesLogBO.class).stream()
+                .peek(item -> {
+                    exchangePrizesJpa.findByActivityId(activityId).stream()
+                            .filter(child -> item.getExchangePrizesId().equals(child.getExchangePrizesId()))
+                            .findFirst()
+                            .ifPresent(item2 -> {
+                                item.setExchangePrizesName(item2.getExchangePrizesName());
+                                item.setCreateTime(item2.getCreateTime());
+                            });
+                })
+                .toList();
     }
 
 }

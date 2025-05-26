@@ -310,7 +310,12 @@ public class RaffleArmoryRepository implements IRaffleArmoryRepo {
     @Override
     public List<UserRaffleHistoryBO> getWinningAwardsInfo(Long userId, Long strategyId) {
         List<UserRaffleHistory> list = userRaffleHistoryJpa.findByUserIdAndStrategyIdOrderByCreateTimeAsc(userId, strategyId);
-        return BeanUtil.copyToList(list, UserRaffleHistoryBO.class);
+        return BeanUtil.copyToList(list, UserRaffleHistoryBO.class).stream()
+                .peek(item -> {
+                    Award byAwardId = awardJpa.findByAwardId(item.getAwardId());
+                    item.setAwardTitle(byAwardId.getAwardTitle());
+                })
+                .toList();
     }
 
     /**

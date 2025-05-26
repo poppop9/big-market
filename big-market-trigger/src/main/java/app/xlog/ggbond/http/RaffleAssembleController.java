@@ -57,8 +57,8 @@ public class RaffleAssembleController implements IRaffleAssembleApiService {
      */
     @Override
     @SneakyThrows
-    @GetMapping(value = "/v1/getWinningAwardsInfo")
-    public SseEmitter getWinningAwardsInfo(@RequestParam Long activityId) {
+    @GetMapping(value = "/v1/getWinningAwardsInfoRealTime")
+    public SseEmitter getWinningAwardsInfoRealTime(@RequestParam Long activityId) {
         UserBO user = securityService.findUserByUserId(securityService.getLoginIdDefaultNull());
         List<UserRaffleHistoryBO> winningAwards = raffleArmory.findWinningAwardsInfo(activityId, user.getUserId());
 

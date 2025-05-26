@@ -1,10 +1,9 @@
 package app.xlog.ggbond.reward.service;
 
 import app.xlog.ggbond.MQMessage;
-import app.xlog.ggbond.reward.model.ExchangePrizesBO;
-import app.xlog.ggbond.reward.model.PointsLogBO;
-import app.xlog.ggbond.reward.model.RewardAccountBO;
-import app.xlog.ggbond.reward.model.RewardTaskBO;
+import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.resp.BigMarketRespCode;
+import app.xlog.ggbond.reward.model.*;
 import app.xlog.ggbond.reward.repository.IRewardRepo;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -118,8 +117,46 @@ public class RewardService implements IRewardService {
      */
     @Override
     public List<ExchangePrizesBO> findExchangePrizes(Long activityId) {
-        List<ExchangePrizesBO> exchangePrizes = rewardRepo.findExchangePrizes(activityId);
-        return exchangePrizes;
+        return rewardRepo.findExchangePrizes(activityId).stream()
+                .peek(item -> item.setExchangePrizesIdStr(String.valueOf(item.getExchangePrizesId())))
+                .toList();
+    }
+
+    /**
+     * 兑换奖品
+     */
+    @Override
+    public void exchangePrizes(Long activityId, Long userId, Long exchangePrizesId) {
+        // 1. 查询奖品需要多少积分
+        rewardRepo.findExchangePrizes(activityId).stream()
+                .filter(item -> item.getExchangePrizesId().equals(exchangePrizesId))
+                .findFirst()
+                .ifPresentOrElse(exchangePrizes -> {
+                            // 2. 判断积分是否足够，并消耗积分
+                            RewardAccountBO rewardAccountBO = rewardRepo.findRewardAccountByUserIdAndActivityId(userId, activityId);
+                            if (exchangePrizes.getPoints() <= rewardAccountBO.getPoints()) {
+                                rewardAccountBO.setPoints(rewardAccountBO.getPoints() - exchangePrizes.getPoints());
+                                rewardRepo.updateRewardAccount(rewardAccountBO);
+                                // 3. 写入流水表
+                                rewardRepo.saveExchangePrizesLog(ExchangePrizesLogBO.builder()
+                                        .activityId(activityId)
+                                        .userId(userId)
+                                        .exchangePrizesId(exchangePrizesId)
+                                        .build());
+                            }
+                        },
+                        () -> {
+                            throw new BigMarketException(BigMarketRespCode.INSUFFICIENT_POINTS);
+                        }
+                );
+    }
+
+    /**
+     * 查询兑换奖品历史
+     */
+    @Override
+    public List<ExchangePrizesLogBO> findExchangePrizesLogList(Long activityId, Long userId) {
+        return rewardRepo.findExchangePrizesLogList(activityId, userId);
     }
 
 }
