@@ -25,6 +25,8 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -277,10 +279,12 @@ public class TestController {
                 .build()
         );*/
 
-        activityOrderJpa.updateActivityOrderProductIdByActivityOrderTypeName(
+/*        activityOrderJpa.updateActivityOrderProductIdByActivityOrderTypeName(
                 1910937768625401856L,
                 ActivityOrderType.ActivityOrderTypeName.PAID_PURCHASE
-        );
+        );*/
+
+        throw new BigMarketException(BigMarketRespCode.PARAMETER_VERIFICATION_FAILED);
     }
 
     /**

@@ -6,6 +6,8 @@ import app.xlog.ggbond.activity.model.bo.ActivityOrderBO;
 import app.xlog.ggbond.activity.model.bo.ActivityOrderRewardTaskBO;
 import app.xlog.ggbond.activity.model.vo.AOContext;
 import app.xlog.ggbond.activity.repository.IActivityRepo;
+import app.xlog.ggbond.exception.BigMarketException;
+import app.xlog.ggbond.resp.BigMarketRespCode;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -95,6 +97,27 @@ public class ActivityService implements IActivityService {
     public Long findAvailableRaffleCount(Long userId, Long activityId) {
         ActivityAccountBO activityAccount = activityRepo.findActivityAccountByUserIdAndActivityId(userId, activityId);
         return activityAccount.getAvailableRaffleCount();
+    }
+
+    /**
+     * 查询活动单
+     */
+    @Override
+    public ActivityOrderBO findAOByActivityOrderId(Long activityOrderId) {
+        return activityRepo.findActivityOrderByActivityOrderId(activityOrderId);
+    }
+
+    /**
+     * 兑换码兑换活动单
+     */
+    @Override
+    public void exchangeCodeRedemption(Long activityId, Long userId, String code) {
+        // 1. 判断是否存在
+        if (!activityRepo.existRedeemCode(activityId, code)) {
+            throw new BigMarketException(BigMarketRespCode.EXCHANGE_FAILED);
+        }
+
+        // 2. 存在
     }
 
 }

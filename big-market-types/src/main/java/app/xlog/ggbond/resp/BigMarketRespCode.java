@@ -23,6 +23,7 @@ public enum BigMarketRespCode {
     ACTIVITY_BALANCE_NOT_ENOUGH(306, "用户余额不足"),
     ACTIVITY_ORDER_PRODUCT_NOT_EXIST(307, "活动单商品不存在"),
     ACTIVITY_CONFIG_ARMORY_ERROR(308, "活动相关配置装配失败"),
+    EXCHANGE_FAILED(308, "兑换失败"),
     // 抽奖领域
     DECREASE_AWARD_COUNT_FAILED(400, "扣减奖品库存失败，可能由于并发太高，或者奖品库存没有装配"),
     USER_IS_IN_RAFFLE(401, "该用户已经在抽奖中"),

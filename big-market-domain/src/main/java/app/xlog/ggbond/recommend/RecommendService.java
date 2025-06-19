@@ -90,21 +90,18 @@ public class RecommendService {
 
         String question = generateGptQuestionByUserPurchaseHistory(userPurchaseHistoryBOList);
         String answer = aiRepo.syncInvoke(role, question);
-        List<AwardBO> awardBOList = Arrays.stream(answer.split("\n"))
-                .flatMap(item -> {
+        List<AwardBO> awardBOList = Arrays.stream(answer.split("\n")).flatMap(item -> {
                     String[] split = item.split(":");
                     if (split.length != 2)
                         throw new BigMarketException(BigMarketRespCode.AI_RESPONSE_ERROR);
 
-                    GlobalConstant.AwardLevel awardLevel = GlobalConstant
-                            .AwardLevel
+                    GlobalConstant.AwardLevel awardLevel = GlobalConstant.AwardLevel
                             .getNameByPriceRange(split[0].trim());
-                    if (awardLevel == null) throw new BigMarketException(BigMarketRespCode.AI_RESPONSE_ERROR);
+                    if (awardLevel == null)
+                        throw new BigMarketException(BigMarketRespCode.AI_RESPONSE_ERROR);
 
                     AtomicInteger initAwardSort = new AtomicInteger(awardLevel.getInitAwardSort());
-                    return Arrays.stream(split[1].trim()
-                                    .replace("[", "")
-                                    .replace("]", "")
+                    return Arrays.stream(split[1].trim().replace("[", "").replace("]", "")
                                     .split(", "))
                             .map(child -> AwardBO.builder()
                                     .awardTitle(child)

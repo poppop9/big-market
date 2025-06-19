@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,21 +26,19 @@ public class GlobalExceptionHandler {
      * 处理自定义异常
      */
     @ExceptionHandler(BigMarketException.class)
-    public ResponseEntity<JsonNode> bigMarketExceptionHandler(BigMarketException e) {
-        log.error("业务异常", e);
-        return ZakiResponse.error(
-                e.getRespCode(),
-                e.getMessage() != null ? e.getMessage() : e.getRespCode().getMessage()
-        );
+    public ProblemDetail bigMarketExceptionHandler(BigMarketException e) {
+        log.error(e.getMessage(), e);
+        // todo 待改为自己的业务错误码
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
     /**
-     * 处理登录相关异常
+     * 其他异常
      */
-    @ExceptionHandler(SaTokenException.class)
-    public ResponseEntity<JsonNode> saTokenExceptionHandler(SaTokenException e) {
-        log.error("登录相关异常", e);
-        return ZakiResponse.error(e.getMessage());
+    @ExceptionHandler(RuntimeException.class)
+    public ProblemDetail runtimeExceptionHandler(RuntimeException e) {
+        log.error(e.getMessage(), e);
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
 }

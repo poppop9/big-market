@@ -1,6 +1,7 @@
 package app.xlog.ggbond.http;
 
 import app.xlog.ggbond.IActivityApiService;
+import app.xlog.ggbond.activity.model.bo.ActivityOrderTypeBO;
 import app.xlog.ggbond.activity.service.ActivityService;
 import app.xlog.ggbond.activity.service.IActivityService;
 import app.xlog.ggbond.activity.service.statusFlow.AOEventCenter;
@@ -59,9 +60,20 @@ public class ActivityController implements IActivityApiService {
      */
     @PatchMapping("/v1/payPendingPaymentAO")
     public ResponseEntity<JsonNode> payPendingPaymentAO(Long activityId, Long activityOrderId) {
-        /*aoContext = aoEventCenter.publishPendingPaymentToEffectiveEvent(aoContext);
-        return ZakiResponse.ok("activityOrderBO", aoContext.getActivityOrderBO());*/
-        return null;
+        ActivityOrderBO activityOrderBO = activityService.findAOByActivityOrderId(activityOrderId);
+        AOContext aoContext = aoEventCenter.publishPendingPaymentToEffectiveEvent(AOContext.builder()
+                .userId(securityService.getLoginIdDefaultNull())
+                .activityId(activityId)
+                .activityOrderBO(ActivityOrderBO.builder()
+                        .activityOrderId(activityOrderId)
+                        .build())
+                .activityOrderType(ActivityOrderTypeBO.builder()
+                        .activityOrderTypeName(activityOrderBO.getActivityOrderTypeName())
+                        .build())
+                .aoProductId(activityOrderBO.getActivityOrderProductId())
+                .purchaseQuantity(activityOrderBO.getTotalRaffleCount())
+                .build());
+        return ZakiResponse.ok("activityOrderBO", aoContext.getActivityOrderBO());
     }
 
     /**

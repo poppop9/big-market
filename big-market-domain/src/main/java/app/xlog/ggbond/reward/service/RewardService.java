@@ -133,21 +133,19 @@ public class RewardService implements IRewardService {
                 .findFirst()
                 .ifPresentOrElse(exchangePrizes -> {
                             // 2. 判断积分是否足够，并消耗积分
-                            RewardAccountBO rewardAccountBO = rewardRepo.findRewardAccountByUserIdAndActivityId(userId, activityId);
+                            RewardAccountBO rewardAccountBO = rewardRepo.findRewardAccountByUserIdAndActivityId(
+                                    userId, activityId);
                             if (exchangePrizes.getPoints() <= rewardAccountBO.getPoints()) {
-                                rewardAccountBO.setPoints(rewardAccountBO.getPoints() - exchangePrizes.getPoints());
+                                rewardAccountBO.setPoints(
+                                        rewardAccountBO.getPoints() - exchangePrizes.getPoints());
                                 rewardRepo.updateRewardAccount(rewardAccountBO);
                                 // 3. 写入流水表
                                 rewardRepo.saveExchangePrizesLog(ExchangePrizesLogBO.builder()
-                                        .activityId(activityId)
-                                        .userId(userId)
-                                        .exchangePrizesId(exchangePrizesId)
-                                        .build());
+                                        .activityId(activityId).userId(userId)
+                                        .exchangePrizesId(exchangePrizesId).build());
                             }
                         },
-                        () -> {
-                            throw new BigMarketException(BigMarketRespCode.INSUFFICIENT_POINTS);
-                        }
+                        () -> { throw new BigMarketException(BigMarketRespCode.INSUFFICIENT_POINTS); }
                 );
     }
 

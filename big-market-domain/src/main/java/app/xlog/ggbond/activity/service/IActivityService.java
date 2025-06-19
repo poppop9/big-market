@@ -29,5 +29,11 @@ public interface IActivityService {
     ActivityBO findActivityByActivityId(Long activityId);
 
     // 查询用户的可用抽奖次数
-    Long findAvailableRaffleCount(Long userId,Long activityId);
+    Long findAvailableRaffleCount(Long userId, Long activityId);
+
+    // 查询活动单
+    ActivityOrderBO findAOByActivityOrderId(Long activityOrderId);
+
+    // 兑换码兑换活动单
+    void exchangeCodeRedemption(Long activityId, Long userId, String code);
 }

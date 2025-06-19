@@ -42,7 +42,9 @@ public class PendPayToEffectivePipeline {
         // 1. 从上下文中拿出活动id，查询该活动id的所有规则
         List<ActivityOrderTypeConfigBO> configList = activityRepo.findActivityOrderTypeConfigByActivityId(context.getActivityId());
         ActivityOrderTypeConfigBO nodeId = configList.stream()
-                .filter(item -> item.getActivityOrderTypeName().equals(context.getActivityOrderType().getActivityOrderTypeName()))
+                .filter(item -> item
+                        .getActivityOrderTypeName()
+                        .equals(context.getActivityOrderType().getActivityOrderTypeName()))
                 .findFirst()
                 .get();
 
@@ -188,7 +190,6 @@ public class PendPayToEffectivePipeline {
             nodeName = "增加可用抽奖次数工位")
     public void increaseAvailableRaffleTimeWorker(NodeComponent bindCmp) {
         AOContext context = bindCmp.getContextBean(AOContext.class);
-
         activityRepo.increaseAvailableRaffleTime(
                 context.getUserId(), context.getActivityId(), context.getRaffleCount()
         );
